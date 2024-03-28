@@ -10,6 +10,19 @@ Aby sprawić wersję
 	yarn Script Runner
 Polecam używać cmd (command prompt) zamiast powershella w cmd
 
+Zalecane pakiety vsc:
+	Prettier - Code formatter
+	ESLint
+	Icons - to z ikonka reacta
+	PostCSS Intellisense and Highlighting
+	CSS Variable Autocomplete extension
+	Auto Rename Tag
+	Highlight Matching Tag
+	Error Lens
+	CSS Peek
+	CSS Variable Autocomplete
+	Git Essentials - 2023 collection of extensions 
+
 ## Available Scripts
 
 ### `yarn start`
