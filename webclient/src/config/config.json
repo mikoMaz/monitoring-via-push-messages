@@ -1,0 +1,10 @@
+[
+  {
+    "key": "LOCAL",
+    "value": {
+      "SERVER_URL": "http://localhost:3000",
+      "HOST": "localhost:3000",
+      "API_URL": ""
+    }
+  }
+]
