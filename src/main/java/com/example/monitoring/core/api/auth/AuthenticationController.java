@@ -1,4 +1,4 @@
-package com.example.monitoring.core.model.auth;
+package com.example.monitoring.core.api.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

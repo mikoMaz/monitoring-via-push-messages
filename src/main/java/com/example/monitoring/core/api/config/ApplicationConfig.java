@@ -1,6 +1,6 @@
-package com.example.monitoring.core.model.config;
+package com.example.monitoring.core.api.config;
 
-import com.example.monitoring.core.model.payload.PayloadRepository;
+import com.example.monitoring.core.api.payload.PayloadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

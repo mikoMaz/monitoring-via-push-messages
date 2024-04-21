@@ -1,4 +1,4 @@
-package com.example.monitoring.core.model.payload;
+package com.example.monitoring.core.api.payload;
 
 public enum Role {
     ADMIN,

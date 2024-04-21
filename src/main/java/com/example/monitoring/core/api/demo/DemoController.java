@@ -1,4 +1,4 @@
-package com.example.monitoring.core.model.demo;
+package com.example.monitoring.core.api.demo;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

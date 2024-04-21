@@ -1,4 +1,4 @@
-package com.example.monitoring.core.model.config;
+package com.example.monitoring.core.api.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,9 +1,9 @@
-package com.example.monitoring.core.model.auth;
+package com.example.monitoring.core.api.auth;
 
-import com.example.monitoring.core.model.payload.Payload;
-import com.example.monitoring.core.model.payload.Role;
-import com.example.monitoring.core.model.config.JwtService;
-import com.example.monitoring.core.model.payload.PayloadRepository;
+import com.example.monitoring.core.api.payload.Payload;
+import com.example.monitoring.core.api.payload.Role;
+import com.example.monitoring.core.api.config.JwtService;
+import com.example.monitoring.core.api.payload.PayloadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
