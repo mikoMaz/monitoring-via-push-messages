@@ -21,6 +21,7 @@ import java.util.List;
 @Table(name = "sensorData")
 public class SensorDataSimplified {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long Id;
     private String sensor;
     private String company_id;

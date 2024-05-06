@@ -1,6 +1,8 @@
 package com.example.monitoring.core.api.auth;
 import org.slf4j.LoggerFactory ;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +18,15 @@ import com.example.monitoring.core.sensor.SensorData;
 import com.example.monitoring.core.sensor.SensorDataSimplified;
 import com.example.monitoring.core.sensor.SensorDataSimplifiedRepository;
 import com.example.monitoring.core.sensor.SensorDataSimplifiedService;
+
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
+    @Autowired
+    private SensorDataSimplifiedRepository repository;
+
     private final AuthenticationService authenticationService;
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
@@ -46,9 +53,7 @@ public class AuthenticationController {
         SensorData payload= objectMapper.readValue(payloadJson, SensorData.class);
         SensorDataSimplified payloadSimplified= payload.toSensorDataSimplified();
         logger.info(payloadSimplified.toString());
-        SensorDataSimplifiedRepository repository;
-        SensorDataSimplifiedService service =new SensorDataSimplifiedService(repository);
-        service.save(payloadSimplified);
+        repository.save(payloadSimplified);
         return ResponseEntity.ok().body(payloadSimplified.toString());
 
         } catch (JsonMappingException e) {
