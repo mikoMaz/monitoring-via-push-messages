@@ -23,12 +23,12 @@ public class Payload implements UserDetails {
     @GeneratedValue
     private Integer id;
 //    private Integer readingTime;
-//    private String type;
     private String deviceId;
     private String deviceType;
     @Enumerated(EnumType.STRING)
     private Role role;
     private String password;
+    private Long timestamp;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

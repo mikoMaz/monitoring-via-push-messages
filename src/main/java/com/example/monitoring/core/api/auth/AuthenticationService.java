@@ -26,7 +26,7 @@ public class AuthenticationService {
                 .role(Role.DEVICE)
 //                .password(passwordEncoder.encode(request.getPassword()))
                 .build();
-        repository.save(device);
+//        repository.save(device);
         var jwtToken = jwtService.generateToken(device);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
