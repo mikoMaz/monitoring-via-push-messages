@@ -1,10 +1,15 @@
 package com.example.monitoring.core.api.config;
 
+import com.example.monitoring.core.api.payload.Payload;
+import com.example.monitoring.core.api.payload.Role;
+import io.jsonwebtoken.security.SignatureException;
+import io.jsonwebtoken.security.WeakKeyException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,10 +42,43 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
         token = authHeader.substring(7);
+
+        // setting status not working properly; check if needed
+        /*try {
+            deviceId = jwtService.extractDeviceId(token);
+            System.out.println("deviceId: " + deviceId);
+//            response.setStatus(HttpStatus.OK.value());
+//            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+//            response.getWriter().println("Authentication successful");
+        } catch (SignatureException e) {
+            System.err.println("Invalid JWT signature");
+        }*/
+
+        // TODO: should be caught in separated class(?)
+        /*try {
+            deviceId = jwtService.extractDeviceId(token);
+        } catch (SignatureException e) {
+            System.err.println("Invalid JWT token");
+            filterChain.doFilter(request, response);
+            return;
+        } catch (WeakKeyException e) {
+            System.err.println("Weak key exception");
+            filterChain.doFilter(request, response);
+            return;
+        }*/
         deviceId = jwtService.extractDeviceId(token);
+
+
         if (deviceId != null && SecurityContextHolder.getContext().getAuthentication() == null) {  // user is not auth
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(deviceId);
+            Payload userDetails = Payload.builder()
+                    .deviceId(deviceId)
+                    .deviceType("default")
+                    .role(Role.USER)
+                    .password("defaultPassword")
+                    .build();
             if (jwtService.isTokenValid(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                          userDetails,
