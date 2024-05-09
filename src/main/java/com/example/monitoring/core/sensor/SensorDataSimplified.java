@@ -24,15 +24,18 @@ public class SensorDataSimplified {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long Id;
     private String sensor;
-    private String company_id;
+    private Integer company_id;
     private String data_type;
-    private String reading_time;
+    private Long reading_time;
+    public SensorDataSimplified()
+    {
 
+    }
     public SensorDataSimplified(String sensor, String company_id, String data_type, String reading_time) {
         this.sensor = sensor;
-        this.company_id = company_id;
+        this.company_id = Integer.parseInt(company_id);
         this.data_type = data_type;
-        this.reading_time = reading_time;
+        this.reading_time = Long.parseLong(reading_time);
     }
 
     @Override

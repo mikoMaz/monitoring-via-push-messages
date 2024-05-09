@@ -15,8 +15,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "22c60e4bc7d8d0b3c411c4a7e8e9171ee8b9be6e04ded2c484182778211d192a";
-//    private static final String SECRET_KEY = "eyJhbGciOiJIUzI1NiJ9eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcxNTEwNDIwNCwiaWF0IjoxNzE1MTA0MjA0fQsnPWyH323VKPwvvVUeL2KhqI7kS81dKlcJtm7UlFwI";
+    //private static final String SECRET_KEY = "22c60e4bc7d8d0b3c411c4a7e8e9171ee8b9be6e04ded2c484182778211d192a";
+    private static final String SECRET_KEY = "eyJhbGciOiJIUzI1NiJ9eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcxNTEwNDIwNCwiaWF0IjoxNzE1MTA0MjA0fQsnPWyH323VKPwvvVUeL2KhqI7kS81dKlcJtm7UlFwI";
 
     public String extractDeviceId(String token) {
         return extractClaims(token, Claims::getSubject);

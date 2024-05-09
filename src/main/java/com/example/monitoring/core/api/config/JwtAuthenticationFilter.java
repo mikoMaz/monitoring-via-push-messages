@@ -2,6 +2,9 @@ package com.example.monitoring.core.api.config;
 
 import com.example.monitoring.core.api.payload.Payload;
 import com.example.monitoring.core.api.payload.Role;
+
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.WeakKeyException;
 import jakarta.servlet.FilterChain;
@@ -58,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }*/
 
         // TODO: should be caught in separated class(?)
-        /*try {
+        try {
             deviceId = jwtService.extractDeviceId(token);
         } catch (SignatureException e) {
             System.err.println("Invalid JWT token");
@@ -68,8 +71,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.err.println("Weak key exception");
             filterChain.doFilter(request, response);
             return;
-        }*/
-        deviceId = jwtService.extractDeviceId(token);
+        }catch (MalformedJwtException e) {
+            System.err.println("MalformedJwt exception");
+            filterChain.doFilter(request, response);
+            return;
+        }catch (UnsupportedJwtException e) {
+            System.err.println("UnsupportedJwtException exception");
+            filterChain.doFilter(request, response);
+            return;
+        }
 
 
         if (deviceId != null && SecurityContextHolder.getContext().getAuthentication() == null) {  // user is not auth

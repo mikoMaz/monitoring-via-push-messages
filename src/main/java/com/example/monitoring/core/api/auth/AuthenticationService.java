@@ -41,7 +41,7 @@ public class AuthenticationService {
                 )
         );
         var device = repository.findByDeviceId(request.getDeviceId())
-                .orElseThrow();  // TODO handle exception
+                .orElseThrow();  // TODO: handle exception
         var jwtToken = jwtService.generateToken(device);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
