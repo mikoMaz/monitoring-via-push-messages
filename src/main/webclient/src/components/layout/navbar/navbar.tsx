@@ -20,7 +20,7 @@ export const Navbar = ({...ui}: IUIProps) => {
         <NavigationButtons {...ui}/>
       </GridItem>
       <GridItem>
-        <UserDropdown />
+        <UserDropdown {...ui}/>
       </GridItem>
     </Grid>
   );
