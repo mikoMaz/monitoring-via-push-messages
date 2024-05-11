@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { IUIProps } from "../../../../app-main/app-main";
 
-export const UserDropdown = ({ ...ui }: IUIProps) => {
+export const UserSidebar = ({ ...ui }: IUIProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
@@ -23,6 +23,7 @@ export const UserDropdown = ({ ...ui }: IUIProps) => {
         icon={<Avatar size="sm" />}
         aria-label={"Profile"}
         colorScheme={ui.colors.accent}
+        paddingTop="10px"
       />
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
