@@ -1,4 +1,4 @@
 import { Image } from "@chakra-ui/react";
 export const Logo = () => {
-	return <Image src="/public/img/logo192.png" alt="Logo" />
+	return <Image src="/img/logo192.png" boxSize='50px' alt="Logo" />
 }

@@ -18,7 +18,7 @@ export const AppMain = ({...appMainProps}: IAppMainProps) => {
       gridTemplateRows={"150px 1fr 100px"}
     >
       <GridItem area={"header"}>
-        <Navbar />
+        <Navbar {...appMainProps.ui}/>
       </GridItem>
       <GridItem area={"main"}>Main</GridItem>
       <GridItem area={"footer"}>Footer</GridItem>
