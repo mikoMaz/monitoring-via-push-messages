@@ -17,7 +17,7 @@ export const Navbar = ({...ui}: IUIProps) => {
         <div className="navbar-empty-space" />
       </GridItem>
       <GridItem>
-        <NavigationButtons />
+        <NavigationButtons {...ui}/>
       </GridItem>
       <GridItem>
         <UserDropdown />
