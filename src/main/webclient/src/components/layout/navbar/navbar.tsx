@@ -1,6 +1,6 @@
 import { Grid, GridItem } from "@chakra-ui/react";
 import { NavigationButtons } from "./components/navigation-buttons/navigation-buttons";
-import { UserDropdown } from "./components/user-dropdown/user-dropdown";
+import { UserDropdown } from "./components/user-sidebar/user-sidebar";
 import { Logo } from "./components/logo/logo";
 import { IUIProps } from "../../app-main/app-main";
 
