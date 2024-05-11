@@ -1,3 +1,3 @@
 export const UserDropdown = () => {
-	return <>Dropdown</>
-}
+  return <>Dropdown</>;
+};

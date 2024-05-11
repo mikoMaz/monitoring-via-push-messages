@@ -1,12 +1,12 @@
 import { Grid, GridItem } from "@chakra-ui/react";
 import { Navbar } from "../layout/navbar/navbar";
-import { ProjectColorsDictionary } from "../../types/projectTypes";
+import { ProjColorsDictionary } from "../../types/projectTypes";
 
 export interface IAppMainProps {
   ui: IUIProps
 }
 export interface IUIProps {
-  colors: ProjectColorsDictionary;
+  colors: ProjColorsDictionary;
 }
 
 export const AppMain = ({...appMainProps}: IAppMainProps) => {
