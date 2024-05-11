@@ -1,9 +1,29 @@
 import { Grid, GridItem } from "@chakra-ui/react";
 import { Navbar } from "../layout/navbar/navbar";
+import { ProjectColorsDictionary } from "../../types/projectTypes";
 
-export interface IAppMainProps {}
+export interface IAppMainProps {
+  ui: IUIProps
+}
 
-export const AppMain = ({}: IAppMainProps) => {
+export interface IUIProps {
+  colors: ProjectColorsDictionary;
+}
+
+const appMainProps: IAppMainProps = {
+  ui: {
+    colors: {
+      white: "#FFFFFF",
+      black: "#000000",
+      primary: "#22543D",
+      secondary: "#9AE6B4",
+      accent: "#CBD5E0",
+      background: "#F4F3F0",
+    },
+  },
+};
+
+export const AppMain = ({...appMainProps}: IAppMainProps) => {
   return (
     <Grid
       templateAreas={`"header header"
