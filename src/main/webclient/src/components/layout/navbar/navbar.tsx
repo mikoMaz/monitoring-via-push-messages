@@ -7,9 +7,10 @@ import { IUIProps } from "../../app-main/app-main";
 export const Navbar = ({ ...ui }: IUIProps) => {
   return (
     <Grid
-      templateColumns="1fr 1fr 21fr 6fr 1fr"
+      templateColumns="1fr 1fr 21fr 6fr 2fr"
       gap={2}
       background={ui.colors.background}
+      padding="10px"
     >
       <GridItem>
         <Logo />

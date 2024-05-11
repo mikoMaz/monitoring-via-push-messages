@@ -24,6 +24,8 @@ export const UserSidebar = ({ ...ui }: IUIProps) => {
         aria-label={"Profile"}
         colorScheme={ui.colors.accent}
         paddingTop="10px"
+        //TODO change to flex instead of strict value
+        paddingLeft="40px"
       />
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
