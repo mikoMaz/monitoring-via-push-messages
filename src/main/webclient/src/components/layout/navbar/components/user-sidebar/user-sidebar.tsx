@@ -11,6 +11,11 @@ import {
   DrawerFooter,
   Button,
   DrawerHeader,
+  Container,
+  GridItem,
+  Grid,
+  Switch,
+  Text,
 } from "@chakra-ui/react";
 import { IUIProps } from "../../../../app-main/app-main";
 
@@ -31,18 +36,25 @@ export const UserSidebar = ({ ...ui }: IUIProps) => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Create your account</DrawerHeader>
+          <DrawerHeader>Profile</DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder="Type here..." />
+            <Grid templateRows="2fr 1fr 8fr">
+              <GridItem>
+                <Container>
+                  <Grid templateColumns="1fr 2fr">
+                    <GridItem>
+                      <Switch />
+                    </GridItem>
+                    <GridItem>
+                      <Text>Alerts</Text>
+                    </GridItem>
+                  </Grid>
+                </Container>
+              </GridItem>
+              <GridItem>Settings</GridItem>
+            </Grid>
           </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue">Save</Button>
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
