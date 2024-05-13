@@ -7,6 +7,7 @@ import { MonitoringPage } from "./components/monitoring-page/monitoring-page";
 import { DashboardPage } from "./components/dashboard-page/dashboard-page";
 import { AboutPage } from "./components/about-page/about-page";
 import { LandingPage } from "./components/landing-page/landing-page";
+import { NotFoundPage } from "./components/not-found-page/not-dound-page";
 
 const appMainProps: IAppMainProps = {
   ui: {
@@ -24,6 +25,7 @@ const appMainProps: IAppMainProps = {
     <Route key="dashboard" path="/dashboard" element={<DashboardPage />} />,
     <Route key="about" path="/about" element={<AboutPage />} />,
     <Route key="landing-page" path="/" element={<LandingPage />} />,
+    <Route key="not-found" path="*" element={<NotFoundPage />} />,
   ],
 };
 
