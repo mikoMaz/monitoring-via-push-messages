@@ -35,12 +35,14 @@ export class Gateway implements IMonitoringDevice {
 	status: deviceStatus;
 	lastPinged: Date;
 	deviceType: deviceType;
+	sensors: Sensor[];
   
-	constructor(id: string, status: deviceStatus, lastPinged: Date) {
+	constructor(id: string, status: deviceStatus, lastPinged: Date, sensors: Sensor[]) {
 	  this.id = id;
 	  this.status = status;
 	  this.lastPinged = lastPinged;
 	  this.deviceType = deviceType.gateway;
+	  this.sensors = sensors;
 	}
 }
 
@@ -49,12 +51,14 @@ export class Bridge implements IMonitoringDevice {
 	status: deviceStatus;
 	lastPinged: Date;
 	deviceType: deviceType;
+	gateways: Gateway[];
   
-	constructor(id: string, status: deviceStatus, lastPinged: Date) {
+	constructor(id: string, status: deviceStatus, lastPinged: Date, gateways: Gateway[]) {
 	  this.id = id;
 	  this.status = status;
 	  this.lastPinged = lastPinged;
 	  this.deviceType = deviceType.bridge;
+	  this.gateways = gateways;
 	}
 }
 

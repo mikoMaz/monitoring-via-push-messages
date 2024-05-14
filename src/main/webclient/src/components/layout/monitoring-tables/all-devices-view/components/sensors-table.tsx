@@ -2,11 +2,7 @@ import { Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
 import { Sensor } from "../../../../../types/deviceModel";
 import { DeviceRow } from "./device-row";
 
-interface ISensorsTable {
-  sensors: Sensor[];
-}
-
-export const SensorsTable = ({ sensors }: ISensorsTable) => {
+export const SensorsTable = (sensors: Sensor[]) => {
   return (
     <TableContainer>
       <Table variant="striped">
