@@ -13,6 +13,7 @@ export interface IUIProps {
 }
 
 export const AppMain = ({ ...props }: IAppMainProps) => {
+
   return (
     <Grid
       templateAreas={`"header header"

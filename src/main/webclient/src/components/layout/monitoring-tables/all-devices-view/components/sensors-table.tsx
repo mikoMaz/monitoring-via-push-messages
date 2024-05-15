@@ -3,6 +3,18 @@ import { Sensor } from "../../../../../types/deviceModel";
 import { DeviceRow } from "./device-row";
 
 export const SensorsTable = (sensors: Sensor[]) => {
+  const getSensorsTableBody = () => {
+    return (
+      <Tbody>
+        <>
+          {sensors.map((bridge) => {
+            return <DeviceRow {...bridge} />;
+          })}
+        </>
+      </Tbody>
+    );
+  };
+
   return (
     <TableContainer>
       <Table variant="striped">
@@ -14,9 +26,12 @@ export const SensorsTable = (sensors: Sensor[]) => {
           </Tr>
         </Thead>
         <Tbody>
-          {sensors.map((sensor) => (
-            <DeviceRow {...sensor} />
-          ))}
+          <>
+          <DeviceRow {...sensors[0]}/>
+          {/* {sensors.map((sensor) => {
+            return <DeviceRow {...sensor} />;
+          })} */}
+          </>
         </Tbody>
       </Table>
     </TableContainer>
