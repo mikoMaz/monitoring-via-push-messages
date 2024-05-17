@@ -10,6 +10,10 @@ export interface IAppMainProps {
 }
 export interface IUIProps {
   colors: ProjectColorsDictionary;
+  heigth: {
+    navbar: string;
+    footer: string;
+  }
 }
 
 export const AppMain = ({ ...props }: IAppMainProps) => {
@@ -19,7 +23,7 @@ export const AppMain = ({ ...props }: IAppMainProps) => {
       templateAreas={`"header header"
 	"main main"
 	"footer footer"`}
-      gridTemplateRows={"150px 1fr 0px"}
+      gridTemplateRows={`${props.ui.heigth.navbar} 1fr ${props.ui.heigth.footer}`}
     >
       <GridItem area={"header"}>
         <Navbar {...props.ui} />

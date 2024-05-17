@@ -19,6 +19,10 @@ const appMainProps: IAppMainProps = {
       accent: "#CBD5E0",
       background: "#F4F3F0",
     },
+    heigth: {
+      navbar: "70px",
+      footer: "0px"
+    }
   },
   routes: [
     <Route key="monitoring" path="/monitoring" element={<MonitoringPage />} />,

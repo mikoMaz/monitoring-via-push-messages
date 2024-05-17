@@ -11,6 +11,7 @@ export const Navbar = ({ ...ui }: IUIProps) => {
       gap={2}
       background={ui.colors.background}
       padding="10px"
+      height={ui.heigth.navbar}
     >
       <GridItem>
         <Logo />
