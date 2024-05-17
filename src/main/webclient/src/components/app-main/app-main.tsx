@@ -19,7 +19,7 @@ export const AppMain = ({ ...props }: IAppMainProps) => {
       templateAreas={`"header header"
 	"main main"
 	"footer footer"`}
-      gridTemplateRows={"150px 1fr 100px"}
+      gridTemplateRows={"150px 1fr 0px"}
     >
       <GridItem area={"header"}>
         <Navbar {...props.ui} />
@@ -29,7 +29,6 @@ export const AppMain = ({ ...props }: IAppMainProps) => {
           <Routes>{props.routes}</Routes>
         </Suspense>
       </GridItem>
-      <GridItem area={"footer"}>Footer</GridItem>
     </Grid>
   );
 };
