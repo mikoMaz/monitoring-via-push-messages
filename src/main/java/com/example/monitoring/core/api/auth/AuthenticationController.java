@@ -67,14 +67,14 @@ public class AuthenticationController {
         }
         
     }
-    @GetMapping("/get-lastest-sensor")
-    public ResponseEntity<String>lastestSensor(
+    @GetMapping("/get-latest-sensor")
+    public ResponseEntity<String>latestSensor(
             @RequestBody String  payloadJson
     ) throws JsonMappingException, JsonProcessingException {
         Map<String, Object> map = reader.readValue(payloadJson);
         Integer company_id=(Integer)map.get("company_id");
-        SensorDataSimplified lastest= repository.findLastReadingTime(company_id);
-        return ResponseEntity.ok().body(company_id.toString()+"\n"+lastest.toString());
+        SensorDataSimplified latest= repository.findLastReadingTime(company_id);
+        return ResponseEntity.ok().body(company_id.toString()+"\n"+latest.toString());
 
     }
     @GetMapping("/get-time-since-response")
@@ -83,9 +83,9 @@ public class AuthenticationController {
     ) throws JsonMappingException, JsonProcessingException {
         Map<String, Object> map = reader.readValue(payloadJson);
         Integer company_id=(Integer)map.get("company_id");
-        SensorDataSimplified lastest= repository.findLastReadingTime(company_id);
+        SensorDataSimplified latest= repository.findLastReadingTime(company_id);
         Long unixTime = System.currentTimeMillis() / 1000L;
-        Long time = unixTime-lastest.getReading_time();
+        Long time = unixTime-latest.getReading_time();
         return ResponseEntity.ok().body(time.toString());
 
     }

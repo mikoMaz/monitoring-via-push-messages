@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.Function;
 @Repository
 public interface SensorDataSimplifiedRepository  extends JpaRepository<SensorDataSimplified, String> {
- @Query(value = "SELECT * FROM sensor_data WHERE reading_time =(SELECT MAX(reading_time)FROM sensor_data WHERE company_id=?1)", nativeQuery = true)
+ @Query(value = "SELECT * FROM sensor_data WHERE company_id = ?1 ORDER BY reading_time DESC LIMIT 1", nativeQuery = true)
  public SensorDataSimplified findLastReadingTime(Integer company_id);
  @Query(value = "SELECT COUNT(*) FROM (SELECT DISTINCT sensor FROM sensor_data  WHERE company_id=?1) as dt", nativeQuery = true)
  public Integer totalSensors(Integer company_id);
