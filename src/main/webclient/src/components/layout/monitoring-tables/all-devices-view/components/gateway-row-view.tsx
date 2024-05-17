@@ -9,7 +9,11 @@ import {
 import { Gateway } from "../../../../../types/deviceModel";
 import { SensorsTable } from "./sensors-table";
 
-export const GatewayRowView = (gateway: Gateway) => {
+interface IGatewayRowViewProps {
+  gateway: Gateway
+}
+
+export const GatewayRowView = ({gateway}: IGatewayRowViewProps) => {
   const GatewayButton = () => {
     return (
       <>
@@ -22,13 +26,13 @@ export const GatewayRowView = (gateway: Gateway) => {
   };
 
   return (
-    <Accordion defaultIndex={[0]} allowMultiple>
-      <AccordionItem>
+    <Accordion defaultIndex={[0]} allowMultiple key={gateway.id}>
+      <AccordionItem key={gateway.id}>
         <AccordionButton>
           <GatewayButton />
         </AccordionButton>
         <AccordionPanel pb={4}>
-          <SensorsTable {...gateway.sensors} />
+          <SensorsTable sensors={gateway.sensors} />
         </AccordionPanel>
       </AccordionItem>
     </Accordion>

@@ -1,5 +1,4 @@
 import {
-  Accordion,
   AccordionButton,
   AccordionIcon,
   AccordionItem,
@@ -9,7 +8,11 @@ import {
 import { Bridge } from "../../../../../types/deviceModel";
 import { GatewayRowView } from "./gateway-row-view";
 
-export const BridgeRowView = (bridge: Bridge) => {
+interface IBridgeRowViewProps {
+  bridge: Bridge
+}
+
+export const BridgeRowView = ({bridge}: IBridgeRowViewProps) => {
   const BridgeButton = () => {
     return (
       <>
@@ -22,17 +25,15 @@ export const BridgeRowView = (bridge: Bridge) => {
   };
 
   return (
-    <Accordion defaultIndex={[0]} allowMultiple>
-      <AccordionItem>
-        <AccordionButton>
-          <BridgeButton />
-        </AccordionButton>
-        <AccordionPanel>
-          {bridge.gateways.map((gateway) => (
-            <GatewayRowView {...gateway} />
+    <AccordionItem key={bridge.id}>
+      <AccordionButton>
+        <BridgeButton />
+      </AccordionButton>
+      <AccordionPanel>
+        {bridge.gateways.map((gateway) => (
+            <GatewayRowView gateway={gateway} />
           ))}
-        </AccordionPanel>
-      </AccordionItem>
-    </Accordion>
+      </AccordionPanel>
+    </AccordionItem>
   );
 };

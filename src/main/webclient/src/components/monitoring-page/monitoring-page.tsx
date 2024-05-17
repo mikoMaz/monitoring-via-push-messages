@@ -1,40 +1,28 @@
-import { createDeviceModel } from "../../types/deviceModel";
-import { BridgeRowView } from "../layout/monitoring-tables/all-devices-view/components/bridge-row-view";
+import {
+  Bridge,
+  DeviceModel,
+  Gateway,
+  Sensor,
+  deviceStatus,
+} from "../../types/deviceModel";
+import { AllDevicesView } from "../layout/monitoring-tables/all-devices-view/all-devices-view";
 
 export const MonitoringPage = () => {
-  // const testJson = "../../../../test/example.json";
-  const testJson = `{
-    "bridges": [
-        {
-            "id": "bridge1",
-            "status": 0,
-            "lastPinged": "2024-05-13T12:00:00Z",
-            "gateways": [
-                {
-                    "id": "gateway1",
-                    "status": 0,
-                    "lastPinged": "2024-05-13T12:05:00Z",
-                    "sensors": [
-                        {
-                            "id": "sensor1",
-                            "status": 0,
-                            "lastPinged": "2024-05-13T12:10:00Z"
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
-    "gateways": [],
-    "sensors": []
-}`;
-  const data = JSON.parse(testJson);
-  const deviceModel = createDeviceModel(data);
+  const deviceModel = new DeviceModel([
+    new Bridge("bridge1", deviceStatus.active, new Date(), [
+      new Gateway("gateway1", deviceStatus.active, new Date(), [
+        new Sensor("sensor1", deviceStatus.active, new Date()),
+        new Sensor("sensor2", deviceStatus.active, new Date()),
+      ]),
+      new Gateway("gateway2", deviceStatus.active, new Date(), [])
+    ]),
+    new Bridge("bridge2", deviceStatus.active, new Date(), [
+      new Gateway("gateway3", deviceStatus.active, new Date(), [
+        new Sensor("sensor3", deviceStatus.active, new Date()),
+      ])
+    ])
+  ]);
   return (
-    <>
-      {deviceModel.bridges.map((bridge) => {
-        return <BridgeRowView {...bridge} />;
-      })}
-    </>
+    <AllDevicesView {...deviceModel}/>
   );
 };

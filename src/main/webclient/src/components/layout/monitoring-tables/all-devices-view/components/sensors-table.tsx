@@ -1,19 +1,19 @@
-import { Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Table,
+  TableContainer,
+  Tbody,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import { Sensor } from "../../../../../types/deviceModel";
 import { DeviceRow } from "./device-row";
 
-export const SensorsTable = (sensors: Sensor[]) => {
-  const getSensorsTableBody = () => {
-    return (
-      <Tbody>
-        <>
-          {sensors.map((bridge) => {
-            return <DeviceRow {...bridge} />;
-          })}
-        </>
-      </Tbody>
-    );
-  };
+interface ISensorsTableProps {
+  sensors: Sensor[]
+}
+
+export const SensorsTable = ({sensors}: ISensorsTableProps) => {
 
   return (
     <TableContainer>
@@ -27,10 +27,9 @@ export const SensorsTable = (sensors: Sensor[]) => {
         </Thead>
         <Tbody>
           <>
-          <DeviceRow {...sensors[0]}/>
-          {/* {sensors.map((sensor) => {
-            return <DeviceRow {...sensor} />;
-          })} */}
+            {sensors.map((sensor) => {
+              return <DeviceRow {...sensor} />;
+            })}
           </>
         </Tbody>
       </Table>

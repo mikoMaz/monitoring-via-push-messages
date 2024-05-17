@@ -37,6 +37,5 @@ export default function App() {
       navigate("/monitoring", { replace: true });
     }
   });
-
   return <AppMain {...appMainProps} />;
 }
