@@ -6,3 +6,5 @@ export type ProjectColorsDictionary = {
   accent: string;
   background: string;
 };
+
+export type FilteringHeigth = "0px" | "200px";
