@@ -13,17 +13,17 @@ export interface IUIProps {
   heigth: {
     navbar: string;
     footer: string;
-  }
+  };
 }
 
 export const AppMain = ({ ...props }: IAppMainProps) => {
-
   return (
     <Grid
       templateAreas={`"header header"
 	"main main"
 	"footer footer"`}
       gridTemplateRows={`${props.ui.heigth.navbar} 1fr ${props.ui.heigth.footer}`}
+      background="background"
     >
       <GridItem area={"header"}>
         <Navbar {...props.ui} />

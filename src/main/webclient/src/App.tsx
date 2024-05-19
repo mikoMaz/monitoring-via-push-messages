@@ -9,6 +9,7 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.body.style.backgroundColor = appProps.appMainProps.ui.colors.background
     if (window.location.pathname === "/") {
       navigate("/monitoring", { replace: true });
     }

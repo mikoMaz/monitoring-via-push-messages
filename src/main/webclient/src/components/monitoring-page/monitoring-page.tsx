@@ -1,4 +1,4 @@
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Box, Grid, GridItem } from "@chakra-ui/react";
 import {
   Bridge,
   DeviceModel,
@@ -33,26 +33,32 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
     ]),
   ]);
   return (
-    <Grid templateRows={`100px ${filteringHeigth} 1fr`}>
-      <GridItem className="control-panel-buttons">
-        <Grid templateColumns="3fr 4fr 3fr">
-          <GridItem>
-            <ViewTypeSelectionTabs {...ui} />
-          </GridItem>
-          <Grid>
-            <div className="empty-space" />
+    <Box paddingLeft="47px" paddingRight="47px" bg={ui.colors.background} boxShadow="inner">
+      <Grid templateRows={`90px ${filteringHeigth} 1fr`}>
+        <GridItem
+          className="control-panel-buttons"
+          marginTop="28px"
+          marginBottom="28px"
+        >
+          <Grid templateColumns="3fr 4fr 3fr">
+            <GridItem>
+              <ViewTypeSelectionTabs {...ui} />
+            </GridItem>
+            <Grid>
+              <div className="empty-space" />
+            </Grid>
+            <GridItem>
+              <FilterSectionButtons ui={ui} />
+            </GridItem>
           </Grid>
-          <GridItem>
-            <FilterSectionButtons ui={ui} />
-          </GridItem>
-        </Grid>
-      </GridItem>
-      <GridItem className="filter-section">
-        <FilterSectionContainer heigth={filteringHeigth} />
-      </GridItem>
-      <GridItem className="monitoring-content-view">
-        <AllDevicesView {...deviceModel} />
-      </GridItem>
-    </Grid>
+        </GridItem>
+        <GridItem className="filter-section">
+          <FilterSectionContainer heigth={filteringHeigth} />
+        </GridItem>
+        <GridItem className="monitoring-content-view">
+          <AllDevicesView {...deviceModel} />
+        </GridItem>
+      </Grid>
+    </Box>
   );
 };
