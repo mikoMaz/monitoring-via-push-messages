@@ -45,7 +45,13 @@ export const FilterSectionButtons = ({ ui }: IFilterSectionButtonsProps) => {
           <InputLeftElement>
             <NumbersIcon />
           </InputLeftElement>
-          <Input placeholder="Device ID" focusBorderColor="yellow" />
+          <Input
+            placeholder="Device ID"
+            focusBorderColor={ui.colors.primary}
+            bg={ui.colors.secondary}
+            color="black"
+            _placeholder={{ opacity: 0.4, color: "black"}}
+          />
         </InputGroup>
       </GridItem>
     </Grid>
