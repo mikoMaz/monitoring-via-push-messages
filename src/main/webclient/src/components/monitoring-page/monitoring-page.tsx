@@ -12,6 +12,7 @@ import { FilteringHeigth } from "../../types/projectTypes";
 import { FilterSectionContainer } from "./components/filter-section-container";
 import { ViewTypeSelectionTabs } from "./components/view-type-selection-tabs";
 import { IUIProps } from "../app-main/app-main";
+import { FilterSectionButtons } from "./components/filter-section-buttons";
 
 export const MonitoringPage = ({ ...ui }: IUIProps) => {
   const [filteringHeigth, setFilteringHeigth] =
@@ -34,14 +35,16 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
   return (
     <Grid templateRows={`100px ${filteringHeigth} 1fr`}>
       <GridItem className="control-panel-buttons">
-        <Grid templateColumns="3fr 3fr 4fr">
+        <Grid templateColumns="3fr 4fr 3fr">
           <GridItem>
             <ViewTypeSelectionTabs {...ui} />
           </GridItem>
           <Grid>
             <div className="empty-space" />
           </Grid>
-          <GridItem></GridItem>
+          <GridItem>
+            <FilterSectionButtons ui={ui} />
+          </GridItem>
         </Grid>
       </GridItem>
       <GridItem className="filter-section">

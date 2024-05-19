@@ -1,11 +1,30 @@
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Button, Grid, GridItem } from "@chakra-ui/react";
+import { ButtonWithIcon } from "../../layout/button-with-icon";
+import { IUIProps } from "../../app-main/app-main";
 
-export const FilterSectionButtons = () => {
+interface IFilterSectionButtonsProps {
+  ui: IUIProps
+}
+
+export const FilterSectionButtons = ({ui}: IFilterSectionButtonsProps) => {
   return (
-    <Grid>
-      <GridItem></GridItem>
-      <GridItem></GridItem>
-      <GridItem></GridItem>
+    <Grid templateColumns="2fr 1fr 2fr 1fr 2fr">
+      <GridItem>
+        <ButtonWithIcon text="Sort" icon={<></>} ui={ui}/>
+        {/* <Button>test</Button> */}
+      </GridItem>
+      <GridItem>
+        <div className="empty-space"/>
+      </GridItem>
+      <GridItem>
+        test
+      </GridItem>
+      <GridItem>
+        <div className="empty-space"/>
+      </GridItem>
+      <GridItem>
+        test
+      </GridItem>
     </Grid>
   );
 };
