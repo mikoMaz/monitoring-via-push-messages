@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { MantineProvider, createTheme } from "@mantine/core";
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme, theme } from "@chakra-ui/react";
 import { appProps } from "../config/config";
 
 
@@ -14,9 +14,11 @@ export const AppWrapper = ({children}: {children: ReactNode}) => {
     colors: {
       primary: {
         500: appProps.appMainProps.ui.colors.primary,
+        600: theme.colors.green[900]
       },
       secondary: {
         500: appProps.appMainProps.ui.colors.secondary,
+        600: theme.colors.green[300]
       },
       background: {
         500: appProps.appMainProps.ui.colors.background
