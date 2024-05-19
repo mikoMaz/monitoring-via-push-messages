@@ -1,4 +1,6 @@
 import {
+  Card,
+  CardBody,
   Table,
   TableContainer,
   Tbody,
@@ -10,29 +12,32 @@ import { Sensor } from "../../../../../types/deviceModel";
 import { DeviceRow } from "./device-row";
 
 interface ISensorsTableProps {
-  sensors: Sensor[]
+  sensors: Sensor[];
 }
 
-export const SensorsTable = ({sensors}: ISensorsTableProps) => {
-
+export const SensorsTable = ({ sensors }: ISensorsTableProps) => {
   return (
-    <TableContainer>
-      <Table variant="striped">
-        <Thead>
-          <Tr>
-            <Th>Device ID</Th>
-            <Th>Last Ping</Th>
-            <Th>Status</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          <>
-            {sensors.map((sensor) => {
-              return <DeviceRow {...sensor} />;
-            })}
-          </>
-        </Tbody>
-      </Table>
-    </TableContainer>
+    <Card>
+      <CardBody>
+        <TableContainer>
+          <Table variant="striped" bg="white">
+            <Thead>
+              <Tr>
+                <Th>Device ID</Th>
+                <Th>Last Ping</Th>
+                <Th>Status</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              <>
+                {sensors.map((sensor) => {
+                  return <DeviceRow {...sensor} />;
+                })}
+              </>
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </CardBody>
+    </Card>
   );
 };
