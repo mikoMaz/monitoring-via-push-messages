@@ -6,14 +6,14 @@ export const ViewTypeSelectionTabs = ({ ...ui }: IUIProps) => {
     return (
       <Tab
         marginRight="10px"
-        _selected={{ bg: ui.colors.primary, color: ui.colors.white }}
+        _selected={{ bg: ui.colors.primary, color: ui.colors.white }} 
       >
         {text}
       </Tab>
     );
   };
   return (
-    <Tabs variant="soft-rounded" size="md">
+    <Tabs variant="soft-rounded" size="md" colorScheme="green">
       <TabList>
         <TabButton text="All Devices" />
         <TabButton text="Bridges" />

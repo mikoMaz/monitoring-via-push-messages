@@ -16,7 +16,7 @@ export const ButtonWithIcon = ({
 }: IButtonWithIconProps) => {
   return (
     //ustawic theme
-    <Button leftIcon={icon} {...props} colorScheme={theme.colors.green} color={ui.colors.black} variant="solid">
+    <Button leftIcon={icon} {...props} colorScheme="lightGreen" color={ui.colors.black} variant="solid">
       {text}
     </Button>
   );

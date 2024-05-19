@@ -10,7 +10,9 @@ export const FilterSectionButtons = ({ui}: IFilterSectionButtonsProps) => {
   return (
     <Grid templateColumns="2fr 1fr 2fr 1fr 2fr">
       <GridItem>
-        <ButtonWithIcon text="Sort" icon={<></>} ui={ui}/>
+        {/* <ButtonWithIcon text="Sort" icon={<></>} ui={ui}/> */}
+        <Button colorScheme="lightGreen" color={ui.colors.black} variant="solid">test
+    </Button>
         {/* <Button>test</Button> */}
       </GridItem>
       <GridItem>
