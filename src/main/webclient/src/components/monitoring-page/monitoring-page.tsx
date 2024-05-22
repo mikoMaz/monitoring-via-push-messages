@@ -47,6 +47,23 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
     viewOption.allDevices
   );
 
+  const onSelectedViewChanged = (index: number) => {
+    switch (index) {
+      case 0:
+        setSelectedViewOption(viewOption.allDevices);
+        break;
+      case 1:
+        setSelectedViewOption(viewOption.bridges);
+        break;
+      case 2:
+        setSelectedViewOption(viewOption.gateways);
+        break;
+      case 3:
+        setSelectedViewOption(viewOption.sensors);
+        break;
+    }
+  };
+
   const renderSelectedView = () => {
     switch (selectedViewOption) {
       case viewOption.allDevices:
@@ -75,7 +92,10 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
         >
           <Grid templateColumns="3fr 4fr 3fr">
             <GridItem>
-              <ViewTypeSelectionTabs {...ui} />
+              <ViewTypeSelectionTabs
+                ui={ui}
+                onSelectionChanged={onSelectedViewChanged}
+              />
             </GridItem>
             <Grid>
               <div className="empty-space" />
