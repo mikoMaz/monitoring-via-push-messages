@@ -1,5 +1,4 @@
-import { Button, ButtonProps, theme } from "@chakra-ui/react";
-import { IUIProps } from "../app-main/app-main";
+import { Button, ButtonProps } from "@chakra-ui/react";
 import { appProps } from "../../config/config";
 
 interface IButtonWithIconProps {

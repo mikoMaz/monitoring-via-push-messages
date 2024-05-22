@@ -1,6 +1,4 @@
 import {
-  Card,
-  CardBody,
   Table,
   TableContainer,
   Tbody,
@@ -17,9 +15,7 @@ interface ISensorsTableProps {
 
 export const SensorsTable = ({ sensors }: ISensorsTableProps) => {
   return (
-    <Card>
-      <CardBody>
-        <TableContainer>
+    <TableContainer borderRadius="lg">
           <Table variant="striped" bg="white">
             <Thead>
               <Tr>
@@ -37,7 +33,5 @@ export const SensorsTable = ({ sensors }: ISensorsTableProps) => {
             </Tbody>
           </Table>
         </TableContainer>
-      </CardBody>
-    </Card>
   );
 };

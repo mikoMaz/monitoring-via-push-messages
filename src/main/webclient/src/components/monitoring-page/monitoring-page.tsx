@@ -13,6 +13,7 @@ import { FilterSectionContainer } from "./components/filter-section-container";
 import { ViewTypeSelectionTabs } from "./components/view-type-selection-tabs";
 import { IUIProps } from "../app-main/app-main";
 import { FilterSectionButtons } from "./components/filter-section-buttons";
+import { SingleDeviceView } from "../layout/monitoring-tables/single-device-view/single-device-view";
 
 export const MonitoringPage = ({ ...ui }: IUIProps) => {
   const [filteringHeigth, setFilteringHeigth] =
@@ -56,7 +57,8 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
           <FilterSectionContainer heigth={filteringHeigth} />
         </GridItem>
         <GridItem className="monitoring-content-view">
-          <AllDevicesView {...deviceModel} />
+          {/* <AllDevicesView {...deviceModel} /> */}
+          <SingleDeviceView model={deviceModel.bridges}/>
         </GridItem>
       </Grid>
     </Box>
