@@ -15,26 +15,58 @@ import { IUIProps } from "../app-main/app-main";
 import { FilterSectionButtons } from "./components/filter-section-buttons";
 import { SingleDeviceView } from "../layout/monitoring-tables/single-device-view/single-device-view";
 
+enum viewOption {
+  allDevices,
+  sensors,
+  gateways,
+  bridges,
+}
+
 export const MonitoringPage = ({ ...ui }: IUIProps) => {
+  const [deviceModel, setDeviceModel] = useState<DeviceModel>(
+    new DeviceModel([
+      new Bridge("bridge1", deviceStatus.active, new Date(), [
+        new Gateway("gateway1", deviceStatus.active, new Date(), [
+          new Sensor("sensor1", deviceStatus.active, new Date()),
+          new Sensor("sensor2", deviceStatus.active, new Date()),
+        ]),
+        new Gateway("gateway2", deviceStatus.active, new Date(), []),
+      ]),
+      new Bridge("bridge2", deviceStatus.active, new Date(), [
+        new Gateway("gateway3", deviceStatus.active, new Date(), [
+          new Sensor("sensor3", deviceStatus.active, new Date()),
+        ]),
+      ]),
+    ])
+  );
+
   const [filteringHeigth, setFilteringHeigth] =
     useState<FilteringHeigth>("0px");
 
-  const deviceModel = new DeviceModel([
-    new Bridge("bridge1", deviceStatus.active, new Date(), [
-      new Gateway("gateway1", deviceStatus.active, new Date(), [
-        new Sensor("sensor1", deviceStatus.active, new Date()),
-        new Sensor("sensor2", deviceStatus.active, new Date()),
-      ]),
-      new Gateway("gateway2", deviceStatus.active, new Date(), []),
-    ]),
-    new Bridge("bridge2", deviceStatus.active, new Date(), [
-      new Gateway("gateway3", deviceStatus.active, new Date(), [
-        new Sensor("sensor3", deviceStatus.active, new Date()),
-      ]),
-    ]),
-  ]);
+  const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
+    viewOption.allDevices
+  );
+
+  const renderSelectedView = () => {
+    switch (selectedViewOption) {
+      case viewOption.allDevices:
+        return <AllDevicesView model={deviceModel} />;
+      case viewOption.sensors:
+        return <SingleDeviceView model={deviceModel.sensors} />;
+      case viewOption.bridges:
+        return <SingleDeviceView model={deviceModel.bridges} />;
+      case viewOption.gateways:
+        return <SingleDeviceView model={deviceModel.gateways} />;
+    }
+  };
+
   return (
-    <Box paddingLeft="47px" paddingRight="47px" bg={ui.colors.background} boxShadow="inner">
+    <Box
+      paddingLeft="47px"
+      paddingRight="47px"
+      bg={ui.colors.background}
+      boxShadow="inner"
+    >
       <Grid templateRows={`90px ${filteringHeigth} 1fr`}>
         <GridItem
           className="control-panel-buttons"
@@ -57,8 +89,7 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
           <FilterSectionContainer heigth={filteringHeigth} />
         </GridItem>
         <GridItem className="monitoring-content-view">
-          {/* <AllDevicesView {...deviceModel} /> */}
-          <SingleDeviceView model={deviceModel.bridges}/>
+          {renderSelectedView()}
         </GridItem>
       </Grid>
     </Box>
