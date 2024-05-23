@@ -1,7 +1,11 @@
 import {
+  Card,
+  CardBody,
+  HStack,
   Table,
   TableContainer,
   Tbody,
+  Text,
   Th,
   Thead,
   Tr,
@@ -14,24 +18,36 @@ interface ISensorsTableProps {
 }
 
 export const SensorsTable = ({ sensors }: ISensorsTableProps) => {
-  return (
-    <TableContainer borderRadius="lg">
-          <Table variant="striped" bg="white">
-            <Thead>
-              <Tr>
-                <Th>Device ID</Th>
-                <Th>Last Ping</Th>
-                <Th>Status</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <>
-                {sensors.map((sensor) => {
-                  return <DeviceRow {...sensor} />;
-                })}
-              </>
-            </Tbody>
-          </Table>
-        </TableContainer>
-  );
+  if (sensors.length) {
+    return (
+      <TableContainer borderRadius="lg">
+        <Table variant="striped" bg="white">
+          <Thead>
+            <Tr>
+              <Th>Device ID</Th>
+              <Th>Last Ping</Th>
+              <Th>Status</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <>
+              {sensors.map((sensor) => {
+                return <DeviceRow {...sensor} />;
+              })}
+            </>
+          </Tbody>
+        </Table>
+      </TableContainer>
+    );
+  } else {
+    return (
+      <Card align="center">
+        <CardBody>
+          <HStack>
+            <Text fontSize="md">No data</Text>
+          </HStack>
+        </CardBody>
+      </Card>
+    );
+  }
 };
