@@ -61,6 +61,8 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
       case 3:
         setSelectedViewOption(viewOption.sensors);
         break;
+      default:
+        console.error("Out of memory index")
     }
   };
 
@@ -69,11 +71,11 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
       case viewOption.allDevices:
         return <AllDevicesView model={deviceModel} />;
       case viewOption.sensors:
-        return <SingleDeviceView model={deviceModel.sensors} />;
-      case viewOption.bridges:
-        return <SingleDeviceView model={deviceModel.bridges} />;
+        return <SingleDeviceView model={deviceModel.getSensorsArray()} />;
       case viewOption.gateways:
-        return <SingleDeviceView model={deviceModel.gateways} />;
+        return <SingleDeviceView model={deviceModel.getGatewaysArray()} />;
+      case viewOption.bridges:
+        return <SingleDeviceView model={deviceModel.getBridgesArray()} />;
     }
   };
 

@@ -97,6 +97,40 @@ export class DeviceModel implements IDeviceModel {
     this.gateways = gateways ?? [];
     this.sensors = sensors ?? [];
   }
+
+  public getSensorsArray = (): Sensor[] => {
+    const sensors: Sensor[] = [];
+
+    this.bridges.forEach((bridge) => {
+      bridge.gateways.forEach((gateway) => {
+        sensors.push(...gateway.sensors);
+      });
+    });
+
+    this.gateways.forEach((gateway) => {
+      sensors.push(...gateway.sensors);
+    });
+
+    sensors.push(...this.sensors);
+
+    return sensors;
+  };
+
+  public getGatewaysArray = () => {
+    const gateways: Gateway[] = [];
+
+    this.bridges.forEach((bridge) => {
+      gateways.push(...bridge.gateways);
+    });
+
+    gateways.push(...this.gateways);
+
+    return gateways;
+  };
+
+  public getBridgesArray = () => {
+    return this.bridges;
+  };
 }
 
 export function createDeviceModel(data: IDeviceModel): DeviceModel {
