@@ -4,20 +4,25 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  HStack,
 } from "@chakra-ui/react";
 import { Bridge } from "../../../../../types/deviceModel";
 import { GatewayRowView } from "./gateway-row-view";
+import { StatusDotIndicator } from "../../../status-dot-indicator";
 
 interface IBridgeRowViewProps {
-  bridge: Bridge
+  bridge: Bridge;
 }
 
-export const BridgeRowView = ({bridge}: IBridgeRowViewProps) => {
+export const BridgeRowView = ({ bridge }: IBridgeRowViewProps) => {
   const BridgeButton = () => {
     return (
       <>
         <Box as="span" flex="1" textAlign="left">
-          Bridge {bridge.id}
+          <HStack>
+            <StatusDotIndicator status={bridge.status}/>
+            <>Bridge {bridge.id}</>
+          </HStack>
         </Box>
         <AccordionIcon />
       </>
@@ -31,8 +36,8 @@ export const BridgeRowView = ({bridge}: IBridgeRowViewProps) => {
       </AccordionButton>
       <AccordionPanel>
         {bridge.gateways.map((gateway) => (
-            <GatewayRowView gateway={gateway} />
-          ))}
+          <GatewayRowView gateway={gateway} />
+        ))}
       </AccordionPanel>
     </AccordionItem>
   );

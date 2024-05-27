@@ -5,20 +5,25 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  HStack,
 } from "@chakra-ui/react";
 import { Gateway } from "../../../../../types/deviceModel";
 import { SensorsTable } from "./sensors-table";
+import { StatusDotIndicator } from "../../../status-dot-indicator";
 
 interface IGatewayRowViewProps {
-  gateway: Gateway
+  gateway: Gateway;
 }
 
-export const GatewayRowView = ({gateway}: IGatewayRowViewProps) => {
+export const GatewayRowView = ({ gateway }: IGatewayRowViewProps) => {
   const GatewayButton = () => {
     return (
       <>
         <Box as="span" flex="1" textAlign="left">
-          Gateway {gateway.id}
+          <HStack>
+            <StatusDotIndicator status={gateway.status} />
+            <>Gateway {gateway.id}</>
+          </HStack>
         </Box>
         <AccordionIcon />
       </>
