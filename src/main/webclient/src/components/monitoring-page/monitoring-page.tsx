@@ -14,6 +14,7 @@ import { ViewTypeSelectionTabs } from "./components/view-type-selection-tabs";
 import { IUIProps } from "../app-main/app-main";
 import { FilterSectionButtons } from "./components/filter-section-buttons";
 import { SingleDeviceView } from "../layout/monitoring-tables/single-device-view/single-device-view";
+import { APIClient } from "../../api/api-client";
 
 enum viewOption {
   allDevices,
@@ -24,20 +25,7 @@ enum viewOption {
 
 export const MonitoringPage = ({ ...ui }: IUIProps) => {
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
-    new DeviceModel([
-      new Bridge("bridge1", deviceStatus.active, new Date(), [
-        new Gateway("gateway1", deviceStatus.active, new Date(), [
-          new Sensor("sensor1", deviceStatus.active, new Date()),
-          new Sensor("sensor2", deviceStatus.active, new Date()),
-        ]),
-        new Gateway("gateway2", deviceStatus.active, new Date(), []),
-      ]),
-      new Bridge("bridge2", deviceStatus.active, new Date(), [
-        new Gateway("gateway3", deviceStatus.active, new Date(), [
-          new Sensor("sensor3", deviceStatus.active, new Date()),
-        ]),
-      ]),
-    ])
+    APIClient.getRecentUpdates()
   );
 
   const [filteringHeigth, setFilteringHeigth] =
@@ -62,7 +50,7 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
         setSelectedViewOption(viewOption.sensors);
         break;
       default:
-        console.error("Out of memory index")
+        console.error("Out of memory index");
     }
   };
 
