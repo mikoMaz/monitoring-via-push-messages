@@ -4,10 +4,11 @@ import { appProps } from "../../config/config";
 interface IButtonWithIconProps {
   icon: React.ReactElement;
   text: string;
+  onClick: () => void
   props?: ButtonProps;
 }
 
-export const ButtonWithIcon = ({ text, icon, props }: IButtonWithIconProps) => {
+export const ButtonWithIcon = ({ text, icon, onClick, props }: IButtonWithIconProps) => {
   const ui = appProps.appMainProps.ui;
   return (
     //ustawic theme
@@ -17,6 +18,7 @@ export const ButtonWithIcon = ({ text, icon, props }: IButtonWithIconProps) => {
       colorScheme="secondary"
       color={ui.colors.black}
       variant="solid"
+      onClick={onClick}
     >
       {text}
     </Button>

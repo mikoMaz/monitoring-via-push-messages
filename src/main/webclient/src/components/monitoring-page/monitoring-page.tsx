@@ -35,6 +35,17 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
     viewOption.allDevices
   );
 
+  const setFilteringSectionEnabled = () => {
+    switch (filteringHeigth) {
+      case "0px":
+        setFilteringHeigth("200px");
+        break;
+      case "200px":
+        setFilteringHeigth("0px");
+        break;
+    }
+  };
+
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
       case 0:
@@ -91,7 +102,10 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
               <div className="empty-space" />
             </Grid>
             <GridItem>
-              <FilterSectionButtons ui={ui} />
+              <FilterSectionButtons
+                ui={ui}
+                setFilterEnabled={setFilteringSectionEnabled}
+              />
             </GridItem>
           </Grid>
         </GridItem>

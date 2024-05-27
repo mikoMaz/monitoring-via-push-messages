@@ -13,15 +13,17 @@ import NumbersIcon from "@mui/icons-material/Numbers";
 
 interface IFilterSectionButtonsProps {
   ui: IUIProps;
+  setFilterEnabled: () => void;
 }
 
-export const FilterSectionButtons = ({ ui }: IFilterSectionButtonsProps) => {
+export const FilterSectionButtons = ({ ui, setFilterEnabled }: IFilterSectionButtonsProps) => {
   return (
     <Grid templateColumns="2fr 1fr 2fr 1fr 3fr">
       <GridItem>
         <ButtonWithIcon
           text="Sort"
           icon={<FilterListIcon />}
+          onClick={() => {}}
           props={{ fontSize: "14px", size: "md" }}
         />
       </GridItem>
@@ -32,6 +34,7 @@ export const FilterSectionButtons = ({ ui }: IFilterSectionButtonsProps) => {
         <ButtonWithIcon
           text="Filter"
           icon={<FilterAltOutlinedIcon />}
+          onClick={setFilterEnabled}
           props={{ fontSize: "14px", size: "md" }}
         />
       </GridItem>
