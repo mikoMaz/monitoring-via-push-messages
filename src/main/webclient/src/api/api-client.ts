@@ -10,9 +10,9 @@ export class APIClient {
 			  ]),
 			  new Gateway("gateway2", deviceStatus.active, new Date(), []),
 			]),
-			new Bridge("bridge2", deviceStatus.active, new Date(), [
-			  new Gateway("gateway3", deviceStatus.active, new Date(), [
-				new Sensor("sensor3", deviceStatus.active, new Date()),
+			new Bridge("bridge2", deviceStatus.disabled, new Date(), [
+			  new Gateway("gateway3", deviceStatus.disabled, new Date(), [
+				new Sensor("sensor3", deviceStatus.disabled, new Date()),
 			  ]),
 			]),
 		  ])
