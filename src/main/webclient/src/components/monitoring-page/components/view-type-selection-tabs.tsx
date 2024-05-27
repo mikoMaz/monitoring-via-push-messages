@@ -3,11 +3,13 @@ import { IUIProps } from "../../app-main/app-main";
 
 interface IViewTypeSelectionTabs {
   ui: IUIProps;
+  index: number;
   onSelectionChanged: (id:number) => void;
 }
 
 export const ViewTypeSelectionTabs = ({
   ui,
+  index,
   onSelectionChanged,
 }: IViewTypeSelectionTabs) => {
   const TabButton = ({ text }: { text: string }) => {
@@ -22,6 +24,7 @@ export const ViewTypeSelectionTabs = ({
   };
   return (
     <Tabs
+      index={index}
       variant="soft-rounded"
       size="md"
       colorScheme="green"

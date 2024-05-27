@@ -25,7 +25,7 @@ const UIProps: IUIProps = {
 const appMainProps: IAppMainProps = {
   ui: UIProps,
   routes: [
-    <Route key="monitoring" path="/monitoring" element={<MonitoringPage {...UIProps}/>} />,
+    <Route key="monitoring" path="/monitoring" element={<MonitoringPage {...UIProps}/>}/>,
     <Route key="dashboard" path="/dashboard" element={<DashboardPage />} />,
     <Route key="about" path="/about" element={<AboutPage />} />,
     <Route key="landing-page" path="/" element={<LandingPage />} />,
