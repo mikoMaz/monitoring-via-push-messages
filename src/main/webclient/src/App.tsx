@@ -12,7 +12,13 @@ export default function App() {
     document.body.style.backgroundColor =
       appProps.appMainProps.ui.colors.background;
     if (window.location.pathname === "/") {
-      navigate("/monitoring", { replace: true });
+      navigate(
+        {
+          pathname: "/monitoring",
+          search: new URLSearchParams({ view: "allDevices" }).toString(),
+        },
+        { replace: true }
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
