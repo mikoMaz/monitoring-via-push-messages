@@ -11,7 +11,6 @@ interface IButtonWithIconProps {
 export const ButtonWithIcon = ({ text, icon, onClick, props }: IButtonWithIconProps) => {
   const ui = appProps.appMainProps.ui;
   return (
-    //ustawic theme
     <Button
       leftIcon={icon}
       {...props}

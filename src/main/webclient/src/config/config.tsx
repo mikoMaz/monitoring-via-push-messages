@@ -5,7 +5,7 @@ import { MonitoringPage } from "../components/monitoring-page/monitoring-page";
 import { DashboardPage } from "../components/dashboard-page/dashboard-page";
 import { AboutPage } from "../components/about-page/about-page";
 import { LandingPage } from "../components/landing-page/landing-page";
-import { NotFoundPage } from "../components/not-found-page/not-dound-page";
+import { NotFoundPage } from "../components/not-found-page/not-found-page";
 
 const UIProps: IUIProps = {
   colors: {
@@ -25,7 +25,11 @@ const UIProps: IUIProps = {
 const appMainProps: IAppMainProps = {
   ui: UIProps,
   routes: [
-    <Route key="monitoring" path="/monitoring" element={<MonitoringPage {...UIProps}/>}/>,
+    <Route
+      key="monitoring"
+      path="/monitoring"
+      element={<MonitoringPage {...UIProps} />}
+    />,
     <Route key="dashboard" path="/dashboard" element={<DashboardPage />} />,
     <Route key="about" path="/about" element={<AboutPage />} />,
     <Route key="landing-page" path="/" element={<LandingPage />} />,
@@ -38,5 +42,5 @@ interface IAppProps {
 }
 
 export const appProps: IAppProps = {
-  appMainProps: appMainProps
-}
+  appMainProps: appMainProps,
+};
