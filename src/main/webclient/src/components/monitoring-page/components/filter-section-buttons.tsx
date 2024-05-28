@@ -6,17 +6,17 @@ import {
   InputLeftElement,
 } from "@chakra-ui/react";
 import { ButtonWithIcon } from "../../layout/button-with-icon";
-import { IUIProps } from "../../app-main/app-main";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import NumbersIcon from "@mui/icons-material/Numbers";
+import { appProps } from "../../../config/config";
 
 interface IFilterSectionButtonsProps {
-  ui: IUIProps;
   setFilterEnabled: () => void;
 }
 
-export const FilterSectionButtons = ({ ui, setFilterEnabled }: IFilterSectionButtonsProps) => {
+export const FilterSectionButtons = ({ setFilterEnabled }: IFilterSectionButtonsProps) => {
+  const ui = appProps.appMainProps.ui;
   return (
     <Grid templateColumns="2fr 1fr 2fr 1fr 3fr">
       <GridItem>

@@ -123,7 +123,6 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
           <Grid templateColumns="3fr 4fr 3fr">
             <GridItem>
               <ViewTypeSelectionTabs
-                ui={ui}
                 index={selectedViewOption}
                 onSelectionChanged={onSelectedViewChanged}
               />
@@ -133,7 +132,6 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
             </Grid>
             <GridItem>
               <FilterSectionButtons
-                ui={ui}
                 setFilterEnabled={setFilteringSectionEnabled}
               />
             </GridItem>
