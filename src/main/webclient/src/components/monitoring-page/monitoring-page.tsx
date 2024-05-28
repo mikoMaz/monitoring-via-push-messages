@@ -9,7 +9,7 @@ import { IUIProps } from "../app-main/app-main";
 import { FilterSectionButtons } from "./components/filter-section-buttons";
 import { SingleDeviceView } from "../layout/monitoring-tables/single-device-view/single-device-view";
 import { APIClient } from "../../api/api-client";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 enum viewOption {
   allDevices,
@@ -20,6 +20,7 @@ enum viewOption {
 
 export const MonitoringPage = ({ ...ui }: IUIProps) => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     APIClient.getRecentUpdates()
@@ -65,6 +66,7 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
   const changeSelectedViewOption = (option: viewOption) => {
     setSelectedViewOption(option);
     searchParams.set("view", viewOption[option]);
+    navigate({pathname: "", search: searchParams.toString()})
   };
 
   const renderSelectedView = () => {
