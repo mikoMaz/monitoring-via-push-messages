@@ -1,9 +1,9 @@
-import { FilteringHeigth } from "../../../types/projectTypes"
+import { FilteringHeigth } from "../../../types/projectTypes";
 
 interface IFilterSectionProps {
-	heigth: FilteringHeigth
+  heigth: FilteringHeigth;
 }
 
-export const FilterSectionContainer = ({heigth}: IFilterSectionProps) => {
-	return <></>
-}
+export const FilterSectionContainer = ({ heigth }: IFilterSectionProps) => {
+  return <></>;
+};
