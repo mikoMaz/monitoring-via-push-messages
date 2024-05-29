@@ -1,7 +1,12 @@
 package com.example.monitoring.core.bridge;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
+
+import com.example.monitoring.core.gateway.GatewayData;
 
 @Service
 @RequiredArgsConstructor
@@ -23,5 +28,9 @@ public class BridgeServiceImpl implements BridgeService {
 
         repository.save(gateway);
         return gateway.toString();
+    }
+    @Override
+    public List<BridgeData> allBridges(Integer company_id) {
+        return repository.allBridges(company_id);
     }
 }

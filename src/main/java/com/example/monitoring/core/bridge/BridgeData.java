@@ -27,4 +27,18 @@ public class BridgeData {
     private String uptime;
     private String build;
     private String vpn_connected;
+    @Override
+    public String toString() {
+        return "{" +
+            " Id='" + getId() + "'" +
+            ", logged_at='" + getLogged_at() + "'" +
+            ", serial_number='" + getSerial_number() + "'" +
+            ", last_seen='" + getLast_seen() + "'" +
+            ", company_id='" + getCompany_id() + "'" +
+            ", region='" + getRegion() + "'" +
+            ", uptime='" + getUptime() + "'" +
+            ", build='" + getBuild() + "'" +
+            ", vpn_connected='" + getVpn_connected() + "'" +
+            "}";
+    }
 }

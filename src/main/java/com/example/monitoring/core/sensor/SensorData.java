@@ -32,7 +32,7 @@ public class SensorData  {
 
     public SensorDataSimplified toSensorDataSimplified()
     {
-        SensorDataSimplified sds= new SensorDataSimplified(this.message.getSensor() ,this.message.getCompany_id() ,this.message.getData_type(),this.message.getReading_time());
+        SensorDataSimplified sds= new SensorDataSimplified(this.message.getSensor() ,this.message.getCompany_id() ,this.message.getData_type(),this.message.getReading_time(),this.message.getSmartbox_identifier());
         return sds;
     }
     public String getSeverity() {

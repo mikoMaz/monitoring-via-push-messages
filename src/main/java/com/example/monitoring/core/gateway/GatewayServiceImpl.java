@@ -1,6 +1,9 @@
 package com.example.monitoring.core.gateway;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,4 +28,12 @@ public class GatewayServiceImpl implements GatewayService {
         repository.save(gateway);
         return gateway.toString();
     }
+    @Override
+    public List<GatewayData> allGateways(Integer company_id)
+    {
+        return repository.allGateways(company_id);
+    }
+
+
+    
 }
