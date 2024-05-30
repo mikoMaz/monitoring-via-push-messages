@@ -29,9 +29,9 @@ public class GatewayServiceImpl implements GatewayService {
         return gateway.toString();
     }
     @Override
-    public List<GatewayData> allGateways(Integer company_id)
+    public List<GatewayData> allGatewaysConnectedToBridge(String serialNumber)
     {
-        return repository.allGateways(company_id);
+        return repository.allGatewaysConnectedToBridge(serialNumber);
     }
 
 

@@ -7,6 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface BridgeRepository extends JpaRepository<BridgeData, String> {
 
- @Query(value = "SELECT * FROM (select *,row_number() over(partition by username order by logged_at desc)as rn from gateway_data) t where t.rn=1", nativeQuery = true)
+ @Query(value = "SELECT *\r\n" + //
+          "FROM\r\n" + //
+          "\t(SELECT *,\r\n" + //
+          "\t\t\tROW_NUMBER() OVER(PARTITION BY serial_number\r\n" + //
+          "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tORDER BY logged_at DESC)AS RN\r\n" + //
+          "\t\tFROM BRIDGE_DATA) T\r\n" + //
+          "WHERE T.RN = 1 AND T.company_id = ?1", nativeQuery = true)
  public List<BridgeData> allBridges(Integer company_id);
 }

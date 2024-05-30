@@ -6,5 +6,6 @@ import com.example.monitoring.core.bridge.BridgeData;
 
 public interface GatewayService {
     String saveSimplified(GatewayRequest gatewayRequest);
-    List<GatewayData> allGateways(Integer company_id) ;
+    List<GatewayData> allGatewaysConnectedToBridge(String serialNumber) ;
+    
 }

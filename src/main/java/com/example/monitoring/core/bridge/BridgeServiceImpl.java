@@ -19,7 +19,7 @@ public class BridgeServiceImpl implements BridgeService {
                 .logged_at(request.getLogged_at())
                 .serial_number(request.getSerial_number())
                 .last_seen(request.getLast_seen())
-                .company_id(request.getCompany_id())
+                .company_id(Integer.parseInt(request.getCompany_id()))
                 .region(request.getRegion())
                 .uptime(request.getUptime())
                 .build(request.getBuild())

@@ -22,7 +22,7 @@ public class BridgeData {
     private String logged_at;
     private String serial_number;
     private String last_seen;
-    private String company_id;
+    private Integer company_id;
     private String region;
     private String uptime;
     private String build;
