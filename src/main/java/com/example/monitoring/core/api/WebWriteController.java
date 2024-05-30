@@ -16,6 +16,7 @@ import com.example.monitoring.core.gateway.GatewayData;
 import com.example.monitoring.core.gateway.GatewayService;
 import com.example.monitoring.core.sensor.SensorDataSimplified;
 import com.example.monitoring.core.sensor.SensorDataSimplifiedService;
+import com.example.monitoring.core.api.WebWritePreprocessor;
 
 
 @RestController
@@ -25,30 +26,48 @@ public class WebWriteController {
     private final BridgeService bridgeService;
     private final GatewayService gatewayService;
     private final SensorDataSimplifiedService sensorService;
+    private final WebWritePreprocessor proc;
+
     @GetMapping("/kluczdostepu")
+    
     public ResponseEntity<String> jsonTree(@RequestParam Integer id) {
         List<BridgeData> bdList;
         List<GatewayData> gatewayList;
         List<SensorDataSimplified> sensorList;
         StringBuilder sb=new StringBuilder(1000);
         bdList = bridgeService.allBridges(id);
+        sb.append("{\"bridges\": []}");
         for(int i=0;i<bdList.size();i++)
         {   BridgeData bridge=bdList.get(i);
-            sb.append("#B "+bridge.getCompany_id().toString()+" "+bridge.getSerial_number()+" "+bridge.getLogged_at()+"\n");
+            //TODO: evaluate status
+            if(i<bdList.size()-1){
+                sb.insert(sb.length()-2,proc.convertToJsonTreeComponent(bridge, 1)+",");
+            }else
+            sb.insert(sb.length()-2,proc.convertToJsonTreeComponent(bridge, 1)+",");
             gatewayList=gatewayService.allGatewaysConnectedToBridge(bridge.getSerial_number());
             for(int j=0;j<gatewayList.size();j++)
             {
                 GatewayData gateway= gatewayList.get(j);
-                sb.append("\t #G"+gateway.getGateway_eui()+" "+gateway.getLogged_at()+"\n");
+                if(j<gatewayList.size()-1){
+                    sb.insert(sb.length()-5,proc.convertToJsonTreeComponent(gateway, 1)+",");
+                }
+                else
+                sb.insert(sb.length()-5,proc.convertToJsonTreeComponent(gateway, 1));
+
                 sensorList=sensorService.allSensorsConnectedToSmartbox(gateway.getGateway_eui());
                 for(int k=0;k<sensorList.size();k++)
                 {
                     SensorDataSimplified sensor=sensorList.get(k);
-                    sb.append("\t\t#S "+sensor.getSensor()+sensor.getReading_time()+"\n");
+                    if(k<sensorList.size()-1){
+                        //sb.insert(sb.length()-8,proc.convertToJsonTreeComponent(sensor, 1)+",");
+                        sb.insert(sb.length()-8,"X,");
 
+                    }
+                    else
+                    //sb.insert(sb.length()-8,proc.convertToJsonTreeComponent(sensor, 1));
+                    sb.insert(sb.length()-8,"X");
                 }
             }
-            sb.append("\n################################\n");
         }
         return ResponseEntity.ok().body(sb.toString());
     }
