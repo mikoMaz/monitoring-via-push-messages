@@ -26,4 +26,9 @@ public class GatewayData {
     private String mode;
     private String install_status;
     private String firmware_version;
+
+      //TODO: make it return real value
+      public Integer getStatus(){
+        return 1;
+    }
 }

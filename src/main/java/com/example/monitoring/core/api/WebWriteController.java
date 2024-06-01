@@ -37,35 +37,43 @@ public class WebWriteController {
         StringBuilder sb=new StringBuilder(1000);
         bdList = bridgeService.allBridges(id);
         sb.append("{\"bridges\": []}");
+        int bridgeOffset;
+        int gatewayOffset;
         for(int i=0;i<bdList.size();i++)
         {   BridgeData bridge=bdList.get(i);
             //TODO: evaluate status
             if(i<bdList.size()-1){
-                sb.insert(sb.length()-2,proc.convertToJsonTreeComponent(bridge, 1)+",");
+                sb.insert(sb.length()-2,proc.convertToJsonTreeComponent(bridge, bridge.getStatus())+",");
+                bridgeOffset=1;
             }else
-            sb.insert(sb.length()-2,proc.convertToJsonTreeComponent(bridge, 1)+",");
+            {
+                sb.insert(sb.length()-2,proc.convertToJsonTreeComponent(bridge, bridge.getStatus())+",");
+                bridgeOffset=0;
+            }
             gatewayList=gatewayService.allGatewaysConnectedToBridge(bridge.getSerial_number());
             for(int j=0;j<gatewayList.size();j++)
             {
                 GatewayData gateway= gatewayList.get(j);
                 if(j<gatewayList.size()-1){
-                    sb.insert(sb.length()-5,proc.convertToJsonTreeComponent(gateway, 1)+",");
+                    gatewayOffset=1;
+                    sb.insert(sb.length()-(4+bridgeOffset),proc.convertToJsonTreeComponent(gateway, gateway.getStatus())+",");
                 }
                 else
-                sb.insert(sb.length()-5,proc.convertToJsonTreeComponent(gateway, 1));
+                {
+                    gatewayOffset=0;
+                    sb.insert(sb.length()-(4+bridgeOffset),proc.convertToJsonTreeComponent(gateway, gateway.getStatus()));
+                }
 
                 sensorList=sensorService.allSensorsConnectedToSmartbox(gateway.getGateway_eui());
                 for(int k=0;k<sensorList.size();k++)
                 {
                     SensorDataSimplified sensor=sensorList.get(k);
                     if(k<sensorList.size()-1){
-                        //sb.insert(sb.length()-8,proc.convertToJsonTreeComponent(sensor, 1)+",");
-                        sb.insert(sb.length()-8,"X,");
+                        sb.insert(sb.length()-(6+bridgeOffset+gatewayOffset),proc.convertToJsonTreeComponent(sensor, sensor.getStatus())+",");
 
                     }
                     else
-                    //sb.insert(sb.length()-8,proc.convertToJsonTreeComponent(sensor, 1));
-                    sb.insert(sb.length()-8,"X");
+                    sb.insert(sb.length()-(6+bridgeOffset+gatewayOffset),proc.convertToJsonTreeComponent(sensor, sensor.getStatus()));
                 }
             }
         }

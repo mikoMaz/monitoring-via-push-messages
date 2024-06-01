@@ -41,4 +41,8 @@ public class BridgeData {
             ", vpn_connected='" + getVpn_connected() + "'" +
             "}";
     }
+    //TODO: make it return real value
+    public Integer getStatus(){
+        return 1;
+    }
 }

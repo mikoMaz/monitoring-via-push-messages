@@ -29,6 +29,7 @@ public class SensorData  {
     private String thread;
     private SensorMessage message;
     private SensorProperties properties;
+ 
 
     public SensorDataSimplified toSensorDataSimplified()
     {
