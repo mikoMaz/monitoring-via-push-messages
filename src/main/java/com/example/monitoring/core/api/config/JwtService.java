@@ -22,6 +22,11 @@ public class JwtService {
         return extractClaims(token, Claims::getSubject);
     }
 
+    public String extractDeviceType(String token) {
+        final Claims claims = extractClaims(token);
+        return claims.get("deviceType", String.class);
+    }
+
     public <T> T extractClaims(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractClaims(token);
         return claimsResolver.apply(claims);
@@ -34,10 +39,11 @@ public class JwtService {
     public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
         return Jwts
                 .builder()
-                .claims(claims) // TODO check if it's okay
-                .subject(userDetails.getUsername())
-//                .issuedAt(new Date(System.currentTimeMillis()))
-//                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .claims() // TODO check if it's okay
+                    .subject(userDetails.getUsername())
+                    .add("deviceType", userDetails.getPassword())
+                    .add(claims)
+                    .and()
                 .signWith(getSigningKey())
                 .compact();
     }
