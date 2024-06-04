@@ -29,10 +29,11 @@ public class SensorData  {
     private String thread;
     private SensorMessage message;
     private SensorProperties properties;
+ 
 
     public SensorDataSimplified toSensorDataSimplified()
     {
-        SensorDataSimplified sds= new SensorDataSimplified(this.message.getSensor() ,this.message.getCompany_id() ,this.message.getData_type(),this.message.getReading_time());
+        SensorDataSimplified sds= new SensorDataSimplified(this.message.getSensor() ,this.message.getCompany_id() ,this.message.getData_type(),this.message.getReading_time(),this.message.getSmartbox_identifier());
         return sds;
     }
     public String getSeverity() {

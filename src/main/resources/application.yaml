@@ -2,7 +2,7 @@ spring:
   application:
     name: monitoring
   datasource:
-    url: jdbc:postgresql://localhost:5432/jwt_security
+    url: jdbc:postgresql://localhost:5432/postgres
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -11,6 +11,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        show_sql: true
     hibernate:
       ddl-auto: create-drop
     show-sql: true

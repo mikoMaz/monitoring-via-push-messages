@@ -1,6 +1,12 @@
 package com.example.monitoring.core.api.auth;
 import java.util.Map;
 
+import com.example.monitoring.core.bridge.BridgeRequest;
+import com.example.monitoring.core.bridge.BridgeService;
+import com.example.monitoring.core.gateway.GatewayData;
+import com.example.monitoring.core.gateway.GatewayRepository;
+import com.example.monitoring.core.gateway.GatewayRequest;
+import com.example.monitoring.core.gateway.GatewayService;
 import org.slf4j.LoggerFactory ;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +35,9 @@ public class AuthenticationController {
     @Autowired
     private SensorDataSimplifiedRepository repository;
     private final AuthenticationService authenticationService;
+    private final GatewayService gatewayService;
+    private final BridgeService bridgeService;
+
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
@@ -47,34 +56,49 @@ public class AuthenticationController {
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectReader reader = new ObjectMapper().readerFor(Map.class);
 
-     @PostMapping("/send-data")
+    @PostMapping("/send-data")
     public ResponseEntity<String>hello(
-            @RequestBody String  payloadJson
+            @RequestBody Map<String, Object>  payloadJson
     ) {
-        try {
-        SensorData payload= objectMapper.readValue(payloadJson, SensorData.class);
-        SensorDataSimplified payloadSimplified= payload.toSensorDataSimplified();
-        logger.info(payloadSimplified.toString());
-        repository.save(payloadSimplified);
-        return ResponseEntity.ok().body(payloadSimplified.toString());
-
-        } catch (JsonMappingException e) {
-        e.printStackTrace();
-        return ResponseEntity.badRequest().body("err");
-        } catch (JsonProcessingException e) {
-        e.printStackTrace();
-        return ResponseEntity.badRequest().body("err");
+        /* SENSOR */
+        if (payloadJson.containsKey("severity")) {
+             SensorData payload = objectMapper.convertValue(payloadJson, SensorData.class);
+//             SensorData payload= objectMapper.readValue(payloadJson, SensorData.class);
+             SensorDataSimplified payloadSimplified = payload.toSensorDataSimplified();
+             logger.info(payloadSimplified.toString());
+             repository.save(payloadSimplified);
+             return ResponseEntity.ok().body(payloadSimplified.toString());
+         }
+        /*if (payloadJson.containsKey("serial_number")) {
+            GatewayData payload = objectMapper.convertValue(payloadJson, GatewayData.class);
+//            SensorDataSimplified payloadSimplified = payload.toSensorDataSimplified();
+            logger.info(payload.toString());
+            gatewayRepository.save(payload);
+            return ResponseEntity.ok().body(payload.toString());
+        }*/
+        /* GATEWAY */
+        if (payloadJson.containsKey("bridge_serial_number")) {
+            GatewayRequest payload = objectMapper.convertValue(payloadJson, GatewayRequest.class);
+            logger.info(payload.toString());
+            return ResponseEntity.ok().body(gatewayService.saveSimplified(payload));
         }
-        
+        /* BRIDGE */
+        if (payloadJson.containsKey("serial_number")) {
+            BridgeRequest payload = objectMapper.convertValue(payloadJson, BridgeRequest.class);
+            logger.info(payload.toString());
+            return ResponseEntity.ok().body(bridgeService.saveSimplified(payload));
+        }
+         return ResponseEntity.badRequest().body("err: unknown payload");
     }
     @GetMapping("/get-latest-sensor")
-    public ResponseEntity<String>latestSensor(
+    public String latestSensor(
             @RequestBody String  payloadJson
     ) throws JsonMappingException, JsonProcessingException {
         Map<String, Object> map = reader.readValue(payloadJson);
         Integer company_id=(Integer)map.get("company_id");
         SensorDataSimplified latest= repository.findLastReadingTime(company_id);
-        return ResponseEntity.ok().body(company_id.toString()+"\n"+latest.toString());
+//        return ResponseEntity.ok().body(company_id.toString()+"\n"+latest.toString());
+        return latest.toString();
 
     }
     @GetMapping("/get-time-since-response")
