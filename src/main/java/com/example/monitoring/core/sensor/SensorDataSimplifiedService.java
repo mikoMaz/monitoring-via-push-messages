@@ -1,4 +1,6 @@
 package com.example.monitoring.core.sensor;
+import java.util.List;
+
 import org.hibernate.annotations.SecondaryRow;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class SensorDataSimplifiedService {
         e.printStackTrace();
         return ResponseEntity.badRequest().body("err");
         }
+    }
+    public List<SensorDataSimplified> allSensorsConnectedToSmartbox(String smartboxIdentifier){
+        return repository.allSensorsConnectedToSmartbox(smartboxIdentifier);
     }
 }
 
