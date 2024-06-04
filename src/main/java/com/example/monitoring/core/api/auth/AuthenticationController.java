@@ -12,11 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,8 +54,12 @@ public class AuthenticationController {
 
     @PostMapping("/send-data")
     public ResponseEntity<String>hello(
-            @RequestBody Map<String, Object>  payloadJson
+            @RequestBody Map<String, Object>  payloadJson,
+            @RequestHeader("Authorization") String authHeader
     ) {
+        String token = authenticationService.extractToken(authHeader);
+        String deviceId = authenticationService.extractDeviceId(token);
+
         /* SENSOR */
         if (payloadJson.containsKey("severity")) {
              SensorData payload = objectMapper.convertValue(payloadJson, SensorData.class);
