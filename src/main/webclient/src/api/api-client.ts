@@ -8,7 +8,6 @@ import {
   deviceStatus,
 } from "../types/deviceModel";
 import axios from "axios";
-import { IDeviceModel } from "../types/deviceModel";
 
 const apuURL = "http://localhost:8080/api/v1/kluczdostepu?id=1";
 export class APIClient {
