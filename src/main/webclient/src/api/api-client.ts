@@ -2,12 +2,16 @@ import {
   Bridge,
   DeviceModel,
   Gateway,
+  IDeviceModel,
   Sensor,
+  createDeviceModel,
   deviceStatus,
 } from "../types/deviceModel";
+import axios from "axios";
 
+const apuURL = "/api/v1/kluczdostepu";
 export class APIClient {
-  public static getRecentUpdates = () => {
+  public static getTestDataModel = () => {
     return new DeviceModel([
       new Bridge("bridge1", deviceStatus.active, new Date(), [
         new Gateway("gateway1", deviceStatus.active, new Date(), [
@@ -23,4 +27,15 @@ export class APIClient {
       ]),
     ]);
   };
+
+  public static jsonToObject = async (): Promise<DeviceModel> => {
+    var json = require('../test/example.json');
+    const data: IDeviceModel = json;
+    console.log(createDeviceModel(data))
+    return createDeviceModel(data);
+  };
+
+  // public static getRecentUpdates = () => {
+  //   axios.get(apuURL).then().catch()
+  // }
 }

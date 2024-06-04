@@ -23,7 +23,7 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
   const navigate = useNavigate();
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
-    APIClient.getRecentUpdates()
+    new DeviceModel()
   );
 
   const [filteringHeigth, setFilteringHeigth] =
@@ -66,7 +66,7 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
   const changeSelectedViewOption = (option: viewOption) => {
     setSelectedViewOption(option);
     searchParams.set("view", viewOption[option]);
-    navigate({pathname: "", search: searchParams.toString()})
+    navigate({ pathname: "", search: searchParams.toString() });
   };
 
   const renderSelectedView = () => {
@@ -105,6 +105,12 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
           break;
       }
     }
+    const fetchData = async () => {
+      const data: DeviceModel = await APIClient.jsonToObject();
+      setDeviceModel(data);
+    };
+
+    fetchData();
   }, []);
 
   return (

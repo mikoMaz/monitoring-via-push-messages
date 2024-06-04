@@ -81,7 +81,7 @@ export class Bridge implements IBridge {
   }
 }
 
-interface IDeviceModel {
+export interface IDeviceModel {
   bridges: IBridge[];
   gateways: IGateway[];
   sensors: ISensor[];
