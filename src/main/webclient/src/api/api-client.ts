@@ -8,8 +8,9 @@ import {
   deviceStatus,
 } from "../types/deviceModel";
 import axios from "axios";
+import { IDeviceModel } from "../types/deviceModel";
 
-const apuURL = "/api/v1/kluczdostepu";
+const apuURL = "http://localhost:8080/api/v1/kluczdostepu?id=1";
 export class APIClient {
   public static getTestDataModel = () => {
     return new DeviceModel([
@@ -29,13 +30,21 @@ export class APIClient {
   };
 
   public static jsonToObject = async (): Promise<DeviceModel> => {
-    var json = require('../test/example.json');
+    var json = require("../test/example.json");
     const data: IDeviceModel = json;
-    console.log(createDeviceModel(data))
+    console.log(createDeviceModel(data));
     return createDeviceModel(data);
   };
 
-  // public static getRecentUpdates = () => {
-  //   axios.get(apuURL).then().catch()
-  // }
+  public static getRecentUpdates = () => {
+    axios
+      .get(apuURL)
+      .then((response) => {
+        const data: IDeviceModel = response.data;
+        return createDeviceModel(data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
 }
