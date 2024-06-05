@@ -31,10 +31,7 @@ public class SensorDataSimplified {
         this.smartbox_identifier=smartbox_identifier;
     }
 
-         //TODO: make it return real value
-         public Integer getStatus(){
-            return 1;
-        }
+
     @Override
     public String toString() {
         return "{" +

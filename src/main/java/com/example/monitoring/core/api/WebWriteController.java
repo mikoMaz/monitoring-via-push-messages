@@ -16,6 +16,7 @@ import com.example.monitoring.core.gateway.GatewayData;
 import com.example.monitoring.core.gateway.GatewayService;
 import com.example.monitoring.core.sensor.SensorDataSimplified;
 import com.example.monitoring.core.sensor.SensorDataSimplifiedService;
+import com.example.monitoring.core.status.DeviceStatusService;
 import com.example.monitoring.core.api.WebWritePreprocessor;
 
 
@@ -27,6 +28,7 @@ public class WebWriteController {
     private final GatewayService gatewayService;
     private final SensorDataSimplifiedService sensorService;
     private final WebWritePreprocessor proc;
+    private final DeviceStatusService statusService;
 
     @GetMapping("/kluczdostepu")
     
@@ -43,11 +45,11 @@ public class WebWriteController {
         {   BridgeData bridge=bdList.get(i);
             //TODO: evaluate status
             if(i<bdList.size()-1){
-                sb.insert(sb.length()-2,proc.convertToJsonTreeComponent(bridge, bridge.getStatus())+",");
+                sb.insert(sb.length()-2,proc.convertToJsonTreeComponent(bridge, statusService.getStatus(bridge.getSerial_number()))+",");
                 bridgeOffset=1;
             }else
             {
-                sb.insert(sb.length()-2,proc.convertToJsonTreeComponent(bridge, bridge.getStatus())+",");
+                sb.insert(sb.length()-2,proc.convertToJsonTreeComponent(bridge,statusService.getStatus(bridge.getSerial_number()) )+",");
                 bridgeOffset=0;
             }
             gatewayList=gatewayService.allGatewaysConnectedToBridge(bridge.getSerial_number());
@@ -56,12 +58,12 @@ public class WebWriteController {
                 GatewayData gateway= gatewayList.get(j);
                 if(j<gatewayList.size()-1){
                     gatewayOffset=1;
-                    sb.insert(sb.length()-(4+bridgeOffset),proc.convertToJsonTreeComponent(gateway, gateway.getStatus())+",");
+                    sb.insert(sb.length()-(4+bridgeOffset),proc.convertToJsonTreeComponent(gateway, statusService.getStatus(gateway.getGateway_eui()))+",");
                 }
                 else
                 {
                     gatewayOffset=0;
-                    sb.insert(sb.length()-(4+bridgeOffset),proc.convertToJsonTreeComponent(gateway, gateway.getStatus()));
+                    sb.insert(sb.length()-(4+bridgeOffset),proc.convertToJsonTreeComponent(gateway, statusService.getStatus(gateway.getGateway_eui())));
                 }
 
                 sensorList=sensorService.allSensorsConnectedToSmartbox(gateway.getGateway_eui());
@@ -69,11 +71,11 @@ public class WebWriteController {
                 {
                     SensorDataSimplified sensor=sensorList.get(k);
                     if(k<sensorList.size()-1){
-                        sb.insert(sb.length()-(6+bridgeOffset+gatewayOffset),proc.convertToJsonTreeComponent(sensor, sensor.getStatus())+",");
+                        sb.insert(sb.length()-(6+bridgeOffset+gatewayOffset),proc.convertToJsonTreeComponent(sensor, statusService.getStatus(sensor.getSensor()))+",");
 
                     }
                     else
-                    sb.insert(sb.length()-(6+bridgeOffset+gatewayOffset),proc.convertToJsonTreeComponent(sensor, sensor.getStatus()));
+                    sb.insert(sb.length()-(6+bridgeOffset+gatewayOffset),proc.convertToJsonTreeComponent(sensor, statusService.getStatus(sensor.getSensor())));
                 }
             }
         }
