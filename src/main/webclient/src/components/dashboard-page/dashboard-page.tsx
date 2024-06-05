@@ -3,8 +3,6 @@ import { appProps } from "../../config/config";
 import { useEffect, useState } from "react";
 import { DeviceModel } from "../../types/deviceModel";
 import { APIClient } from "../../api/api-client";
-import { getDevicesStatusPieChartData } from "./util/dashboard-page-util";
-import { Pie, PieChart } from "recharts";
 import { StatusPieChart } from "./components/status-pie-chart";
 
 export const DashboardPage = () => {
