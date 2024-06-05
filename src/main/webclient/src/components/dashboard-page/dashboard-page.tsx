@@ -29,9 +29,9 @@ export const DashboardPage = () => {
     >
       <Center>
         <HStack>
-          <StatusPieChart devices={deviceModel.getSensorsArray()} />
-          <StatusPieChart devices={deviceModel.getGatewaysArray()} />
-          <StatusPieChart devices={deviceModel.getBridgesArray()} />
+          <StatusPieChart devices={deviceModel.getSensorsArray()} heading="Sensors" />
+          <StatusPieChart devices={deviceModel.getGatewaysArray()} heading="Gateways"/>
+          <StatusPieChart devices={deviceModel.getBridgesArray()} heading="Bridges"/>
         </HStack>
       </Center>
     </Box>
