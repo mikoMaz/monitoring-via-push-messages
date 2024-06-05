@@ -36,14 +36,18 @@ export class APIClient {
   };
 
   public static getRecentUpdates = () => {
-    axios
+    const data = axios
       .get(apuURL)
       .then((response) => {
+        console.log(response)
         const data: IDeviceModel = response.data;
         return createDeviceModel(data);
       })
       .catch(function (error) {
+        console.log("error")
         console.error(error);
+        return new DeviceModel();
       });
+      return data;
   };
 }

@@ -106,7 +106,7 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
       }
     }
     const fetchData = async () => {
-      const data: DeviceModel = await APIClient.jsonToObject();
+      const data: DeviceModel = await APIClient.getRecentUpdates();
       setDeviceModel(data);
     };
 
