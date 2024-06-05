@@ -6,6 +6,8 @@ import com.example.monitoring.core.bridge.BridgeData;
 import com.example.monitoring.core.gateway.GatewayData;
 import com.example.monitoring.core.sensor.SensorData;
 import com.example.monitoring.core.sensor.SensorDataSimplified;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
 @Component
@@ -15,23 +17,36 @@ public class WebWritePreprocessor {
     private static final String f2="status";
     private static final String f3="lastPinged";
     private static final String f4="deviceType";
-    String convertToJsonTreeComponent(BridgeData bridge,int status)
+    JsonObject convertToJsonTreeComponent(BridgeData bridge,int status)
     {
+        JsonObject device=new JsonObject();
         int deviceType=2;
-
-        String w=String.format("{\"%1$s\": %2$s, \"%3$s\": %4$d, \"%5$s\": %6$s, \"%7$s\": %8$d, \"gateways\":[]}", f1,bridge.getSerial_number(),f2,status,f3,bridge.getLogged_at(),f4,deviceType);
-        return w;
+        device.addProperty(f1,bridge.getSerial_number());
+        device.addProperty(f2,status);
+        device.addProperty(f3,bridge.getLogged_at());
+        device.addProperty(f4,deviceType);
+        return device;
     }
-    String convertToJsonTreeComponent(GatewayData gateway,int status)
+    JsonObject convertToJsonTreeComponent(GatewayData gateway,int status)
     {
+        JsonObject device=new JsonObject();
         int deviceType=1;
-        String w=String.format("{\"%1$s\": %2$s, \"%3$s\": %4$d, \"%5$s\": %6$s, \"%7$s\": %8$d, \"sensors\":[]}", f1,gateway.getGateway_eui(),f2,status,f3,gateway.getLogged_at(),f4,deviceType);
-        return w;
+       device.addProperty(f1,gateway.getGateway_eui());
+       device.addProperty(f2,status);
+       device.addProperty(f3,gateway.getLogged_at());
+       device.addProperty(f4,deviceType);
+       return device;
+
     }
-    String convertToJsonTreeComponent(SensorDataSimplified sensor,int status)
+    JsonObject convertToJsonTreeComponent(SensorDataSimplified sensor,int status)
     {
+        JsonObject device=new JsonObject();
         int deviceType=0;
-        String w=String.format("{\"%1$s\": %2$s, \"%3$s\": %4$d, \"%5$s\": %6$s, \"%7$s\": %8$d,}", f1,sensor.getSensor(),f2,status,f3,sensor.getReading_time(),f4,deviceType);
-        return w;
+        device.addProperty(f1,sensor.getSensor());
+        device.addProperty(f2,status);
+        device.addProperty(f3,sensor.getReading_time());
+        device.addProperty(f4,deviceType);
+        return device;
+
     }
 }
