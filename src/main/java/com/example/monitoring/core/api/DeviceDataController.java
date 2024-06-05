@@ -93,39 +93,5 @@ public class DeviceDataController {
         }
          return ResponseEntity.badRequest().body("err: unknown payload");
     }
-    @GetMapping("/get-latest-sensor")
-    public String latestSensor(
-            @RequestBody String  payloadJson
-    ) throws JsonMappingException, JsonProcessingException {
-        Map<String, Object> map = reader.readValue(payloadJson);
-        Integer company_id=(Integer)map.get("company_id");
-        SensorDataSimplified latest= repository.findLastReadingTime(company_id);
-//        return ResponseEntity.ok().body(company_id.toString()+"\n"+latest.toString());
-        return latest.toString();
 
-    }
-    @GetMapping("/get-time-since-response")
-    public ResponseEntity<String>timeSinceLastResponse(
-            @RequestBody String  payloadJson
-    ) throws JsonMappingException, JsonProcessingException {
-        Map<String, Object> map = reader.readValue(payloadJson);
-        Integer company_id=(Integer)map.get("company_id");
-        SensorDataSimplified latest= repository.findLastReadingTime(company_id);
-        Long unixTime = System.currentTimeMillis() / 1000L;
-        Long time = unixTime-latest.getReading_time();
-        return ResponseEntity.ok().body(time.toString());
-
-    }
-    @GetMapping("/get-fraction-of-uptime")
-    public ResponseEntity<String>fractionOfUptime(
-        @RequestBody String  payloadJson
-) throws JsonMappingException, JsonProcessingException {
-    Map<String, Object> map = reader.readValue(payloadJson);
-    Integer company_id=(Integer)map.get("company_id");
-        Long unixTime = System.currentTimeMillis() / 1000L;
-        Integer totalSensors= repository.totalSensors(company_id);
-        Integer upSensors=repository.upSensors(company_id,unixTime-300);
-        return ResponseEntity.ok().body(upSensors.toString()+"/"+totalSensors.toString());
-
-    }
 }
