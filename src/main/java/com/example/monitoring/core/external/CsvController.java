@@ -5,18 +5,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class CsvController {
+    private final CsvService csvService;
+    private final DataHolderService dataHolderService;
 
     @PostMapping("/upload-csv")
     public ResponseEntity<String> csvUpload(
+            @RequestParam("type") String type,
             @RequestParam("tableName") String tableName,
             @RequestParam("file") MultipartFile file
     ) {
-        System.out.println("saving csv file");
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Empty file");
         }
@@ -24,11 +28,24 @@ public class CsvController {
             return ResponseEntity.badRequest().body("Empty tableName");
         }
 
-        // TODO generate hashmap
+        List<List<String>> csv = csvService.readCsv(file);
+
+        if (type.equals("device")) {
+            if (!csvService.csvToDeviceObjectFromDevice(csv)) {
+                ResponseEntity.badRequest().body("CSV has a number of columns other than 2");
+            }
+        }
+        if (type.equals("hierarchy")) {
+            if (!csvService.csvToDeviceObjectFromHierarchy(csv)) {
+                ResponseEntity.badRequest().body("CSV has a number of columns other than 2");
+            }
+        }
+
+        System.out.println(dataHolderService.getDevice());
+        System.out.println(dataHolderService.getCompany());
 
         // TODO save to db
         // TODO make class for saving table
-
         return ResponseEntity.ok(file.getOriginalFilename());
     }
 }
