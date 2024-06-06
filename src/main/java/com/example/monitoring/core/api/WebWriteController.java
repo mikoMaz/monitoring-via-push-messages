@@ -2,6 +2,7 @@ package com.example.monitoring.core.api;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,16 +51,21 @@ public class WebWriteController {
         bdList = bridgeService.allBridges(id);
 
         JsonObject root=new JsonObject();
-        JsonArray devices= new JsonArray();
+        ArrayList<JsonArray> list= new ArrayList<JsonArray>();
+        JsonObject savedDevice=new JsonObject();
+        for(int i=0;i<20;i++)
+        {
+            JsonArray devices= new JsonArray();
+            list.add(devices);
+
+        }
         JsonObject currentObject=new JsonObject();
-        int bridgeOffset;
-        int gatewayOffset;
         for(int i=0;i<bdList.size();i++)
         {   BridgeData bridge=bdList.get(i);
-            JsonArray gatewayArray = new JsonArray();
-
             currentObject=proc.convertToJsonTreeComponent(bridge, statusService.getStatus(bridge.getSerial_number()));
             gatewayList=gatewayService.allGatewaysConnectedToBridge(bridge.getSerial_number());
+            currentObject.addProperty("children_count", gatewayList.size());
+            list.get(0).add(currentObject);
             for(int j=0;j<gatewayList.size();j++)
             {
                 GatewayData gateway= gatewayList.get(j);
@@ -70,18 +76,21 @@ public class WebWriteController {
                 {
                     SensorDataSimplified sensor =sensorList.get(k) ;
                     JsonObject subDevice=proc.convertToJsonTreeComponent(sensor,statusService.getStatus(sensor.getSensor()));
-                    sensorArray.add(subDevice);
+                    list.get(2).add(subDevice);
                 }
                 
                 JsonObject subDevice=proc.convertToJsonTreeComponent(gateway, statusService.getStatus(gateway.getGateway_eui()));
-                subDevice.add("devices",sensorArray);
-                gatewayArray.add(subDevice);
+                subDevice.addProperty("children_count",sensorList.size());
+                list.get(1).add(subDevice);
+                savedDevice=subDevice;
             }
-            currentObject.add("devices", gatewayArray);
-            devices.add(currentObject);
         }
-        root.add("devices",(devices));
-
+        for(int i=0;i<20;i++)
+        {
+            if(list.get(i).size()==0)
+            break;
+            root.add("devices"+String.valueOf(i),list.get(i));
+        }
         return ResponseEntity.ok().body(root.toString());
     }
 
