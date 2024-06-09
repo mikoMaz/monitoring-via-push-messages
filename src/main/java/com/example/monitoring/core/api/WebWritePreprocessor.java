@@ -4,9 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.monitoring.core.bridge.BridgeData;
 import com.example.monitoring.core.gateway.GatewayData;
-import com.example.monitoring.core.sensor.SensorData;
 import com.example.monitoring.core.sensor.SensorDataSimplified;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;

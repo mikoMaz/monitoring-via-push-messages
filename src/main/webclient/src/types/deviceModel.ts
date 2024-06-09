@@ -1,6 +1,6 @@
 export enum deviceStatus {
-  active,
   disabled,
+  active,
 }
 
 export enum deviceType {
@@ -80,22 +80,88 @@ export class Bridge implements IBridge {
     this.gateways = gateways;
   }
 }
+export interface ISomeDevice {
+  id: string;
+  status: number;
+  lastPinged: string;
+  deviceType: number;
+  devices: ISomeDevice[];
+}
+
+export interface ISomeDeviceModel {
+  devices: ISomeDevice[];
+}
 
 export interface IDeviceModel {
   bridges: IBridge[];
   gateways: IGateway[];
-  sensors: ISensor[];
 }
+
+export const convertUnknownModelToDeviceModel = (model: ISomeDeviceModel) => {
+  const bridges: Bridge[] = [];
+  const gateways: Gateway[] = [];
+  model.devices.map((device) => {
+    if (device.deviceType.toString() === deviceType[deviceType.bridge]) {
+      const gateways = device.devices.filter((device) => {
+        return device.deviceType.toString() === deviceType[deviceType.gateway];
+      });
+      const gatewaysObject = gateways.map((gateway) => {
+        return new Gateway(
+          gateway.id,
+          gateway.status,
+          new Date(gateway.lastPinged),
+          gateway.devices.map((sensor) => {
+            return new Sensor(
+              sensor.id,
+              sensor.status,
+              new Date(sensor.lastPinged)
+            );
+          })
+        );
+      });
+      //nie zakladam ze gateway moze miec gateway pod soba
+      //w takim wypadku ide po kazdym gatewayu i sprawdzam czy kazde z jego device to jest gateway
+      //i znowu w srodku patrze czy sa sensory czy kolejny gateway
+      const sensors = device.devices.filter((device) => {
+        return device.deviceType.toString() === deviceType[deviceType.sensor];
+      });
+      const sensorsObject = sensors.map((sensor) => {
+        return new Sensor(
+          sensor.id,
+          sensor.status,
+          new Date(sensor.lastPinged)
+        );
+      });
+      bridges.push(
+        new Bridge(
+          device.id,
+          device.status,
+          new Date(device.status),
+          gatewaysObject
+        )
+      );
+    }
+    //zakladam ze pod gatewayem nie ma gatewayów
+    else if (device.deviceType.toString() === deviceType[deviceType.gateway]) {
+        gateways.push(new Gateway(device.id, device.status, new Date(device.lastPinged), device.devices.map(device => {
+          return new Sensor(
+            device.id,
+            device.status,
+            new Date(device.lastPinged)
+          );
+        })))
+    }
+  });
+  return new DeviceModel(bridges, gateways)
+};
 
 export class DeviceModel implements IDeviceModel {
   bridges: Bridge[];
   gateways: Gateway[];
-  sensors: Sensor[];
 
-  constructor(bridges?: Bridge[], gateways?: Gateway[], sensors?: Sensor[]) {
+  constructor(bridges?: Bridge[], gateways?: Gateway[]) {
     this.bridges = bridges ?? [];
     this.gateways = gateways ?? [];
-    this.sensors = sensors ?? [];
   }
 
   public getSensorsArray = (): Sensor[] => {
@@ -110,8 +176,6 @@ export class DeviceModel implements IDeviceModel {
     this.gateways.forEach((gateway) => {
       sensors.push(...gateway.sensors);
     });
-
-    sensors.push(...this.sensors);
 
     return sensors;
   };
@@ -172,10 +236,5 @@ export function createDeviceModel(data: IDeviceModel): DeviceModel {
       )
   );
 
-  const sensors = data.sensors.map(
-    (sensor) =>
-      new Sensor(sensor.id, sensor.status, new Date(sensor.lastPinged))
-  );
-
-  return new DeviceModel(bridges, gateways, sensors);
+  return new DeviceModel(bridges, gateways);
 }

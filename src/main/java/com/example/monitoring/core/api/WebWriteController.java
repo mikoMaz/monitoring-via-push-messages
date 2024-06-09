@@ -3,7 +3,6 @@ package com.example.monitoring.core.api;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-
 import org.aspectj.weaver.tools.Trace;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

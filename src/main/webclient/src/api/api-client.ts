@@ -3,7 +3,9 @@ import {
   DeviceModel,
   Gateway,
   IDeviceModel,
+  ISomeDeviceModel,
   Sensor,
+  convertUnknownModelToDeviceModel,
   createDeviceModel,
   deviceStatus,
 } from "../types/deviceModel";
@@ -39,9 +41,10 @@ export class APIClient {
     const data = axios
       .get(apuURL)
       .then((response) => {
-        console.log(response)
-        const data: IDeviceModel = response.data;
-        return createDeviceModel(data);
+        const data: ISomeDeviceModel = JSON.parse(response.data);
+        console.log(response.data)
+        console.log(data);
+        return convertUnknownModelToDeviceModel(data);
       })
       .catch(function (error) {
         console.log("error")
