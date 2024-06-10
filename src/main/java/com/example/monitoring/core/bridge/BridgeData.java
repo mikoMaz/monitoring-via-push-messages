@@ -19,7 +19,7 @@ public class BridgeData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long Id;
-    private String logged_at;
+    private Long logged_at;
     private String serial_number;
     private String last_seen;
     private Integer company_id;
@@ -41,8 +41,5 @@ public class BridgeData {
             ", vpn_connected='" + getVpn_connected() + "'" +
             "}";
     }
-    //TODO: make it return real value
-    public Integer getStatus(){
-        return 1;
-    }
+
 }

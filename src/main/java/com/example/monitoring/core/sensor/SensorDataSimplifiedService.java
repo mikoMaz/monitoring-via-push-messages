@@ -4,6 +4,7 @@ import java.util.List;
 import org.hibernate.annotations.SecondaryRow;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -39,5 +40,8 @@ public class SensorDataSimplifiedService {
     public List<SensorDataSimplified> allSensorsConnectedToSmartbox(String smartboxIdentifier){
         return repository.allSensorsConnectedToSmartbox(smartboxIdentifier);
     }
+    public SensorDataSimplified findLastReadingTime(Integer companyId){return repository.findLastReadingTime(companyId);}
+    public Integer totalSensors(Integer companyId){return repository.totalSensors(companyId);}
+    public Integer upSensors(Integer companyId,Long time){return repository.upSensors(companyId, time);}
 }
 

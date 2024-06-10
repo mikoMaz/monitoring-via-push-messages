@@ -18,7 +18,7 @@ public class GatewayData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long Id;
-    private String logged_at;
+    private Long logged_at;
     private String gateway_eui;
     private String last_seen;
     private String bridge_serial_number;
@@ -27,8 +27,6 @@ public class GatewayData {
     private String install_status;
     private String firmware_version;
 
-      //TODO: make it return real value
-      public Integer getStatus(){
-        return 1;
-    }
+
+    
 }

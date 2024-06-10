@@ -14,9 +14,9 @@ public class BridgeServiceImpl implements BridgeService {
     private final BridgeRepository repository;
 
     @Override
-    public String saveSimplified(BridgeRequest request) {
-        var gateway = BridgeData.builder()
-                .logged_at(request.getLogged_at())
+    public BridgeData saveSimplified(BridgeRequest request) {
+        var bridge = BridgeData.builder()
+                .logged_at(Long.parseLong(request.getLogged_at()))
                 .serial_number(request.getSerial_number())
                 .last_seen(request.getLast_seen())
                 .company_id(Integer.parseInt(request.getCompany_id()))
@@ -26,8 +26,8 @@ public class BridgeServiceImpl implements BridgeService {
                 .vpn_connected(request.getVpn_connected())
                 .build();
 
-        repository.save(gateway);
-        return gateway.toString();
+        repository.save(bridge);
+        return bridge;
     }
     @Override
     public List<BridgeData> allBridges(Integer company_id) {
