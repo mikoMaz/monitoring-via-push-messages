@@ -13,9 +13,9 @@ public class GatewayServiceImpl implements GatewayService {
     private final GatewayRepository repository;
 
     @Override
-    public String saveSimplified(GatewayRequest request) {
+    public GatewayData saveSimplified(GatewayRequest request) {
         var gateway = GatewayData.builder()
-                .logged_at(request.getLogged_at())
+                .logged_at(Long.parseLong(request.getLogged_at()))
                 .gateway_eui(request.getGateway_eui())
                 .last_seen(request.getLast_seen())
                 .bridge_serial_number(request.getBridge_serial_number())
@@ -26,7 +26,7 @@ public class GatewayServiceImpl implements GatewayService {
                 .build();
 
         repository.save(gateway);
-        return gateway.toString();
+        return gateway;
     }
     @Override
     public List<GatewayData> allGatewaysConnectedToBridge(String serialNumber)
