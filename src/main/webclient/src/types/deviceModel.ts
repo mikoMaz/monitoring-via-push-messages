@@ -24,6 +24,7 @@ interface IGateway extends IMonitoringDevice {
 
 interface IBridge extends IMonitoringDevice {
   gateways: Gateway[];
+  sensors: Sensor[];
 }
 export class Sensor implements ISensor {
   id: string;
@@ -66,18 +67,21 @@ export class Bridge implements IBridge {
   lastPinged: Date;
   deviceType: deviceType;
   gateways: Gateway[];
+  sensors: Sensor[];
 
   constructor(
     id: string,
     status: deviceStatus,
     lastPinged: Date,
-    gateways: Gateway[]
+    gateways: Gateway[],
+    sensors?: Sensor[]
   ) {
     this.id = id;
     this.status = status;
     this.lastPinged = lastPinged;
     this.deviceType = deviceType.bridge;
     this.gateways = gateways;
+    this.sensors = sensors ? sensors : [];
   }
 }
 
@@ -85,6 +89,25 @@ interface IDeviceModel {
   bridges: IBridge[];
   gateways: IGateway[];
   sensors: ISensor[];
+}
+
+interface ITreeModelDevice {
+  id: string;
+  status: deviceStatus;
+  lastPinged: number;
+  deviceType: deviceType;
+  children_count?: number | undefined;
+}
+interface IDeviceTreeModel {
+  devices: ITreeModelDevice[];
+}
+
+type DeviceTreeModelJson = {
+  [key: string]: ITreeModelDevice[];
+};
+
+export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
+  
 }
 
 export class DeviceModel implements IDeviceModel {
@@ -132,6 +155,8 @@ export class DeviceModel implements IDeviceModel {
     return this.bridges;
   };
 }
+
+
 
 export function createDeviceModel(data: IDeviceModel): DeviceModel {
   const bridges = data.bridges.map(
