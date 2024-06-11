@@ -14,6 +14,7 @@ import java.util.List;
 public class CsvController {
     private final CsvService csvService;
     private final DataHolderService dataHolderService;
+    private final TableCreatorService tableCreatorService;
 
     @PostMapping("/upload-csv")
     public ResponseEntity<String> csvUpload(
@@ -34,6 +35,7 @@ public class CsvController {
             if (!csvService.csvToDeviceObjectFromDevice(csv)) {
                 ResponseEntity.badRequest().body("CSV has a number of columns other than 2");
             }
+            tableCreatorService.createTable("device_" + tableName, "key_name", "table_key_name");
         }
         if (type.equals("hierarchy")) {
             if (!csvService.csvToDeviceObjectFromHierarchy(csv)) {
@@ -45,7 +47,6 @@ public class CsvController {
         System.out.println(dataHolderService.getCompany());
 
         // TODO save to db
-        // TODO make class for saving table
         return ResponseEntity.ok(file.getOriginalFilename());
     }
 }
