@@ -12,5 +12,10 @@ import lombok.RequiredArgsConstructor;
 
 public interface DeviceStatusService {
     void saveFromArgs(String Id,Long Timestamp);
-    Integer getStatus(String Id);
+    Integer getCalculatedStatus(String Id);
+    Integer getCalculatedStatus(DeviceStatus deviceStatus);
+    DeviceStatus getDeviceStatus(String Id);
+   
+
+
 }
