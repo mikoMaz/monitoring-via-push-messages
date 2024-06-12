@@ -18,6 +18,12 @@ public class TableCreatorService {
     }
 
     @Transactional
+    public void dropTable(String tableName) {
+        String sql = String.format("DROP TABLE %s", tableName);
+        jdbcTemplate.execute(sql);
+    }
+
+    @Transactional
     public void addData(String tableName, String primaryKeyName, String secondColumn, String primaryValue, String secondValue) {
         String sql = String.format("INSERT INTO %s (%s, %s) VALUES (?, ?)", tableName, primaryKeyName, secondColumn);
         jdbcTemplate.update(sql, primaryValue, secondValue);
