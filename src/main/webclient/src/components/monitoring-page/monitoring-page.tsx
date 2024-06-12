@@ -23,7 +23,7 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
   const navigate = useNavigate();
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
-    APIClient.getDummyDeviceModel()
+    new DeviceModel()
   );
 
   const [filteringHeigth, setFilteringHeigth] =
