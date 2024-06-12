@@ -32,7 +32,7 @@ export class APIClient {
     return axios
       .get(apuURL)
       .then((response) => {
-        const data: DeviceTreeModelJson = JSON.parse(response.data);
+        const data: DeviceTreeModelJson = response.data;
         console.log(response.data);
         console.log(data);
         return createDeviceModelFromJson(data);

@@ -1,6 +1,6 @@
 export enum deviceStatus {
-  active,
   disabled,
+  active,
 }
 
 export enum deviceType {
@@ -110,32 +110,32 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
   const bridges: Bridge[] = [];
   const gateways: Gateway[] = [];
   const sensors: Sensor[] = [];
-  const treeLevels: IDeviceTreeLevel[] = Object.values(json).map((value) => {
+  const devices: IDeviceTreeLevel[] = Object.values(json).map((value) => {
     return { devices: value };
   });
-  if (treeLevels.length) {
-    treeLevels[0].devices.forEach((deviceTL0) => {
+  if (devices.length) {
+    devices[0].devices.forEach((deviceTL0) => {
       if (deviceTL0.deviceType === deviceType.bridge) {
         bridges.push(
           new Bridge(
             deviceTL0.id,
             deviceTL0.status,
             new Date(deviceTL0.lastPinged),
-            treeLevels[1].devices
+            devices[1].devices
               .filter(
                 (device) =>
                   device.deviceType === deviceType.gateway &&
-                  device.id in (deviceTL0.children ?? [])
+                  deviceTL0.children?.includes(device.id)
               )
               .map((gateway) => {
                 return new Gateway(
                   gateway.id,
                   gateway.status,
                   new Date(gateway.lastPinged),
-                  treeLevels[2].devices
+                  devices[2].devices
                     .filter(
                       (device) =>
-                        device.id in (gateway.children ?? []) &&
+                        gateway.children?.includes(device.id) &&
                         device.deviceType === deviceType.sensor
                     )
                     .map((sensor) => {
@@ -147,11 +147,11 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
                     })
                 );
               }),
-            treeLevels[1].devices
+            devices[1].devices
               .filter(
                 (device) =>
                   device.deviceType === deviceType.sensor &&
-                  device.id in (deviceTL0.children ?? [])
+                  deviceTL0.children?.includes(device.id)
               )
               .map((sensor) => {
                 return new Sensor(
@@ -168,10 +168,10 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
             deviceTL0.id,
             deviceTL0.status,
             new Date(deviceTL0.lastPinged),
-            treeLevels[2].devices
+            devices[2].devices
               .filter(
                 (device) =>
-                  device.id in (deviceTL0.children ?? []) &&
+                  deviceTL0.children?.includes(device.id) &&
                   device.deviceType === deviceType.sensor
               )
               .map((sensor) => {
