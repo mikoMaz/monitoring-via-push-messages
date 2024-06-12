@@ -96,9 +96,9 @@ interface ITreeModelDevice {
   status: deviceStatus;
   lastPinged: number;
   deviceType: deviceType;
-  children_count?: number | undefined;
+  children?: string[] | undefined;
 }
-interface IDeviceTreeModel {
+interface IDeviceTreeLevel {
   devices: ITreeModelDevice[];
 }
 
@@ -107,8 +107,95 @@ type DeviceTreeModelJson = {
 };
 
 export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
-  
-}
+  const topLevelDevices: Bridge[] = [];
+  const mediumLevelDevices: Gateway[] = [];
+  const sensors: Sensor[] = [];
+  const treeLevels: IDeviceTreeLevel[] = Object.values(json).map((value) => {
+    return { devices: value };
+  });
+  if (treeLevels.length) {
+    treeLevels[0].devices.forEach((deviceTL0) => {
+      if (deviceTL0.deviceType === deviceType.bridge) {
+        topLevelDevices.push(
+          new Bridge(
+            deviceTL0.id,
+            deviceTL0.status,
+            new Date(deviceTL0.lastPinged),
+            treeLevels[1].devices
+              .filter(
+                (device) =>
+                  device.deviceType === deviceType.gateway &&
+                  device.id in (deviceTL0.children ?? [])
+              )
+              .map((gateway) => {
+                return new Gateway(
+                  gateway.id,
+                  gateway.status,
+                  new Date(gateway.lastPinged),
+                  treeLevels[2].devices
+                    .filter(
+                      (device) =>
+                        device.id in (gateway.children ?? []) &&
+                        device.deviceType === deviceType.sensor
+                    )
+                    .map((sensor) => {
+                      return new Sensor(
+                        sensor.id,
+                        sensor.status,
+                        new Date(sensor.lastPinged)
+                      );
+                    })
+                );
+              }),
+            treeLevels[1].devices
+              .filter(
+                (device) =>
+                  device.deviceType === deviceType.sensor &&
+                  device.id in (deviceTL0.children ?? [])
+              )
+              .map((sensor) => {
+                return new Sensor(
+                  sensor.id,
+                  sensor.status,
+                  new Date(sensor.lastPinged)
+                );
+              })
+          )
+        );
+      } else if (deviceTL0.deviceType === deviceType.gateway) {
+        mediumLevelDevices.push(
+          new Gateway(
+            deviceTL0.id,
+            deviceTL0.status,
+            new Date(deviceTL0.lastPinged),
+            treeLevels[2].devices
+              .filter(
+                (device) =>
+                  device.id in (deviceTL0.children ?? []) &&
+                  device.deviceType === deviceType.sensor
+              )
+              .map((sensor) => {
+                return new Sensor(
+                  sensor.id,
+                  sensor.status,
+                  new Date(sensor.lastPinged)
+                );
+              })
+          )
+        );
+      } else {
+        sensors.push(
+          new Sensor(
+            deviceTL0.id,
+            deviceTL0.status,
+            new Date(deviceTL0.lastPinged)
+          )
+        );
+      }
+    });
+  }
+  return new DeviceModel(topLevelDevices, mediumLevelDevices, sensors);
+};
 
 export class DeviceModel implements IDeviceModel {
   bridges: Bridge[];
@@ -155,8 +242,6 @@ export class DeviceModel implements IDeviceModel {
     return this.bridges;
   };
 }
-
-
 
 export function createDeviceModel(data: IDeviceModel): DeviceModel {
   const bridges = data.bridges.map(
