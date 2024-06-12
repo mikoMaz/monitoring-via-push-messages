@@ -64,14 +64,23 @@ public class WebWriteController {
         {   BridgeData bridge=bdList.get(i);
             currentObject=proc.convertToJsonTreeComponent(bridge, statusService.getStatus(bridge.getSerial_number()));
             gatewayList=gatewayService.allGatewaysConnectedToBridge(bridge.getSerial_number());
-            currentObject.addProperty("children_count", gatewayList.size());
+
+            JsonArray gatewayIdArray = new JsonArray();
+            for (GatewayData gateway : gatewayList) {
+                gatewayIdArray.add(new JsonPrimitive(gateway.getGateway_eui()));
+            }
+
+            currentObject.add("children", gatewayIdArray);
             list.get(0).add(currentObject);
             for(int j=0;j<gatewayList.size();j++)
             {
                 GatewayData gateway= gatewayList.get(j);
                 sensorList=sensorService.allSensorsConnectedToSmartbox(gateway.getGateway_eui());
-                JsonArray sensorArray = new JsonArray();
-
+                JsonArray sensorIdArray = new JsonArray();
+                for (SensorDataSimplified sensor : sensorList) {
+                    sensorIdArray.add(new JsonPrimitive(sensor.getSensor()));
+                }
+                
                 for(int k=0;k<sensorList.size();k++)
                 {
                     SensorDataSimplified sensor =sensorList.get(k) ;
@@ -80,7 +89,7 @@ public class WebWriteController {
                 }
                 
                 JsonObject subDevice=proc.convertToJsonTreeComponent(gateway, statusService.getStatus(gateway.getGateway_eui()));
-                subDevice.addProperty("children_count",sensorList.size());
+                subDevice.add("children",sensorIdArray);
                 list.get(1).add(subDevice);
                 savedDevice=subDevice;
             }
