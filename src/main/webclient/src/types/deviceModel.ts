@@ -1,6 +1,6 @@
 export enum deviceStatus {
-  active,
   disabled,
+  active,
 }
 
 export enum deviceType {
@@ -24,6 +24,7 @@ interface IGateway extends IMonitoringDevice {
 
 interface IBridge extends IMonitoringDevice {
   gateways: Gateway[];
+  sensors: Sensor[];
 }
 export class Sensor implements ISensor {
   id: string;
@@ -66,18 +67,21 @@ export class Bridge implements IBridge {
   lastPinged: Date;
   deviceType: deviceType;
   gateways: Gateway[];
+  sensors: Sensor[];
 
   constructor(
     id: string,
     status: deviceStatus,
     lastPinged: Date,
-    gateways: Gateway[]
+    gateways: Gateway[],
+    sensors?: Sensor[]
   ) {
     this.id = id;
     this.status = status;
     this.lastPinged = lastPinged;
     this.deviceType = deviceType.bridge;
     this.gateways = gateways;
+    this.sensors = sensors ? sensors : [];
   }
 }
 
@@ -86,6 +90,112 @@ interface IDeviceModel {
   gateways: IGateway[];
   sensors: ISensor[];
 }
+
+interface ITreeModelDevice {
+  id: string;
+  status: deviceStatus;
+  lastPinged: number;
+  deviceType: deviceType;
+  children?: string[] | undefined;
+}
+interface IDeviceTreeLevel {
+  devices: ITreeModelDevice[];
+}
+
+export type DeviceTreeModelJson = {
+  [key: string]: ITreeModelDevice[];
+};
+
+export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
+  const bridges: Bridge[] = [];
+  const gateways: Gateway[] = [];
+  const sensors: Sensor[] = [];
+  const devices: IDeviceTreeLevel[] = Object.values(json).map((value) => {
+    return { devices: value };
+  });
+  if (devices.length) {
+    devices[0].devices.forEach((topLevelDevice) => {
+      if (topLevelDevice.deviceType === deviceType.bridge) {
+        bridges.push(
+          new Bridge(
+            topLevelDevice.id,
+            topLevelDevice.status,
+            new Date(topLevelDevice.lastPinged),
+            devices[1].devices
+              .filter(
+                (device) =>
+                  device.deviceType === deviceType.gateway &&
+                  topLevelDevice.children?.includes(device.id)
+              )
+              .map((gateway) => {
+                return new Gateway(
+                  gateway.id,
+                  gateway.status,
+                  new Date(gateway.lastPinged),
+                  devices[2].devices
+                    .filter(
+                      (device) =>
+                        gateway.children?.includes(device.id) &&
+                        device.deviceType === deviceType.sensor
+                    )
+                    .map((sensor) => {
+                      return new Sensor(
+                        sensor.id,
+                        sensor.status,
+                        new Date(sensor.lastPinged)
+                      );
+                    })
+                );
+              }),
+            devices[1].devices
+              .filter(
+                (device) =>
+                  device.deviceType === deviceType.sensor &&
+                  topLevelDevice.children?.includes(device.id)
+              )
+              .map((sensor) => {
+                return new Sensor(
+                  sensor.id,
+                  sensor.status,
+                  new Date(sensor.lastPinged)
+                );
+              })
+          )
+        );
+      } else if (topLevelDevice.deviceType === deviceType.gateway) {
+        gateways.push(
+          new Gateway(
+            topLevelDevice.id,
+            topLevelDevice.status,
+            new Date(topLevelDevice.lastPinged),
+            devices[2].devices
+              .filter(
+                (device) =>
+                  topLevelDevice.children?.includes(device.id) &&
+                  device.deviceType === deviceType.sensor
+              )
+              .map((sensor) => {
+                return new Sensor(
+                  sensor.id,
+                  sensor.status,
+                  new Date(sensor.lastPinged)
+                );
+              })
+          )
+        );
+      } else {
+        sensors.push(
+          new Sensor(
+            topLevelDevice.id,
+            topLevelDevice.status,
+            new Date(topLevelDevice.lastPinged)
+          )
+        );
+      }
+    });
+  }
+  return new DeviceModel(bridges, gateways, sensors);
+};
 
 export class DeviceModel implements IDeviceModel {
   bridges: Bridge[];

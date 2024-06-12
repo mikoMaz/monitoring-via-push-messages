@@ -1,13 +1,18 @@
+import axios from "axios";
 import {
   Bridge,
   DeviceModel,
+  DeviceTreeModelJson,
   Gateway,
   Sensor,
+  createDeviceModelFromJson,
   deviceStatus,
 } from "../types/deviceModel";
 
+const apuURL = "http://localhost:8080/api/v1/kluczdostepu?id=1";
+
 export class APIClient {
-  public static getRecentUpdates = () => {
+  public static getDummyDeviceModel = () => {
     return new DeviceModel([
       new Bridge("bridge1", deviceStatus.active, new Date(), [
         new Gateway("gateway1", deviceStatus.active, new Date(), [
@@ -22,5 +27,18 @@ export class APIClient {
         ]),
       ]),
     ]);
+  };
+  public static getUpdatedDeviceModel = () => {
+    return axios
+      .get(apuURL)
+      .then((response) => {
+        const data: DeviceTreeModelJson = response.data;
+        return createDeviceModelFromJson(data);
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        return new DeviceModel();
+      });
   };
 }
