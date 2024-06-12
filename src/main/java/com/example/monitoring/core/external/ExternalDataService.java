@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TableCreatorService {
+public class ExternalDataService {
 
     private final JdbcTemplate jdbcTemplate;
 
