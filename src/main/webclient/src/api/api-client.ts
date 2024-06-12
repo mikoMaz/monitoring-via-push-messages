@@ -33,8 +33,6 @@ export class APIClient {
       .get(apuURL)
       .then((response) => {
         const data: DeviceTreeModelJson = response.data;
-        console.log(response.data);
-        console.log(data);
         return createDeviceModelFromJson(data);
       })
       .catch(function (error) {
