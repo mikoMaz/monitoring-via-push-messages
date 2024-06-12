@@ -16,4 +16,10 @@ public class TableCreatorService {
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (%s VARCHAR(255), %s VARCHAR(255), PRIMARY KEY (%s))", tableName, primaryKeyName, secondColumn, primaryKeyName);
         jdbcTemplate.execute(sql);
     }
+
+    @Transactional
+    public void addData(String tableName, String primaryKeyName, String secondColumn, String primaryValue, String secondValue) {
+        String sql = String.format("INSERT INTO %s (%s, %s) VALUES (?, ?)", tableName, primaryKeyName, secondColumn);
+        jdbcTemplate.update(sql, primaryValue, secondValue);
+    }
 }
