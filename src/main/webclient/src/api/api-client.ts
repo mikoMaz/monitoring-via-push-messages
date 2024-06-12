@@ -12,7 +12,7 @@ import {
 const apuURL = "http://localhost:8080/api/v1/kluczdostepu?id=1";
 
 export class APIClient {
-  public static getDymmyDeviceModel = () => {
+  public static getDummyDeviceModel = () => {
     return new DeviceModel([
       new Bridge("bridge1", deviceStatus.active, new Date(), [
         new Gateway("gateway1", deviceStatus.active, new Date(), [
