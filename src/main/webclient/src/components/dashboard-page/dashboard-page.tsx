@@ -14,7 +14,7 @@ export const DashboardPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data: DeviceModel = APIClient.getRecentUpdates();
+      const data: DeviceModel = await APIClient.getUpdatedDeviceModel();
       setDeviceModel(data);
     };
 
