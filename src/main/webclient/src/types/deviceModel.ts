@@ -102,7 +102,7 @@ interface IDeviceTreeLevel {
   devices: ITreeModelDevice[];
 }
 
-type DeviceTreeModelJson = {
+export type DeviceTreeModelJson = {
   [key: string]: ITreeModelDevice[];
 };
 
