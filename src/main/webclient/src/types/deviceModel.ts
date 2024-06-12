@@ -107,8 +107,8 @@ type DeviceTreeModelJson = {
 };
 
 export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
-  const topLevelDevices: Bridge[] = [];
-  const mediumLevelDevices: Gateway[] = [];
+  const bridges: Bridge[] = [];
+  const gateways: Gateway[] = [];
   const sensors: Sensor[] = [];
   const treeLevels: IDeviceTreeLevel[] = Object.values(json).map((value) => {
     return { devices: value };
@@ -116,7 +116,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
   if (treeLevels.length) {
     treeLevels[0].devices.forEach((deviceTL0) => {
       if (deviceTL0.deviceType === deviceType.bridge) {
-        topLevelDevices.push(
+        bridges.push(
           new Bridge(
             deviceTL0.id,
             deviceTL0.status,
@@ -163,7 +163,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
           )
         );
       } else if (deviceTL0.deviceType === deviceType.gateway) {
-        mediumLevelDevices.push(
+        gateways.push(
           new Gateway(
             deviceTL0.id,
             deviceTL0.status,
@@ -194,7 +194,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
       }
     });
   }
-  return new DeviceModel(topLevelDevices, mediumLevelDevices, sensors);
+  return new DeviceModel(bridges, gateways, sensors);
 };
 
 export class DeviceModel implements IDeviceModel {
