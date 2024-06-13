@@ -11,7 +11,7 @@ import com.example.monitoring.core.bridge.BridgeRequest;
 import lombok.RequiredArgsConstructor;
 
 public interface DeviceStatusService {
-    void saveFromArgs(String Id,Long Timestamp);
+    void saveFromArgs(String Id,Long Timestamp,Long first_logged_at);
     Integer getCalculatedStatus(String Id);
     Integer getCalculatedStatus(DeviceStatus deviceStatus);
     DeviceStatus getDeviceStatus(String Id);
