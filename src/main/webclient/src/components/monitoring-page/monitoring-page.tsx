@@ -23,7 +23,7 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
   const navigate = useNavigate();
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
-    APIClient.getRecentUpdates()
+    new DeviceModel()
   );
 
   const [filteringHeigth, setFilteringHeigth] =
@@ -105,6 +105,12 @@ export const MonitoringPage = ({ ...ui }: IUIProps) => {
           break;
       }
     }
+    const fetchData = async () => {
+      const data: DeviceModel = await APIClient.getUpdatedDeviceModel();
+      setDeviceModel(data);
+    };
+
+    fetchData();
   }, []);
 
   return (
