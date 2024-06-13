@@ -32,7 +32,7 @@ public class ExternalDataService {
         jdbcTemplate.update(sql, primaryValue, secondValue);
     }
 
-    Map<String, String> dataFetch(String tableName, String primaryKeyName, String secondColumn) {
+    public Map<String, String> dataFetch(String tableName, String primaryKeyName, String secondColumn) {
         String sql = String.format("SELECT * FROM %s", tableName);
         List<Map<String, Object>> listOfMapRows = jdbcTemplate.queryForList(sql);
         Map<String, String> result = new HashMap<>();
