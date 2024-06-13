@@ -55,4 +55,8 @@ public class AuthenticationService {
     public String extractToken(String authHeader) {
         return authHeader.substring(7);
     }
+
+    public String extractDeviceType(String token) {
+        return jwtService.extractDeviceType(token);
+    }
 }
