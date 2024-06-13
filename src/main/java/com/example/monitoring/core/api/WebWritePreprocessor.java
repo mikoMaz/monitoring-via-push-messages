@@ -17,7 +17,7 @@ public class WebWritePreprocessor {
     private static final String f2="status";
     private static final String f3="lastPinged";
     private static final String f4="deviceType";
-    JsonObject convertToJsonTreeComponent(BridgeData bridge,int status)
+    JsonObject convertToJsonTreeComponent(BridgeData bridge, int status)
     {
         JsonObject device=new JsonObject();
         int deviceType=2;

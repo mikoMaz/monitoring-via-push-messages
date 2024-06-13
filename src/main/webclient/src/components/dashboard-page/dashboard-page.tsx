@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { DeviceModel } from "../../types/deviceModel";
 import { APIClient } from "../../api/api-client";
 import { StatusPieChart } from "./components/status-pie-chart";
-
+import { HistoryPieChart } from "./components/history-pie-chart";
 export const DashboardPage = () => {
   const ui = appProps.appMainProps.ui;
 
@@ -32,6 +32,11 @@ export const DashboardPage = () => {
           <StatusPieChart devices={deviceModel.getSensorsArray()} heading="Sensors" />
           <StatusPieChart devices={deviceModel.getGatewaysArray()} heading="Gateways"/>
           <StatusPieChart devices={deviceModel.getBridgesArray()} heading="Bridges"/>
+        </HStack>
+        <HStack>
+          <HistoryPieChart devices={deviceModel.getSensorsArray()} heading="Sensors" />
+          <HistoryPieChart devices={deviceModel.getGatewaysArray()} heading="Gateways"/>
+          <HistoryPieChart devices={deviceModel.getBridgesArray()} heading="Bridges"/>
         </HStack>
       </Center>
     </Box>

@@ -28,6 +28,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.example.monitoring.core.api.WebWritePreprocessor;
 import com.example.monitoring.core.api.auth.AuthenticationController;
+import com.example.monitoring.core.api.history.DeviceHistory;
+import com.example.monitoring.core.api.history.DeviceHistoryService;
 import com.google.gson.*;
 @RestController
 @RequestMapping("/api/v1/")
@@ -36,6 +38,7 @@ public class WebWriteController {
     private final BridgeService bridgeService;
     private final GatewayService gatewayService;
     private final SensorDataSimplifiedService sensorService;
+    private final DeviceHistoryService historyService;
     private final DeviceStatusService statusService;
     private final WebWritePreprocessor proc;
 
@@ -89,6 +92,68 @@ public class WebWriteController {
                 }
                 
                 JsonObject subDevice=proc.convertToJsonTreeComponent(gateway, statusService.getCalculatedStatus(gateway.getGateway_eui()));
+                subDevice.add("children",sensorIdArray);
+                list.get(1).add(subDevice);
+                savedDevice=subDevice;
+            }
+        }
+        for(int i=0;i<20;i++)
+        {
+            if(list.get(i).size()==0)
+            break;
+            root.add("devices"+String.valueOf(i),list.get(i));
+        }
+        return ResponseEntity.ok().body(root.toString());
+    }
+    @GetMapping("/history")
+    public ResponseEntity<String> historyTree(@RequestParam Integer id) {
+        List<BridgeData> bdList;
+        List<GatewayData> gatewayList;
+        List<SensorDataSimplified> sensorList;
+        bdList = bridgeService.allBridges(id);
+
+        JsonObject root=new JsonObject();
+        ArrayList<JsonArray> list= new ArrayList<JsonArray>();
+        JsonObject savedDevice=new JsonObject();
+        for(int i=0;i<20;i++)
+        {
+            JsonArray devices= new JsonArray();
+            list.add(devices);
+
+        }
+        JsonObject currentObject=new JsonObject();
+        for(int i=0;i<bdList.size();i++)
+        {   BridgeData bridge=bdList.get(i);
+            currentObject=proc.convertToJsonTreeComponent(bridge, Math.round(historyService.uptimePercent(bridge.getSerial_number())));
+            gatewayList=gatewayService.allGatewaysConnectedToBridge(bridge.getSerial_number());
+
+            JsonArray gatewayIdArray = new JsonArray();
+            for (GatewayData gateway : gatewayList) {
+                gatewayIdArray.add(new JsonPrimitive(gateway.getGateway_eui()));
+            }
+
+            currentObject.add("children", gatewayIdArray);
+            list.get(0).add(currentObject);
+            for(int j=0;j<gatewayList.size();j++)
+            {
+                GatewayData gateway= gatewayList.get(j);
+                sensorList=sensorService.allSensorsConnectedToSmartbox(gateway.getGateway_eui());
+                JsonArray sensorIdArray = new JsonArray();
+                for (SensorDataSimplified sensor : sensorList) {
+                    sensorIdArray.add(new JsonPrimitive(sensor.getSensor()));
+                }
+                
+                for(int k=0;k<sensorList.size();k++)
+                {
+                    SensorDataSimplified sensor =sensorList.get(k) ;
+                    JsonObject subDevice=proc.convertToJsonTreeComponent(sensor,Math.round(historyService.uptimePercent(sensor.getSensor())));
+                    logger.info(historyService.uptimePercent(sensor.getSensor()).toString());
+                    logger.info(null,Math.round(historyService.uptimePercent(sensor.getSensor())));
+                    
+                    list.get(2).add(subDevice);
+                }
+                
+                JsonObject subDevice=proc.convertToJsonTreeComponent(gateway, Math.round(historyService.uptimePercent(gateway.getGateway_eui())));
                 subDevice.add("children",sensorIdArray);
                 list.get(1).add(subDevice);
                 savedDevice=subDevice;
