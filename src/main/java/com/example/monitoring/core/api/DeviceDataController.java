@@ -71,7 +71,7 @@ public class DeviceDataController {
              DeviceStatus deviceStatus=statusService.getDeviceStatus(payloadSimplified.getSensor());
              if(deviceStatus==null)
              {
-                statusService.saveFromArgs(payloadSimplified.getSensor(),payloadSimplified.getReading_time());
+                statusService.saveFromArgs(payloadSimplified.getSensor(),payloadSimplified.getReading_time(),payloadSimplified.getReading_time());
                 return ResponseEntity.ok().body(payloadSimplified.toString());
              }
              int status=statusService.getCalculatedStatus(deviceStatus);
@@ -81,7 +81,7 @@ public class DeviceDataController {
                  historyService.save(DeviceHistory.builder().deviceId(payloadSimplified.getSensor()).end_timestamp(unixTime).start_timestamp(latestLoggedTime).length(unixTime-latestLoggedTime).build());
              }
 
-             statusService.saveFromArgs(payloadSimplified.getSensor(),payloadSimplified.getReading_time());
+             statusService.saveFromArgs(payloadSimplified.getSensor(),payloadSimplified.getReading_time(),deviceStatus.getFirst_logged_at());
              repository.save(payloadSimplified);
              return ResponseEntity.ok().body(payloadSimplified.toString());
          }
@@ -101,7 +101,7 @@ public class DeviceDataController {
             DeviceStatus deviceStatus=statusService.getDeviceStatus(gateway.getGateway_eui());
             if(deviceStatus==null)
             {
-                statusService.saveFromArgs(gateway.getGateway_eui(), gateway.getLogged_at());
+                statusService.saveFromArgs(gateway.getGateway_eui(), gateway.getLogged_at(),gateway.getLogged_at());
                 return ResponseEntity.ok().body(gateway.toString());
             }
             int status=statusService.getCalculatedStatus(deviceStatus);
@@ -110,7 +110,7 @@ public class DeviceDataController {
             if(status==0){
                 historyService.save(DeviceHistory.builder().deviceId(gateway.getGateway_eui()).end_timestamp(unixTime).start_timestamp(latestLoggedTime).length(unixTime-latestLoggedTime).build());
             }
-            statusService.saveFromArgs(gateway.getGateway_eui(), gateway.getLogged_at());
+            statusService.saveFromArgs(gateway.getGateway_eui(), gateway.getLogged_at(),deviceStatus.getFirst_logged_at());
 
             return ResponseEntity.ok().body(gateway.toString());
         }
@@ -122,7 +122,7 @@ public class DeviceDataController {
             DeviceStatus deviceStatus=statusService.getDeviceStatus(bridge.getSerial_number());
             if(deviceStatus==null)
             {
-                statusService.saveFromArgs(bridge.getSerial_number(), bridge.getLogged_at());
+                statusService.saveFromArgs(bridge.getSerial_number(), bridge.getLogged_at(),bridge.getLogged_at());
 
                 return ResponseEntity.ok().body(bridge.toString());
             }
@@ -133,7 +133,7 @@ public class DeviceDataController {
             if(status==0){
                 historyService.save(DeviceHistory.builder().deviceId(bridge.getSerial_number()).end_timestamp(unixTime).start_timestamp(latestLoggedTime).length(unixTime-latestLoggedTime).build());
             }
-            statusService.saveFromArgs(bridge.getSerial_number(), bridge.getLogged_at());
+            statusService.saveFromArgs(bridge.getSerial_number(), bridge.getLogged_at(),deviceStatus.getFirst_logged_at());
 
             return ResponseEntity.ok().body(bridge.toString());
         }

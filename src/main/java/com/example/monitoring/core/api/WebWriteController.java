@@ -93,15 +93,6 @@ public class WebWriteController {
         }
         return ResponseEntity.ok().body(root.toString());
     }
-
-    @GetMapping("/graph")
-    public ResponseEntity<String> Graph(@RequestParam Integer id) {
-        JsonObject root=new JsonObject();
-        return ResponseEntity.ok().body(root.toString());
-    }
-
-
-
     @GetMapping("/get-latest-sensor")
     public String latestSensor(@RequestBody String  payloadJson) throws JsonMappingException, JsonProcessingException {
         Map<String, Object> map = reader.readValue(payloadJson);

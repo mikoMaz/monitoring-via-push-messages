@@ -14,8 +14,8 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         private final DeviceStatusRepository repository;
         private final Integer maxTimeout=60*5;
 
-        public void saveFromArgs(String Id,Long Timestamp){
-                DeviceStatus ds=DeviceStatus.builder().Id(Id).logged_at(Timestamp).build();
+        public void saveFromArgs(String Id,Long Timestamp,Long firstLoggedAt){
+                DeviceStatus ds=DeviceStatus.builder().Id(Id).logged_at(Timestamp).first_logged_at(firstLoggedAt).build();
                 repository.save(ds);
         }
         public Integer getCalculatedStatus(String Id)
