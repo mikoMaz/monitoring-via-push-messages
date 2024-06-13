@@ -43,6 +43,7 @@ public class DeviceDataController {
     private final AuthenticationService authenticationService;
     private final GatewayService gatewayService;
     private final BridgeService bridgeService;
+    private final DeviceDataService deviceDataService;
 
     org.slf4j.Logger  logger =LoggerFactory.getLogger(AuthenticationController.class);
     ObjectMapper objectMapper = new ObjectMapper();
@@ -54,9 +55,15 @@ public class DeviceDataController {
             @RequestHeader("Authorization") String authHeader
     ) {
         String token = authenticationService.extractToken(authHeader);
-        String deviceId = authenticationService.extractDeviceId(token);
+//        String deviceId = authenticationService.extractDeviceId(token);
+        String deviceType = authenticationService.extractDeviceType(token);
+        DeviceData pal = deviceDataService.buildObject(payloadJson, deviceType);
+        deviceDataService.saveToDatabase(pal);
 
-        /* SENSOR */
+        return ResponseEntity.ok().body("Everything is alright.");
+
+        /*
+        *//* SENSOR *//*
         if (payloadJson.containsKey("severity")) {
              SensorData payload = objectMapper.convertValue(payloadJson, SensorData.class);
 //             SensorData payload= objectMapper.readValue(payloadJson, SensorData.class);
@@ -66,14 +73,14 @@ public class DeviceDataController {
              repository.save(payloadSimplified);
              return ResponseEntity.ok().body(payloadSimplified.toString());
          }
-        /*if (payloadJson.containsKey("serial_number")) {
+        *//*if (payloadJson.containsKey("serial_number")) {
             GatewayData payload = objectMapper.convertValue(payloadJson, GatewayData.class);
 //            SensorDataSimplified payloadSimplified = payload.toSensorDataSimplified();
             logger.info(payload.toString());
             gatewayRepository.save(payload);
             return ResponseEntity.ok().body(payload.toString());
-        }*/
-        /* GATEWAY */
+        }*//*
+        *//* GATEWAY *//*
         if (payloadJson.containsKey("bridge_serial_number")) {
             GatewayRequest payload = objectMapper.convertValue(payloadJson, GatewayRequest.class);
             logger.info(payload.toString());
@@ -81,7 +88,7 @@ public class DeviceDataController {
             statusService.saveFromArgs(gateway.getGateway_eui(), gateway.getLogged_at());
             return ResponseEntity.ok().body(gateway.toString());
         }
-        /* BRIDGE */
+        *//* BRIDGE *//*
         if (payloadJson.containsKey("serial_number")) {
             BridgeRequest payload = objectMapper.convertValue(payloadJson, BridgeRequest.class);
             logger.info(payload.toString());
@@ -90,7 +97,7 @@ public class DeviceDataController {
 
             return ResponseEntity.ok().body(bridge.toString());
         }
-         return ResponseEntity.badRequest().body("err: unknown payload");
+         return ResponseEntity.badRequest().body("err: unknown payload");*/
     }
 
 }
