@@ -241,6 +241,15 @@ export class DeviceModel implements IDeviceModel {
   public getBridgesArray = () => {
     return this.bridges;
   };
+
+  public static getPlaceholderDevice = (): IMonitoringDevice => {
+    return {
+      id: "undefined",
+      status: deviceStatus.disabled,
+      deviceType: deviceType.sensor,
+      lastPinged: new Date(),
+    };
+  };
 }
 
 export function createDeviceModel(data: IDeviceModel): DeviceModel {
