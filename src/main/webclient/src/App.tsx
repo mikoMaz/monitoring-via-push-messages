@@ -27,9 +27,13 @@ export default function App() {
       <Route
         key="monitoring"
         path="/monitoring"
-        element={<MonitoringPage {...deviceModel}/>}
+        element={<MonitoringPage {...deviceModel} />}
       />,
-      <Route key="dashboard" path="/dashboard" element={<DashboardPage {...deviceModel}/>} />,
+      <Route
+        key="dashboard"
+        path="/dashboard"
+        element={<DashboardPage {...deviceModel} />}
+      />,
       <Route key="about" path="/about" element={<AboutPage />} />,
       <Route key="landing-page" path="/" element={<LandingPage />} />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
@@ -54,7 +58,7 @@ export default function App() {
 
     const timer = setTimeout(() => {
       updateModel();
-    }, refreshTime*60*1000);
+    }, refreshTime * 60 * 1000);
 
     return () => clearTimeout(timer);
 

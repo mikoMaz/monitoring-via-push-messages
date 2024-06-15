@@ -15,8 +15,11 @@ export const DashboardPage = (model: DeviceModel) => {
       <Center>
         <HStack>
           <StatusPieChart devices={model.getSensorsArray()} heading="Sensors" />
-          <StatusPieChart devices={model.getGatewaysArray()} heading="Gateways"/>
-          <StatusPieChart devices={model.getBridgesArray()} heading="Bridges"/>
+          <StatusPieChart
+            devices={model.getGatewaysArray()}
+            heading="Gateways"
+          />
+          <StatusPieChart devices={model.getBridgesArray()} heading="Bridges" />
         </HStack>
       </Center>
     </Box>

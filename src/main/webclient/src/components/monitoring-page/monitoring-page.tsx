@@ -62,7 +62,7 @@ export const MonitoringPage = (model: DeviceModel) => {
   const changeSelectedViewOption = (option: viewOption) => {
     setSelectedViewOption(option);
     searchParams.set("view", viewOption[option]);
-    navigate({pathname: "", search: searchParams.toString()})
+    navigate({ pathname: "", search: searchParams.toString() });
   };
 
   const renderSelectedView = () => {
