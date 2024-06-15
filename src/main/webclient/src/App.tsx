@@ -11,6 +11,9 @@ import { NotFoundPage } from "./components/not-found-page/not-found-page";
 import { IAppProps } from "./types/projectTypes";
 import { DeviceModel } from "./types/deviceModel";
 import { UIProps } from "./config/config";
+import { APIClient } from "./api/api-client";
+
+const refreshTime = 3; //minutes
 
 export default function App() {
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
@@ -24,9 +27,9 @@ export default function App() {
       <Route
         key="monitoring"
         path="/monitoring"
-        element={<MonitoringPage />}
+        element={<MonitoringPage {...deviceModel}/>}
       />,
-      <Route key="dashboard" path="/dashboard" element={<DashboardPage />} />,
+      <Route key="dashboard" path="/dashboard" element={<DashboardPage {...deviceModel}/>} />,
       <Route key="about" path="/about" element={<AboutPage />} />,
       <Route key="landing-page" path="/" element={<LandingPage />} />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
@@ -44,6 +47,17 @@ export default function App() {
         { replace: true }
       );
     }
+    const updateModel = async () => {
+      const data = await APIClient.getUpdatedDeviceModel();
+      setDeviceModel(data);
+    };
+
+    const timer = setTimeout(() => {
+      updateModel();
+    }, refreshTime*60*1000);
+
+    return () => clearTimeout(timer);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return <AppBody {...props} />;

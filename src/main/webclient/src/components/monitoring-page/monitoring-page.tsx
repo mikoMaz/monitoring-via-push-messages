@@ -7,7 +7,6 @@ import { FilterSectionContainer } from "./components/filter-section-container";
 import { ViewTypeSelectionTabs } from "./components/view-type-selection-tabs";
 import { FilterSectionButtons } from "./components/filter-section-buttons";
 import { SingleDeviceView } from "../layout/monitoring-tables/single-device-view/single-device-view";
-import { APIClient } from "../../api/api-client";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { UIProps } from "../../config/config";
 
@@ -18,14 +17,10 @@ enum viewOption {
   sensors,
 }
 
-export const MonitoringPage = () => {
+export const MonitoringPage = (model: DeviceModel) => {
   const ui = UIProps;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-
-  const [deviceModel, setDeviceModel] = useState<DeviceModel>(
-    new DeviceModel()
-  );
 
   const [filteringHeigth, setFilteringHeigth] =
     useState<FilteringHeigth>("0px");
@@ -73,13 +68,13 @@ export const MonitoringPage = () => {
   const renderSelectedView = () => {
     switch (selectedViewOption) {
       case viewOption.allDevices:
-        return <AllDevicesView model={deviceModel} />;
+        return <AllDevicesView model={model} />;
       case viewOption.sensors:
-        return <SingleDeviceView model={deviceModel.getSensorsArray()} />;
+        return <SingleDeviceView model={model.getSensorsArray()} />;
       case viewOption.gateways:
-        return <SingleDeviceView model={deviceModel.getGatewaysArray()} />;
+        return <SingleDeviceView model={model.getGatewaysArray()} />;
       case viewOption.bridges:
-        return <SingleDeviceView model={deviceModel.getBridgesArray()} />;
+        return <SingleDeviceView model={model.getBridgesArray()} />;
     }
   };
 
@@ -106,12 +101,6 @@ export const MonitoringPage = () => {
           break;
       }
     }
-    const fetchData = async () => {
-      const data: DeviceModel = await APIClient.getUpdatedDeviceModel();
-      setDeviceModel(data);
-    };
-
-    fetchData();
   }, []);
 
   return (
