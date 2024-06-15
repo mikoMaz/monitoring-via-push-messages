@@ -2,9 +2,10 @@ import { Box, Grid, GridItem } from "@chakra-ui/react";
 import { NavigationButtons } from "./components/navigation-buttons/navigation-buttons";
 import { UserSidebar } from "./components/user-sidebar/user-sidebar";
 import { Logo } from "./components/logo/logo";
-import { IUIProps } from "../../app-main/app-main";
+import { UIProps } from "../../../config/config";
 
-export const Navbar = ({ ...ui }: IUIProps) => {
+export const Navbar = () => {
+  const ui = UIProps;
   return (
     <Box>
       <Grid
@@ -24,10 +25,10 @@ export const Navbar = ({ ...ui }: IUIProps) => {
           <div className="navbar-empty-space" />
         </GridItem>
         <GridItem>
-          <NavigationButtons {...ui} />
+          <NavigationButtons {...ui}/>
         </GridItem>
         <GridItem>
-          <UserSidebar {...ui} />
+          <UserSidebar {...ui}/>
         </GridItem>
       </Grid>
     </Box>

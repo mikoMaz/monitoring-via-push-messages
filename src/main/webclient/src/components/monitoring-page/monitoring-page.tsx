@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { FilteringHeigth } from "../../types/projectTypes";
 import { FilterSectionContainer } from "./components/filter-section-container";
 import { ViewTypeSelectionTabs } from "./components/view-type-selection-tabs";
-import { IUIProps } from "../app-main/app-main";
 import { FilterSectionButtons } from "./components/filter-section-buttons";
 import { SingleDeviceView } from "../layout/monitoring-tables/single-device-view/single-device-view";
 import { APIClient } from "../../api/api-client";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { UIProps } from "../../config/config";
 
 enum viewOption {
   allDevices,
@@ -18,7 +18,8 @@ enum viewOption {
   sensors,
 }
 
-export const MonitoringPage = ({ ...ui }: IUIProps) => {
+export const MonitoringPage = () => {
+  const ui = UIProps;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 

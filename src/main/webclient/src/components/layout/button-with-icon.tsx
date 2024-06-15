@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from "@chakra-ui/react";
-import { appProps } from "../../config/config";
+import { UIProps } from "../../config/config";
 
 interface IButtonWithIconProps {
   icon: React.ReactElement;
@@ -9,13 +9,12 @@ interface IButtonWithIconProps {
 }
 
 export const ButtonWithIcon = ({ text, icon, onClick, props }: IButtonWithIconProps) => {
-  const ui = appProps.appMainProps.ui;
   return (
     <Button
       leftIcon={icon}
       {...props}
       colorScheme="secondary"
-      color={ui.colors.black}
+      color={UIProps.colors.black}
       variant="solid"
       onClick={onClick}
     >

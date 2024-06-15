@@ -1,12 +1,12 @@
 import { Box, Center, HStack } from "@chakra-ui/react";
-import { appProps } from "../../config/config";
 import { useEffect, useState } from "react";
 import { DeviceModel } from "../../types/deviceModel";
 import { APIClient } from "../../api/api-client";
 import { StatusPieChart } from "./components/status-pie-chart";
+import { UIProps } from "../../config/config";
 
 export const DashboardPage = () => {
-  const ui = appProps.appMainProps.ui;
+  const ui = UIProps;
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
