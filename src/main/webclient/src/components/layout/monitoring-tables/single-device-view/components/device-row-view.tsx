@@ -1,4 +1,4 @@
-import { HStack, Td, Tr } from "@chakra-ui/react";
+import { Box, HStack, Td, Tr } from "@chakra-ui/react";
 import {
   IMonitoringDevice,
   deviceType,
@@ -37,14 +37,13 @@ export const DeviceRowView = (device: IMonitoringDevice) => {
       _hover={{ cursor: "pointer" }}
     >
       <Td>
-        <HStack>
-          <StatusDotIndicator status={device.status} />
-          <>{device.id}</>
-        </HStack>
+        <>{device.id}</>
       </Td>
       <Td>{device.lastPinged.toString()}</Td>
       <Td>
-        <StatusDotIndicator status={device.status} />
+        <Box marginLeft="16px">
+          <StatusDotIndicator status={device.status} />
+        </Box>
       </Td>
     </Tr>
   );
