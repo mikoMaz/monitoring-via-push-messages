@@ -8,10 +8,11 @@ import {
   HStack,
   Text,
 } from "@chakra-ui/react";
-import { Gateway } from "../../../../../types/deviceModel";
+import { Gateway, deviceType } from "../../../../../types/deviceModel";
 import { SensorsTable } from "./sensors-table";
 import { StatusDotIndicator } from "../../../status-dot-indicator";
 import { Link } from "react-router-dom";
+import { DeviceDetailsLink } from "./device-details-link";
 
 interface IGatewayRowViewProps {
   gateway: Gateway;
@@ -24,11 +25,7 @@ export const GatewayRowView = ({ gateway }: IGatewayRowViewProps) => {
         <Box as="span" flex="1" textAlign="left">
           <HStack>
             <StatusDotIndicator status={gateway.status} />
-            <Link to={`/monitoring/gateway?id=${gateway.id}`}>
-              <Text _hover={{ textDecoration: "underline" }}>
-                Gateway {gateway.id}
-              </Text>
-            </Link>
+            <DeviceDetailsLink type={deviceType.gateway} id={gateway.id} />
           </HStack>
         </Box>
         <AccordionIcon />

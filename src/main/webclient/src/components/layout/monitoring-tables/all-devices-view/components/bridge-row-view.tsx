@@ -8,10 +8,11 @@ import {
   Text,
   textDecoration,
 } from "@chakra-ui/react";
-import { Bridge } from "../../../../../types/deviceModel";
+import { Bridge, deviceType } from "../../../../../types/deviceModel";
 import { GatewayRowView } from "./gateway-row-view";
 import { StatusDotIndicator } from "../../../status-dot-indicator";
 import { Link } from "react-router-dom";
+import { DeviceDetailsLink } from "./device-details-link";
 
 interface IBridgeRowViewProps {
   bridge: Bridge;
@@ -24,11 +25,7 @@ export const BridgeRowView = ({ bridge }: IBridgeRowViewProps) => {
         <Box as="span" flex="1" textAlign="left">
           <HStack>
             <StatusDotIndicator status={bridge.status} />
-            <Link to={`/monitoring/bridge?id=${bridge.id}`}>
-              <Text _hover={{ textDecoration: "underline" }}>
-                Bridge {bridge.id}
-              </Text>
-            </Link>
+            <DeviceDetailsLink type={deviceType.bridge} id={bridge.id} />
           </HStack>
         </Box>
         <AccordionIcon />
