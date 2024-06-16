@@ -1,6 +1,6 @@
 package com.example.monitoring.core.api;
 
-import com.example.monitoring.core.external.ExternalDataService;
+import com.example.monitoring.core.external.fieldmapping.FieldMapDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +12,12 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class DeviceDataServiceImpl implements DeviceDataService {
-    private final ExternalDataService externalDataService;
+    private final FieldMapDataService fieldMapDataService;
     private final DeviceDataRepository deviceDataRepository;
 
     @Override
     public DeviceData buildObject(Map<String, Object> payload, String deviceType) {
-        Map<String,String> fetchedData = externalDataService.dataFetch("device_payload_" + deviceType, "key_name", "table_key_name");
+        Map<String,String> fetchedData = fieldMapDataService.getAllFieldsForGivenDeviceType(deviceType);
         Map<String, String> map = new HashMap<>();
         List<List<String>> other = new ArrayList<>();
 
