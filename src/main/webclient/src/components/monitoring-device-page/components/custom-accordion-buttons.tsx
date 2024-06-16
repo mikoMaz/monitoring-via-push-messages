@@ -5,13 +5,13 @@ export const CustomAccordionButton = ({
   title,
 }: {
   label: string;
-  title: boolean;
+  title?: boolean;
 }) => {
-  function titleOrNot(label: string, title: boolean ) {
-    if (title === true) {
+  function titleOrNot(label: string, title?: boolean ) {
+    if (title) {
       return <Heading size="lg">{label}</Heading>;
     } else {
-      return <Text fontSize="lg">{label}</Text>;
+      return <Text fontSize="xl">{label}</Text>;
     }
   }
   return (

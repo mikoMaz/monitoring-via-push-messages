@@ -99,13 +99,13 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
               <AccordionPanel>Chart</AccordionPanel>
             </AccordionItem>
             <AccordionItem>
-              <CustomAccordionButton title={false} label="Device details" />
+              <CustomAccordionButton label="Device details" />
               <AccordionPanel>
                 <DeviceDetailsTable />
               </AccordionPanel>
             </AccordionItem>
             <AccordionItem>
-              <CustomAccordionButton title={false} label="History" />
+              <CustomAccordionButton label="History" />
               <AccordionPanel>History</AccordionPanel>
             </AccordionItem>
           </Accordion>
