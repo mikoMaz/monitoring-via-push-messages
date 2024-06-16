@@ -58,9 +58,11 @@ export default function App() {
       );
     }
     const updateModel = async () => {
-      const data = await APIClient.getUpdatedDeviceModel();
+      const data = await APIClient.getDummyDeviceModel();
+      console.log(data);
       setDeviceModel(data);
     };
+    updateModel();
 
     const timer = setTimeout(() => {
       updateModel();
