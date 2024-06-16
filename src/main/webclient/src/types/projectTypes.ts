@@ -23,3 +23,7 @@ export interface IAppProps {
 }
 
 export type FilteringHeigth = "0px" | "200px";
+
+export const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};

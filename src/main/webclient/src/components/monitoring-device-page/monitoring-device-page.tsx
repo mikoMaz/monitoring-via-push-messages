@@ -1,12 +1,22 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { UIProps } from "../../config/config";
-import { Box, Center } from "@chakra-ui/react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+  Grid,
+  GridItem,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
   DeviceModel,
   IMonitoringDevice,
   deviceType,
 } from "../../types/deviceModel";
+import { CustomAccordionButton } from "./components/custom-accordion-buttons";
+import { capitalizeFirstLetter } from "../../types/projectTypes";
+import { DeviceDetailsTable } from "./components/device-details-table";
 
 export type monitoringDeviceType = "sensor" | "gateway" | "bridge" | "other";
 
@@ -16,7 +26,6 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
   const [selectedDevice, setSelectedDevice] = useState<IMonitoringDevice>(
     DeviceModel.getPlaceholderDevice()
   );
-
 
   useEffect(() => {
     let params = new URLSearchParams(window.location.search);
@@ -65,7 +74,7 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
       }
     }
   }, [device, model]);
-  
+
   return (
     <Box
       paddingLeft="47px"
@@ -73,9 +82,35 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
       bg={ui.colors.background}
       boxShadow="inner"
     >
-      <Center>
-        <>{device?.toString()}</>
-      </Center>
+      <Grid>
+        <GridItem
+          className="chart-details-accordion"
+          marginTop="28px"
+          marginBottom="28px"
+        >
+          <Accordion defaultIndex={[0, 1, 2]} allowMultiple allowToggle>
+            <AccordionItem>
+              <CustomAccordionButton
+                label={`${capitalizeFirstLetter(
+                  deviceType[selectedDevice.deviceType]
+                )} ${selectedDevice.id}`}
+              />
+
+              <AccordionPanel>Chart</AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <CustomAccordionButton label="Device details" />
+              <AccordionPanel>
+                <DeviceDetailsTable />
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <CustomAccordionButton label="History" />
+              <AccordionPanel>History</AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+        </GridItem>
+      </Grid>
     </Box>
   );
 };
