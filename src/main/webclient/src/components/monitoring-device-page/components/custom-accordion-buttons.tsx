@@ -1,11 +1,24 @@
-import { AccordionButton, Box, AccordionIcon } from "@chakra-ui/react";
+import { AccordionButton, Box, AccordionIcon, Heading, Text } from "@chakra-ui/react";
 
-export const CustomAccordionButton = ({ label }: { label: string }) => {
+export const CustomAccordionButton = ({
+  label,
+  title,
+}: {
+  label: string;
+  title: boolean;
+}) => {
+  function titleOrNot(label: string, title: boolean ) {
+    if (title === true) {
+      return <Heading size="lg">{label}</Heading>;
+    } else {
+      return <Text fontSize="lg">{label}</Text>;
+    }
+  }
   return (
     <h2>
       <AccordionButton>
         <Box as="span" flex="1" textAlign="left">
-          {label}
+          {titleOrNot(label, title)}
         </Box>
         <AccordionIcon />
       </AccordionButton>

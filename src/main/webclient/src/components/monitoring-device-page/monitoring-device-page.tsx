@@ -90,7 +90,7 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
         >
           <Accordion defaultIndex={[0, 1, 2]} allowMultiple allowToggle>
             <AccordionItem>
-              <CustomAccordionButton
+              <CustomAccordionButton title={true}
                 label={`${capitalizeFirstLetter(
                   deviceType[selectedDevice.deviceType]
                 )} ${selectedDevice.id}`}
@@ -99,13 +99,13 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
               <AccordionPanel>Chart</AccordionPanel>
             </AccordionItem>
             <AccordionItem>
-              <CustomAccordionButton label="Device details" />
+              <CustomAccordionButton title={false} label="Device details" />
               <AccordionPanel>
                 <DeviceDetailsTable />
               </AccordionPanel>
             </AccordionItem>
             <AccordionItem>
-              <CustomAccordionButton label="History" />
+              <CustomAccordionButton title={false} label="History" />
               <AccordionPanel>History</AccordionPanel>
             </AccordionItem>
           </Accordion>
