@@ -1,12 +1,12 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import { UIProps } from "../../../config/config";
+import { UIProps } from "../../config/config";
 import { Box, Center } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
   DeviceModel,
   IMonitoringDevice,
   deviceType,
-} from "../../../types/deviceModel";
+} from "../../types/deviceModel";
 
 export type monitoringDeviceType = "sensor" | "gateway" | "bridge" | "other";
 

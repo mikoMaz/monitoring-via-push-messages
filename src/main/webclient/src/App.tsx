@@ -12,7 +12,7 @@ import { IAppProps } from "./types/projectTypes";
 import { DeviceModel } from "./types/deviceModel";
 import { UIProps } from "./config/config";
 import { APIClient } from "./api/api-client";
-import { MonitoringDevicePage } from "./components/layout/monitoring-device-page/monitoring-device-page";
+import { MonitoringDevicePage } from "./components/monitoring-device-page/monitoring-device-page";
 
 const refreshTime = 3; //minutes
 
@@ -58,7 +58,7 @@ export default function App() {
       );
     }
     const updateModel = async () => {
-      const data = await APIClient.getUpdatedDeviceModel();
+      const data = await APIClient.getDummyDeviceModel();
       console.log(data);
       setDeviceModel(data);
     };
