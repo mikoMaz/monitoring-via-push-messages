@@ -1,25 +1,10 @@
 import { Box, Center, HStack } from "@chakra-ui/react";
-import { appProps } from "../../config/config";
-import { useEffect, useState } from "react";
 import { DeviceModel } from "../../types/deviceModel";
-import { APIClient } from "../../api/api-client";
 import { StatusPieChart } from "./components/status-pie-chart";
+import { UIProps } from "../../config/config";
 
-export const DashboardPage = () => {
-  const ui = appProps.appMainProps.ui;
-
-  const [deviceModel, setDeviceModel] = useState<DeviceModel>(
-    new DeviceModel()
-  );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data: DeviceModel = await APIClient.getUpdatedDeviceModel();
-      setDeviceModel(data);
-    };
-
-    fetchData();
-  }, []);
+export const DashboardPage = (model: DeviceModel) => {
+  const ui = UIProps;
   return (
     <Box
       paddingLeft="47px"
@@ -29,9 +14,12 @@ export const DashboardPage = () => {
     >
       <Center>
         <HStack>
-          <StatusPieChart devices={deviceModel.getSensorsArray()} heading="Sensors" />
-          <StatusPieChart devices={deviceModel.getGatewaysArray()} heading="Gateways"/>
-          <StatusPieChart devices={deviceModel.getBridgesArray()} heading="Bridges"/>
+          <StatusPieChart devices={model.getSensorsArray()} heading="Sensors" />
+          <StatusPieChart
+            devices={model.getGatewaysArray()}
+            heading="Gateways"
+          />
+          <StatusPieChart devices={model.getBridgesArray()} heading="Bridges" />
         </HStack>
       </Center>
     </Box>

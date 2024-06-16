@@ -1,5 +1,5 @@
 import { Tab, TabList, Tabs } from "@chakra-ui/react";
-import { appProps } from "../../../config/config";
+import { UIProps } from "../../../config/config";
 
 interface IViewTypeSelectionTabs {
   index: number;
@@ -11,7 +11,7 @@ export const ViewTypeSelectionTabs = ({
   onSelectionChanged,
 }: IViewTypeSelectionTabs) => {
   const TabButton = ({ text }: { text: string }) => {
-    const ui = appProps.appMainProps.ui;
+    const ui = UIProps;
     return (
       <Tab
         marginRight="10px"
