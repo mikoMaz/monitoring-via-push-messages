@@ -40,9 +40,6 @@ public class CsvController {
             }
         }
 
-        System.out.println(dataHolderService.getDevice());
-        System.out.println(dataHolderService.getCompany());
-
         // TODO save to db
         return ResponseEntity.ok(file.getOriginalFilename());
     }
