@@ -31,6 +31,9 @@ import com.example.monitoring.core.api.auth.AuthenticationRequest;
 import com.example.monitoring.core.api.auth.AuthenticationResponse;
 import com.example.monitoring.core.api.auth.AuthenticationService;
 import com.example.monitoring.core.api.auth.RegisterRequest;
+import com.example.monitoring.core.api.history.DeviceHistory;
+import com.example.monitoring.core.api.history.DeviceHistoryService;
+import com.example.monitoring.core.status.DeviceStatus;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -44,10 +47,12 @@ public class DeviceDataController {
     private final GatewayService gatewayService;
     private final BridgeService bridgeService;
     private final DeviceDataService deviceDataService;
-
+    private final DeviceHistoryService historyService;
     org.slf4j.Logger  logger =LoggerFactory.getLogger(AuthenticationController.class);
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectReader reader = new ObjectMapper().readerFor(Map.class);
+    Long unixTime;
+
 
     @PostMapping("/send-data")
     public ResponseEntity<String>hello(
@@ -60,44 +65,82 @@ public class DeviceDataController {
         DeviceData pal = deviceDataService.buildObject(payloadJson, deviceType);
         deviceDataService.saveToDatabase(pal);
 
-        return ResponseEntity.ok().body("Everything is alright.");
-
-        /*
-        *//* SENSOR *//*
+        /* SENSOR */
         if (payloadJson.containsKey("severity")) {
              SensorData payload = objectMapper.convertValue(payloadJson, SensorData.class);
 //             SensorData payload= objectMapper.readValue(payloadJson, SensorData.class);
              SensorDataSimplified payloadSimplified = payload.toSensorDataSimplified();
              logger.info(payloadSimplified.toString());
-             statusService.saveFromArgs(payloadSimplified.getSensor(),payloadSimplified.getReading_time());
+             DeviceStatus deviceStatus=statusService.getDeviceStatus(payloadSimplified.getSensor());
+             if(deviceStatus==null)
+             {
+                statusService.saveFromArgs(payloadSimplified.getSensor(),payloadSimplified.getReading_time(),payloadSimplified.getReading_time());
+                return ResponseEntity.ok().body(payloadSimplified.toString());
+             }
+             int status=statusService.getCalculatedStatus(deviceStatus);
+             unixTime= System.currentTimeMillis() / 1000L;
+             Long latestLoggedTime=deviceStatus.getLogged_at();
+             if(status==0){
+                 historyService.save(DeviceHistory.builder().deviceId(payloadSimplified.getSensor()).end_timestamp(payloadSimplified.getReading_time()).start_timestamp(latestLoggedTime).length( payloadSimplified.getReading_time()-latestLoggedTime).build());
+             }
+
+             statusService.saveFromArgs(payloadSimplified.getSensor(),payloadSimplified.getReading_time(),deviceStatus.getFirst_logged_at());
              repository.save(payloadSimplified);
              return ResponseEntity.ok().body(payloadSimplified.toString());
          }
-        *//*if (payloadJson.containsKey("serial_number")) {
+        /*if (payloadJson.containsKey("serial_number")) {
             GatewayData payload = objectMapper.convertValue(payloadJson, GatewayData.class);
 //            SensorDataSimplified payloadSimplified = payload.toSensorDataSimplified();
             logger.info(payload.toString());
             gatewayRepository.save(payload);
             return ResponseEntity.ok().body(payload.toString());
-        }*//*
-        *//* GATEWAY *//*
+        }*/
+        /* GATEWAY */
         if (payloadJson.containsKey("bridge_serial_number")) {
             GatewayRequest payload = objectMapper.convertValue(payloadJson, GatewayRequest.class);
             logger.info(payload.toString());
             GatewayData gateway=gatewayService.saveSimplified(payload);
-            statusService.saveFromArgs(gateway.getGateway_eui(), gateway.getLogged_at());
+
+            DeviceStatus deviceStatus=statusService.getDeviceStatus(gateway.getGateway_eui());
+            if(deviceStatus==null)
+            {
+                statusService.saveFromArgs(gateway.getGateway_eui(), gateway.getLogged_at(),gateway.getLogged_at());
+                return ResponseEntity.ok().body(gateway.toString());
+            }
+            int status=statusService.getCalculatedStatus(deviceStatus);
+            unixTime= System.currentTimeMillis() / 1000L;
+            Long latestLoggedTime=deviceStatus.getLogged_at();
+            if(status==0){
+                historyService.save(DeviceHistory.builder().deviceId(gateway.getGateway_eui()).end_timestamp(gateway.getLogged_at()).start_timestamp(latestLoggedTime).length( gateway.getLogged_at()-latestLoggedTime).build());
+            }
+            statusService.saveFromArgs(gateway.getGateway_eui(), gateway.getLogged_at(),deviceStatus.getFirst_logged_at());
+
             return ResponseEntity.ok().body(gateway.toString());
         }
-        *//* BRIDGE *//*
+        /* BRIDGE */
         if (payloadJson.containsKey("serial_number")) {
             BridgeRequest payload = objectMapper.convertValue(payloadJson, BridgeRequest.class);
             logger.info(payload.toString());
             BridgeData bridge=bridgeService.saveSimplified(payload);
-            statusService.saveFromArgs(bridge.getSerial_number(), bridge.getLogged_at());
+            DeviceStatus deviceStatus=statusService.getDeviceStatus(bridge.getSerial_number());
+            if(deviceStatus==null)
+            {
+                statusService.saveFromArgs(bridge.getSerial_number(), bridge.getLogged_at(),bridge.getLogged_at());
+
+                return ResponseEntity.ok().body(bridge.toString());
+            }
+            int status=statusService.getCalculatedStatus(deviceStatus);
+            unixTime= System.currentTimeMillis() / 1000L;
+            Long latestLoggedTime=deviceStatus.getLogged_at();
+
+            if(status==0){
+                historyService.save(DeviceHistory.builder().deviceId(bridge.getSerial_number()).end_timestamp(bridge.getLogged_at()).start_timestamp(latestLoggedTime).length( bridge.getLogged_at()-latestLoggedTime).build());
+            }
+            statusService.saveFromArgs(bridge.getSerial_number(), bridge.getLogged_at(),deviceStatus.getFirst_logged_at());
 
             return ResponseEntity.ok().body(bridge.toString());
         }
-         return ResponseEntity.badRequest().body("err: unknown payload");*/
+         return ResponseEntity.badRequest().body("err: unknown payload");
     }
 
 }
