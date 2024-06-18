@@ -78,7 +78,7 @@ public class DeviceDataController {
              unixTime= System.currentTimeMillis() / 1000L;
              Long latestLoggedTime=deviceStatus.getLogged_at();
              if(status==0){
-                 historyService.save(DeviceHistory.builder().deviceId(payloadSimplified.getSensor()).end_timestamp(unixTime).start_timestamp(latestLoggedTime).length(unixTime-latestLoggedTime).build());
+                 historyService.save(DeviceHistory.builder().deviceId(payloadSimplified.getSensor()).end_timestamp(payloadSimplified.getReading_time()).start_timestamp(latestLoggedTime).length( payloadSimplified.getReading_time()-latestLoggedTime).build());
              }
 
              statusService.saveFromArgs(payloadSimplified.getSensor(),payloadSimplified.getReading_time(),deviceStatus.getFirst_logged_at());
@@ -108,7 +108,7 @@ public class DeviceDataController {
             unixTime= System.currentTimeMillis() / 1000L;
             Long latestLoggedTime=deviceStatus.getLogged_at();
             if(status==0){
-                historyService.save(DeviceHistory.builder().deviceId(gateway.getGateway_eui()).end_timestamp(unixTime).start_timestamp(latestLoggedTime).length(unixTime-latestLoggedTime).build());
+                historyService.save(DeviceHistory.builder().deviceId(gateway.getGateway_eui()).end_timestamp(gateway.getLogged_at()).start_timestamp(latestLoggedTime).length( gateway.getLogged_at()-latestLoggedTime).build());
             }
             statusService.saveFromArgs(gateway.getGateway_eui(), gateway.getLogged_at(),deviceStatus.getFirst_logged_at());
 
@@ -131,7 +131,7 @@ public class DeviceDataController {
             Long latestLoggedTime=deviceStatus.getLogged_at();
             
             if(status==0){
-                historyService.save(DeviceHistory.builder().deviceId(bridge.getSerial_number()).end_timestamp(unixTime).start_timestamp(latestLoggedTime).length(unixTime-latestLoggedTime).build());
+                historyService.save(DeviceHistory.builder().deviceId(bridge.getSerial_number()).end_timestamp(bridge.getLogged_at()).start_timestamp(latestLoggedTime).length( bridge.getLogged_at()-latestLoggedTime).build());
             }
             statusService.saveFromArgs(bridge.getSerial_number(), bridge.getLogged_at(),deviceStatus.getFirst_logged_at());
 

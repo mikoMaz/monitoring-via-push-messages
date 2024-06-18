@@ -1,6 +1,7 @@
 package com.example.monitoring.core.api;
 
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.implementation.bytecode.constant.IntegerConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,8 +148,8 @@ public class WebWriteController {
                 {
                     SensorDataSimplified sensor =sensorList.get(k) ;
                     JsonObject subDevice=proc.convertToJsonTreeComponent(sensor,Math.round(historyService.uptimePercent(sensor.getSensor())));
-                    logger.info(historyService.uptimePercent(sensor.getSensor()).toString());
-                    logger.info(null,Math.round(historyService.uptimePercent(sensor.getSensor())));
+                    logger.info("#"+historyService.uptimePercent(sensor.getSensor()).toString()+"#");
+                    logger.info("$"+((Long)Math.round(historyService.uptimePercent(sensor.getSensor()))).toString()+"$");
                     
                     list.get(2).add(subDevice);
                 }
