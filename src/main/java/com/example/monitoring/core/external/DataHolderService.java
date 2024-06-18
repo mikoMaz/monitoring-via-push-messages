@@ -29,6 +29,10 @@ public class DataHolderService {
         externalData.addCompanyIdToDeviceData(key, companyId);
     }
 
+    public String getParentIdFromDeviceData(String deviceId) {
+        return externalData.getParentIdFromDeviceData(deviceId);
+    }
+
 
     /* company */
     public Map<String, List<String>> getCompany() {

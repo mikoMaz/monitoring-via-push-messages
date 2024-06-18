@@ -29,6 +29,14 @@ public class DataHolder {
         deviceData.put(key, List.of(deviceData.get(key).getFirst(), companyId));
     }
 
+    public String getParentIdFromDeviceData(String deviceId) {
+        if (deviceData.containsKey(deviceId)) {
+            return deviceData.get(deviceId).getFirst();
+        }
+        return null;
+    }
+
+
     /* company */
     public void newPlainCompany(String key) {
         companyData.putIfAbsent(key, new ArrayList<>());
