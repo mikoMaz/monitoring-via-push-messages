@@ -29,9 +29,10 @@ public class DeviceDataServiceImpl implements DeviceDataService {
             }
         });
 
+
         return DeviceData.builder()
                 .deviceId(map.getOrDefault("device_id", null))
-                .timestamp(map.getOrDefault("timestamp", String.valueOf(System.currentTimeMillis() / 1000)))
+                .timestamp(map.get("timestamp") == null ? System.currentTimeMillis() / 1000 : Long.parseLong(map.get("timestamp")))
                 .companyId(map.getOrDefault("company_id", null))
                 .region(map.getOrDefault("region", null))
                 .other(other.toString())

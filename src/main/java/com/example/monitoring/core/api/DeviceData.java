@@ -17,7 +17,7 @@ public class DeviceData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String deviceId;
-    private String timestamp;
+    private Long timestamp;
     private String companyId;
     private String region;
     private String other;
