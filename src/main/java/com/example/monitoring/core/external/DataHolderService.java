@@ -14,42 +14,68 @@ public class DataHolderService {
     DataHolder externalData;
 
     /* device */
-    private Map<String, List<String>> getDevice() {
+    private Map<String, List<String>> getDeviceData() {
         return externalData.getDeviceData();
     }
 
     public void addDeviceIfNotExist(String key) {
-        getDevice().putIfAbsent(key, List.of("", ""));
+        getDeviceData().putIfAbsent(key, List.of("", ""));
     }
 
     public void addParentIdToDeviceData(String key, String parentId) {
-        getDevice().put(key, List.of(parentId, getDevice().get(key).get(1)));
+        getDeviceData().put(key, List.of(parentId, getDeviceData().get(key).get(1)));
     }
 
     public void addCompanyIdToDeviceData(String key, String companyId) {
-        getDevice().put(key, List.of(getDevice().get(key).getFirst(), companyId));
+        getDeviceData().put(key, List.of(getDeviceData().get(key).getFirst(), companyId));
     }
 
     public String getParentIdFromDeviceData(String deviceId) {
-        if (getDevice().containsKey(deviceId)) {
-            return getDevice().get(deviceId).getFirst();
+        if (getDeviceData().containsKey(deviceId)) {
+            return getDeviceData().get(deviceId).getFirst();
         }
         return null;
     }
 
 
+    /* device children */
+    private Map<String, List<String>> getDeviceChildrenData() {
+        return externalData.getDeviceChildren();
+    }
+
+    public void addDeviceParentIfNotExists(String key) {
+        getDeviceChildrenData().putIfAbsent(key, new ArrayList<>());
+    }
+
+    public void addChildForGivenParentId(String parentId, String childId) {
+        if (getDeviceChildrenData().containsKey(parentId) && !getDeviceChildrenData().get(parentId).contains(childId)) {
+            getDeviceChildrenData().get(parentId).add(childId);
+        }
+    }
+
+    public void deleteChildForGivenParentId(String parentId, String childId) {
+        if (getDeviceChildrenData().containsKey(parentId)) {
+            getDeviceChildrenData().get(parentId).remove(childId);
+        }
+    }
+
+    public List<String> getAllChildrenForGivenDeviceId(String deviceId) {
+        return getDeviceChildrenData().get(deviceId);
+    }
+
+
     /* company */
-    private Map<String, List<String>> getCompany() {
+    private Map<String, List<String>> getCompanyData() {
         return externalData.getCompanyData();
     }
 
     public void addCompanyIfNotExist(String key) {
-        getCompany().putIfAbsent(key, new ArrayList<>());
+        getCompanyData().putIfAbsent(key, new ArrayList<>());
     }
 
     public void addDeviceIdToCompanyData(String key, String deviceId) {
-        if (!getCompany().get(key).contains(deviceId)) {
-            getCompany().get(key).add(deviceId);
+        if (!getCompanyData().get(key).contains(deviceId)) {
+            getCompanyData().get(key).add(deviceId);
         }
     }
 }
