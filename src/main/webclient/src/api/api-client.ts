@@ -18,12 +18,35 @@ export class APIClient {
         new Gateway("gateway1", deviceStatus.active, new Date(), [
           new Sensor("sensor1", deviceStatus.active, new Date()),
           new Sensor("sensor2", deviceStatus.active, new Date()),
+          new Sensor("sensor5", deviceStatus.disabled, new Date()),
+          new Sensor("sensor9", deviceStatus.active, new Date()),
+          new Sensor("sensor13", deviceStatus.disabled, new Date()),
+          new Sensor("sensor22", deviceStatus.disabled, new Date()),
+          new Sensor("sensor23", deviceStatus.active, new Date()),
+          new Sensor("sensor27", deviceStatus.disabled, new Date()),
         ]),
-        new Gateway("gateway2", deviceStatus.active, new Date(), []),
+        new Gateway("gateway2", deviceStatus.disabled, new Date(), []),
       ]),
       new Bridge("bridge2", deviceStatus.disabled, new Date(), [
         new Gateway("gateway3", deviceStatus.disabled, new Date(), [
           new Sensor("sensor3", deviceStatus.disabled, new Date()),
+          new Sensor("sensor14", deviceStatus.disabled, new Date()),
+          new Sensor("sensor17", deviceStatus.disabled, new Date()),
+          new Sensor("sensor21", deviceStatus.disabled, new Date()),
+        ]),
+      ]),
+      new Bridge("bridge3", deviceStatus.active, new Date(), [
+        new Gateway("gateway4", deviceStatus.active, new Date(), [
+          new Sensor("sensor4", deviceStatus.disabled, new Date()),
+          new Sensor("sensor8", deviceStatus.active, new Date()),
+          new Sensor("sensor10", deviceStatus.active, new Date()),
+          new Sensor("sensor19", deviceStatus.active, new Date()),
+        ]),
+        new Gateway("gateway5", deviceStatus.active, new Date(), [
+          new Sensor("sensor20", deviceStatus.disabled, new Date()),
+          new Sensor("sensor34", deviceStatus.active, new Date()),
+          new Sensor("sensor36", deviceStatus.disabled, new Date()),
+          new Sensor("sensor39", deviceStatus.active, new Date()),
         ]),
       ]),
     ]);
