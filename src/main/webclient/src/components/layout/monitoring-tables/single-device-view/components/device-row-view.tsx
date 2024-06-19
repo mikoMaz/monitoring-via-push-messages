@@ -1,6 +1,7 @@
 import { Box, HStack, Td, Tr } from "@chakra-ui/react";
 import {
   IMonitoringDevice,
+  deviceStatus,
   deviceType,
 } from "../../../../../types/deviceModel";
 import { StatusDotIndicator } from "../../../status-dot-indicator";
@@ -30,8 +31,9 @@ export const DeviceRowView = (device: IMonitoringDevice) => {
         break;
     }
   };
+  const rowBackgroundColor = device.status === deviceStatus.active ? 'green.100' : 'red.100';
   return (
-    <Tr
+    <Tr backgroundColor={rowBackgroundColor}
       key={device.id}
       onClick={navigateToDeviceDetailsPage}
       _hover={{ cursor: "pointer" }}
