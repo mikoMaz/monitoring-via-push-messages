@@ -7,6 +7,7 @@ export type ProjectColorsDictionary = {
   secondary: string;
   accent: string;
   background: string;
+  table: { active: string; disabled: string };
 };
 
 export interface IUIProps {

@@ -6,6 +6,7 @@ import {
 } from "../../../../../types/deviceModel";
 import { StatusDotIndicator } from "../../../status-dot-indicator";
 import { useNavigate } from "react-router-dom";
+import { UIProps } from "../../../../../config/config";
 
 export const DeviceRowView = (device: IMonitoringDevice) => {
   const navigate = useNavigate();
@@ -31,9 +32,13 @@ export const DeviceRowView = (device: IMonitoringDevice) => {
         break;
     }
   };
-  const rowBackgroundColor = device.status === deviceStatus.active ? 'green.100' : 'red.100';
+  const rowBackgroundColor =
+    device.status === deviceStatus.active
+      ? UIProps.colors.table.active
+      : UIProps.colors.table.disabled;
   return (
-    <Tr backgroundColor={rowBackgroundColor}
+    <Tr
+      backgroundColor={rowBackgroundColor}
       key={device.id}
       onClick={navigateToDeviceDetailsPage}
       _hover={{ cursor: "pointer" }}
