@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.monitoring.core.bridge.BridgeData;
 import com.example.monitoring.core.bridge.BridgeService;
+import com.example.monitoring.core.external.DataHolderService;
 import com.example.monitoring.core.gateway.GatewayData;
 import com.example.monitoring.core.gateway.GatewayService;
 import com.example.monitoring.core.sensor.SensorDataSimplified;
@@ -36,11 +37,10 @@ import com.google.gson.*;
 @RequestMapping("/api/v1/")
 @RequiredArgsConstructor
 public class WebWriteController {
-    private final BridgeService bridgeService;
-    private final GatewayService gatewayService;
-    private final SensorDataSimplifiedService sensorService;
+    private final DeviceDataService deviceDataService;
     private final DeviceHistoryService historyService;
     private final DeviceStatusService statusService;
+    private final DataHolderService dataHolderService;
     private final WebWritePreprocessor proc;
 
     org.slf4j.Logger  logger =LoggerFactory.getLogger(AuthenticationController.class);
@@ -48,12 +48,22 @@ public class WebWriteController {
     ObjectReader reader = new ObjectMapper().readerFor(Map.class);
 
     @GetMapping("/kluczdostepu")
-    public ResponseEntity<String> jsonTree(@RequestParam Integer id) {
-        List<BridgeData> bdList;
-        List<GatewayData> gatewayList;
-        List<SensorDataSimplified> sensorList;
-        bdList = bridgeService.allBridges(id);
+    public ResponseEntity<String> jsonTree(@RequestParam String id) {
+        List<String> devicesList;
+        List<String> ToplevelDevices= new ArrayList<String>();
 
+        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+        logger.info("TOPLEVELS:");
+        for(int i=0;i<devicesList.size();i++)
+        {
+            
+            if(dataHolderService.getParentIdFromDeviceData(devicesList.get(i))=="")
+            {
+            ToplevelDevices.add(devicesList.get(i));
+            logger.info(devicesList.get(i));
+            }
+            
+        }
         JsonObject root=new JsonObject();
         ArrayList<JsonArray> list= new ArrayList<JsonArray>();
         JsonObject savedDevice=new JsonObject();
@@ -64,35 +74,43 @@ public class WebWriteController {
 
         }
         JsonObject currentObject=new JsonObject();
-        for(int i=0;i<bdList.size();i++)
-        {   BridgeData bridge=bdList.get(i);
-            currentObject=proc.convertToJsonTreeComponent(bridge, statusService.getCalculatedStatus(bridge.getSerial_number()));
-            gatewayList=gatewayService.allGatewaysConnectedToBridge(bridge.getSerial_number());
+        for(int i=0;i<ToplevelDevices.size();i++)
+        {   String ToplevelID=ToplevelDevices.get(i);
+            Integer ToplevelStatus=statusService.getCalculatedStatus(ToplevelID);
+            Long ToplevelTimestamp=statusService.getDeviceStatus(ToplevelID).getLogged_at();
+            Integer ToplevelType=2;
 
+            currentObject=proc.convertToJsonTreeComponent(ToplevelID,ToplevelStatus,ToplevelTimestamp,ToplevelType);
+            logger.info(currentObject.toString());
+            List<String> MidList=dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
             JsonArray gatewayIdArray = new JsonArray();
-            for (GatewayData gateway : gatewayList) {
-                gatewayIdArray.add(new JsonPrimitive(gateway.getGateway_eui()));
+            for (String MidlevelId : MidList) {
+                gatewayIdArray.add(new JsonPrimitive(MidlevelId));
             }
-
             currentObject.add("children", gatewayIdArray);
             list.get(0).add(currentObject);
-            for(int j=0;j<gatewayList.size();j++)
+            for(int j=0;j<MidList.size();j++)
             {
-                GatewayData gateway= gatewayList.get(j);
-                sensorList=sensorService.allSensorsConnectedToSmartbox(gateway.getGateway_eui());
+                String MidlevelId= MidList.get(j);
+                List<String> BottomList=dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
                 JsonArray sensorIdArray = new JsonArray();
-                for (SensorDataSimplified sensor : sensorList) {
-                    sensorIdArray.add(new JsonPrimitive(sensor.getSensor()));
+                for (String BottomlevelID : BottomList) {
+                    sensorIdArray.add(new JsonPrimitive(BottomlevelID));
                 }
                 
-                for(int k=0;k<sensorList.size();k++)
+                for(int k=0;k<BottomList.size();k++)
                 {
-                    SensorDataSimplified sensor =sensorList.get(k) ;
-                    JsonObject subDevice=proc.convertToJsonTreeComponent(sensor,statusService.getCalculatedStatus(sensor.getSensor()));
+                    String BottomlevelID =BottomList.get(k) ;
+                    Integer BottomlevelStatus=statusService.getCalculatedStatus(BottomlevelID);
+                    Long BottomlevelTimestamp=statusService.getDeviceStatus(BottomlevelID).getLogged_at();
+                    Integer BottomlevelType=0;
+                    JsonObject subDevice=proc.convertToJsonTreeComponent(BottomlevelID,BottomlevelStatus,BottomlevelTimestamp,BottomlevelType);
                     list.get(2).add(subDevice);
                 }
-                
-                JsonObject subDevice=proc.convertToJsonTreeComponent(gateway, statusService.getCalculatedStatus(gateway.getGateway_eui()));
+                Integer MidlevelStatus=statusService.getCalculatedStatus(MidlevelId);
+                Long MidlevelTimestamp=statusService.getDeviceStatus(MidlevelId).getLogged_at();
+                Integer MidlevelType=0;
+                JsonObject subDevice=proc.convertToJsonTreeComponent(MidlevelId,MidlevelStatus,MidlevelTimestamp,MidlevelType);
                 subDevice.add("children",sensorIdArray);
                 list.get(1).add(subDevice);
                 savedDevice=subDevice;
@@ -107,12 +125,16 @@ public class WebWriteController {
         return ResponseEntity.ok().body(root.toString());
     }
     @GetMapping("/history")
-    public ResponseEntity<String> historyTree(@RequestParam Integer id) {
-        List<BridgeData> bdList;
-        List<GatewayData> gatewayList;
-        List<SensorDataSimplified> sensorList;
-        bdList = bridgeService.allBridges(id);
+    public ResponseEntity<String> historyTree(@RequestParam String id) {
+        List<String> devicesList;
+        List<String> ToplevelDevices=new ArrayList<String>();
 
+        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+        for(int i=0;i<devicesList.size();i++)
+        {
+            if(dataHolderService.getParentIdFromDeviceData(devicesList.get(i))=="")
+            ToplevelDevices.add(devicesList.get(i));
+        }
         JsonObject root=new JsonObject();
         ArrayList<JsonArray> list= new ArrayList<JsonArray>();
         JsonObject savedDevice=new JsonObject();
@@ -123,38 +145,42 @@ public class WebWriteController {
 
         }
         JsonObject currentObject=new JsonObject();
-        for(int i=0;i<bdList.size();i++)
-        {   BridgeData bridge=bdList.get(i);
-            currentObject=proc.convertToJsonTreeComponent(bridge, Math.round(historyService.uptimePercent(bridge.getSerial_number())));
-            gatewayList=gatewayService.allGatewaysConnectedToBridge(bridge.getSerial_number());
+        for(int i=0;i<ToplevelDevices.size();i++)
+        {   String ToplevelID=ToplevelDevices.get(i);
+            Double ToplevelStatus=historyService.uptimePercent(ToplevelID);
+            Long ToplevelTimestamp=statusService.getDeviceStatus(ToplevelID).getLogged_at();
+            Integer ToplevelType=2;
 
+            currentObject=proc.convertToJsonTreeComponent(ToplevelID,ToplevelStatus,ToplevelTimestamp,ToplevelType);
+            List<String> MidList=dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
             JsonArray gatewayIdArray = new JsonArray();
-            for (GatewayData gateway : gatewayList) {
-                gatewayIdArray.add(new JsonPrimitive(gateway.getGateway_eui()));
+            for (String MidlevelId : MidList) {
+                gatewayIdArray.add(new JsonPrimitive(MidlevelId));
             }
-
             currentObject.add("children", gatewayIdArray);
             list.get(0).add(currentObject);
-            for(int j=0;j<gatewayList.size();j++)
+            for(int j=0;j<MidList.size();j++)
             {
-                GatewayData gateway= gatewayList.get(j);
-                sensorList=sensorService.allSensorsConnectedToSmartbox(gateway.getGateway_eui());
+                String MidlevelId= MidList.get(j);
+                List<String> BottomList=dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
                 JsonArray sensorIdArray = new JsonArray();
-                for (SensorDataSimplified sensor : sensorList) {
-                    sensorIdArray.add(new JsonPrimitive(sensor.getSensor()));
+                for (String BottomlevelID : BottomList) {
+                    sensorIdArray.add(new JsonPrimitive(BottomlevelID));
                 }
                 
-                for(int k=0;k<sensorList.size();k++)
+                for(int k=0;k<BottomList.size();k++)
                 {
-                    SensorDataSimplified sensor =sensorList.get(k) ;
-                    JsonObject subDevice=proc.convertToJsonTreeComponent(sensor,Math.round(historyService.uptimePercent(sensor.getSensor())));
-                    logger.info("#"+historyService.uptimePercent(sensor.getSensor()).toString()+"#");
-                    logger.info("$"+((Long)Math.round(historyService.uptimePercent(sensor.getSensor()))).toString()+"$");
-                    
+                    String BottomlevelID =BottomList.get(k) ;
+                    Double BottomlevelStatus=historyService.uptimePercent(BottomlevelID);
+                    Long BottomlevelTimestamp=statusService.getDeviceStatus(BottomlevelID).getLogged_at();
+                    Integer BottomlevelType=0;
+                    JsonObject subDevice=proc.convertToJsonTreeComponent(BottomlevelID,BottomlevelStatus,BottomlevelTimestamp,BottomlevelType);
                     list.get(2).add(subDevice);
                 }
-                
-                JsonObject subDevice=proc.convertToJsonTreeComponent(gateway, Math.round(historyService.uptimePercent(gateway.getGateway_eui())));
+                Double MidlevelStatus=historyService.uptimePercent(MidlevelId);
+                Long MidlevelTimestamp=statusService.getDeviceStatus(MidlevelId).getLogged_at();
+                Integer MidlevelType=0;
+                JsonObject subDevice=proc.convertToJsonTreeComponent(MidlevelId,MidlevelStatus,MidlevelTimestamp,MidlevelType);
                 subDevice.add("children",sensorIdArray);
                 list.get(1).add(subDevice);
                 savedDevice=subDevice;
@@ -168,34 +194,6 @@ public class WebWriteController {
         }
         return ResponseEntity.ok().body(root.toString());
     }
-    @GetMapping("/get-latest-sensor")
-    public String latestSensor(@RequestBody String  payloadJson) throws JsonMappingException, JsonProcessingException {
-        Map<String, Object> map = reader.readValue(payloadJson);
-        Integer company_id=(Integer)map.get("company_id");
-        SensorDataSimplified latest= sensorService.findLastReadingTime(company_id);
-//        return ResponseEntity.ok().body(company_id.toString()+"\n"+latest.toString());
-        return latest.toString();
-
-    }
-    @GetMapping("/get-time-since-response")
-    public ResponseEntity<String>timeSinceLastResponse(@RequestBody String  payloadJson) throws JsonMappingException, JsonProcessingException {
-        Map<String, Object> map = reader.readValue(payloadJson);
-        Integer company_id=(Integer)map.get("company_id");
-        SensorDataSimplified latest= sensorService.findLastReadingTime(company_id);
-        Long unixTime = System.currentTimeMillis() / 1000L;
-        Long time = unixTime-latest.getReading_time();
-        return ResponseEntity.ok().body(time.toString());
-
-    }
-    @GetMapping("/get-fraction-of-uptime")
-    public ResponseEntity<String>fractionOfUptime(@RequestBody String  payloadJson) throws JsonMappingException, JsonProcessingException {
-    Map<String, Object> map = reader.readValue(payloadJson);
-    Integer company_id=(Integer)map.get("company_id");
-        Long unixTime = System.currentTimeMillis() / 1000L;
-        Integer totalSensors= sensorService.totalSensors(company_id);
-        Integer upSensors=sensorService.upSensors(company_id,unixTime-300);
-        return ResponseEntity.ok().body(upSensors.toString()+"/"+totalSensors.toString());
-
-    }
+   
     
 }

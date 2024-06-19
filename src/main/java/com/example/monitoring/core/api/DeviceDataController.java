@@ -46,6 +46,9 @@ public class DeviceDataController {
         DeviceStatus deviceStatus = statusService.getDeviceStatus(pal.getDeviceId());
 
         if (deviceStatus == null) {
+            logger.info(pal.getDeviceId());
+            logger.info(String.valueOf(pal.getTimestamp()));
+
             statusService.saveFromArgs(pal.getDeviceId(), pal.getTimestamp(), pal.getTimestamp());
         }
         else {
@@ -56,6 +59,7 @@ public class DeviceDataController {
             if (status == 0) {
                 historyService.save(DeviceHistory.builder().deviceId(pal.getDeviceId()).end_timestamp(pal.getTimestamp()).start_timestamp(latestLoggedTime).length(pal.getTimestamp() - latestLoggedTime).build());
             }
+            logger.info(pal.getDeviceId(), pal.getTimestamp(), deviceStatus.getFirst_logged_at());
 
             statusService.saveFromArgs(pal.getDeviceId(), pal.getTimestamp(), deviceStatus.getFirst_logged_at());
         }

@@ -1,7 +1,11 @@
 INSERT INTO device_types (device_type) VALUES ('sensor');
 INSERT INTO device_types (device_type) VALUES ('bridge');
 INSERT INTO device_types (device_type) VALUES ('gateway');
-
 INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (1, 'serial_number', 'device_id', (SELECT id FROM device_types WHERE device_type = 'bridge'));
-INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (2, 'company_id', 'company_id', (SELECT id FROM device_types WHERE device_type = 'bridge'));
-INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (3, 'sensor', 'device_id', (SELECT id FROM device_types WHERE device_type = 'sensor'));
+INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (2, 'gateway_eui', 'device_id', (SELECT id FROM device_types WHERE device_type = 'gateway'));
+INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (3, 'serial_number', 'device_id', (SELECT id FROM device_types WHERE device_type = 'sensor'));
+INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (4, 'logged_at', 'timestamp', (SELECT id FROM device_types WHERE device_type = 'gateway'));
+INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (5, 'timestamp', 'timestamp', (SELECT id FROM device_types WHERE device_type = 'bridge'));
+INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (6, 'reading_time', 'timestamp', (SELECT id FROM device_types WHERE device_type = 'sensor'));
+INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (7, 'company_id', 'company_id', (SELECT id FROM device_types WHERE device_type = 'bridge'));
+INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (8, 'company_id', 'company_id', (SELECT id FROM device_types WHERE device_type = 'sensor'));

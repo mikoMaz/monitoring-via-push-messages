@@ -68,6 +68,10 @@ public class DataHolderService {
     private Map<String, List<String>> getCompanyData() {
         return externalData.getCompanyData();
     }
+    public List<String> getAllChildrenForGivenCompanyId(String companyId) {
+        return getCompanyData().get(companyId);
+    }
+
 
     public void addCompanyIfNotExist(String key) {
         getCompanyData().putIfAbsent(key, new ArrayList<>());
