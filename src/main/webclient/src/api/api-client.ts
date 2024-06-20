@@ -3,13 +3,13 @@ import {
   Bridge,
   DeviceModel,
   DeviceTreeModelJson,
+  DeviceUptimeJson,
   Gateway,
   Sensor,
   createDeviceModelFromJson,
   deviceStatus,
+  deviceType,
 } from "../types/deviceModel";
-
-const apuURL = "http://localhost:8080/api/v1/kluczdostepu?id=1";
 
 export class APIClient {
   public static getDummyDeviceModel = () => {
@@ -51,9 +51,10 @@ export class APIClient {
       ]),
     ]);
   };
-  public static getUpdatedDeviceModel = () => {
+  public static getUpdatedDeviceModel = async () => {
+    const apiURL = "http://localhost:8080/api/v1/kluczdostepu?id=1";
     return axios
-      .get(apuURL)
+      .get(apiURL)
       .then((response) => {
         const data: DeviceTreeModelJson = response.data;
         return createDeviceModelFromJson(data);
@@ -62,6 +63,21 @@ export class APIClient {
         console.log("error");
         console.error(error);
         return new DeviceModel();
+      });
+  };
+
+  public static getDeviceUptime = async (type: deviceType, id: string) => {
+    const apiUrl = `http://localhost:8080/api/v1/history?id=${type}&device_id=${id}`;
+    return axios
+      .get(apiUrl)
+      .then((response) => {
+        const data: DeviceUptimeJson = response.data;
+        return data.uptime;
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        return 0;
       });
   };
 }
