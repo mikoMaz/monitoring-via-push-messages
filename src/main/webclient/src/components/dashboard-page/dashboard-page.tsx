@@ -4,6 +4,7 @@ import { StatusPieChart } from "./components/status-pie-chart";
 import { UIProps } from "../../config/config";
 import { useState } from "react";
 import { ViewChartsTabs } from "./components/view-charts-tabs";
+import { RecentChart } from "./components/recent-chart";
 
 enum viewOption {
   current,
@@ -54,7 +55,11 @@ export const DashboardPage = (model: DeviceModel) => {
           </Center>
         );
       case viewOption.recent:
-        return <>recent</>;
+        return (
+          <Center>
+            <RecentChart devices={[2.2209, 0.0, 0.0, 0.0, 2.1909]} />
+          </Center>
+        );
       case viewOption.custom:
         return <>custom</>;
     }
