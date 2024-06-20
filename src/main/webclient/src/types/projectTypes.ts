@@ -8,7 +8,7 @@ export type ProjectColorsDictionary = {
   accent: string;
   background: string;
   table: { active: string; disabled: string };
-  charts: { active: string; disabled: string };
+  charts: { active: string; disabled: string, background: string };
 };
 
 export interface IUIProps {
