@@ -1,7 +1,7 @@
 import { Tab, TabList, Tabs } from "@chakra-ui/react";
-import { IUIProps } from "../../../../app-main/app-main";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { IUIProps } from "../../../../../types/projectTypes";
 
 export const NavigationButtons = ({ ...ui }: IUIProps) => {
   const navigate = useNavigate();

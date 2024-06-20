@@ -14,7 +14,7 @@ import {
   Switch,
   Text,
 } from "@chakra-ui/react";
-import { IUIProps } from "../../../../app-main/app-main";
+import { IUIProps } from "../../../../../types/projectTypes";
 
 export const UserSidebar = ({ ...ui }: IUIProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();

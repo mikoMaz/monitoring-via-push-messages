@@ -11,7 +11,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { Sensor } from "../../../../../types/deviceModel";
-import { DeviceRow } from "./device-row";
+import { DeviceRowView } from "../../single-device-view/components/device-row-view";
 
 interface ISensorsTableProps {
   sensors: Sensor[];
@@ -21,7 +21,7 @@ export const SensorsTable = ({ sensors }: ISensorsTableProps) => {
   if (sensors.length) {
     return (
       <TableContainer borderRadius="lg">
-        <Table variant="striped" bg="white">
+        <Table variant="simple" bg="white">
           <Thead>
             <Tr>
               <Th>Device ID</Th>
@@ -32,7 +32,7 @@ export const SensorsTable = ({ sensors }: ISensorsTableProps) => {
           <Tbody>
             <>
               {sensors.map((sensor) => {
-                return <DeviceRow {...sensor} />;
+                return <DeviceRowView {...sensor} />;
               })}
             </>
           </Tbody>
