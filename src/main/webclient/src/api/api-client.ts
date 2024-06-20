@@ -82,7 +82,7 @@ export class APIClient {
       });
   };
 
-  public static getAllDevicesHistory = async (id: string) => {
+  public static getAllDevicesHistory = async (id: string): Promise<number[]> => {
     const apiUrl = `http://localhost:8080/api/v1/historyTree?id=${id}`;
     return axios.get(apiUrl).then((response) => {
       const data: AllDevicesUptimeJson = response.data;
