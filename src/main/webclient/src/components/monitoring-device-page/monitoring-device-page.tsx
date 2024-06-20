@@ -7,6 +7,8 @@ import {
   Box,
   Grid,
   GridItem,
+  Progress,
+  Center,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
@@ -21,6 +23,7 @@ import { DeviceDetailsTable } from "./components/device-details-table";
 export type monitoringDeviceType = "sensor" | "gateway" | "bridge" | "other";
 
 export const MonitoringDevicePage = (model: DeviceModel) => {
+  const [activeTime, setActiveTime] = useState<number>(81.99);
   const ui = UIProps;
   const { device } = useParams();
   const [selectedDevice, setSelectedDevice] = useState<IMonitoringDevice>(
@@ -72,6 +75,7 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
           }
           break;
       }
+      setActiveTime(81.99);
     }
   }, [device, model]);
 
@@ -90,13 +94,21 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
         >
           <Accordion defaultIndex={[0, 1, 2]} allowMultiple allowToggle>
             <AccordionItem>
-              <CustomAccordionButton title={true}
+              <CustomAccordionButton
+                title={true}
                 label={`${capitalizeFirstLetter(
                   deviceType[selectedDevice.deviceType]
                 )} ${selectedDevice.id}`}
               />
 
-              <AccordionPanel>Chart</AccordionPanel>
+              <AccordionPanel>
+                <Progress
+                  value={activeTime}
+                  colorScheme="deviceActiveTime"
+                  height="40px"
+                  backgroundColor={ui.colors.table.disabled}
+                />
+              </AccordionPanel>
             </AccordionItem>
             <AccordionItem>
               <CustomAccordionButton label="Device details" />

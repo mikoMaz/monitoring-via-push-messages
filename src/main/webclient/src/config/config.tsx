@@ -13,6 +13,10 @@ export const UIProps: IUIProps = {
       active: theme.colors.green[100],
       disabled: theme.colors.red[100],
     },
+    charts: {
+      active: theme.colors.green[300],
+      disabled: theme.colors.red[300]
+    }
   },
   heigth: {
     navbar: "70px",
