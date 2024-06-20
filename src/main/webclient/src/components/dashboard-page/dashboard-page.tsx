@@ -1,9 +1,65 @@
-import { Box, Center, HStack } from "@chakra-ui/react";
+import { Box, Center, Grid, GridItem, HStack } from "@chakra-ui/react";
 import { DeviceModel } from "../../types/deviceModel";
 import { StatusPieChart } from "./components/status-pie-chart";
 import { UIProps } from "../../config/config";
+import { useState } from "react";
+import { ViewChartsTabs } from "./components/view-charts-tabs";
+
+enum viewOption {
+  current,
+  recent,
+  custom,
+}
 
 export const DashboardPage = (model: DeviceModel) => {
+  const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
+    viewOption.current
+  );
+
+  const onSelectedViewChanged = (index: number) => {
+    switch (index) {
+      case 0:
+        setSelectedViewOption(viewOption.current);
+        break;
+      case 1:
+        setSelectedViewOption(viewOption.recent);
+        break;
+      case 2:
+        setSelectedViewOption(viewOption.custom);
+        break;
+      default:
+        console.error("Out of memory index");
+    }
+  };
+
+  const renderSelectedView = () => {
+    switch (selectedViewOption) {
+      case viewOption.current:
+        return (
+          <Center>
+            <HStack>
+              <StatusPieChart
+                devices={model.getSensorsArray()}
+                heading="Sensors"
+              />
+              <StatusPieChart
+                devices={model.getGatewaysArray()}
+                heading="Gateways"
+              />
+              <StatusPieChart
+                devices={model.getBridgesArray()}
+                heading="Bridges"
+              />
+            </HStack>
+          </Center>
+        );
+      case viewOption.recent:
+        return <>recent</>;
+      case viewOption.custom:
+        return <>custom</>;
+    }
+  };
+
   const ui = UIProps;
   return (
     <Box
@@ -12,16 +68,27 @@ export const DashboardPage = (model: DeviceModel) => {
       bg={ui.colors.background}
       boxShadow="inner"
     >
-      <Center>
-        <HStack>
-          <StatusPieChart devices={model.getSensorsArray()} heading="Sensors" />
-          <StatusPieChart
-            devices={model.getGatewaysArray()}
-            heading="Gateways"
-          />
-          <StatusPieChart devices={model.getBridgesArray()} heading="Bridges" />
-        </HStack>
-      </Center>
+      <Grid>
+        <GridItem
+          className="control-panel-buttons"
+          marginTop="10px"
+          marginBottom="28px"
+        ></GridItem>
+        <Grid templateColumns="3fr 7fr">
+          <GridItem>
+            <ViewChartsTabs
+              index={selectedViewOption}
+              onSelectionChanged={onSelectedViewChanged}
+            />
+          </GridItem>
+          <Grid>
+            <div className="empty-space" />
+          </Grid>
+        </Grid>
+        <GridItem className="monitoring-content-view">
+          {renderSelectedView()}
+        </GridItem>
+      </Grid>
     </Box>
   );
 };
