@@ -64,7 +64,7 @@ export default function App() {
     };
 
     updateModel();
-    setInterval(updateModel, 1000 * 1 * refreshTime);
+    setInterval(updateModel, 1000 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
