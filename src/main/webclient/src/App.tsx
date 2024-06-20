@@ -63,10 +63,8 @@ export default function App() {
       setDeviceModel(data);
     };
 
-    function updateTime() {
-      updateModel();
-    }
-    setInterval(updateTime, 1000 * 60 * refreshTime);
+    updateModel();
+    setInterval(updateModel, 1000 * 1 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
