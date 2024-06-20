@@ -195,7 +195,7 @@ public class WebWriteController {
             }
             }
         }
-        root.add("devices",list.get(0));
+        root.add("uptimes",list.get(0));
         return ResponseEntity.ok().body(root.toString());
     }
     @GetMapping("/history")
