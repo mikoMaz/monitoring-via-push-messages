@@ -51,9 +51,10 @@ public class WebWriteController {
     public ResponseEntity<String> jsonTree(@RequestParam String id) {
         List<String> devicesList;
         List<String> ToplevelDevices= new ArrayList<String>();
-
+        JsonObject root=new JsonObject();
         devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
-        logger.info("TOPLEVELS:");
+        if (devicesList==null)
+        return ResponseEntity.ok().body(root.toString());
         for(int i=0;i<devicesList.size();i++)
         {
             
@@ -64,9 +65,8 @@ public class WebWriteController {
             }
             
         }
-        JsonObject root=new JsonObject();
+        
         ArrayList<JsonArray> list= new ArrayList<JsonArray>();
-        JsonObject savedDevice=new JsonObject();
         for(int i=0;i<20;i++)
         {
             JsonArray devices= new JsonArray();
@@ -74,15 +74,22 @@ public class WebWriteController {
 
         }
         JsonObject currentObject=new JsonObject();
+        JsonObject subDevice=new JsonObject();
         for(int i=0;i<ToplevelDevices.size();i++)
         {   String ToplevelID=ToplevelDevices.get(i);
             Integer ToplevelStatus=statusService.getCalculatedStatus(ToplevelID);
+            if(ToplevelStatus!=null){
+
+            
             Long ToplevelTimestamp=statusService.getDeviceStatus(ToplevelID).getLogged_at();
             Integer ToplevelType=2;
 
             currentObject=proc.convertToJsonTreeComponent(ToplevelID,ToplevelStatus,ToplevelTimestamp,ToplevelType);
             logger.info(currentObject.toString());
             List<String> MidList=dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
+            if(MidList==null){
+                MidList=new ArrayList<String>();
+            }
             JsonArray gatewayIdArray = new JsonArray();
             for (String MidlevelId : MidList) {
                 gatewayIdArray.add(new JsonPrimitive(MidlevelId));
@@ -98,22 +105,29 @@ public class WebWriteController {
                     sensorIdArray.add(new JsonPrimitive(BottomlevelID));
                 }
                 
-                for(int k=0;k<BottomList.size();k++)
-                {
-                    String BottomlevelID =BottomList.get(k) ;
-                    Integer BottomlevelStatus=statusService.getCalculatedStatus(BottomlevelID);
-                    Long BottomlevelTimestamp=statusService.getDeviceStatus(BottomlevelID).getLogged_at();
-                    Integer BottomlevelType=0;
-                    JsonObject subDevice=proc.convertToJsonTreeComponent(BottomlevelID,BottomlevelStatus,BottomlevelTimestamp,BottomlevelType);
-                    list.get(2).add(subDevice);
-                }
                 Integer MidlevelStatus=statusService.getCalculatedStatus(MidlevelId);
                 Long MidlevelTimestamp=statusService.getDeviceStatus(MidlevelId).getLogged_at();
-                Integer MidlevelType=0;
-                JsonObject subDevice=proc.convertToJsonTreeComponent(MidlevelId,MidlevelStatus,MidlevelTimestamp,MidlevelType);
-                subDevice.add("children",sensorIdArray);
-                list.get(1).add(subDevice);
-                savedDevice=subDevice;
+                Integer MidlevelType=1;
+                if(MidlevelStatus!=null){
+
+                    subDevice=proc.convertToJsonTreeComponent(MidlevelId,MidlevelStatus,MidlevelTimestamp,MidlevelType);
+                    subDevice.add("children",sensorIdArray);
+                    list.get(1).add(subDevice);
+
+                    for(int k=0;k<BottomList.size();k++)
+                    {
+                        String BottomlevelID =BottomList.get(k) ;
+                        Integer BottomlevelStatus=statusService.getCalculatedStatus(BottomlevelID);
+                        if(BottomlevelStatus!=null){
+                            Long BottomlevelTimestamp=statusService.getDeviceStatus(BottomlevelID).getLogged_at();
+                            Integer BottomlevelType=0;
+                            subDevice=proc.convertToJsonTreeComponent(BottomlevelID,BottomlevelStatus,BottomlevelTimestamp,BottomlevelType);
+                            list.get(2).add(subDevice);
+                        }
+            
+                    }
+                }
+            }
             }
         }
         for(int i=0;i<20;i++)
@@ -124,76 +138,91 @@ public class WebWriteController {
         }
         return ResponseEntity.ok().body(root.toString());
     }
-    @GetMapping("/history")
+
+   
+
+    @GetMapping("/historyTree")
     public ResponseEntity<String> historyTree(@RequestParam String id) {
         List<String> devicesList;
-        List<String> ToplevelDevices=new ArrayList<String>();
-
+        List<String> ToplevelDevices= new ArrayList<String>();
+        JsonObject root=new JsonObject();
         devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+        if (devicesList==null)
+        return ResponseEntity.ok().body(root.toString());
         for(int i=0;i<devicesList.size();i++)
         {
+            
             if(dataHolderService.getParentIdFromDeviceData(devicesList.get(i))=="")
+            {
             ToplevelDevices.add(devicesList.get(i));
+            logger.info(devicesList.get(i));
+            }
+            
         }
-        JsonObject root=new JsonObject();
         ArrayList<JsonArray> list= new ArrayList<JsonArray>();
-        JsonObject savedDevice=new JsonObject();
-        for(int i=0;i<20;i++)
-        {
-            JsonArray devices= new JsonArray();
-            list.add(devices);
-
-        }
-        JsonObject currentObject=new JsonObject();
+        JsonArray devices= new JsonArray();
+        list.add(devices);
         for(int i=0;i<ToplevelDevices.size();i++)
         {   String ToplevelID=ToplevelDevices.get(i);
             Double ToplevelStatus=historyService.uptimePercent(ToplevelID);
-            Long ToplevelTimestamp=statusService.getDeviceStatus(ToplevelID).getLogged_at();
-            Integer ToplevelType=2;
+            if(ToplevelStatus!=null){
 
-            currentObject=proc.convertToJsonTreeComponent(ToplevelID,ToplevelStatus,ToplevelTimestamp,ToplevelType);
+            
+
+
             List<String> MidList=dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
-            JsonArray gatewayIdArray = new JsonArray();
-            for (String MidlevelId : MidList) {
-                gatewayIdArray.add(new JsonPrimitive(MidlevelId));
+            if(MidList==null){
+                MidList=new ArrayList<String>();
             }
-            currentObject.add("children", gatewayIdArray);
-            list.get(0).add(currentObject);
+            list.get(0).add(new JsonPrimitive(ToplevelStatus));
             for(int j=0;j<MidList.size();j++)
             {
                 String MidlevelId= MidList.get(j);
                 List<String> BottomList=dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
-                JsonArray sensorIdArray = new JsonArray();
-                for (String BottomlevelID : BottomList) {
-                    sensorIdArray.add(new JsonPrimitive(BottomlevelID));
-                }
-                
-                for(int k=0;k<BottomList.size();k++)
-                {
-                    String BottomlevelID =BottomList.get(k) ;
-                    Double BottomlevelStatus=historyService.uptimePercent(BottomlevelID);
-                    Long BottomlevelTimestamp=statusService.getDeviceStatus(BottomlevelID).getLogged_at();
-                    Integer BottomlevelType=0;
-                    JsonObject subDevice=proc.convertToJsonTreeComponent(BottomlevelID,BottomlevelStatus,BottomlevelTimestamp,BottomlevelType);
-                    list.get(2).add(subDevice);
-                }
                 Double MidlevelStatus=historyService.uptimePercent(MidlevelId);
-                Long MidlevelTimestamp=statusService.getDeviceStatus(MidlevelId).getLogged_at();
-                Integer MidlevelType=0;
-                JsonObject subDevice=proc.convertToJsonTreeComponent(MidlevelId,MidlevelStatus,MidlevelTimestamp,MidlevelType);
-                subDevice.add("children",sensorIdArray);
-                list.get(1).add(subDevice);
-                savedDevice=subDevice;
+                if(MidlevelStatus!=null){
+                    list.get(0).add(MidlevelStatus);
+                    for(int k=0;k<BottomList.size();k++)
+                    {
+                        String BottomlevelID =BottomList.get(k) ;
+                        Double BottomlevelStatus=historyService.uptimePercent(BottomlevelID);
+                        if(BottomlevelStatus!=null){
+                            list.get(0).add(BottomlevelStatus);
+                        }
+            
+                    }
+                }
+            }
             }
         }
-        for(int i=0;i<20;i++)
-        {
-            if(list.get(i).size()==0)
-            break;
-            root.add("devices"+String.valueOf(i),list.get(i));
-        }
+        root.add("devices",list.get(0));
         return ResponseEntity.ok().body(root.toString());
     }
-   
+    @GetMapping("/history")
+    public ResponseEntity<String> singleDeviceHistory(@RequestParam String id,String device_id   ) {
+        List<String> devicesList;
+        List<String> ToplevelDevices= new ArrayList<String>();
+        JsonObject root=new JsonObject();
+        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+        if(devicesList==null)
+        {
+            return ResponseEntity.badRequest().body("");
+        }
+        Double status=null;
+        if(devicesList.contains(device_id))
+        {
+             status=historyService.uptimePercent(device_id);
+        }
+        else{
+            return ResponseEntity.badRequest().body("");
+        }
+        if(status==null)
+        {
+            status=0D;
+        }
+        root.addProperty("uptime", status);
+        return ResponseEntity.ok().body(root.toString());
+    }
+
     
 }

@@ -24,10 +24,12 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
         if (downtime==null)
         downtime=0L;
         DeviceStatus ds =statusRepository.getObjectById(Id);
+        if(ds==null)
+        return null;
         Long unixTime= System.currentTimeMillis() / 1000L;
         Long uptime=unixTime-ds.getFirst_logged_at();
         Long downtime_estimate=unixTime-ds.getLogged_at();
 
-        return ((uptime-downtime_estimate-downtime)/(double)uptime)*100 *1000;
+        return ((uptime-downtime_estimate-downtime)/(double)uptime)*100;
     }
 }

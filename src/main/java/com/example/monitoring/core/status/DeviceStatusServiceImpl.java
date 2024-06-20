@@ -22,6 +22,8 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         {
 
                 DeviceStatus ds=repository.getObjectById(Id);
+                if(ds==null)
+                return null;
                 Long time=ds.getLogged_at();
                 Long unixTime = System.currentTimeMillis() / 1000L;
 

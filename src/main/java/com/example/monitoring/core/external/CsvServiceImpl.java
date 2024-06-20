@@ -42,8 +42,12 @@ public class CsvServiceImpl implements CsvService {
         csvInList.removeFirst();
         csvInList.forEach(
                 listRow -> {
+                    // 
+                    // 
+                    // tabelka1
                     dataHolderService.addDeviceIfNotExist(listRow.getFirst());
                     dataHolderService.addCompanyIdToDeviceData(listRow.getFirst(), listRow.getLast());
+                    //git tabelka3
                     dataHolderService.addCompanyIfNotExist(listRow.getLast());
                     dataHolderService.addDeviceIdToCompanyData(listRow.getLast(), listRow.getFirst());
                 }
@@ -62,8 +66,12 @@ public class CsvServiceImpl implements CsvService {
         csvInList.removeFirst();
         csvInList.forEach(
                 listRow -> {
+                    //tabelka1
                     dataHolderService.addDeviceIfNotExist(listRow.getFirst());
                     dataHolderService.addParentIdToDeviceData(listRow.getFirst(), listRow.getLast());
+                    //tabelka2
+                    dataHolderService.addDeviceParentIfNotExists(listRow.getLast());
+                    dataHolderService.addChildForGivenParentId(listRow.getLast(),listRow.getFirst());
                 }
         );
         return true;
