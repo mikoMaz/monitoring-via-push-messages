@@ -1,6 +1,7 @@
 import {
   Bar,
   BarChart,
+  Brush,
   Cell,
   Pie,
   PieChart,
@@ -39,7 +40,7 @@ const percentList = generateProgressList(devices);
   };
 
   return (
-    <Box padding="50px">
+    <Box padding="100px">
       <BarChart
         width={1200}
         height={400}
@@ -53,6 +54,7 @@ const percentList = generateProgressList(devices);
       >
         <YAxis dataKey="number" />
         <XAxis dataKey="name" />
+		<Brush dataKey="name" height={30} stroke={UIProps.colors.primary} />
         <Bar
           dataKey="number"
           fill={UIProps.colors.secondary}
