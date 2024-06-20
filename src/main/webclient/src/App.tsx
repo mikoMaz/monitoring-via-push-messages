@@ -33,7 +33,7 @@ export default function App() {
       <Route
         key="monitoring-device"
         path="/monitoring/:device"
-        element={<MonitoringDevicePage {...deviceModel}/>}
+        element={<MonitoringDevicePage {...deviceModel} />}
       />,
       <Route
         key="dashboard"
@@ -62,13 +62,11 @@ export default function App() {
       console.log(data);
       setDeviceModel(data);
     };
-    updateModel();
 
-    const timer = setTimeout(() => {
+    function updateTime() {
       updateModel();
-    }, refreshTime * 60 * 1000);
-
-    return () => clearTimeout(timer);
+    }
+    setInterval(updateTime, 1000 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
