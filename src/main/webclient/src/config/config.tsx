@@ -15,7 +15,8 @@ export const UIProps: IUIProps = {
     },
     charts: {
       active: theme.colors.green[300],
-      disabled: theme.colors.red[300]
+      disabled: theme.colors.red[300],
+      background: theme.colors.gray[200]
     }
   },
   heigth: {

@@ -1,4 +1,14 @@
-import { Bar, BarChart, Cell, Pie, PieChart, Tooltip } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Brush,
+  Cell,
+  Pie,
+  PieChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { IMonitoringDevice } from "../../../types/deviceModel";
 import { getDevicesStatusPieChartData } from "../util/dashboard-page-util";
 import { Box, Heading, VStack } from "@chakra-ui/react";
@@ -9,25 +19,47 @@ interface IRecentChart {
 }
 
 export const RecentChart = ({ devices }: IRecentChart) => {
-  const colors: { [id: string]: string } = {
-    disabled: UIProps.colors.charts.disabled,
-    enabled: UIProps.colors.charts.active,
-  };
+  function generateProgressList(numbers: any[]) {
+    const length = numbers.length;
+    if (length === 0) {
+      return [];
+    }
+    const step = 100 / (length - 1);
+    const progressList = numbers.map((num, index) => index * step);
+    return progressList;
+  }
+
+  const percentList = generateProgressList(devices);
 
   const getChartData = () => {
-    return devices.map((device) => {
-      return { name: device };
+    return devices.map((device, index) => {
+      return { name: percentList[index], number: device };
     });
   };
 
   return (
-    <Box padding="50px">
-      <VStack>
-        <Heading>Title</Heading>
-        <BarChart width={150} height={40} data={getChartData()}>
-          <Bar dataKey="name" fill="#8884d8" />
-        </BarChart>
-      </VStack>
+    <Box padding="100px">
+      <BarChart
+        width={1200}
+        height={400}
+        data={getChartData()}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <YAxis dataKey="number" />
+        <XAxis dataKey="name" />
+        <Brush dataKey="name" height={30} stroke={UIProps.colors.primary} />
+        <Bar
+          dataKey="number"
+          fill={UIProps.colors.secondary}
+          label={{ position: "top" }}
+          background={{ fill: UIProps.colors.charts.background }}
+        />
+      </BarChart>
     </Box>
   );
 };

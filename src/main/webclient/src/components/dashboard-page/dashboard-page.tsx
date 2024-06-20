@@ -57,7 +57,7 @@ export const DashboardPage = (model: DeviceModel) => {
       case viewOption.recent:
         return (
           <Center>
-            <RecentChart devices={[2.2209, 0.0, 0.0, 0.0, 2.1909]} />
+            <RecentChart devices={[2.2209, 0.0, 0.0, 0.0, 2.1909, 4.5, 2.4, 1.3, 8.9, 0.0, 7.8]} />
           </Center>
         );
       case viewOption.custom:
