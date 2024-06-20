@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  AllDevicesUptimeJson,
   Bridge,
   DeviceModel,
   DeviceTreeModelJson,
@@ -79,5 +80,18 @@ export class APIClient {
         console.error(error);
         return 0;
       });
+  };
+
+  public static getAllDevicesHistory = async (id: string) => {
+    const apiUrl = `http://localhost:8080/api/v1/historyTree?id=${id}`;
+    return axios.get(apiUrl).then((response) => {
+      const data: AllDevicesUptimeJson = response.data;
+      return data.uptimes;
+    })
+    .catch(function (error) {
+      console.log("error");
+      console.error(error);
+      return [];
+    });
   };
 }
