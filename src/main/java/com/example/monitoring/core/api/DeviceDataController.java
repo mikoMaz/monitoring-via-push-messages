@@ -56,7 +56,7 @@ public class DeviceDataController {
             unixTime = System.currentTimeMillis() / 1000L;
             Long latestLoggedTime = deviceStatus.getLogged_at();
 
-            if (status == 0) {
+            if (status == 0&&pal.getTimestamp() - latestLoggedTime>300) {
                 historyService.save(DeviceHistory.builder().deviceId(pal.getDeviceId()).end_timestamp(pal.getTimestamp()).start_timestamp(latestLoggedTime).length(pal.getTimestamp() - latestLoggedTime).build());
             }
             logger.info(pal.getDeviceId(), pal.getTimestamp(), deviceStatus.getFirst_logged_at());
