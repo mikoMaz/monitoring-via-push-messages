@@ -65,4 +65,29 @@ public class DeviceDataController {
         }
         return ResponseEntity.ok("Everything is alright.");
     }
+    @PostMapping("/prehistory")
+    public ResponseEntity<String>prehistory(
+        @RequestBody Map<String, Object>  payloadJson,
+        @RequestHeader("Authorization") String authHeader
+) {
+    String token = authenticationService.extractToken(authHeader);
+//        String deviceId = authenticationService.extractDeviceId(token);
+    String deviceType = authenticationService.extractDeviceType(token);
+    DeviceData pal = deviceDataService.buildObject(payloadJson, deviceType);
+    deviceDataService.saveToDatabase(pal);
+
+    DeviceStatus deviceStatus = statusService.getDeviceStatus(pal.getDeviceId());
+
+    if (deviceStatus == null) {
+        logger.info(pal.getDeviceId());
+        logger.info(String.valueOf(pal.getTimestamp()));
+
+        statusService.saveFromArgs(pal.getDeviceId(), pal.getTimestamp(), pal.getTimestamp());
+    }
+    else {
+        logger.info(pal.getDeviceId(), pal.getTimestamp(), deviceStatus.getFirst_logged_at());
+        statusService.saveFromArgs(pal.getDeviceId(), pal.getTimestamp(), deviceStatus.getFirst_logged_at());
+    }
+    return ResponseEntity.ok("Everything is alright.");
+}
 }
