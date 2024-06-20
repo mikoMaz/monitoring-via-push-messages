@@ -2,9 +2,10 @@ import { Box, Center, Grid, GridItem, HStack } from "@chakra-ui/react";
 import { DeviceModel } from "../../types/deviceModel";
 import { StatusPieChart } from "./components/status-pie-chart";
 import { UIProps } from "../../config/config";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ViewChartsTabs } from "./components/view-charts-tabs";
 import { RecentChart } from "./components/recent-chart";
+import { APIClient } from "../../api/api-client";
 
 enum viewOption {
   current,
@@ -16,6 +17,8 @@ export const DashboardPage = (model: DeviceModel) => {
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.current
   );
+
+  const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
 
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
@@ -57,13 +60,21 @@ export const DashboardPage = (model: DeviceModel) => {
       case viewOption.recent:
         return (
           <Center>
-            <RecentChart devices={[2.2209, 0.0, 0.0, 0.0, 2.1909]} />
+            <RecentChart devices={devicesUptimeValues} />
           </Center>
         );
       case viewOption.custom:
         return <>custom</>;
     }
   };
+
+  useEffect(() => {
+    const fetchUptimeValues = async () => {
+      const data = await APIClient.getAllDevicesHistory("1");
+      setDevicesUptimeValues(data);
+    };
+    fetchUptimeValues();
+  }, []);
 
   const ui = UIProps;
   return (

@@ -4,7 +4,7 @@ import { BridgeRowView } from "./components/bridge-row-view";
 
 export const AllDevicesView = ({ model }: { model: DeviceModel }) => {
   return (
-    <Accordion defaultIndex={[0, 1]} allowMultiple>
+    <Accordion defaultIndex={[0, 1, 2, 3]} allowMultiple>
       {model.bridges.map((bridge) => {
         return <BridgeRowView bridge={bridge} />;
       })}
