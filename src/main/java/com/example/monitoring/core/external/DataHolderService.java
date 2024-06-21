@@ -3,13 +3,14 @@ package com.example.monitoring.core.external;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.monitoring.core.api.auth.AuthenticationController;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class DataHolderService {
-
     @Autowired
     DataHolder externalData;
 
@@ -22,9 +23,9 @@ public class DataHolderService {
         getDeviceData().putIfAbsent(key, List.of("", ""));
     }
 
-    public void addParentIdToDeviceData(String key, String parentId) {
-        getDeviceData().put(key, List.of(parentId, getDeviceData().get(key).get(1)));
-    }
+    // public void addParentIdToDeviceData(String key, String parentId) {
+    //     getDeviceData().put(key, List.of(parentId, getDeviceData().get(key).get(1)));
+    // }
 
     public void addCompanyIdToDeviceData(String key, String companyId) {
         getDeviceData().put(key, List.of(getDeviceData().get(key).getFirst(), companyId));
@@ -36,8 +37,24 @@ public class DataHolderService {
         }
         return null;
     }
+    /* device parent */
+    private Map<String, List<String>> getDeviceParentData() {
+        return externalData.getDeviceParent();
+    }
+    public void addDeviceChildIfNotExists(String key) {
+        getDeviceParentData().putIfAbsent(key, new ArrayList<>());
+    }
+    
+    public void addParentIdToDeviceParentData(String key, String parentId) {
+        if (getDeviceParentData().containsKey(key)&& !getDeviceParentData().get(key).contains(parentId)) {
+            getDeviceParentData().get(key).add(parentId);
+        }
 
-
+    }
+    public List<String> getParentForGivenDeviceId(String deviceId) {
+        return getDeviceParentData().get(deviceId);
+    }
+    
     /* device children */
     private Map<String, List<String>> getDeviceChildrenData() {
         return externalData.getDeviceChildren();

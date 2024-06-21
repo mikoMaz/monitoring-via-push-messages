@@ -58,7 +58,7 @@ public class WebWriteController {
         for(int i=0;i<devicesList.size();i++)
         {
             
-            if(dataHolderService.getParentIdFromDeviceData(devicesList.get(i))=="")
+            if(dataHolderService.getParentForGivenDeviceId(devicesList.get(i))==null)
             {
             ToplevelDevices.add(devicesList.get(i));
             logger.info(devicesList.get(i));
@@ -152,7 +152,7 @@ public class WebWriteController {
         for(int i=0;i<devicesList.size();i++)
         {
             
-            if(dataHolderService.getParentIdFromDeviceData(devicesList.get(i))=="")
+            if(dataHolderService.getParentForGivenDeviceId(devicesList.get(i))==null)
             {
             ToplevelDevices.add(devicesList.get(i));
             logger.info(devicesList.get(i));
