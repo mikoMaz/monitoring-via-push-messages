@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.example.monitoring.core.api.auth.AuthenticationController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,21 @@ public class DataHolderService {
     @Autowired
     DataHolder externalData;
 
+    public void reset1(){
+        externalData.getDeviceData().clear();
+        
+
+        externalData.getCompanyData().clear();
+    }
+    public void reset2(){
+        Map<String, List<String>> mapka = externalData.getDeviceParent();
+        mapka.clear();
+        externalData.setDeviceParent(mapka);
+        mapka=externalData.getDeviceChildren();
+        mapka.clear();
+        externalData.setDeviceChildren(mapka);
+
+    }
     /* device */
     private Map<String, List<String>> getDeviceData() {
         return externalData.getDeviceData();
@@ -38,7 +54,7 @@ public class DataHolderService {
         return null;
     }
     /* device parent */
-    private Map<String, List<String>> getDeviceParentData() {
+    public Map<String, List<String>> getDeviceParentData() {
         return externalData.getDeviceParent();
     }
     public void addDeviceChildIfNotExists(String key) {
@@ -56,7 +72,7 @@ public class DataHolderService {
     }
     
     /* device children */
-    private Map<String, List<String>> getDeviceChildrenData() {
+    public Map<String, List<String>> getDeviceChildrenData() {
         return externalData.getDeviceChildren();
     }
 
