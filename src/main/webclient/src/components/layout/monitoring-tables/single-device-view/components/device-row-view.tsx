@@ -8,6 +8,7 @@ import { StatusDotIndicator } from "../../../status-dot-indicator";
 import { useNavigate } from "react-router-dom";
 import { UIProps } from "../../../../../config/config";
 
+
 export const DeviceRowView = (device: IMonitoringDevice) => {
   const navigate = useNavigate();
   const navigateToDeviceDetailsPage = () => {
