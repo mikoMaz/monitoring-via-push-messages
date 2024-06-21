@@ -80,7 +80,7 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
 
   useEffect(() => {
     const fetchDeviceActiveTime = async (type: deviceType, id: string) => {
-      var time = await APIClient.getDeviceUptime(type, id);
+      var time = await APIClient.getDeviceUptime(1, id);
       setActiveTime(time);
     };
 
