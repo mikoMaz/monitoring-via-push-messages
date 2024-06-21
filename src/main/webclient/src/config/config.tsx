@@ -9,6 +9,14 @@ export const UIProps: IUIProps = {
     secondary: theme.colors.green[200],
     accent: theme.colors.gray[300],
     background: "#F4F3F0",
+    table: {
+      active: theme.colors.green[100],
+      disabled: theme.colors.red[100],
+    },
+    charts: {
+      active: theme.colors.green[300],
+      disabled: theme.colors.red[300]
+    }
   },
   heigth: {
     navbar: "70px",

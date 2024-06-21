@@ -5,7 +5,7 @@ import { DeviceRowView } from "./components/device-row-view";
 export const SingleDeviceView = ({ model }: { model: IMonitoringDevice[] }) => {
   return (
     <TableContainer borderRadius="lg">
-      <Table variant="striped" bg="white" size="sm">
+      <Table variant="simple" bg="white" size="sm">
         <Thead>
           <Tr>
             <Th>Device ID</Th>

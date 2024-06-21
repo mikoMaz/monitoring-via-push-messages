@@ -16,4 +16,5 @@ public class DeviceStatus {
     @Id
     private String Id;
     private Long logged_at;
+    private Long first_logged_at;
 }

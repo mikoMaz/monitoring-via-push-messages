@@ -21,7 +21,7 @@ export const SensorsTable = ({ sensors }: ISensorsTableProps) => {
   if (sensors.length) {
     return (
       <TableContainer borderRadius="lg">
-        <Table variant="striped" bg="white">
+        <Table variant="simple" bg="white">
           <Thead>
             <Tr>
               <Th>Device ID</Th>

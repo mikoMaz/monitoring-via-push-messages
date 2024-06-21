@@ -7,6 +7,8 @@ export type ProjectColorsDictionary = {
   secondary: string;
   accent: string;
   background: string;
+  table: { active: string; disabled: string };
+  charts: { active: string; disabled: string };
 };
 
 export interface IUIProps {
@@ -23,3 +25,7 @@ export interface IAppProps {
 }
 
 export type FilteringHeigth = "0px" | "200px";
+
+export const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};

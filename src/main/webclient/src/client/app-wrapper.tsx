@@ -26,6 +26,10 @@ export const AppWrapper = ({children}: {children: ReactNode}) => {
       },
       accent: {
         500: ui.colors.accent
+      },
+      deviceActiveTime: {
+        500: ui.colors.table.active
+
       }
     },
   });

@@ -1,7 +1,8 @@
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import { IMonitoringDevice } from "../../../types/deviceModel";
 import { getDevicesStatusPieChartData } from "../util/dashboard-page-util";
-import { Box, Heading, VStack, theme } from "@chakra-ui/react";
+import { Box, Heading, VStack } from "@chakra-ui/react";
+import { UIProps } from "../../../config/config";
 
 interface IStatusPieChart {
   devices: IMonitoringDevice[];
@@ -10,8 +11,8 @@ interface IStatusPieChart {
 
 export const StatusPieChart = ({ devices, heading }: IStatusPieChart) => {
   const colors: { [id: string]: string } = {
-    disabled: theme.colors.red[300],
-    enabled: theme.colors.green[300],
+    disabled: UIProps.colors.charts.disabled,
+    enabled: UIProps.colors.charts.active,
   };
   const chartData = getDevicesStatusPieChartData(devices);
 
