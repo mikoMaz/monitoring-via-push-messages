@@ -36,19 +36,12 @@ export const getAllDevicesDensity = (devices: number[]) => {
     if (arr.length === 0) {
       return false;
     }
-    return (
-      arr.filter((number) => {
-        number = 0.0;
-      }).length === arr.length
-    );
+    return arr.filter((number) => (number === 0.0)).length === arr.length;
   }
-  let list = [0.0, 0.0, 0.0]
-  console.log(checkAllZeros(list))
 
   if (checkAllZeros(devices) === true) {
     return devices;
   } else {
-    return [];
+    return computeDensity(devices, bandwidth);;
   }
 };
-// computeDensity(devices, bandwidth);
