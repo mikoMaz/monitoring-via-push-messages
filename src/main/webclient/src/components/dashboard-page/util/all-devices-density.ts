@@ -42,6 +42,6 @@ export const getAllDevicesDensity = (devices: number[]) => {
   if (checkAllZeros(devices) === true) {
     return devices;
   } else {
-    return computeDensity(devices, bandwidth);;
+    return computeDensity(devices, bandwidth);
   }
 };

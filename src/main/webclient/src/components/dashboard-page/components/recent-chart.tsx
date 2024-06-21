@@ -58,7 +58,6 @@ export const RecentChart = ({ devices }: IRecentChart) => {
         }}
       >
         <YAxis dataKey="number" />
-        <XAxis dataKey="name" />
         <Brush dataKey="name" height={30} stroke={UIProps.colors.primary} />
         <Bar
           dataKey="number"
@@ -67,22 +66,6 @@ export const RecentChart = ({ devices }: IRecentChart) => {
           background={{ fill: UIProps.colors.charts.background }}
         />
       </BarChart>
-      <LineChart
-        width={1200}
-        height={400}
-        data={densityData}
-        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="x" />
-        <YAxis />
-        <Line
-          type="monotone"
-          dataKey="y"
-          stroke="#8884d8"
-          activeDot={{ r: 8 }}
-        />
-      </LineChart>
     </Box>
   );
 };
