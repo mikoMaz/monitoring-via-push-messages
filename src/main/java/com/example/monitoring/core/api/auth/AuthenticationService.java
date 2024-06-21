@@ -47,4 +47,16 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .build();
     }
+
+    public String extractDeviceId(String token) {
+        return jwtService.extractDeviceId(token);
+    }
+
+    public String extractToken(String authHeader) {
+        return authHeader.substring(7);
+    }
+
+    public String extractDeviceType(String token) {
+        return jwtService.extractDeviceType(token);
+    }
 }

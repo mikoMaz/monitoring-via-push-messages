@@ -128,7 +128,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
           new Bridge(
             topLevelDevice.id,
             topLevelDevice.status,
-            new Date(topLevelDevice.lastPinged),
+            new Date(topLevelDevice.lastPinged*1000),
             devices[1].devices
               .filter(
                 (device) =>
@@ -139,7 +139,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
                 return new Gateway(
                   gateway.id,
                   gateway.status,
-                  new Date(gateway.lastPinged),
+                  new Date(gateway.lastPinged*1000),
                   devices[2].devices
                     .filter(
                       (device) =>
@@ -150,7 +150,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
                       return new Sensor(
                         sensor.id,
                         sensor.status,
-                        new Date(sensor.lastPinged)
+                        new Date(sensor.lastPinged*1000)
                       );
                     })
                 );
@@ -165,7 +165,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
                 return new Sensor(
                   sensor.id,
                   sensor.status,
-                  new Date(sensor.lastPinged)
+                  new Date(sensor.lastPinged*1000)
                 );
               })
           )
@@ -175,7 +175,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
           new Gateway(
             topLevelDevice.id,
             topLevelDevice.status,
-            new Date(topLevelDevice.lastPinged),
+            new Date(topLevelDevice.lastPinged*1000),
             devices[2].devices
               .filter(
                 (device) =>
@@ -186,7 +186,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
                 return new Sensor(
                   sensor.id,
                   sensor.status,
-                  new Date(sensor.lastPinged)
+                  new Date(sensor.lastPinged*1000)
                 );
               })
           )
@@ -196,7 +196,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
           new Sensor(
             topLevelDevice.id,
             topLevelDevice.status,
-            new Date(topLevelDevice.lastPinged)
+            new Date(topLevelDevice.lastPinged*1000)
           )
         );
       }
