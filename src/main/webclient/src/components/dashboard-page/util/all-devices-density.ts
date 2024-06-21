@@ -32,5 +32,23 @@ function computeDensity(data: number[], bandwidth: number) {
 
 export const getAllDevicesDensity = (devices: number[]) => {
   const bandwidth = 0.5;
-  return computeDensity(devices, bandwidth);
+  function checkAllZeros(arr: number[]) {
+    if (arr.length === 0) {
+      return false;
+    }
+    return (
+      arr.filter((number) => {
+        number = 0.0;
+      }).length === arr.length
+    );
+  }
+  let list = [0.0, 0.0, 0.0]
+  console.log(checkAllZeros(list))
+
+  if (checkAllZeros(devices) === true) {
+    return devices;
+  } else {
+    return [];
+  }
 };
+// computeDensity(devices, bandwidth);
