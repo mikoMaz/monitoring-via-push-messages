@@ -13,12 +13,15 @@ enum viewOption {
   custom,
 }
 
-export const DashboardPage = (model: DeviceModel) => {
+interface IDashboardPage {
+  model: DeviceModel;
+  devicesUptime: number[];
+}
+
+export const DashboardPage = ({model, devicesUptime}: IDashboardPage) => {
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.current
   );
-
-  const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
 
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
@@ -60,21 +63,13 @@ export const DashboardPage = (model: DeviceModel) => {
       case viewOption.recent:
         return (
           <Center>
-            <RecentChart devices={devicesUptimeValues} />
+            <RecentChart devices={devicesUptime} />
           </Center>
         );
       case viewOption.custom:
         return <>custom</>;
     }
   };
-
-  useEffect(() => {
-    const fetchUptimeValues = async () => {
-      const data = await APIClient.getAllDevicesHistory("1");
-      setDevicesUptimeValues(data);
-    };
-    fetchUptimeValues();
-  }, []);
 
   const ui = UIProps;
   return (

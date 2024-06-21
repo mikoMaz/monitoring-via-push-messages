@@ -20,6 +20,7 @@ export default function App() {
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
   );
+  const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
   const navigate = useNavigate();
 
   const props: IAppProps = {
@@ -38,7 +39,12 @@ export default function App() {
       <Route
         key="dashboard"
         path="/dashboard"
-        element={<DashboardPage {...deviceModel} />}
+        element={
+          <DashboardPage
+            model={deviceModel}
+            devicesUptime={devicesUptimeValues}
+          />
+        }
       />,
       <Route key="about" path="/about" element={<AboutPage />} />,
       <Route key="landing-page" path="/" element={<LandingPage />} />,
@@ -58,15 +64,22 @@ export default function App() {
       );
     }
     const updateModel = async () => {
-      const data = await APIClient.getDummyDeviceModel();
+      const data = await APIClient.getUpdatedDeviceModel();
       console.log(data);
       setDeviceModel(data);
     };
 
+    const fetchUptimeValues = async () => {
+      const data = await APIClient.getAllDevicesHistory("1");
+      setDevicesUptimeValues(data);
+    };
+
     updateModel();
+    fetchUptimeValues();
     setInterval(updateModel, 1000 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return <AppBody {...props} />;
 }
