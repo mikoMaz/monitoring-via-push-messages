@@ -57,11 +57,10 @@ public class WebWriteController {
         return ResponseEntity.ok().body(root.toString());
         for(int i=0;i<devicesList.size();i++)
         {
-            
-            if(dataHolderService.getParentIdFromDeviceData(devicesList.get(i))=="")
-            {
-            ToplevelDevices.add(devicesList.get(i));
-            logger.info(devicesList.get(i));
+
+            if (dataHolderService.getParentForGivenDeviceId(devicesList.get(i)) == null) {
+                ToplevelDevices.add(devicesList.get(i));
+                logger.info(devicesList.get(i));
             }
             
         }
@@ -100,6 +99,9 @@ public class WebWriteController {
             {
                 String MidlevelId= MidList.get(j);
                 List<String> BottomList=dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
+                if (BottomList == null) {
+                    continue;
+                }
                 JsonArray sensorIdArray = new JsonArray();
                 for (String BottomlevelID : BottomList) {
                     sensorIdArray.add(new JsonPrimitive(BottomlevelID));
@@ -151,8 +153,8 @@ public class WebWriteController {
         return ResponseEntity.ok().body(root.toString());
         for(int i=0;i<devicesList.size();i++)
         {
-            
-            if(dataHolderService.getParentIdFromDeviceData(devicesList.get(i))=="")
+
+            if(dataHolderService.getParentForGivenDeviceId(devicesList.get(i)) == null)
             {
             ToplevelDevices.add(devicesList.get(i));
             logger.info(devicesList.get(i));
@@ -179,6 +181,9 @@ public class WebWriteController {
             {
                 String MidlevelId= MidList.get(j);
                 List<String> BottomList=dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
+                if (BottomList == null) {
+                    continue;
+                }
                 Double MidlevelStatus=historyService.uptimePercent(MidlevelId);
                 if(MidlevelStatus!=null){
                     list.get(0).add(MidlevelStatus);
