@@ -29,6 +29,7 @@ export const getDensityData = (
     } else {
       subArrays.push(operationArray);
       operationArray = [];
+      operationArray.push(data[i]);
       currentThreshold += fragmentationRate;
     }
   }
