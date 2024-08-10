@@ -38,7 +38,7 @@ export const getDensityData = (
   }
   const marginValues = derivationValues.filter((e) => e !== undefined);
   if (derivationValues.length) {
-    subArrays = [marginValues].concat(subArrays);
+    // subArrays = [marginValues].concat(subArrays);
   }
 
   const returnData = new DensityData(
