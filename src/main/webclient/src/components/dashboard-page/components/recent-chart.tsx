@@ -1,63 +1,37 @@
-import {
-  Bar,
-  BarChart,
-  Brush,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { IMonitoringDevice } from "../../../types/deviceModel";
-import { getDevicesStatusPieChartData } from "../util/dashboard-page-util";
-import { Box, Heading, VStack } from "@chakra-ui/react";
+import { Bar, BarChart, Brush, XAxis, YAxis } from "recharts";
+import { Box } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
-import { getAllDevicesDensity } from "../util/all-devices-density";
+import { getDensityRecentChart } from "../util/density-devices-recent";
 
 interface IRecentChart {
   devices: number[];
 }
 
 export const RecentChart = ({ devices }: IRecentChart) => {
-  function generateProgressList(numbers: any[]) {
-    const length = numbers.length;
-    if (length === 0) {
-      return [];
-    }
-    const step = 100 / (length - 1);
-    const progressList = numbers.map((num, index) => index * step);
-    return progressList;
-  }
-
-  const percentList = generateProgressList(devices);
-
   const getChartData = () => {
-    return devices.map((device, index) => {
-      return { name: percentList[index], number: device };
+    return getDensityRecentChart(devices, 0.5).elements.map((device) => {
+      return {
+        name: device.maxPercentActivityRangePoint,
+        number: device.numElements.length,
+      };
     });
   };
-
-  const densityData = getAllDevicesDensity(devices);
 
   return (
     <Box padding="100px">
       <BarChart
         width={1200}
-        height={400}
+        height={500}
         data={getChartData()}
         margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
+          top: 50,
+          right: 10,
+          left: 10,
+          bottom: 50,
         }}
       >
         <YAxis dataKey="number" />
+        <XAxis dataKey="name" />
         <Brush dataKey="name" height={30} stroke={UIProps.colors.primary} />
         <Bar
           dataKey="number"

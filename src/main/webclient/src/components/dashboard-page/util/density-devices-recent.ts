@@ -1,4 +1,4 @@
-export const oliwiaDensity = (
+export const getDensityRecentChart = (
   numbersArray: number[],
   percentFragmentation: number
 ): DensityData => {
@@ -11,9 +11,7 @@ export const oliwiaDensity = (
   let operationArray: number[] = [];
   for (let i = 0; i < 100; i += percentFragmentation) {
     let ceilThreshold = i + percentFragmentation;
-    operationArray = data.filter(
-      num => num >= i && num < ceilThreshold
-    );
+    operationArray = data.filter((num) => num >= i && num < ceilThreshold);
     dataArrays.push({
       numElements: operationArray,
       minPercentActivityRangePoint: i,
@@ -29,10 +27,6 @@ export const oliwiaDensity = (
   );
   return returnData;
 };
-
-
-
-
 
 export type DensityGraphElement = {
   numElements: number[];
