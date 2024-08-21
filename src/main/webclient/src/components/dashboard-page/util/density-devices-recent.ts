@@ -13,14 +13,14 @@ export const getDensityRecentChart = (
     let ceilThreshold = i + percentFragmentation;
     operationArray = data.filter((num) => num >= i && num < ceilThreshold);
     dataArrays.push({
-      numElements: operationArray,
+      devices: operationArray,
       minPercentActivityRangePoint: i,
       maxPercentActivityRangePoint: ceilThreshold,
     });
   }
 
   const returnData = new DensityData(
-    dataArrays,
+    mergeEmptyDensityGraphElements(dataArrays, percentFragmentation),
     numbersArray.length,
     numDivisions,
     percentFragmentation
@@ -28,8 +28,40 @@ export const getDensityRecentChart = (
   return returnData;
 };
 
+function mergeEmptyDensityGraphElements(
+  elements: DensityGraphElement[],
+  fragmentationRate: number
+): DensityGraphElement[] {
+  if (elements.length === 0) return elements;
+
+  const mergedElements: DensityGraphElement[] = [];
+  let i = 0;
+
+  while (i < elements.length) {
+    let currentElement = { ...elements[i] };
+
+    if (currentElement.devices.length === 0) {
+      let j = i + 1;
+
+      while (j < elements.length && elements[j].devices.length === 0) {
+        currentElement.maxPercentActivityRangePoint += fragmentationRate;
+        j++;
+      }
+
+      mergedElements.push(currentElement);
+
+      i = j;
+    } else {
+      mergedElements.push(currentElement);
+      i++;
+    }
+  }
+
+  return mergedElements;
+}
+
 export type DensityGraphElement = {
-  numElements: number[];
+  devices: number[];
   minPercentActivityRangePoint: number;
   maxPercentActivityRangePoint: number;
 };

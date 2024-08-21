@@ -15,12 +15,12 @@ interface CustomTooltipPayload {
 
 const getDescOfPage = (payload: string | undefined, min: number, max: number) => {
   if (payload === "0") {
-    return `There is no working device in range ${min}% - ${max}%`;
+    return `No working device in range ${min}% - ${max}%`;
   }
   if (payload === "1") {
-    return `There is ${payload} working device in range ${min}% - ${max}%`;
+    return `${payload} device in range ${min}% - ${max}%`;
   }
-  return `There are ${payload} working devices in range ${min}% - ${max}%`;
+  return `${payload} devices in range ${min}% - ${max}%`;
 };
 
 
@@ -51,7 +51,7 @@ export const RecentChart = ({ devices }: IRecentChart) => {
         min: device.minPercentActivityRangePoint,
         max: device.maxPercentActivityRangePoint,
         name: `${device.minPercentActivityRangePoint} - ${device.maxPercentActivityRangePoint}`,
-        number: device.numElements.length,
+        number: device.devices.length,
       };
     }
   );
