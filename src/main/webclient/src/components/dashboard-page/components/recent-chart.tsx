@@ -1,4 +1,13 @@
-import { Bar, BarChart, Brush, Tooltip, TooltipProps, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Brush,
+  CartesianGrid,
+  Tooltip,
+  TooltipProps,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { Box } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
 import { getDensityRecentChart } from "../util/density-devices-recent";
@@ -13,16 +22,16 @@ interface CustomTooltipPayload {
   number: number;
 }
 
-const getDescOfPage = (payload: string | undefined, min: number, max: number) => {
-  if (payload === "0") {
-    return `No working device in range ${min}% - ${max}%`;
-  }
+const getDescOfPage = (
+  payload: string | undefined,
+  min: number,
+  max: number
+) => {
   if (payload === "1") {
     return `${payload} device in range ${min}% - ${max}%`;
   }
   return `${payload} devices in range ${min}% - ${max}%`;
 };
-
 
 const CustomTooltip = ({
   active,
@@ -30,11 +39,17 @@ const CustomTooltip = ({
   label,
 }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
-    const { min, max } = payload[0].payload as CustomTooltipPayload; // Dodanie typu do payload
+    const { min, max } = payload[0].payload as CustomTooltipPayload;
     return (
-      <div className="custom-tooltip">
+      <div
+        style={{
+          border: "1px solid grey",
+          padding: "0px 10px",
+          background: UIProps.colors.background,
+        }}
+      >
         <p className="label">{`${label} : ${payload[0].value}`}</p>
-        <p className="desc">
+        <p className="desc" style={{ fontWeight: "bold" }}>
           {getDescOfPage(payload[0].value?.toString(), min, max)}
         </p>
       </div>
@@ -69,15 +84,19 @@ export const RecentChart = ({ devices }: IRecentChart) => {
           bottom: 50,
         }}
       >
+        <CartesianGrid strokeDasharray="1 1" />
         <YAxis dataKey="number" />
         <XAxis dataKey="name" />
         <Brush dataKey="max" height={30} stroke={UIProps.colors.primary} />
         <Bar
           dataKey="number"
+          barSize={40}
           fill={UIProps.colors.secondary}
-          background={{ fill: UIProps.colors.charts.background }}
         />
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip
+          content={<CustomTooltip />}
+          cursor={{ fill: "rgba(0, 0, 0, 0.2)" }}
+        />
       </BarChart>
     </Box>
   );
