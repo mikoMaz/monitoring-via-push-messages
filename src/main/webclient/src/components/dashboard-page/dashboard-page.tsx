@@ -43,7 +43,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
       case viewOption.current:
         return (
           <Center>
-            <CurrentChart model={model} />
+            <CurrentChart model={model} devices={devicesUptime}/>
           </Center>
         );
       case viewOption.recent:

@@ -71,33 +71,37 @@ export const RecentChart = ({ devices }: IRecentChart) => {
     }
   );
 
-  return (
-    <Box padding="100px">
-      <BarChart
-        width={1200}
-        height={500}
-        data={chartData} // U¿ycie zmiennej
-        margin={{
-          top: 50,
-          right: 50,
-          left: 50,
-          bottom: 50,
-        }}
-      >
-        <CartesianGrid strokeDasharray="1 1" />
-        <YAxis dataKey="number" />
-        <XAxis dataKey="name" />
-        <Brush dataKey="max" height={30} stroke={UIProps.colors.primary} />
-        <Bar
-          dataKey="number"
-          barSize={40}
-          fill={UIProps.colors.secondary}
-        />
-        <Tooltip
-          content={<CustomTooltip />}
-          cursor={{ fill: "rgba(0, 0, 0, 0.2)" }}
-        />
-      </BarChart>
-    </Box>
-  );
+  if (devices.length) {
+    return (
+      <Box padding="100px">
+        <BarChart
+          width={1200}
+          height={500}
+          data={chartData} // Uï¿½ycie zmiennej
+          margin={{
+            top: 50,
+            right: 50,
+            left: 50,
+            bottom: 50,
+          }}
+        >
+          <CartesianGrid strokeDasharray="1 1" />
+          <YAxis dataKey="number" />
+          <XAxis dataKey="name" />
+          <Brush dataKey="max" height={30} stroke={UIProps.colors.primary} />
+          <Bar
+            dataKey="number"
+            barSize={40}
+            fill={UIProps.colors.secondary}
+          />
+          <Tooltip
+            content={<CustomTooltip />}
+            cursor={{ fill: "rgba(0, 0, 0, 0.2)" }}
+          />
+        </BarChart>
+      </Box>
+    );
+  } else {
+    return <>No data</>;
+  }
 };
