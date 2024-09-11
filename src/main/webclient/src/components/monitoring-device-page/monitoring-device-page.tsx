@@ -1,4 +1,4 @@
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { UIProps } from "../../config/config";
 import {
   Accordion,
@@ -8,7 +8,6 @@ import {
   Grid,
   GridItem,
   Progress,
-  Center,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
@@ -19,11 +18,12 @@ import {
 import { CustomAccordionButton } from "./components/custom-accordion-buttons";
 import { capitalizeFirstLetter } from "../../types/projectTypes";
 import { DeviceDetailsTable } from "./components/device-details-table";
+import { APIClient } from "../../api/api-client";
 
 export type monitoringDeviceType = "sensor" | "gateway" | "bridge" | "other";
 
 export const MonitoringDevicePage = (model: DeviceModel) => {
-  const [activeTime, setActiveTime] = useState<number>(81.99);
+  const [activeTime, setActiveTime] = useState<number>(0);
   const ui = UIProps;
   const { device } = useParams();
   const [selectedDevice, setSelectedDevice] = useState<IMonitoringDevice>(
@@ -75,9 +75,19 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
           }
           break;
       }
-      setActiveTime(81.99);
     }
   }, [device, model]);
+
+  useEffect(() => {
+    const fetchDeviceActiveTime = async (type: deviceType, id: string) => {
+      var time = await APIClient.getDeviceUptime(1, id);
+      setActiveTime(time);
+    };
+
+    if (selectedDevice !== DeviceModel.getPlaceholderDevice()) {
+      fetchDeviceActiveTime(selectedDevice.deviceType, selectedDevice.id);
+    }
+  }, [selectedDevice]);
 
   return (
     <Box
@@ -92,7 +102,7 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
           marginTop="28px"
           marginBottom="28px"
         >
-          <Accordion defaultIndex={[0, 1, 2]} allowMultiple allowToggle>
+          <Accordion defaultIndex={[0]} allowMultiple allowToggle>
             <AccordionItem>
               <CustomAccordionButton
                 title={true}

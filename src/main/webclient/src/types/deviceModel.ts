@@ -106,6 +106,14 @@ export type DeviceTreeModelJson = {
   [key: string]: ITreeModelDevice[];
 };
 
+export type DeviceUptimeJson = {
+  uptime: number;
+};
+
+export type AllDevicesUptimeJson = {
+  uptimes: number[];
+};
+
 export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
   const bridges: Bridge[] = [];
   const gateways: Gateway[] = [];

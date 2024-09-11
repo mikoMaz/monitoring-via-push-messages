@@ -29,7 +29,6 @@ export const AppWrapper = ({children}: {children: ReactNode}) => {
       },
       deviceActiveTime: {
         500: ui.colors.table.active
-
       }
     },
   });

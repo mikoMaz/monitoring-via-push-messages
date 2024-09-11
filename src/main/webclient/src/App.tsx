@@ -12,7 +12,7 @@ import { IAppProps } from "./types/projectTypes";
 import { DeviceModel } from "./types/deviceModel";
 import { UIProps } from "./config/config";
 import { APIClient } from "./api/api-client";
-import { MonitoringDevicePage } from "./components/layout/monitoring-device-page/monitoring-device-page";
+import { MonitoringDevicePage } from "./components/monitoring-device-page/monitoring-device-page";
 
 const refreshTime = 3; //minutes
 
@@ -20,6 +20,7 @@ export default function App() {
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
   );
+  const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
   const navigate = useNavigate();
 
   const props: IAppProps = {
@@ -33,12 +34,17 @@ export default function App() {
       <Route
         key="monitoring-device"
         path="/monitoring/:device"
-        element={<MonitoringDevicePage {...deviceModel}/>}
+        element={<MonitoringDevicePage {...deviceModel} />}
       />,
       <Route
         key="dashboard"
         path="/dashboard"
-        element={<DashboardPage {...deviceModel} />}
+        element={
+          <DashboardPage
+            model={deviceModel}
+            devicesUptime={devicesUptimeValues}
+          />
+        }
       />,
       <Route key="about" path="/about" element={<AboutPage />} />,
       <Route key="landing-page" path="/" element={<LandingPage />} />,
@@ -62,15 +68,18 @@ export default function App() {
       console.log(data);
       setDeviceModel(data);
     };
+
+    const fetchUptimeValues = async () => {
+      const data = await APIClient.getAllDevicesHistory("1");
+      setDevicesUptimeValues(data);
+    };
+
     updateModel();
-
-    const timer = setTimeout(() => {
-      updateModel();
-    }, refreshTime * 60 * 1000);
-
-    return () => clearTimeout(timer);
+    fetchUptimeValues();
+    setInterval(updateModel, 1000 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return <AppBody {...props} />;
 }

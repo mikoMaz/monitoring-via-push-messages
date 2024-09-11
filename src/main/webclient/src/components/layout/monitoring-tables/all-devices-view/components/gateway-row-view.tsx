@@ -34,7 +34,7 @@ export const GatewayRowView = ({ gateway }: IGatewayRowViewProps) => {
   };
 
   return (
-    <Accordion allowMultiple key={gateway.id}>
+    <Accordion allowMultiple key={gateway.id} defaultIndex={[0]}>
       <AccordionItem key={gateway.id}>
         <AccordionButton>
           <GatewayButton />
