@@ -13,10 +13,14 @@ import { DeviceModel } from "./types/deviceModel";
 import { UIProps } from "./config/config";
 import { APIClient } from "./api/api-client";
 import { MonitoringDevicePage } from "./components/monitoring-device-page/monitoring-device-page";
+import { useAuth0 } from "@auth0/auth0-react";
+import { LoginPage } from "./components/login-page/login-page";
 
 const refreshTime = 3; //minutes
 
 export default function App() {
+  const { user, isAuthenticated, isLoading, error } = useAuth0();
+
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
   );
@@ -81,5 +85,17 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <AppBody {...props} />;
+  if (error) {
+    return <div>Athentication error occured: {error.message}</div>;
+  }
+
+  if (isLoading) {
+    return <div>Loading ...</div>;
+  } else {
+    if (isAuthenticated) {
+      return <AppBody {...props} />;
+    } else {
+      return <LoginPage />;
+    }
+  }
 }
