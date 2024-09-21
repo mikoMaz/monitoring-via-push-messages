@@ -116,17 +116,14 @@ export const MonitoringPage = (model: DeviceModel) => {
           marginTop="28px"
           marginBottom="28px"
         >
-          <Grid templateColumns="3fr 4fr 3fr">
-            <GridItem>
+          <Grid templateColumns="repeat(10, 1fr)">
+            <GridItem colSpan={5}> 
               <ViewTypeSelectionTabs
                 index={selectedViewOption}
                 onSelectionChanged={onSelectedViewChanged}
               />
             </GridItem>
-            <Grid>
-              <div className="empty-space" />
-            </Grid>
-            <GridItem>
+            <GridItem colStart={8} colEnd={11}>
               <FilterSectionButtons
                 setFilterEnabled={setFilteringSectionEnabled}
               />
