@@ -12,8 +12,9 @@ import { Box } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
 import { getDensityRecentChart } from "../util/density-devices-recent";
 
-interface IRecentChart {
+interface IRecentChartCustom {
   devices: number[];
+  variable: number;
 }
 
 interface CustomTooltipPayload {
@@ -59,8 +60,8 @@ const CustomTooltip = ({
   return null;
 };
 
-export const RecentChart = ({ devices }: IRecentChart) => {
-  const chartData = getDensityRecentChart(devices, 0.5).elements.map(
+export const RecentChartCustom = ({ devices, variable }: IRecentChartCustom) => {
+  const chartData = getDensityRecentChart(devices, variable).elements.map(
     (device) => {
       return {
         min: device.minPercentActivityRangePoint,
@@ -73,7 +74,7 @@ export const RecentChart = ({ devices }: IRecentChart) => {
 
   if (devices.length) {
     return (
-      <Box padding="100px">
+      <Box>
         <BarChart
           width={1200}
           height={500}

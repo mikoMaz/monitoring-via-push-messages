@@ -64,13 +64,13 @@ export default function App() {
       );
     }
     const updateModel = async () => {
-      const data = await APIClient.getUpdatedDeviceModel();
+      const data = await APIClient.getDummyDeviceModel();
       console.log(data);
       setDeviceModel(data);
     };
 
     const fetchUptimeValues = async () => {
-      const data = await APIClient.getAllDevicesHistory("1");
+      const data = await APIClient.getDummyDevicesHistory();
       setDevicesUptimeValues(data);
     };
 

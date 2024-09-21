@@ -1,10 +1,21 @@
-import { Box, Center, Grid, GridItem } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Grid,
+  GridItem,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+} from "@chakra-ui/react";
 import { DeviceModel } from "../../types/deviceModel";
 import { UIProps } from "../../config/config";
 import { useState } from "react";
 import { ViewChartsTabs } from "./components/view-charts-tabs";
 import { RecentChart } from "./components/recent-chart";
 import { CurrentChart } from "./components/current-chart";
+import { RecentChartCustom } from "./components/recent-chart-custom";
 
 enum viewOption {
   current,
@@ -43,7 +54,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
       case viewOption.current:
         return (
           <Center>
-            <CurrentChart model={model} devices={devicesUptime}/>
+            <CurrentChart model={model} devices={devicesUptime} />
           </Center>
         );
       case viewOption.recent:
@@ -53,7 +64,39 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
           </Center>
         );
       case viewOption.custom:
-        return <>custom</>;
+        return (
+          <Grid>
+            <GridItem>
+              <Tabs orientation="vertical" colorScheme="green">
+                <TabList>
+                  <Tab mb={4}>One</Tab>
+                  <Tab mb={4}>Recent</Tab>
+                  <Tab mb={4}>Three</Tab>
+                </TabList>
+
+                <TabPanels>
+                  <TabPanel>
+                    <Center>
+                      <CurrentChart model={model} devices={devicesUptime} />
+                    </Center>
+                  </TabPanel>
+                  <TabPanel>
+                    <Center>
+                      <RecentChartCustom
+                        devices={devicesUptime}
+                        variable={0.5}
+                      />
+                    </Center>
+                  </TabPanel>
+                  <TabPanel>
+                    <p>three!</p>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </GridItem>
+            <GridItem></GridItem>
+          </Grid>
+        );
     }
   };
 
@@ -72,7 +115,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
           marginBottom="28px"
         ></GridItem>
         <Grid templateColumns="3fr 7fr">
-          <GridItem>
+          <GridItem marginBottom="30px">
             <ViewChartsTabs
               index={selectedViewOption}
               onSelectionChanged={onSelectedViewChanged}
