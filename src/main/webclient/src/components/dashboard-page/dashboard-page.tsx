@@ -21,7 +21,7 @@ import { useState } from "react";
 import { ViewChartsTabs } from "./components/view-charts-tabs";
 import { RecentChart } from "./components/recent-chart";
 import { CurrentChart } from "./components/current-chart";
-import { RecentChartCustom } from "./components/recent-chart-custom";
+import { ChartCreator } from "./components/chart-creator";
 
 enum viewOption {
   current,
@@ -38,7 +38,6 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.current
   );
-  const [variable, setVariable] = useState("0.5");
 
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
@@ -67,75 +66,14 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
       case viewOption.recent:
         return (
           <Center>
-            <RecentChart devices={devicesUptime} />
+            <RecentChart devices={devicesUptime} percentFragmentation={0.5}/>
           </Center>
         );
       case viewOption.custom:
         return (
-          <Grid>
-            <GridItem marginBottom="20px">
-              <Button colorScheme="green">
-                New
-              </Button>
-            </GridItem>
-            <GridItem>
-              <Tabs orientation="vertical" colorScheme="green">
-                <TabList>
-                  <Tab mb={4}>One</Tab>
-                  <Tab mb={4}>Recent Custom</Tab>
-                  <Tab mb={4}>Three</Tab>
-                </TabList>
-
-                <TabPanels>
-                  <TabPanel>
-                    <Center>
-                      <CurrentChart model={model} devices={devicesUptime} />
-                    </Center>
-                  </TabPanel>
-                  <TabPanel>
-                    <NumberInput
-                      step={0.05}
-                      precision={2}
-                      min={0.001}
-                      max={20}
-                      keepWithinRange={false}
-                      clampValueOnBlur={false}
-                      maxW={20}
-                      value={variable}
-                      onChange={(valueString) => setVariable(valueString)}
-                      ml="50px"
-                    >
-                      <NumberInputField />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                      </NumberInputStepper>
-                    </NumberInput>
-                    <Center>
-                      {parseFloat(variable) === 0 ||
-                      isNaN(parseFloat(variable)) ? (
-                        <p>
-                          We can't show you the chart, if you put "0" or nothing
-                          into the input section. Please write a number between
-                          0.001 and 100.
-                        </p>
-                      ) : (
-                        <RecentChartCustom
-                          devices={devicesUptime}
-                          variable={parseFloat(variable)}
-                        />
-                      )}
-                    </Center>
-                  </TabPanel>
-
-                  <TabPanel>
-                    <p>three!</p>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </GridItem>
-            <GridItem></GridItem>
-          </Grid>
+          <Center>
+            <ChartCreator model={model} devicesUptime={devicesUptime} />
+          </Center>
         );
     }
   };

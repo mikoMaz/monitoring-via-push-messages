@@ -14,6 +14,7 @@ import { getDensityRecentChart } from "../util/density-devices-recent";
 
 export interface IRecentChart {
   devices: number[];
+  percentFragmentation: number;
 }
 
 interface CustomTooltipPayload {
@@ -59,21 +60,25 @@ const CustomTooltip = ({
   return null;
 };
 
-export const RecentChart = ({ devices }: IRecentChart) => {
-  const chartData = getDensityRecentChart(devices, 0.5).elements.map(
-    (device) => {
-      return {
-        min: device.minPercentActivityRangePoint,
-        max: device.maxPercentActivityRangePoint,
-        name: `${device.minPercentActivityRangePoint} - ${device.maxPercentActivityRangePoint}`,
-        number: device.devices.length,
-      };
-    }
-  );
+export const RecentChart = ({
+  devices,
+  percentFragmentation,
+}: IRecentChart) => {
+  const chartData = getDensityRecentChart(
+    devices,
+    percentFragmentation
+  ).elements.map((device) => {
+    return {
+      min: device.minPercentActivityRangePoint,
+      max: device.maxPercentActivityRangePoint,
+      name: `${device.minPercentActivityRangePoint} - ${device.maxPercentActivityRangePoint}`,
+      number: device.devices.length,
+    };
+  });
 
   if (devices.length) {
     return (
-      <Box padding="100px">
+      <Box>
         <BarChart
           width={1200}
           height={500}
@@ -89,11 +94,7 @@ export const RecentChart = ({ devices }: IRecentChart) => {
           <YAxis dataKey="number" />
           <XAxis dataKey="name" />
           <Brush dataKey="max" height={30} stroke={UIProps.colors.primary} />
-          <Bar
-            dataKey="number"
-            barSize={40}
-            fill={UIProps.colors.secondary}
-          />
+          <Bar dataKey="number" barSize={40} fill={UIProps.colors.secondary} />
           <Tooltip
             content={<CustomTooltip />}
             cursor={{ fill: "rgba(0, 0, 0, 0.2)" }}
@@ -102,6 +103,6 @@ export const RecentChart = ({ devices }: IRecentChart) => {
       </Box>
     );
   } else {
-    return <>No data</>;
+    return <>Invalid data</>;
   }
 };
