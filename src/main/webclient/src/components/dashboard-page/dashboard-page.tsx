@@ -3,6 +3,11 @@ import {
   Center,
   Grid,
   GridItem,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Tab,
   TabList,
   TabPanel,
@@ -32,6 +37,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.current
   );
+  const [variable, setVariable] = useState("0.5");
 
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
@@ -81,11 +87,33 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
                     </Center>
                   </TabPanel>
                   <TabPanel>
+                    <NumberInput
+                      step={0.05}
+                      precision={2}
+                      min={0.001}
+                      max={20}
+                      keepWithinRange={false}
+                      clampValueOnBlur={false}
+                      maxW={40}
+                      value={variable}
+                      onChange={(valueString) => setVariable(valueString)} // Przechowuj tekst
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
                     <Center>
-                      <RecentChartCustom
-                        devices={devicesUptime}
-                        variable={0.5}
-                      />
+                      {parseFloat(variable) === 0 ||
+                      isNaN(parseFloat(variable)) ? (
+                        <p>No data</p>
+                      ) : (
+                        <RecentChartCustom
+                          devices={devicesUptime}
+                          variable={parseFloat(variable)} // Przekaż jako liczba
+                        />
+                      )}
                     </Center>
                   </TabPanel>
                   <TabPanel>

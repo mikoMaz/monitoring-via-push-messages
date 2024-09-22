@@ -82,7 +82,7 @@ export const RecentChartCustom = ({ devices, variable }: IRecentChartCustom) => 
           margin={{
             top: 50,
             right: 50,
-            left: 50,
+            left: 0,
             bottom: 50,
           }}
         >
