@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Center,
   Grid,
   GridItem,
@@ -72,11 +73,16 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
       case viewOption.custom:
         return (
           <Grid>
+            <GridItem marginBottom="20px">
+              <Button colorScheme="green">
+                New
+              </Button>
+            </GridItem>
             <GridItem>
               <Tabs orientation="vertical" colorScheme="green">
                 <TabList>
                   <Tab mb={4}>One</Tab>
-                  <Tab mb={4}>Recent</Tab>
+                  <Tab mb={4}>Recent Custom</Tab>
                   <Tab mb={4}>Three</Tab>
                 </TabList>
 
@@ -108,7 +114,11 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
                     <Center>
                       {parseFloat(variable) === 0 ||
                       isNaN(parseFloat(variable)) ? (
-                        <p>No data</p>
+                        <p>
+                          We can't show you the chart, if you put "0" or nothing
+                          into the input section. Please write a number between
+                          0.001 and 100.
+                        </p>
                       ) : (
                         <RecentChartCustom
                           devices={devicesUptime}
