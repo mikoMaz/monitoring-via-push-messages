@@ -1,12 +1,16 @@
 import {
   Center,
+  FormControl,
+  FormLabel,
   Grid,
   GridItem,
+  Input,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
+  Switch,
   TabPanel,
 } from "@chakra-ui/react";
 import {
@@ -18,6 +22,7 @@ import {
   RecentChart,
 } from "../components/dashboard-page/components/recent-chart";
 import { useState } from "react";
+import { UIProps } from "../config/config";
 
 export enum chartType {
   Current,
@@ -71,7 +76,8 @@ interface IChartTabPanel {
 }
 
 export const ChartTabPanel = ({ template }: IChartTabPanel) => {
-  const [percentFragmentationVariable, setPercentFragmentationVariable] = useState<string>("0.5");
+  const [percentFragmentationVariable, setPercentFragmentationVariable] =
+    useState<string>("0.5");
   // const [chartTemplate] = useState<ChartTemplate>(template);
 
   const variableChanged = (v: string) => {
@@ -106,11 +112,39 @@ export const ChartTabPanel = ({ template }: IChartTabPanel) => {
     }
   };
 
+  const drawEditPresetNameInput = () => {
+    return (
+      <Input
+        marginLeft="100px"
+        htmlSize={15}
+        width="auto"
+        placeholder={template.name}
+      />
+    );
+  };
+
+  const drawEditBrushSwitch = () => {
+    return (
+      // <FormControl>
+      //   <FormLabel htmlFor="active-brush" mb="0">
+      //     Brush?
+      //   </FormLabel>
+      //   <Switch id="active-brush"/>
+      // </FormControl>
+      <Switch marginLeft="-70px" marginTop="5px" size='lg' colorScheme="primary" id="active-brush"/>
+    );
+  };
+
   return (
     <TabPanel>
-      {drawEditPresetNumberInputs()}
+      <Grid templateColumns="repeat(10, 1fr)">
+        <GridItem colSpan={2}>{drawEditPresetNameInput()}</GridItem>
+        <GridItem colSpan={2} colStart={3}>{drawEditPresetNumberInputs()}</GridItem>
+        <GridItem colSpan={1} >{drawEditBrushSwitch()}</GridItem>
+      </Grid>
       <Center>
-        {parseFloat(percentFragmentationVariable) === 0 || isNaN(parseFloat(percentFragmentationVariable)) ? (
+        {parseFloat(percentFragmentationVariable) === 0 ||
+        isNaN(parseFloat(percentFragmentationVariable)) ? (
           <p>
             We can't show you the chart, if you put "0" or nothing into the
             input section. Please write a number between 0.001 and 100.
