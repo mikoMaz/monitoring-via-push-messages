@@ -1,16 +1,9 @@
 import {
   Button,
-  Center,
   Grid,
   GridItem,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
   Tab,
   TabList,
-  TabPanel,
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
@@ -21,7 +14,6 @@ import {
   ChartTemplate,
   chartType,
 } from "../../../types/chartTemplate";
-import { CurrentChart } from "./current-chart";
 
 interface IChartCreator {
   model: DeviceModel;
@@ -29,29 +21,27 @@ interface IChartCreator {
 }
 
 export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
-//   const [variable, setVariable] = useState("0.5");
   const [chartPresets, setChartPresets] = useState<ChartTemplate[]>([
-    new ChartTemplate(chartType.Current, undefined, {
+    new ChartTemplate("current custom", chartType.Current, undefined, {
       devices: devicesUptime,
       model: model,
     }),
-    new ChartTemplate(
-      chartType.Recent,
-      { devices: devicesUptime, percentFragmentation: 0.5 },
-      undefined
-    ),
-    new ChartTemplate(chartType.Current, undefined, {
-        devices: devicesUptime,
-        model: model,
-      }),
+    new ChartTemplate("recent custom", chartType.Recent, {
+      devices: devicesUptime,
+      percentFragmentation: 0.5,
+    }),
+    new ChartTemplate("recent custom 2", chartType.Recent, {
+      devices: devicesUptime,
+      percentFragmentation: 0.5,
+    }),
   ]);
 
   const TabListElements = () => {
     return (
       <TabList>
-        <Tab mb={4}>One</Tab>
-        <Tab mb={4}>Recent Custom</Tab>
-        <Tab mb={4}>Three</Tab>
+        {chartPresets.map((preset) => {
+          return <Tab width="100px" mb={4}>{preset.name}</Tab>;
+        })}
       </TabList>
     );
   };

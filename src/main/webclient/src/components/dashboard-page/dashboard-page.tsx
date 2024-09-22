@@ -66,15 +66,11 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
       case viewOption.recent:
         return (
           <Center>
-            <RecentChart devices={devicesUptime} percentFragmentation={0.5}/>
+            <RecentChart devices={devicesUptime} percentFragmentation={0.5} />
           </Center>
         );
       case viewOption.custom:
-        return (
-          <Center>
-            <ChartCreator model={model} devicesUptime={devicesUptime} />
-          </Center>
-        );
+        return <ChartCreator model={model} devicesUptime={devicesUptime} />;
     }
   };
 
