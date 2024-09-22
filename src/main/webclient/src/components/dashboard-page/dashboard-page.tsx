@@ -94,9 +94,10 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
                       max={20}
                       keepWithinRange={false}
                       clampValueOnBlur={false}
-                      maxW={40}
+                      maxW={20}
                       value={variable}
-                      onChange={(valueString) => setVariable(valueString)} // Przechowuj tekst
+                      onChange={(valueString) => setVariable(valueString)}
+                      ml="50px"
                     >
                       <NumberInputField />
                       <NumberInputStepper>
@@ -111,11 +112,12 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
                       ) : (
                         <RecentChartCustom
                           devices={devicesUptime}
-                          variable={parseFloat(variable)} // Przekaż jako liczba
+                          variable={parseFloat(variable)}
                         />
                       )}
                     </Center>
                   </TabPanel>
+
                   <TabPanel>
                     <p>three!</p>
                   </TabPanel>
