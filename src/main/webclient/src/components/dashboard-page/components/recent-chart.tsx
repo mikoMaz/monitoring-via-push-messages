@@ -12,7 +12,7 @@ import { Box } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
 import { getDensityRecentChart } from "../util/density-devices-recent";
 
-interface IRecentChart {
+export interface IRecentChart {
   devices: number[];
 }
 

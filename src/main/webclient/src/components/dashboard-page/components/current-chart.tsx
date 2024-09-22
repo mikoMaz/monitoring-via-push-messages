@@ -2,7 +2,7 @@ import { HStack } from "@chakra-ui/react";
 import { StatusPieChart } from "./status-pie-chart";
 import { DeviceModel } from "../../../types/deviceModel";
 
-interface ICurrentChart {
+export interface ICurrentChart {
   model: DeviceModel;
   devices: number[];
 }
