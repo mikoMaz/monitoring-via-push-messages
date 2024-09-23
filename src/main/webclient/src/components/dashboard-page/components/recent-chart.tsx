@@ -69,9 +69,9 @@ export const RecentChart = ({
     percentFragmentation
   ).elements.map((device) => {
     return {
-      min: device.minPercentActivityRangePoint,
-      max: device.maxPercentActivityRangePoint,
-      name: `${device.minPercentActivityRangePoint} - ${device.maxPercentActivityRangePoint}`,
+      min: device.minPercentActivityRangePoint.toFixed(2),
+      max: device.maxPercentActivityRangePoint.toFixed(2),
+      name: `${device.minPercentActivityRangePoint.toFixed(2)} - ${device.maxPercentActivityRangePoint.toFixed(2)}`,
       number: device.devices.length,
     };
   });

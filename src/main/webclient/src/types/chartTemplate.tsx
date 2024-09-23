@@ -1,5 +1,6 @@
 import {
   Center,
+  Flex,
   FormControl,
   FormLabel,
   Grid,
@@ -100,7 +101,6 @@ export const ChartTabPanel = ({ template }: IChartTabPanel) => {
           maxW={20}
           value={percentFragmentationVariable}
           onChange={(valueString) => variableChanged(valueString)}
-          ml="50px"
         >
           <NumberInputField />
           <NumberInputStepper>
@@ -115,32 +115,30 @@ export const ChartTabPanel = ({ template }: IChartTabPanel) => {
   const drawEditPresetNameInput = () => {
     return (
       <Input
-        marginLeft="100px"
         htmlSize={15}
         width="auto"
         placeholder={template.name}
       />
     );
   };
-
   const drawEditBrushSwitch = () => {
-    return (
-      // <FormControl>
-      //   <FormLabel htmlFor="active-brush" mb="0">
-      //     Brush?
-      //   </FormLabel>
-      //   <Switch id="active-brush"/>
-      // </FormControl>
-      <Switch marginLeft="-70px" marginTop="5px" size='lg' colorScheme="primary" id="active-brush"/>
-    );
+    return <Switch size="lg" colorScheme="primary" id="active-brush" />;
   };
 
   return (
     <TabPanel>
-      <Grid templateColumns="repeat(10, 1fr)">
-        <GridItem colSpan={2}>{drawEditPresetNameInput()}</GridItem>
-        <GridItem colSpan={2} colStart={3}>{drawEditPresetNumberInputs()}</GridItem>
-        <GridItem colSpan={1} >{drawEditBrushSwitch()}</GridItem>
+      <Grid templateColumns="repeat(20, 1fr)" marginLeft="100px">
+        <GridItem colSpan={3} backgroundColor="blue">
+          <Center>{drawEditPresetNameInput()}</Center>
+        </GridItem>
+        <GridItem colSpan={2} backgroundColor="white">
+          <Center>{drawEditPresetNumberInputs()}</Center>
+        </GridItem>
+        <GridItem colSpan={1} backgroundColor="red">
+          <Flex alignItems="center" justifyContent="center" height="100%">
+            {drawEditBrushSwitch()}
+          </Flex>
+        </GridItem>
       </Grid>
       <Center>
         {parseFloat(percentFragmentationVariable) === 0 ||
