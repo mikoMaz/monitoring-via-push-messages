@@ -1,20 +1,4 @@
-import {
-  Box,
-  Button,
-  Center,
-  Grid,
-  GridItem,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-} from "@chakra-ui/react";
+import { Box, Center, Grid, GridItem } from "@chakra-ui/react";
 import { DeviceModel } from "../../types/deviceModel";
 import { UIProps } from "../../config/config";
 import { useState } from "react";
@@ -22,6 +6,7 @@ import { ViewChartsTabs } from "./components/view-charts-tabs";
 import { RecentChart } from "./components/recent-chart";
 import { CurrentChart } from "./components/current-chart";
 import { ChartCreator } from "./components/chart-creator";
+import { IChartTemplateModel } from "../../types/chartTemplate";
 
 enum viewOption {
   current,
@@ -38,6 +23,12 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.current
   );
+
+  const chartModel: IChartTemplateModel = {
+    devicesHistoryValues: devicesUptime,
+    model: model,
+    percentFragmentation: 0.5,
+  };
 
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
@@ -60,13 +51,13 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
       case viewOption.current:
         return (
           <Center>
-            <CurrentChart model={model} devices={devicesUptime} />
+            <CurrentChart {...chartModel} />
           </Center>
         );
       case viewOption.recent:
         return (
           <Center>
-            <RecentChart devices={devicesUptime} percentFragmentation={0.5} />
+            <RecentChart {...chartModel} />
           </Center>
         );
       case viewOption.custom:

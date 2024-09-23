@@ -1,8 +1,6 @@
 import {
   Center,
   Flex,
-  FormControl,
-  FormLabel,
   Grid,
   GridItem,
   Input,
@@ -14,38 +12,31 @@ import {
   Switch,
   TabPanel,
 } from "@chakra-ui/react";
-import {
-  CurrentChart,
-  ICurrentChart,
-} from "../components/dashboard-page/components/current-chart";
-import {
-  IRecentChart,
-  RecentChart,
-} from "../components/dashboard-page/components/recent-chart";
+import { CurrentChart } from "../components/dashboard-page/components/current-chart";
+import { RecentChart } from "../components/dashboard-page/components/recent-chart";
 import { useState } from "react";
-import { UIProps } from "../config/config";
+import { DeviceModel } from "./deviceModel";
 
 export enum chartType {
   Current,
   Recent,
 }
 
+export interface IChartTemplateModel {
+  devicesHistoryValues: number[]; //devices percent values of active time history
+  model: DeviceModel;
+  percentFragmentation: number; //fragmentation of data into chunks by % points
+}
+
 export class ChartTemplate {
   public name: string;
   public type: chartType;
-  recentChartModel?: IRecentChart;
-  currentChartModel?: ICurrentChart;
+  chartModel: IChartTemplateModel;
 
-  constructor(
-    name: string,
-    type: chartType,
-    recentChartModel?: IRecentChart,
-    currentChartModel?: ICurrentChart
-  ) {
+  constructor(name: string, type: chartType, chartModel: IChartTemplateModel) {
     this.name = name;
     this.type = type;
-    this.recentChartModel = recentChartModel;
-    this.currentChartModel = currentChartModel;
+    this.chartModel = chartModel;
   }
 
   private invalidChart() {
@@ -55,17 +46,9 @@ export class ChartTemplate {
   public drawChart() {
     switch (this.type) {
       case chartType.Current:
-        if (this.currentChartModel) {
-          return <CurrentChart {...this.currentChartModel} />;
-        } else {
-          return this.invalidChart();
-        }
+        return <CurrentChart {...this.chartModel} />;
       case chartType.Recent:
-        if (this.recentChartModel) {
-          return <RecentChart {...this.recentChartModel} />;
-        } else {
-          return this.invalidChart();
-        }
+        return <RecentChart {...this.chartModel} />;
       default:
         return this.invalidChart();
     }
@@ -79,14 +62,10 @@ interface IChartTabPanel {
 export const ChartTabPanel = ({ template }: IChartTabPanel) => {
   const [percentFragmentationVariable, setPercentFragmentationVariable] =
     useState<string>("0.5");
-  // const [chartTemplate] = useState<ChartTemplate>(template);
 
   const variableChanged = (v: string) => {
     setPercentFragmentationVariable(v);
-    const vParsed = parseFloat(v);
-    if (template.recentChartModel) {
-      template.recentChartModel.percentFragmentation = vParsed;
-    }
+    template.chartModel.percentFragmentation = parseFloat(v);
   };
 
   const drawEditPresetNumberInputs = () => {
@@ -113,13 +92,7 @@ export const ChartTabPanel = ({ template }: IChartTabPanel) => {
   };
 
   const drawEditPresetNameInput = () => {
-    return (
-      <Input
-        htmlSize={15}
-        width="auto"
-        placeholder={template.name}
-      />
-    );
+    return <Input htmlSize={15} width="auto" placeholder={template.name} />;
   };
   const drawEditBrushSwitch = () => {
     return <Switch size="lg" colorScheme="primary" id="active-brush" />;

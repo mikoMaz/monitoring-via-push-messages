@@ -22,17 +22,20 @@ interface IChartCreator {
 
 export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   const [chartPresets, setChartPresets] = useState<ChartTemplate[]>([
-    new ChartTemplate("current custom", chartType.Current, undefined, {
-      devices: devicesUptime,
+    new ChartTemplate("current custom", chartType.Current, {
+      devicesHistoryValues: devicesUptime,
       model: model,
+      percentFragmentation: 0.5,
     }),
     new ChartTemplate("recent custom", chartType.Recent, {
-      devices: devicesUptime,
+      devicesHistoryValues: devicesUptime,
       percentFragmentation: 0.5,
+      model: model,
     }),
     new ChartTemplate("recent custom 2", chartType.Recent, {
-      devices: devicesUptime,
+      devicesHistoryValues: devicesUptime,
       percentFragmentation: 0.5,
+      model: model,
     }),
   ]);
 
@@ -40,7 +43,11 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     return (
       <TabList>
         {chartPresets.map((preset) => {
-          return <Tab width="100px" mb={4}>{preset.name}</Tab>;
+          return (
+            <Tab width="100px" mb={4}>
+              {preset.name}
+            </Tab>
+          );
         })}
       </TabList>
     );

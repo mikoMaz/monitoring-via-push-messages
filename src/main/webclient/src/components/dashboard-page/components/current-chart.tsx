@@ -1,14 +1,10 @@
 import { HStack } from "@chakra-ui/react";
 import { StatusPieChart } from "./status-pie-chart";
-import { DeviceModel } from "../../../types/deviceModel";
+import { IChartTemplateModel } from "../../../types/chartTemplate";
 
-export interface ICurrentChart {
-  model: DeviceModel;
-  devices: number[];
-}
 
-export const CurrentChart = ({ model, devices }: ICurrentChart) => {
-	if (devices.length) {
+export const CurrentChart = ({ model, devicesHistoryValues }: IChartTemplateModel) => {
+	if (devicesHistoryValues.length) {
 		return (
 			<HStack>
 			  <StatusPieChart devices={model.getSensorsArray()} heading="Sensors" />
