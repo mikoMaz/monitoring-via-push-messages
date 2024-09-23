@@ -74,17 +74,17 @@ export const RecentChart = ({
     if (device.minPercentActivityRangePoint < 0) {
       device.minPercentActivityRangePoint = 0;
     }
+    if (!Number.isInteger(device.minPercentActivityRangePoint)) {
+      device.minPercentActivityRangePoint = parseFloat(device.minPercentActivityRangePoint.toFixed(2))
+    }
+    if (!Number.isInteger(device.maxPercentActivityRangePoint)) {
+      device.maxPercentActivityRangePoint = parseFloat(device.maxPercentActivityRangePoint.toFixed(2))
+    }
 
     return {
-      min: device.minPercentActivityRangePoint % 1
-        ? device.minPercentActivityRangePoint.toString()
-        : device.minPercentActivityRangePoint.toFixed(2),
-      max: Number.isInteger(device.maxPercentActivityRangePoint)
-        ? device.maxPercentActivityRangePoint.toString()
-        : device.maxPercentActivityRangePoint.toFixed(2),
-      name: `${device.minPercentActivityRangePoint.toFixed(
-        2
-      )} - ${device.maxPercentActivityRangePoint.toFixed(2)}`,
+      min: device.minPercentActivityRangePoint,
+      max: device.maxPercentActivityRangePoint,
+      name: `${device.minPercentActivityRangePoint} - ${device.maxPercentActivityRangePoint}`,
       number: device.devices.length,
     };
   });
