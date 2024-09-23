@@ -30,14 +30,16 @@ export interface IChartTemplateModel {
 }
 
 export class ChartTemplate {
+  public id: number;
   public name: string;
   public type: chartType;
-  chartModel: IChartTemplateModel;
+  public chartModel: IChartTemplateModel;
 
   constructor(name: string, type: chartType, chartModel: IChartTemplateModel) {
     this.name = name;
     this.type = type;
     this.chartModel = chartModel;
+    this.id = Math.random();
   }
 
   private invalidChart() {
@@ -58,17 +60,22 @@ export class ChartTemplate {
 
 interface IChartTabPanel {
   template: ChartTemplate;
+  editFunction: (
+    editedTemplate: ChartTemplate
+  ) => void;
 }
 
-export const ChartTabPanel = ({ template }: IChartTabPanel) => {
+export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
   const [percentFragmentationVariable, setPercentFragmentationVariable] =
     useState<string>("0.5");
   const [templateName, setTemplateName] = useState<string>(template.name);
   // const [chartTemplate] = useState<ChartTemplate>(template);
 
   const handleSave = () => {
-    template.name = templateName; // Aktualizacja nazwy w obiekcie template
-    console.log("Template name saved:", template.name);
+    template.name = templateName;
+    editFunction(
+      template
+    ); 
   };
 
   const variableChanged = (v: string) => {

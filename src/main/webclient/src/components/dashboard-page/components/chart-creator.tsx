@@ -8,7 +8,7 @@ import {
   Tabs,
 } from "@chakra-ui/react";
 import { DeviceModel } from "../../../types/deviceModel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ChartTabPanel,
   ChartTemplate,
@@ -39,6 +39,18 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     }),
   ]);
 
+  const handlePresetChanged = (
+    editedTemplate: ChartTemplate
+  ) => {
+    const index = chartPresets.findIndex((temp) => temp.id === editedTemplate.id)
+    if (index >= 0) {
+      setChartPresets((prev) => {
+        prev[index] = editedTemplate;
+        return prev;
+      });
+    }
+  };
+
   const TabListElements = () => {
     return (
       <TabList>
@@ -57,7 +69,12 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     return (
       <TabPanels>
         {chartPresets.map((preset) => {
-          return <ChartTabPanel template={preset} />;
+          return (
+            <ChartTabPanel
+              template={preset}
+              editFunction={handlePresetChanged}
+            />
+          );
         })}
       </TabPanels>
     );
