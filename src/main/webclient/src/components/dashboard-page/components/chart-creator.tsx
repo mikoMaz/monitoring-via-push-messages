@@ -1,9 +1,11 @@
 import {
   Button,
+  Center,
   Grid,
   GridItem,
   Tab,
   TabList,
+  TabPanel,
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
@@ -92,10 +94,14 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
               />
             );
           } else {
-            <NewCustomChartCreator
-              template={newChartTemplate}
-              editFunction={handlePresetChanged}
-            />;
+            return (
+              <TabPanel>
+                <NewCustomChartCreator
+                template={newChartTemplate}
+                editFunction={handlePresetChanged}
+              />
+              </TabPanel>
+            );
           }
         })}
       </TabPanels>
@@ -104,14 +110,14 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
 
   return (
     <Grid
-      // templateAreas={`"nav header"
-      //   "nav main"`}
-      // gridTemplateRows={"200px 1fr"}
-      // gridTemplateColumns={"120px 1fr"}
-      // h="1000px"
-      // gap="1"
-      // color="blackAlpha.700"
-      // fontWeight="bold"
+    //   templateAreas={`"nav header"
+    //     "nav main"`}
+    //   gridTemplateRows={"200px 1fr"}
+    //   gridTemplateColumns={"120px 1fr"}
+    //   h="1000px"
+    //   gap="1"
+    //   color="blackAlpha.700"
+    //   fontWeight="bold"
     >
       {/* <GridItem pl="2" bg="pink.300" area={"nav"}>
         <Button
@@ -124,18 +130,25 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
         >
           New
         </Button>
-        <Tabs orientation="vertical" colorScheme="green">
+        {/* <Tabs orientation="vertical" colorScheme="green">
           <TabListElements />
           <TabPanelsElements />
-        </Tabs>
+        </Tabs> */}
+      {/* </GridItem>
+      <GridItem pl="2" bg="orange.300" area={"header"}>
+        {" "}
+        <NewCustomChartCreator
+          template={newChartTemplate}
+          editFunction={handlePresetChanged}
+        />
       </GridItem>
-      <GridItem pl="2" bg="orange.300" area={"header"}></GridItem>
       <GridItem pl="2" bg="green.300" area={"main"}>
         Main
-        
       </GridItem> */}
       <GridItem marginBottom="20px">
-        <Button colorScheme="green" onClick={createNewPreset}>New</Button>
+        <Button colorScheme="green" onClick={createNewPreset}>
+          New
+        </Button>
       </GridItem>
       <GridItem>
         <Tabs orientation="vertical" colorScheme="green">

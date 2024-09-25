@@ -66,7 +66,7 @@ interface IChartTabPanel {
 
 export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
   const [percentFragmentationVariable, setPercentFragmentationVariable] =
-    useState<string>("0.5");
+    useState<string>(template.chartModel.percentFragmentation.toString());
 
   return (
     <TabPanel>

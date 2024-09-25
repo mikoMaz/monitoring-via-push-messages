@@ -14,6 +14,7 @@ import {
   HStack,
   VStack,
   Heading,
+  Select,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ChartTemplate, chartType } from "../../../types/chartTemplate";
@@ -30,6 +31,7 @@ export const NewCustomChartCreator = ({
   const [percentFragmentationVariable, setPercentFragmentationVariable] =
     useState<string>("0.5");
   const [templateName, setTemplateName] = useState<string>(template.name);
+  const [selectedType, setSelectedType] = useState<chartType>(template.type);
 
   const handleSave = () => {
     template.name = templateName;
@@ -42,63 +44,90 @@ export const NewCustomChartCreator = ({
   };
 
   const drawEditPresetNumberInputs = () => {
-    if (template.type === chartType.Recent) {
+    if (selectedType === chartType.Recent) {
       return (
-        <NumberInput
-          step={0.05}
-          precision={2}
-          min={0.001}
-          keepWithinRange={false}
-          clampValueOnBlur={false}
-          maxW={20}
-          value={percentFragmentationVariable}
-          onChange={(valueString) => variableChanged(valueString)}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
+        <HStack>
+          <Heading size="sm">Fragmentation: </Heading>
+          <NumberInput
+            step={0.05}
+            precision={2}
+            min={0.001}
+            keepWithinRange={false}
+            clampValueOnBlur={false}
+            maxW={20}
+            value={percentFragmentationVariable}
+            onChange={(valueString) => variableChanged(valueString)}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </HStack>
       );
     }
   };
 
   const drawEditPresetNameInput = () => {
     return (
-      <Input
-        htmlSize={15}
-        width="auto"
-        value={templateName}
-        onChange={(e) => setTemplateName(e.target.value)}
-      />
+      <HStack justifyContent="flex-start">
+        <Heading size="sm">Name:</Heading>
+        <Input
+          htmlSize={15}
+          width="auto"
+          value={templateName}
+          onChange={(e) => setTemplateName(e.target.value)}
+        />
+        <Button onClick={handleSave} colorScheme="secondary">
+          Save
+        </Button>
+      </HStack>
     );
   };
 
   const drawEditBrushSwitch = () => {
-    return <Switch size="lg" colorScheme="primary" id="active-brush" />;
+    if (selectedType === chartType.Recent) {
+      return (
+        <HStack>
+          <Heading size="sm">Brush: </Heading>
+          <Flex alignItems="center" justifyContent="flex-start" height="100%">
+            <Switch size="lg" colorScheme="primary" id="active-brush" />
+          </Flex>
+        </HStack>
+      );
+    }
+  };
+
+  const drawEditSelectChartType = () => {
+    const handleChange = (event: any) => {
+      const value = chartType[event.target.value as keyof typeof chartType] ?? chartType.EmptyPreset;
+      setSelectedType(value);
+    };
+
+    return (
+      <Select placeholder="Select type of the chart" onChange={handleChange}>
+        {Object.values(chartType).map((type) => {
+          if (typeof type === "string") {
+            return (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            );
+          }
+        })}
+      </Select>
+    );
   };
 
   return (
     <Grid templateColumns="repeat(2, 1fr)">
       <GridItem colSpan={1}>
         <VStack alignItems="start">
-          <HStack justifyContent="flex-start">
-            <Heading size="sm">Name:</Heading>
-            {drawEditPresetNameInput()}
-            <Button
-              onClick={handleSave}
-              colorScheme="secondary"
-              marginLeft="10px"
-              marginRight="10px"
-            >
-              Save
-            </Button>
-          </HStack>
-          {drawEditPresetNumberInputs()} 
-          <Flex alignItems="center" justifyContent="flex-start" height="100%">
-            {drawEditBrushSwitch()}
-          </Flex>
+          {drawEditPresetNameInput()}
+          {drawEditSelectChartType()}
+          {drawEditPresetNumberInputs()}
+          {drawEditBrushSwitch()}
         </VStack>
       </GridItem>
     </Grid>
