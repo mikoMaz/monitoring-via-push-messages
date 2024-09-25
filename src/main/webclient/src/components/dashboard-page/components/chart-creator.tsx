@@ -39,16 +39,16 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     }),
   ]);
 
-  const handlePresetChanged = (
-    editedTemplate: ChartTemplate
-  ) => {
-    const index = chartPresets.findIndex((temp) => temp.id === editedTemplate.id)
-    if (index >= 0) {
-      setChartPresets((prev) => {
-        prev[index] = editedTemplate;
-        return prev;
-      });
-    }
+  const handlePresetChanged = (editedTemplate: ChartTemplate) => {
+    setChartPresets((prev) => {
+      const index = prev.findIndex((temp) => temp.id === editedTemplate.id);
+      if (index >= 0) {
+        const updatedPresets = [...prev];
+        updatedPresets[index] = editedTemplate;
+        return updatedPresets;
+      }
+      return prev;
+    });
   };
 
   const TabListElements = () => {
