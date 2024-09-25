@@ -40,19 +40,19 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
       model: model,
     }),
   ]);
-  
+
   const [newChartTemplate] = useState<ChartTemplate>(chartPresets[chartPresets.length - 1]);
 
   const handlePresetChanged = (editedTemplate: ChartTemplate) => {
-    const index = chartPresets.findIndex(
-      (temp) => temp.id === editedTemplate.id
-    );
-    if (index >= 0) {
-      setChartPresets((prev) => {
-        prev[index] = editedTemplate;
-        return prev;
-      });
-    }
+    setChartPresets((prev) => {
+      const index = prev.findIndex((temp) => temp.id === editedTemplate.id);
+      if (index >= 0) {
+        const updatedPresets = [...prev];
+        updatedPresets[index] = editedTemplate;
+        return updatedPresets;
+      }
+      return prev;
+    });
   };
 
   const TabListElements = () => {
