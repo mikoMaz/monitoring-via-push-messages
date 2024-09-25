@@ -14,6 +14,8 @@ import {
   ChartTemplate,
   chartType,
 } from "../../../types/chartTemplate";
+import { Add } from "@mui/icons-material";
+import { NewCustomChartCreator } from "./new-custom-chart-creator";
 
 interface IChartCreator {
   model: DeviceModel;
@@ -38,11 +40,13 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
       model: model,
     }),
   ]);
+  
+  const [newChartTemplate] = useState<ChartTemplate>(chartPresets[chartPresets.length - 1]);
 
-  const handlePresetChanged = (
-    editedTemplate: ChartTemplate
-  ) => {
-    const index = chartPresets.findIndex((temp) => temp.id === editedTemplate.id)
+  const handlePresetChanged = (editedTemplate: ChartTemplate) => {
+    const index = chartPresets.findIndex(
+      (temp) => temp.id === editedTemplate.id
+    );
     if (index >= 0) {
       setChartPresets((prev) => {
         prev[index] = editedTemplate;
@@ -56,7 +60,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
       <TabList>
         {chartPresets.map((preset) => {
           return (
-            <Tab width="100px" mb={4}>
+            <Tab width="120px" mb={4}>
               {preset.name}
             </Tab>
           );
@@ -80,18 +84,47 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     );
   };
 
-  return (
-    <Grid>
-      <GridItem marginBottom="20px">
-        <Button colorScheme="green">New</Button>
-      </GridItem>
-      <GridItem>
-        <Tabs orientation="vertical" colorScheme="green">
-          <TabListElements />
-          <TabPanelsElements />
-        </Tabs>
-      </GridItem>
-      <GridItem></GridItem>
-    </Grid>
+  return ( <></>
+    // <Grid
+    //   templateAreas={`"nav header"
+    //     "nav main"`}
+    //   gridTemplateRows={"200px 1fr"}
+    //   gridTemplateColumns={"120px 1fr"}
+    //   h="1000px"
+    //   gap="1"
+    //   color="blackAlpha.700"
+    //   fontWeight="bold"
+    // >
+    //   <GridItem pl="2" bg="pink.300" area={"nav"}>
+    //     <Button
+    //       leftIcon={<Add />}
+    //       colorScheme="green"
+    //       variant="solid"
+    //       size="md"
+    //       marginBottom="20px"
+    //     >
+    //       New
+    //     </Button>
+    //     {/* <Tabs orientation="vertical" colorScheme="green">
+    //       <TabListElements />
+    //     </Tabs> */}
+    //   </GridItem>
+    //   <GridItem pl="2" bg="orange.300" area={"header"}>
+    //     <NewCustomChartCreator template={newChartTemplate} editFunction={handlePresetChanged}/>
+    //   </GridItem>
+    //   <GridItem pl="2" bg="green.300" area={"main"}>
+    //     Main
+    //   </GridItem>
+    //   {/* <GridItem marginBottom="20px">
+    //     <Button colorScheme="green">New</Button>
+    //   </GridItem> */}
+    //   {/* <GridItem>
+    //     <Tabs orientation="vertical" colorScheme="green">
+    //       <TabListElements />
+    //       <TabPanelsElements />
+    //     </Tabs>
+    //   </GridItem> */}
+    //   <GridItem></GridItem>
+    // </Grid>
   );
 };
