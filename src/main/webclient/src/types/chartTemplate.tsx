@@ -19,6 +19,7 @@ import { useState } from "react";
 import { DeviceModel } from "./deviceModel";
 
 export enum chartType {
+  EmptyPreset,
   Current,
   Recent,
 }
@@ -60,9 +61,7 @@ export class ChartTemplate {
 
 interface IChartTabPanel {
   template: ChartTemplate;
-  editFunction: (
-    editedTemplate: ChartTemplate
-  ) => void;
+  editFunction: (editedTemplate: ChartTemplate) => void;
 }
 
 export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
@@ -84,4 +83,12 @@ export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
       </Center>
     </TabPanel>
   );
+};
+
+export const getEmptyPreset = (model: DeviceModel, uptimeValues: number[]) => {
+  return new ChartTemplate("New", chartType.EmptyPreset, {
+    model: model,
+    devicesHistoryValues: uptimeValues,
+    percentFragmentation: 0.5,
+  });
 };

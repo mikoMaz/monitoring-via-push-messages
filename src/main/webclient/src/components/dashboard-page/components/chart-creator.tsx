@@ -13,6 +13,7 @@ import {
   ChartTabPanel,
   ChartTemplate,
   chartType,
+  getEmptyPreset,
 } from "../../../types/chartTemplate";
 import { Add } from "@mui/icons-material";
 import { NewCustomChartCreator } from "./new-custom-chart-creator";
@@ -41,7 +42,9 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     }),
   ]);
 
-  const [newChartTemplate] = useState<ChartTemplate>(chartPresets[chartPresets.length - 1]);
+  const [newChartTemplate, setNewChartTemplate] = useState<ChartTemplate>(
+    getEmptyPreset(model, devicesUptime)
+  );
 
   const handlePresetChanged = (editedTemplate: ChartTemplate) => {
     setChartPresets((prev) => {
@@ -53,6 +56,14 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
       }
       return prev;
     });
+  };
+
+  const createNewPreset = () => {
+    if (!chartPresets.find((p) => p.type === chartType.EmptyPreset)) {
+      const emptyPreset = getEmptyPreset(model, devicesUptime);
+      setNewChartTemplate(emptyPreset);
+      setChartPresets([...chartPresets, emptyPreset]);
+    }
   };
 
   const TabListElements = () => {
@@ -73,58 +84,66 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     return (
       <TabPanels>
         {chartPresets.map((preset) => {
-          return (
-            <ChartTabPanel
-              template={preset}
+          if (preset.type !== chartType.EmptyPreset) {
+            return (
+              <ChartTabPanel
+                template={preset}
+                editFunction={handlePresetChanged}
+              />
+            );
+          } else {
+            <NewCustomChartCreator
+              template={newChartTemplate}
               editFunction={handlePresetChanged}
-            />
-          );
+            />;
+          }
         })}
       </TabPanels>
     );
   };
 
-  return ( <></>
-    // <Grid
-    //   templateAreas={`"nav header"
-    //     "nav main"`}
-    //   gridTemplateRows={"200px 1fr"}
-    //   gridTemplateColumns={"120px 1fr"}
-    //   h="1000px"
-    //   gap="1"
-    //   color="blackAlpha.700"
-    //   fontWeight="bold"
-    // >
-    //   <GridItem pl="2" bg="pink.300" area={"nav"}>
-    //     <Button
-    //       leftIcon={<Add />}
-    //       colorScheme="green"
-    //       variant="solid"
-    //       size="md"
-    //       marginBottom="20px"
-    //     >
-    //       New
-    //     </Button>
-    //     {/* <Tabs orientation="vertical" colorScheme="green">
-    //       <TabListElements />
-    //     </Tabs> */}
-    //   </GridItem>
-    //   <GridItem pl="2" bg="orange.300" area={"header"}>
-    //     <NewCustomChartCreator template={newChartTemplate} editFunction={handlePresetChanged}/>
-    //   </GridItem>
-    //   <GridItem pl="2" bg="green.300" area={"main"}>
-    //     Main
-    //   </GridItem>
-    //   {/* <GridItem marginBottom="20px">
-    //     <Button colorScheme="green">New</Button>
-    //   </GridItem> */}
-    //   {/* <GridItem>
-    //     <Tabs orientation="vertical" colorScheme="green">
-    //       <TabListElements />
-    //       <TabPanelsElements />
-    //     </Tabs>
-    //   </GridItem> */}
-    //   <GridItem></GridItem>
-    // </Grid>
+  return (
+    <Grid
+      // templateAreas={`"nav header"
+      //   "nav main"`}
+      // gridTemplateRows={"200px 1fr"}
+      // gridTemplateColumns={"120px 1fr"}
+      // h="1000px"
+      // gap="1"
+      // color="blackAlpha.700"
+      // fontWeight="bold"
+    >
+      {/* <GridItem pl="2" bg="pink.300" area={"nav"}>
+        <Button
+          leftIcon={<Add />}
+          colorScheme="green"
+          variant="solid"
+          size="md"
+          marginBottom="20px"
+          onClick={createNewPreset}
+        >
+          New
+        </Button>
+        <Tabs orientation="vertical" colorScheme="green">
+          <TabListElements />
+          <TabPanelsElements />
+        </Tabs>
+      </GridItem>
+      <GridItem pl="2" bg="orange.300" area={"header"}></GridItem>
+      <GridItem pl="2" bg="green.300" area={"main"}>
+        Main
+        
+      </GridItem> */}
+      <GridItem marginBottom="20px">
+        <Button colorScheme="green" onClick={createNewPreset}>New</Button>
+      </GridItem>
+      <GridItem>
+        <Tabs orientation="vertical" colorScheme="green">
+          <TabListElements />
+          <TabPanelsElements />
+        </Tabs>
+      </GridItem>
+      <GridItem></GridItem>
+    </Grid>
   );
 };
