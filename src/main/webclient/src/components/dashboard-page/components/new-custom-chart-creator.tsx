@@ -11,6 +11,9 @@ import {
   Center,
   Flex,
   GridItem,
+  HStack,
+  VStack,
+  Heading,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ChartTemplate, chartType } from "../../../types/chartTemplate";
@@ -66,8 +69,8 @@ export const NewCustomChartCreator = ({
       <Input
         htmlSize={15}
         width="auto"
-        value={templateName} // Bindowanie stanu templateName
-        onChange={(e) => setTemplateName(e.target.value)} // Obsługa zmian
+        value={templateName}
+        onChange={(e) => setTemplateName(e.target.value)}
       />
     );
   };
@@ -77,25 +80,26 @@ export const NewCustomChartCreator = ({
   };
 
   return (
-    <Grid templateColumns="repeat(20, 1fr)" marginLeft="100px">
-      <GridItem colSpan={3}>
-        <Center>{drawEditPresetNameInput()}</Center>
-      </GridItem>
-      {/* Dodany przycisk "Save" */}
+    <Grid templateColumns="repeat(2, 1fr)">
       <GridItem colSpan={1}>
-        <Center>
-          <Button onClick={handleSave} colorScheme="secondary">
-            Save
-          </Button>
-        </Center>
-      </GridItem>
-      <GridItem colSpan={2}>
-        <Center>{drawEditPresetNumberInputs()}</Center>
-      </GridItem>
-      <GridItem colSpan={1}>
-        <Flex alignItems="center" justifyContent="center" height="100%">
-          {drawEditBrushSwitch()}
-        </Flex>
+        <VStack alignItems="start">
+          <HStack justifyContent="flex-start">
+            <Heading size="sm">Name:</Heading>
+            {drawEditPresetNameInput()}
+            <Button
+              onClick={handleSave}
+              colorScheme="secondary"
+              marginLeft="10px"
+              marginRight="10px"
+            >
+              Save
+            </Button>
+          </HStack>
+          {drawEditPresetNumberInputs()} 
+          <Flex alignItems="center" justifyContent="flex-start" height="100%">
+            {drawEditBrushSwitch()}
+          </Flex>
+        </VStack>
       </GridItem>
     </Grid>
   );
