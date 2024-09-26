@@ -2,8 +2,8 @@
   "appVersions": {
     "LOCAL": {
       "APP_URL": "http://localhost:2137",
-        "HOST": "localhost:2137",
-        "API_URL": ""
+      "HOST": "localhost:2137",
+      "API_URL": ""
     }
   },
   "auth0": {
