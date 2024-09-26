@@ -8,16 +8,18 @@ import {
   Switch,
   Grid,
   Button,
-  Center,
   Flex,
   GridItem,
   HStack,
   VStack,
   Heading,
   Select,
+  Checkbox,
+  Stack,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ChartTemplate, chartType } from "../../../types/chartTemplate";
+import { deviceType, returnDeviceTypesArray } from "../../../types/deviceModel";
 
 interface INewCustomChartCreator {
   template: ChartTemplate;
@@ -32,6 +34,9 @@ export const NewCustomChartCreator = ({
     useState<string>("0.5");
   const [templateName, setTemplateName] = useState<string>(template.name);
   const [selectedType, setSelectedType] = useState<chartType>(template.type);
+  const [checkedItems, setCheckedItems] = useState<boolean[]>(
+    returnDeviceTypesArray().map((t) => false)
+  );
 
   const handleSave = () => {
     template.name = templateName;
@@ -101,33 +106,84 @@ export const NewCustomChartCreator = ({
 
   const drawEditSelectChartType = () => {
     const handleChange = (event: any) => {
-      const value = chartType[event.target.value as keyof typeof chartType] ?? chartType.EmptyPreset;
+      const value =
+        chartType[event.target.value as keyof typeof chartType] ??
+        chartType.EmptyPreset;
       setSelectedType(value);
     };
 
     return (
       <Select placeholder="Select type of the chart" onChange={handleChange}>
-        {Object.values(chartType).map((type) => {
-          if (typeof type === "string") {
-            return (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            );
-          }
-        })}
+        {Object.values(chartType)
+          .filter((type): type is string => typeof type === "string")
+          .map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
       </Select>
     );
   };
 
+  const drawEditCheckboxDeviceType = () => {
+    const allChecked = checkedItems.every(Boolean);
+    const isIndeterminate = checkedItems.some(Boolean) && !allChecked;
+
+    function replaceAtIndex<T>(arr: T[], index: number, newValue: T): T[] {
+      if (index >= 0 && index < arr.length) {
+        const newArr = [...arr];
+        newArr[index] = newValue;
+        return newArr;
+      }
+      return arr;
+    }
+
+    if (selectedType !== chartType.EmptyPreset) {
+      return (
+        <>
+          <Checkbox
+            isChecked={allChecked}
+            isIndeterminate={isIndeterminate}
+            onChange={(e) =>
+              setCheckedItems(
+                returnDeviceTypesArray().map((t) => e.target.checked)
+              )
+            }
+          >
+            All Devices
+          </Checkbox>
+          <Stack pl={6} mt={1} spacing={1}>
+            {returnDeviceTypesArray().map((value, index) => (
+              <Checkbox
+                isChecked={checkedItems[index]}
+                onChange={(e) =>
+                  setCheckedItems(
+                    replaceAtIndex(checkedItems, index, e.target.checked)
+                  )
+                }
+              >
+                {value}
+              </Checkbox>
+            ))}
+          </Stack>
+        </>
+      );
+    }
+  };
+
   return (
-    <Grid templateColumns="repeat(2, 1fr)">
+    <Grid templateColumns="repeat(2, 1fr)" gap="10">
       <GridItem colSpan={1}>
         <VStack alignItems="start">
           {drawEditPresetNameInput()}
           {drawEditSelectChartType()}
           {drawEditPresetNumberInputs()}
           {drawEditBrushSwitch()}
+        </VStack>
+      </GridItem>
+      <GridItem colSpan={1}>
+        <VStack alignItems="start">
+          {drawEditCheckboxDeviceType()}
         </VStack>
       </GridItem>
     </Grid>
