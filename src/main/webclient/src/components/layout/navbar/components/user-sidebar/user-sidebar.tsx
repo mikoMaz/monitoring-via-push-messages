@@ -21,7 +21,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 export const UserSidebar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { logout} = useAuth0();
+  const { logout, user} = useAuth0();
   return (
     <>
       <IconButton
@@ -39,7 +39,7 @@ export const UserSidebar = () => {
           <DrawerHeader>
             <HStack>
               <>Profile</>
-              <Button onClick={() => logout()}>Logout</Button>
+              <Button onClick={() => logout()}>{user?.mail}</Button>
             </HStack>
           </DrawerHeader>
 
