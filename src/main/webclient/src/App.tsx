@@ -91,11 +91,11 @@ export default function App() {
 
   if (isLoading) {
     return <div>Loading ...</div>;
-  } else {
-    if (isAuthenticated) {
-      return <AppBody {...props} />;
-    } else {
-      return <LoginPage />;
-    }
   }
+
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
+
+  return isAuthenticated && <AppBody {...props} />;
 }

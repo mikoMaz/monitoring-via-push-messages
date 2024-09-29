@@ -13,12 +13,15 @@ import {
   Grid,
   Switch,
   Text,
+  Button,
+  HStack,
 } from "@chakra-ui/react";
-import { IUIProps } from "../../../../../types/projectTypes";
 import { UIProps } from "../../../../../config/config";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const UserSidebar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { logout} = useAuth0();
   return (
     <>
       <IconButton
@@ -33,7 +36,12 @@ export const UserSidebar = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Profile</DrawerHeader>
+          <DrawerHeader>
+            <HStack>
+              <>Profile</>
+              <Button onClick={() => logout()}>Logout</Button>
+            </HStack>
+          </DrawerHeader>
 
           <DrawerBody>
             <Grid templateRows="2fr 1fr 8fr">
