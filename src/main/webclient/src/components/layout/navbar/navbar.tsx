@@ -25,10 +25,10 @@ export const Navbar = () => {
           <div className="navbar-empty-space" />
         </GridItem>
         <GridItem>
-          <NavigationButtons {...ui} />
+          <NavigationButtons />
         </GridItem>
         <GridItem>
-          <UserSidebar {...ui} />
+          <UserSidebar />
         </GridItem>
       </Grid>
     </Box>

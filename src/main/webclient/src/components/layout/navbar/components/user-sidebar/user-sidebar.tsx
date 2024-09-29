@@ -15,8 +15,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { IUIProps } from "../../../../../types/projectTypes";
+import { UIProps } from "../../../../../config/config";
 
-export const UserSidebar = ({ ...ui }: IUIProps) => {
+export const UserSidebar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
@@ -24,7 +25,7 @@ export const UserSidebar = ({ ...ui }: IUIProps) => {
         onClick={onOpen}
         icon={<Avatar size="sm" />}
         aria-label={"Profile"}
-        colorScheme={ui.colors.accent}
+        colorScheme={UIProps.colors.accent}
         paddingTop="10px"
         paddingLeft="40px"
       />
