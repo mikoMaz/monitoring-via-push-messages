@@ -15,6 +15,7 @@ import { APIClient } from "./api/api-client";
 import { MonitoringDevicePage } from "./components/monitoring-device-page/monitoring-device-page";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LoginPage } from "./components/login-page/login-page";
+import config from "./config/config.json";
 
 const refreshTime = 3; //minutes
 
@@ -29,7 +30,7 @@ export default function App() {
 
   const [accessToken, setAccessToken] = useState<string>("");
 
-  const [dataLoaded, setDataLoaded] = useState<boolean>(false);
+  // const [dataLoaded, setDataLoaded] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const props: IAppProps = {
@@ -73,7 +74,13 @@ export default function App() {
     //   );
     // }
     const acquireAccessToken = async () => {
-      const token = await getAccessTokenSilently();
+      const token = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: config.auth0.audience,
+          scope: config.auth0.scope,
+        },
+      });
+      console.log("token: ", token);
       setAccessToken(token);
     };
 
@@ -89,10 +96,15 @@ export default function App() {
     };
 
     const onComponentLoaded = async () => {
-      await acquireAccessToken();
-      await updateModel();
-      await fetchUptimeValues();
-      setDataLoaded(true);
+      await acquireAccessToken().catch((error: any) => {
+        console.error(error);
+      });
+      // await updateModel().catch((error: any) => {
+      //   console.error(error);
+      // });
+      // await fetchUptimeValues().catch((error: any) => {
+      //   console.error(error);
+      // });
     };
 
     onComponentLoaded().catch((error: any) => {});
@@ -105,7 +117,7 @@ export default function App() {
     return <div>Athentication error occured: {error.message}</div>;
   }
 
-  if (isLoading || !dataLoaded) {
+  if (isLoading) {
     return <div>Loading ...</div>;
   }
 
