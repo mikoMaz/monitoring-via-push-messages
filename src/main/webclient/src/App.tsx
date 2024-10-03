@@ -58,15 +58,15 @@ export default function App() {
 
   useEffect(() => {
     document.body.style.backgroundColor = UIProps.colors.background;
-    if (window.location.pathname === "/") {
-      navigate(
-        {
-          pathname: "/monitoring",
-          search: new URLSearchParams({ view: "allDevices" }).toString(),
-        },
-        { replace: true }
-      );
-    }
+    // if (window.location.pathname === "/") {
+    //   navigate(
+    //     {
+    //       pathname: "/monitoring",
+    //       search: new URLSearchParams({ view: "allDevices" }).toString(),
+    //     },
+    //     { replace: true }
+    //   );
+    // }
     const updateModel = async () => {
       const data = await APIClient.getUpdatedDeviceModel();
       console.log(data);
