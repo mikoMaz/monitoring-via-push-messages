@@ -38,8 +38,8 @@ export const UserSidebar = () => {
           <DrawerCloseButton />
           <DrawerHeader>
             <HStack>
-              <>Profile</>
-              <Button onClick={() => logout()}>{user?.mail}</Button>
+              <>{user?.mail ?? user?.nickname ?? user?.name}</>
+              <Button onClick={() => logout()}>Logout</Button>
             </HStack>
           </DrawerHeader>
 
