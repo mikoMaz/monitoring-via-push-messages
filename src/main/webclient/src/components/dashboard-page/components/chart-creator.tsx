@@ -1,13 +1,16 @@
 import {
   Button,
   Center,
+  Flex,
   Grid,
   GridItem,
+  HStack,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  Tooltip,
 } from "@chakra-ui/react";
 import { DeviceModel } from "../../../types/deviceModel";
 import { useEffect, useState } from "react";
@@ -17,8 +20,9 @@ import {
   chartType,
   getEmptyPreset,
 } from "../../../types/chartTemplate";
-import { Add } from "@mui/icons-material";
+import { Add, Info, InfoOutlined } from "@mui/icons-material";
 import { NewCustomChartCreator } from "./new-custom-chart-creator";
+import { UIProps } from "../../../config/config";
 
 interface IChartCreator {
   model: DeviceModel;
@@ -97,9 +101,9 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
             return (
               <TabPanel>
                 <NewCustomChartCreator
-                template={newChartTemplate}
-                editFunction={handlePresetChanged}
-              />
+                  template={newChartTemplate}
+                  editFunction={handlePresetChanged}
+                />
               </TabPanel>
             );
           }
@@ -146,9 +150,21 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
         Main
       </GridItem> */}
       <GridItem marginBottom="20px">
-        <Button colorScheme="green" onClick={createNewPreset}>
-          New
-        </Button>
+        <HStack>
+          <Button colorScheme="green" onClick={createNewPreset}>
+            New
+          </Button>
+          <Flex alignItems="center" justifyContent="flex-start" height="100%">
+            <Tooltip
+              label="Create new custom chart"
+              bg="gray.100"
+              color="gray.500"
+              placement="right"
+            >
+              <InfoOutlined style={{color: UIProps.colors.accent}}/>
+            </Tooltip>
+          </Flex>
+        </HStack>
       </GridItem>
       <GridItem>
         <Tabs orientation="vertical" colorScheme="green">
