@@ -24,11 +24,13 @@ import { deviceType, returnDeviceTypesArray } from "../../../types/deviceModel";
 interface INewCustomChartCreator {
   template: ChartTemplate;
   editFunction: (editedTemplate: ChartTemplate) => void;
+  saveFunction: () => void;
 }
 
 export const NewCustomChartCreator = ({
   template,
   editFunction,
+  saveFunction,
 }: INewCustomChartCreator) => {
   const [percentFragmentationVariable, setPercentFragmentationVariable] =
     useState<string>("0.5");
@@ -41,6 +43,7 @@ export const NewCustomChartCreator = ({
   const handleSave = () => {
     template.name = templateName;
     editFunction(template);
+    saveFunction();
   };
 
   const variableChanged = (v: string) => {

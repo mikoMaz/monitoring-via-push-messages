@@ -23,6 +23,7 @@ import {
 import { Add, Info, InfoOutlined } from "@mui/icons-material";
 import { NewCustomChartCreator } from "./new-custom-chart-creator";
 import { UIProps } from "../../../config/config";
+import { saveAs } from "file-saver";
 
 interface IChartCreator {
   model: DeviceModel;
@@ -47,6 +48,12 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
       model: model,
     }),
   ]);
+
+  const saveChartPresets = () => {
+    const presetsJSON = JSON.stringify(chartPresets, null, 2);
+    const blob = new Blob([presetsJSON], { type: 'application/json' });
+    saveAs(blob, 'chartPresets.json');
+  };
 
   const [newChartTemplate, setNewChartTemplate] = useState<ChartTemplate>(
     getEmptyPreset(model, devicesUptime)
@@ -103,6 +110,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
                 <NewCustomChartCreator
                   template={newChartTemplate}
                   editFunction={handlePresetChanged}
+                  saveFunction={saveChartPresets}
                 />
               </TabPanel>
             );
@@ -161,7 +169,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
               color="gray.500"
               placement="right"
             >
-              <InfoOutlined style={{color: UIProps.colors.accent}}/>
+              <InfoOutlined style={{ color: UIProps.colors.accent }} />
             </Tooltip>
           </Flex>
         </HStack>
