@@ -19,12 +19,17 @@ import { LoginPage } from "./components/login-page/login-page";
 const refreshTime = 3; //minutes
 
 export default function App() {
-  const { user, isAuthenticated, isLoading, error } = useAuth0();
+  const { user, isAuthenticated, isLoading, error, getAccessTokenSilently } =
+    useAuth0();
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
   );
   const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
+
+  const [accessToken, setAccessToken] = useState<string>("");
+
+  const [dataLoaded, setDataLoaded] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const props: IAppProps = {
@@ -67,6 +72,11 @@ export default function App() {
     //     { replace: true }
     //   );
     // }
+    const acquireAccessToken = async () => {
+      const token = await getAccessTokenSilently();
+      setAccessToken(token);
+    };
+
     const updateModel = async () => {
       const data = await APIClient.getUpdatedDeviceModel();
       console.log(data);
@@ -78,8 +88,14 @@ export default function App() {
       setDevicesUptimeValues(data);
     };
 
-    updateModel();
-    fetchUptimeValues();
+    const onComponentLoaded = async () => {
+      await acquireAccessToken();
+      await updateModel();
+      await fetchUptimeValues();
+      setDataLoaded(true);
+    };
+
+    onComponentLoaded().catch((error: any) => {});
     setInterval(updateModel, 1000 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,7 +105,7 @@ export default function App() {
     return <div>Athentication error occured: {error.message}</div>;
   }
 
-  if (isLoading) {
+  if (isLoading || !dataLoaded) {
     return <div>Loading ...</div>;
   }
 
