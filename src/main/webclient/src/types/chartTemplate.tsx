@@ -57,6 +57,15 @@ export class ChartTemplate {
         return this.invalidChart();
     }
   }
+
+  public toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      chartModel: this.chartModel,
+    };
+  }
 }
 
 interface IChartTabPanel {

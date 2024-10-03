@@ -50,25 +50,34 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   ]);
 
   const saveChartPresets = () => {
-    const presetsJSON = JSON.stringify(chartPresets, null, 2);
+    const presetsJSON = JSON.stringify(
+      chartPresets.map((preset) => preset.toJSON()),
+      null,
+      2
+    );
     const blob = new Blob([presetsJSON], { type: 'application/json' });
     saveAs(blob, 'chartPresets.json');
   };
+
+  const addOrUpdatePreset = (newPreset: ChartTemplate) => {
+    setChartPresets((prevPresets) => {
+      const updatedPresets = [...prevPresets];
+      const index = updatedPresets.findIndex(preset => preset.name === newPreset.name);
+      if (index !== -1) {
+        updatedPresets[index] = newPreset;
+      } else {
+        updatedPresets.push(newPreset);
+      }
+      return updatedPresets;
+    });
+  };  
 
   const [newChartTemplate, setNewChartTemplate] = useState<ChartTemplate>(
     getEmptyPreset(model, devicesUptime)
   );
 
   const handlePresetChanged = (editedTemplate: ChartTemplate) => {
-    setChartPresets((prev) => {
-      const index = prev.findIndex((temp) => temp.id === editedTemplate.id);
-      if (index >= 0) {
-        const updatedPresets = [...prev];
-        updatedPresets[index] = editedTemplate;
-        return updatedPresets;
-      }
-      return prev;
-    });
+    addOrUpdatePreset(editedTemplate);
   };
 
   const createNewPreset = () => {
