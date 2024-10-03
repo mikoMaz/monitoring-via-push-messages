@@ -23,7 +23,7 @@ import {
 import { Add, Info, InfoOutlined } from "@mui/icons-material";
 import { NewCustomChartCreator } from "./new-custom-chart-creator";
 import { UIProps } from "../../../config/config";
-import { saveAs } from "file-saver";
+import saveAs from "file-saver";
 
 interface IChartCreator {
   model: DeviceModel;
