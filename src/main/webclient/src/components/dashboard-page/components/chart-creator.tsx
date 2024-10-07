@@ -23,7 +23,8 @@ import {
 import { Add, Info, InfoOutlined } from "@mui/icons-material";
 import { NewCustomChartCreator } from "./new-custom-chart-creator";
 import { UIProps } from "../../../config/config";
-import saveAs from "file-saver";
+import { ChartData } from "@mantine/charts";
+import saveAs from 'file-saver';
 
 interface IChartCreator {
   model: DeviceModel;
@@ -48,6 +49,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
 
   const [chartPresets, setChartPresets] = useState<ChartTemplate[]>(() => {
     const presets = loadPresetsFromLocalStorage();
+    console.log(presets);
     if (presets.length > 0) {
       return presets;
     }
@@ -65,15 +67,15 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     ];
   });
 
-  const saveChartPresets = () => {
+  const saveChartPresets = (templates: ChartTemplate[]) => {
     const presetsJSON = JSON.stringify(
-      chartPresets.map((preset) => preset.toJSON()),
+      templates.map((preset) => preset.toJSON()),
       null,
       2
     );
     const blob = new Blob([presetsJSON], { type: "application/json" });
     saveAs(blob, "chartPresets.json");
-    savePresetsToLocalStorage(chartPresets);
+    // savePresetsToLocalStorage(chartPresets);
   };
 
   const addOrUpdatePreset = (newPreset: ChartTemplate) => {
@@ -86,6 +88,8 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
         updatedPresets.push(newPreset);
       }
       savePresetsToLocalStorage(updatedPresets);
+      saveChartPresets(updatedPresets);
+      console.log(updatedPresets)
       return updatedPresets;
     });
   };
@@ -144,7 +148,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
                 <NewCustomChartCreator
                   template={newChartTemplate}
                   editFunction={handlePresetChanged}
-                  saveFunction={saveChartPresets}
+                  // saveFunction={saveChartPresets}
                 />
               </TabPanel>
             );
