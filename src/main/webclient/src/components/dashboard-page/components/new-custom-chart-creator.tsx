@@ -30,18 +30,22 @@ interface INewCustomChartCreator {
 export const NewCustomChartCreator = ({
   template,
   editFunction,
-  // saveFunction,
-}: INewCustomChartCreator) => {
+}: // saveFunction,
+INewCustomChartCreator) => {
   const [percentFragmentationVariable, setPercentFragmentationVariable] =
     useState<string>("0.5");
   const [templateName, setTemplateName] = useState<string>(template.name);
-  const [selectedType, setSelectedType] = useState<chartType>(template.type);
+  const [selectedType, setSelectedType] = useState<chartType>(
+    template.type ?? chartType.EmptyPreset
+  );
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
     returnDeviceTypesArray().map((t) => false)
   );
 
   const handleSave = () => {
     template.name = templateName;
+    template.type = selectedType;
+    template.chartModel.percentFragmentation = parseFloat(percentFragmentationVariable);
     editFunction(template);
     // saveFunction();
   };
@@ -185,9 +189,7 @@ export const NewCustomChartCreator = ({
         </VStack>
       </GridItem>
       <GridItem colSpan={1}>
-        <VStack alignItems="start">
-          {drawEditCheckboxDeviceType()}
-        </VStack>
+        <VStack alignItems="start">{drawEditCheckboxDeviceType()}</VStack>
       </GridItem>
     </Grid>
   );

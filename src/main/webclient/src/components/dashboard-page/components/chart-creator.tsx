@@ -24,7 +24,7 @@ import { Add, Info, InfoOutlined } from "@mui/icons-material";
 import { NewCustomChartCreator } from "./new-custom-chart-creator";
 import { UIProps } from "../../../config/config";
 import { ChartData } from "@mantine/charts";
-import saveAs from 'file-saver';
+import saveAs from "file-saver";
 
 interface IChartCreator {
   model: DeviceModel;
@@ -35,14 +35,19 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   const localStorageKey = "chartPresets";
 
   const savePresetsToLocalStorage = (presets: ChartTemplate[]) => {
-    localStorage.setItem(localStorageKey, JSON.stringify(presets.map(p => p.toJSON())));
+    localStorage.setItem(
+      localStorageKey,
+      JSON.stringify(presets.map((p) => p.toJSON()))
+    );
   };
 
   const loadPresetsFromLocalStorage = (): ChartTemplate[] => {
-    const savedPresets = localStorage.getItem(localStorageKey);
     // const removed = localStorage.removeItem(localStorageKey);
+    const savedPresets = localStorage.getItem(localStorageKey);
     if (savedPresets) {
-      return JSON.parse(savedPresets).map((presetData: any) => ChartTemplate.fromJSON(presetData));
+      return JSON.parse(savedPresets).map((presetData: any) =>
+        ChartTemplate.fromJSON(presetData)
+      );
     }
     return [];
   };
@@ -69,7 +74,18 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
 
   const saveChartPresets = (templates: ChartTemplate[]) => {
     const presetsJSON = JSON.stringify(
-      templates.map((preset) => preset.toJSON()),
+      templates.map((preset) => {
+        if (typeof preset.type === "number") {
+          return {
+            id: preset.id,
+            name: preset.name,
+            type: chartType[preset.type],
+            chartModel: preset.chartModel,
+          };
+        } else {
+          return preset.toJSON();
+        }
+      }),
       null,
       2
     );
@@ -81,15 +97,18 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   const addOrUpdatePreset = (newPreset: ChartTemplate) => {
     setChartPresets((prevPresets) => {
       const updatedPresets = [...prevPresets];
-      const index = updatedPresets.findIndex((preset) => preset.name === newPreset.name);
+      const index = updatedPresets.findIndex(
+        (preset) => preset.name === newPreset.name
+      );
       if (index !== -1) {
         updatedPresets[index] = newPreset;
+        console.log("is type updated ", newPreset.type)
       } else {
         updatedPresets.push(newPreset);
       }
       savePresetsToLocalStorage(updatedPresets);
       saveChartPresets(updatedPresets);
-      console.log(updatedPresets)
+      console.log(updatedPresets);
       return updatedPresets;
     });
   };
