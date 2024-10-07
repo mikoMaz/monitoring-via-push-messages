@@ -31,23 +31,39 @@ interface IChartCreator {
 }
 
 export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
-  const [chartPresets, setChartPresets] = useState<ChartTemplate[]>([
-    new ChartTemplate("current custom", chartType.Current, {
-      devicesHistoryValues: devicesUptime,
-      model: model,
-      percentFragmentation: 0.5,
-    }),
-    new ChartTemplate("recent custom", chartType.Recent, {
-      devicesHistoryValues: devicesUptime,
-      percentFragmentation: 0.5,
-      model: model,
-    }),
-    new ChartTemplate("recent custom 2", chartType.Recent, {
-      devicesHistoryValues: devicesUptime,
-      percentFragmentation: 0.5,
-      model: model,
-    }),
-  ]);
+  const localStorageKey = "chartPresets";
+
+  const savePresetsToLocalStorage = (presets: ChartTemplate[]) => {
+    localStorage.setItem(localStorageKey, JSON.stringify(presets.map(p => p.toJSON())));
+  };
+
+  const loadPresetsFromLocalStorage = (): ChartTemplate[] => {
+    const savedPresets = localStorage.getItem(localStorageKey);
+    // const removed = localStorage.removeItem(localStorageKey);
+    if (savedPresets) {
+      return JSON.parse(savedPresets).map((presetData: any) => ChartTemplate.fromJSON(presetData));
+    }
+    return [];
+  };
+
+  const [chartPresets, setChartPresets] = useState<ChartTemplate[]>(() => {
+    const presets = loadPresetsFromLocalStorage();
+    if (presets.length > 0) {
+      return presets;
+    }
+    return [
+      new ChartTemplate("current custom", chartType.Current, {
+        devicesHistoryValues: devicesUptime,
+        model: model,
+        percentFragmentation: 0.5,
+      }),
+      new ChartTemplate("recent custom", chartType.Recent, {
+        devicesHistoryValues: devicesUptime,
+        percentFragmentation: 0.5,
+        model: model,
+      }),
+    ];
+  });
 
   const saveChartPresets = () => {
     const presetsJSON = JSON.stringify(
@@ -55,22 +71,31 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
       null,
       2
     );
-    const blob = new Blob([presetsJSON], { type: 'application/json' });
-    saveAs(blob, 'chartPresets.json');
+    const blob = new Blob([presetsJSON], { type: "application/json" });
+    saveAs(blob, "chartPresets.json");
+    savePresetsToLocalStorage(chartPresets);
   };
 
   const addOrUpdatePreset = (newPreset: ChartTemplate) => {
     setChartPresets((prevPresets) => {
       const updatedPresets = [...prevPresets];
-      const index = updatedPresets.findIndex(preset => preset.name === newPreset.name);
+      const index = updatedPresets.findIndex((preset) => preset.name === newPreset.name);
       if (index !== -1) {
         updatedPresets[index] = newPreset;
       } else {
         updatedPresets.push(newPreset);
       }
+      savePresetsToLocalStorage(updatedPresets);
       return updatedPresets;
     });
-  };  
+  };
+
+  useEffect(() => {
+    const savedPresets = loadPresetsFromLocalStorage();
+    if (savedPresets.length > 0) {
+      setChartPresets(savedPresets);
+    }
+  }, []);
 
   const [newChartTemplate, setNewChartTemplate] = useState<ChartTemplate>(
     getEmptyPreset(model, devicesUptime)

@@ -31,6 +31,16 @@ export interface IChartTemplateModel {
 }
 
 export class ChartTemplate {
+  static fromJSON(presetData: any): ChartTemplate {
+    const { id, name, type, chartModel } = presetData;
+    const chartTypeValue = chartType[type as keyof typeof chartType];
+    const template = new ChartTemplate(name, chartTypeValue, chartModel);
+    if (id) {
+      template.id = id;
+    }
+    return template;
+  }
+
   public id: number;
   public name: string;
   public type: chartType;
