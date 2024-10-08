@@ -30,9 +30,6 @@ export default function App() {
 
   const [accessToken, setAccessToken] = useState<string>("");
 
-  // const [dataLoaded, setDataLoaded] = useState<boolean>(false);
-  const navigate = useNavigate();
-
   const props: IAppProps = {
     model: deviceModel,
     routes: [
@@ -64,15 +61,6 @@ export default function App() {
 
   useEffect(() => {
     document.body.style.backgroundColor = UIProps.colors.background;
-    // if (window.location.pathname === "/") {
-    //   navigate(
-    //     {
-    //       pathname: "/monitoring",
-    //       search: new URLSearchParams({ view: "allDevices" }).toString(),
-    //     },
-    //     { replace: true }
-    //   );
-    // }
     const acquireAccessToken = async () => {
       const token = await getAccessTokenSilently({
         authorizationParams: {
@@ -99,12 +87,12 @@ export default function App() {
       await acquireAccessToken().catch((error: any) => {
         console.error(error);
       });
-      // await updateModel().catch((error: any) => {
-      //   console.error(error);
-      // });
-      // await fetchUptimeValues().catch((error: any) => {
-      //   console.error(error);
-      // });
+      await updateModel().catch((error: any) => {
+        console.error(error);
+      });
+      await fetchUptimeValues().catch((error: any) => {
+        console.error(error);
+      });
     };
 
     onComponentLoaded().catch((error: any) => {});

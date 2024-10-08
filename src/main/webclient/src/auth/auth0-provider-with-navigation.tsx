@@ -7,15 +7,6 @@ const Auth0ProviderWithNavigation = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
 
   const onRedirectCallback = (appState?: AppState) => {
-    // if (window.location.pathname === "/") {
-    //   navigate(
-    //     {
-    //       pathname: "/monitoring",
-    //       search: new URLSearchParams({ view: "allDevices" }).toString(),
-    //     },
-    //     { replace: true }
-    //   );
-    // }
     navigate(
       {
         pathname: "/monitoring",
