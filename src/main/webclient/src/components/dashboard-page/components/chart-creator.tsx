@@ -1,6 +1,5 @@
 import {
   Button,
-  Center,
   Flex,
   Grid,
   GridItem,
@@ -20,10 +19,10 @@ import {
   chartType,
   getEmptyPreset,
 } from "../../../types/chartTemplate";
-import { Add, Info, InfoOutlined } from "@mui/icons-material";
+import { InfoOutlined } from "@mui/icons-material";
 import { NewCustomChartCreator } from "./new-custom-chart-creator";
 import { UIProps } from "../../../config/config";
-import { ChartData } from "@mantine/charts";
+import { localStorageKey, LocalStorageManager, FileSaver } from '../../../types/fileSaver';
 import saveAs from "file-saver";
 
 interface IChartCreator {
@@ -32,7 +31,7 @@ interface IChartCreator {
 }
 
 export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
-  const localStorageKey = "chartPresets";
+  const localStorageKey: localStorageKey = "chartPresets";
 
   const savePresetsToLocalStorage = (presets: ChartTemplate[]) => {
     localStorage.setItem(
@@ -53,7 +52,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   };
 
   const [chartPresets, setChartPresets] = useState<ChartTemplate[]>(() => {
-    const presets = loadPresetsFromLocalStorage();
+    const presets = LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
     console.log(presets);
     if (presets.length > 0) {
       return presets;
@@ -106,15 +105,15 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
       } else {
         updatedPresets.push(newPreset);
       }
-      savePresetsToLocalStorage(updatedPresets);
-      saveChartPresets(updatedPresets);
+      LocalStorageManager.savePresetsToLocalStorage(localStorageKey, updatedPresets);
+      FileSaver.saveChartPresetsToJson(updatedPresets);
       console.log(updatedPresets);
       return updatedPresets;
     });
   };
 
   useEffect(() => {
-    const savedPresets = loadPresetsFromLocalStorage();
+    const savedPresets = LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
     if (savedPresets.length > 0) {
       setChartPresets(savedPresets);
     }

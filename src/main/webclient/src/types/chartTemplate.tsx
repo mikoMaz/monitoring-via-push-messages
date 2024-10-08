@@ -24,13 +24,34 @@ export enum chartType {
   Recent,
 }
 
+export const chartTypeToString = (type: chartType): string => {
+  return chartType[type];
+};
+
+export const chartTypeFromString = (type: string): chartType => {
+  return chartType[type as keyof typeof chartType] ?? chartType.EmptyPreset;
+};
+
+export const returnChartTypesArray = (): string[] => {
+  return Object.values(chartType).filter(
+    (t): t is string => typeof t === "string"
+  );
+};
+
 export interface IChartTemplateModel {
   devicesHistoryValues: number[]; //devices percent values of active time history
   model: DeviceModel;
   percentFragmentation: number; //fragmentation of data into chunks by % points
 }
 
-export class ChartTemplate {
+export interface IChartTemplate {
+  id: number;
+  name: string;
+  type: chartType;
+  chartModel: IChartTemplateModel;
+}
+
+export class ChartTemplate implements IChartTemplate {
   static fromJSON(presetData: any): ChartTemplate {
     const { id, name, type, chartModel } = presetData;
     const chartTypeValue = chartType[type as keyof typeof chartType];
