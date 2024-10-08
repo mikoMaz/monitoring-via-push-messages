@@ -1,5 +1,10 @@
 import saveAs from "file-saver";
-import { ChartTemplate, chartType, IChartTemplate } from './chartTemplate';
+import {
+  ChartTemplate,
+  chartType,
+  chartTypeFromString,
+  IChartTemplate,
+} from "./chartTemplate";
 import { IDeviceModel } from "./deviceModel";
 
 export interface chartTemplateJsonObject {
@@ -22,19 +27,44 @@ export class FileSaver {
     chartTemplates: ChartTemplate[],
     deviceModel: IDeviceModel
   ): chartTemplateJsonObject {
-	const object: chartTemplateJsonObject =  {
-		model: deviceModel,
-		templates: chartTemplates.map((temp) => {
-			const jsonTemplate: IChartTemplate = {
-				id: temp.id,
-				name: temp.name,
-				type: typeof temp.type === "string" ? chartType[temp.type] : temp.type,
+    const object: chartTemplateJsonObject = {
+      model: deviceModel,
+      templates: chartTemplates.map((temp) => {
+        const jsonTemplate: IChartTemplate = {
+          id: temp.id,
+          name: temp.name,
+          type:
+            typeof temp.type === "string"
+              ? chartTypeFromString(temp.type)
+              : temp.type,
+          chartModel: {
+            devicesHistoryValues: temp.chartModel.devicesHistoryValues,
+            percentFragmentation: temp.chartModel.percentFragmentation,
+            model: {
+              bridges: [],
+              gateways: [],
+              sensors: [],
+            },
+          },
+        };
+        return jsonTemplate;
+      }),
+    };
+    return object;
+  }
 
-			}
-			return jsonTemplate;
-		})
-	}
-	return object;
+  public static parseJsonToChartTemplates(
+    json: chartTemplateJsonObject
+  ): ChartTemplate[] {
+    return json.templates.map((temp) => {
+      const template = new ChartTemplate(temp.name, temp.type, {
+        devicesHistoryValues: temp.chartModel.devicesHistoryValues,
+        model: json.model,
+        percentFragmentation: temp.chartModel.percentFragmentation,
+      });
+      template.id = temp.id;
+      return template;
+    });
   }
 }
 
@@ -44,20 +74,26 @@ export class LocalStorageManager {
   public static loadPresetsFromLocalStorage(
     key: localStorageKey
   ): ChartTemplate[] {
-    const savedPresets = localStorage.getItem(key);
-    if (savedPresets) {
-      return JSON.parse(savedPresets).map((presetData: any) =>
-        ChartTemplate.fromJSON(presetData)
-      );
+    const savedPresetsItem = localStorage.getItem(key);
+    if (savedPresetsItem) {
+      // return JSON.parse(savedPresets).map((presetData: any) =>
+      //   ChartTemplate.fromJSON(presetData)
+      // );
+      const presets: chartTemplateJsonObject = JSON.parse(savedPresetsItem);
+      return FileSaver.parseJsonToChartTemplates(presets);
     }
     return [];
   }
 
   public static savePresetsToLocalStorage(
     key: localStorageKey,
-    presets: ChartTemplate[]
+    presets: ChartTemplate[],
+    model: IDeviceModel
   ) {
-    localStorage.setItem(key, JSON.stringify(presets.map((p) => p.toJSON())));
+    localStorage.setItem(
+      key,
+      JSON.stringify(FileSaver.parsePresetsToJson(presets, model))
+    );
   }
 
   public static clearLocalStorageEntry(key: localStorageKey) {

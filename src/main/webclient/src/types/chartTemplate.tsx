@@ -16,7 +16,7 @@ import {
 import { CurrentChart } from "../components/dashboard-page/components/current-chart";
 import { RecentChart } from "../components/dashboard-page/components/recent-chart";
 import { useState } from "react";
-import { DeviceModel } from "./deviceModel";
+import { DeviceModel, IDeviceModel } from "./deviceModel";
 
 export enum chartType {
   EmptyPreset,
@@ -40,7 +40,7 @@ export const returnChartTypesArray = (): string[] => {
 
 export interface IChartTemplateModel {
   devicesHistoryValues: number[]; //devices percent values of active time history
-  model: DeviceModel;
+  model: IDeviceModel;
   percentFragmentation: number; //fragmentation of data into chunks by % points
 }
 
