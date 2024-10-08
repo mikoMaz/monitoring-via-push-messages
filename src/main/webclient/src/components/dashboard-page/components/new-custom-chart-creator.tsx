@@ -18,7 +18,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { ChartTemplate, chartType } from "../../../types/chartTemplate";
+import { ChartTemplate, chartType, chartTypeFromString } from "../../../types/chartTemplate";
 import { deviceType, returnDeviceTypesArray } from "../../../types/deviceModel";
 
 interface INewCustomChartCreator {
@@ -109,10 +109,10 @@ export const NewCustomChartCreator = ({
 
   const drawEditSelectChartType = () => {
     const handleChange = (event: any) => {
-      const value =
-        chartType[event.target.value as keyof typeof chartType] ??
-        chartType.EmptyPreset;
-      setSelectedType(value);
+      // const value =
+      //   chartType[event.target.value as keyof typeof chartType] ??
+      //   chartType.EmptyPreset;
+      setSelectedType(chartTypeFromString(event.target.value.toString()));
     };
 
     return (
