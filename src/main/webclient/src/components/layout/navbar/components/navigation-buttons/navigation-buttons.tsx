@@ -2,8 +2,9 @@ import { Tab, TabList, Tabs } from "@chakra-ui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { IUIProps } from "../../../../../types/projectTypes";
+import { UIProps } from "../../../../../config/config";
 
-export const NavigationButtons = ({ ...ui }: IUIProps) => {
+export const NavigationButtons = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [tabIndex, setTabIndex] = useState(0);
@@ -37,7 +38,7 @@ export const NavigationButtons = ({ ...ui }: IUIProps) => {
 
   return (
     <Tabs
-      colorScheme={ui.colors.secondary}
+      colorScheme={UIProps.colors.secondary}
       index={tabIndex}
       onChange={handleTabsChange}
     >

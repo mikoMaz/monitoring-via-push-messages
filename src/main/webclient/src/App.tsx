@@ -13,15 +13,22 @@ import { DeviceModel } from "./types/deviceModel";
 import { UIProps } from "./config/config";
 import { APIClient } from "./api/api-client";
 import { MonitoringDevicePage } from "./components/monitoring-device-page/monitoring-device-page";
+import { useAuth0 } from "@auth0/auth0-react";
+import { LoginPage } from "./components/login-page/login-page";
+import config from "./config/config.json";
 
 const refreshTime = 3; //minutes
 
 export default function App() {
+  const { user, isAuthenticated, isLoading, error, getAccessTokenSilently } =
+    useAuth0();
+
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
   );
   const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
-  const navigate = useNavigate();
+
+  const [accessToken, setAccessToken] = useState<string>("");
 
   const props: IAppProps = {
     model: deviceModel,
@@ -54,18 +61,18 @@ export default function App() {
 
   useEffect(() => {
     document.body.style.backgroundColor = UIProps.colors.background;
-    if (window.location.pathname === "/") {
-      navigate(
-        {
-          pathname: "/monitoring",
-          search: new URLSearchParams({ view: "allDevices" }).toString(),
+    const acquireAccessToken = async () => {
+      const token = await getAccessTokenSilently({
+        authorizationParams: {
+          audience: config.auth0.audience,
+          scope: config.auth0.scope,
         },
-        { replace: true }
-      );
-    }
+      });
+      setAccessToken(token);
+    };
+
     const updateModel = async () => {
       const data = await APIClient.getUpdatedDeviceModel();
-      console.log(data);
       setDeviceModel(data);
     };
 
@@ -74,12 +81,35 @@ export default function App() {
       setDevicesUptimeValues(data);
     };
 
-    updateModel();
-    fetchUptimeValues();
+    const onComponentLoaded = async () => {
+      await acquireAccessToken().catch((error: any) => {
+        console.error(error);
+      });
+      await updateModel().catch((error: any) => {
+        console.error(error);
+      });
+      await fetchUptimeValues().catch((error: any) => {
+        console.error(error);
+      });
+    };
+
+    onComponentLoaded().catch((error: any) => {});
     setInterval(updateModel, 1000 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <AppBody {...props} />;
+  if (error) {
+    return <div>Athentication error occured: {error.message}</div>;
+  }
+
+  if (isLoading) {
+    return <div>Loading ...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
+
+  return isAuthenticated && <AppBody {...props} />;
 }
