@@ -68,13 +68,11 @@ export default function App() {
           scope: config.auth0.scope,
         },
       });
-      console.log("token: ", token);
       setAccessToken(token);
     };
 
     const updateModel = async () => {
       const data = await APIClient.getUpdatedDeviceModel();
-      console.log(data);
       setDeviceModel(data);
     };
 
