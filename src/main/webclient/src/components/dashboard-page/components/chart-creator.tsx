@@ -22,7 +22,11 @@ import {
 import { InfoOutlined } from "@mui/icons-material";
 import { NewCustomChartCreator } from "./new-custom-chart-creator";
 import { UIProps } from "../../../config/config";
-import { localStorageKey, LocalStorageManager, FileSaver } from '../../../types/fileSaver';
+import {
+  localStorageKey,
+  LocalStorageManager,
+  FileSaver,
+} from "../../../types/fileSaver";
 
 interface IChartCreator {
   model: DeviceModel;
@@ -31,6 +35,8 @@ interface IChartCreator {
 
 export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   const localStorageKey: localStorageKey = "chartPresets";
+
+  const [selectedTemplateIndex, setSelectedTemplateIndex] = useState<number>(0);
 
   // const savePresetsToLocalStorage = (presets: ChartTemplate[]) => {
   //   localStorage.setItem(
@@ -51,7 +57,8 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   // };
 
   const [chartPresets, setChartPresets] = useState<ChartTemplate[]>(() => {
-    const presets = LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
+    const presets =
+      LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
     console.log(presets);
     if (presets.length > 0) {
       return presets;
@@ -100,19 +107,28 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
       );
       if (index !== -1) {
         updatedPresets[index] = newPreset;
-        console.log("is type updated ", newPreset.type)
+        console.log("is type updated ", newPreset.type);
       } else {
         updatedPresets.push(newPreset);
       }
-      LocalStorageManager.savePresetsToLocalStorage(localStorageKey, updatedPresets, model);
+      LocalStorageManager.savePresetsToLocalStorage(
+        localStorageKey,
+        updatedPresets,
+        model
+      );
       FileSaver.saveChartPresetsToJson(updatedPresets);
       console.log(updatedPresets);
       return updatedPresets;
     });
   };
 
+  const handlePresetTabSelected = (index: number) => {
+    setSelectedTemplateIndex(index);
+  };
+
   useEffect(() => {
-    const savedPresets = LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
+    const savedPresets =
+      LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
     if (savedPresets.length > 0) {
       setChartPresets(savedPresets);
     }
@@ -130,7 +146,9 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     if (!chartPresets.find((p) => p.type === chartType.EmptyPreset)) {
       const emptyPreset = getEmptyPreset(model, devicesUptime);
       setNewChartTemplate(emptyPreset);
+      const index = chartPresets.length - 1;
       setChartPresets([...chartPresets, emptyPreset]);
+      setSelectedTemplateIndex(index + 1);
     }
   };
 
@@ -230,7 +248,13 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
         </HStack>
       </GridItem>
       <GridItem>
-        <Tabs orientation="vertical" colorScheme="green">
+        <Tabs
+          isLazy
+          index={selectedTemplateIndex}
+          onChange={handlePresetTabSelected}
+          orientation="vertical"
+          colorScheme="green"
+        >
           <TabListElements />
           <TabPanelsElements />
         </Tabs>
