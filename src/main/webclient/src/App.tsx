@@ -9,13 +9,19 @@ import { AboutPage } from "./components/about-page/about-page";
 import { LandingPage } from "./components/landing-page/landing-page";
 import { NotFoundPage } from "./components/not-found-page/not-found-page";
 import { IAppProps } from "./types/projectTypes";
-import { DeviceModel } from "./types/deviceModel";
+import {
+  DeviceModel,
+  deviceStatus,
+  deviceType,
+  IMonitoringDevice,
+} from "./types/deviceModel";
 import { UIProps } from "./config/config";
 import { APIClient } from "./api/api-client";
 import { MonitoringDevicePage } from "./components/monitoring-device-page/monitoring-device-page";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LoginPage } from "./components/login-page/login-page";
 import config from "./config/config.json";
+import { useToast } from "@chakra-ui/react";
 
 const refreshTime = 3; //minutes
 
@@ -29,6 +35,8 @@ export default function App() {
   const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
 
   const [accessToken, setAccessToken] = useState<string>("");
+
+  const toast = useToast();
 
   const props: IAppProps = {
     model: deviceModel,
@@ -72,8 +80,21 @@ export default function App() {
     };
 
     const updateModel = async () => {
-      const data = await APIClient.getUpdatedDeviceModel();
+      const data = await APIClient.getDummyDeviceModel();
       setDeviceModel(data);
+    };
+
+    const checkInactiveDevices = () => {
+      const inactiveDevices: IMonitoringDevice[] =
+        deviceModel.getInactiveDevicesArray();
+      if (inactiveDevices.length) {
+        toast({
+          status: "error",
+          title: `${inactiveDevices.length} devices are inactive!`,
+          position: "top",
+          isClosable: true,
+        });
+      }
     };
 
     const fetchUptimeValues = async () => {
@@ -82,19 +103,21 @@ export default function App() {
     };
 
     const onComponentLoaded = async () => {
-      await acquireAccessToken().catch((error: any) => {
-        console.error(error);
-      });
-      await updateModel().catch((error: any) => {
-        console.error(error);
-      });
-      await fetchUptimeValues().catch((error: any) => {
-        console.error(error);
-      });
+      // await acquireAccessToken().catch((error: any) => {
+      //   console.error(error);
+      // });
+      await updateModel()
+        .then(() => checkInactiveDevices())
+        .catch((error: any) => {
+          console.error(error);
+        });
+      // await fetchUptimeValues().catch((error: any) => {
+      //   console.error(error);
+      // });
     };
 
     onComponentLoaded().catch((error: any) => {});
-    setInterval(updateModel, 1000 * 60 * refreshTime);
+    setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -103,13 +126,13 @@ export default function App() {
     return <div>Athentication error occured: {error.message}</div>;
   }
 
-  if (isLoading) {
-    return <div>Loading ...</div>;
-  }
+  // if (isLoading) {
+  //   return <div>Loading ...</div>;
+  // }
 
-  if (!isAuthenticated) {
+  if (isAuthenticated) {
     return <LoginPage />;
   }
 
-  return isAuthenticated && <AppBody {...props} />;
+  return <AppBody {...props} />;
 }

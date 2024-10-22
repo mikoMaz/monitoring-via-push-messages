@@ -47,6 +47,14 @@ export class Gateway implements IGateway {
   deviceType: deviceType;
   sensors: Sensor[];
 
+  public containAnyInactiveSensors(): boolean {
+    return (
+      this.sensors.find((s) => {
+        return s.status === deviceStatus.disabled;
+      }) !== undefined
+    );
+  }
+
   constructor(
     id: string,
     status: deviceStatus,
@@ -68,6 +76,22 @@ export class Bridge implements IBridge {
   deviceType: deviceType;
   gateways: Gateway[];
   sensors: Sensor[];
+
+  public containAnyInactiveSensors(): boolean {
+    return (
+      this.sensors.find((s) => {
+        return s.status === deviceStatus.disabled;
+      }) !== undefined
+    );
+  }
+
+  public containAnyInactiveGateway(): boolean {
+    return (
+      this.gateways.find((g) => {
+        return g.status === deviceStatus.disabled;
+      }) !== undefined
+    );
+  }
 
   constructor(
     id: string,
@@ -128,7 +152,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
           new Bridge(
             topLevelDevice.id,
             topLevelDevice.status,
-            new Date(topLevelDevice.lastPinged*1000),
+            new Date(topLevelDevice.lastPinged * 1000),
             devices[1].devices
               .filter(
                 (device) =>
@@ -139,7 +163,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
                 return new Gateway(
                   gateway.id,
                   gateway.status,
-                  new Date(gateway.lastPinged*1000),
+                  new Date(gateway.lastPinged * 1000),
                   devices[2].devices
                     .filter(
                       (device) =>
@@ -150,7 +174,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
                       return new Sensor(
                         sensor.id,
                         sensor.status,
-                        new Date(sensor.lastPinged*1000)
+                        new Date(sensor.lastPinged * 1000)
                       );
                     })
                 );
@@ -165,7 +189,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
                 return new Sensor(
                   sensor.id,
                   sensor.status,
-                  new Date(sensor.lastPinged*1000)
+                  new Date(sensor.lastPinged * 1000)
                 );
               })
           )
@@ -175,7 +199,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
           new Gateway(
             topLevelDevice.id,
             topLevelDevice.status,
-            new Date(topLevelDevice.lastPinged*1000),
+            new Date(topLevelDevice.lastPinged * 1000),
             devices[2].devices
               .filter(
                 (device) =>
@@ -186,7 +210,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
                 return new Sensor(
                   sensor.id,
                   sensor.status,
-                  new Date(sensor.lastPinged*1000)
+                  new Date(sensor.lastPinged * 1000)
                 );
               })
           )
@@ -196,7 +220,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
           new Sensor(
             topLevelDevice.id,
             topLevelDevice.status,
-            new Date(topLevelDevice.lastPinged*1000)
+            new Date(topLevelDevice.lastPinged * 1000)
           )
         );
       }
@@ -249,6 +273,60 @@ export class DeviceModel implements IDeviceModel {
   public getBridgesArray = () => {
     return this.bridges;
   };
+
+  public getInactiveDevicesArray = () => {
+    const devices: IMonitoringDevice[] = [];
+    //does it copy reference?
+    const bridges = this.bridges;
+    const gateways = this.gateways;
+    const sensors = this.sensors;
+    gateways.forEach((g) => {
+      sensors.push.apply(g.sensors);
+    });
+    bridges.forEach((b) => {
+      gateways.push.apply(b.gateways);
+      b.gateways.forEach((g) => {
+        sensors.push.apply(g.sensors);
+      });
+    });
+    devices.push(...this.sensors);
+    devices.push(...this.gateways);
+    devices.push(...this.bridges);
+    return (
+      devices.filter((d) => {
+        if (d.status !== deviceStatus.active) {
+          return d;
+        }
+      }) ?? []
+    );
+  };
+
+  // public filterInactiveDevicesDeviceModel = (): DeviceModel => {
+  //   const bridges = this.bridges.filter((b) => {
+  //     if (b.status === deviceStatus.disabled) {
+  //       return b;
+  //     } else if (b.containAnyInactiveGateway()) {
+  //       return b;
+  //     } else if (
+  //       b.gateways.find((b) => {
+  //         b.containAnyInactiveSensors() === true;
+  //       })
+  //     ) {
+  //       return b;
+  //     }
+  //   });
+  //   const gateways = this.gateways.filter((g) => {
+  //     if (g.status === deviceStatus.disabled) {
+  //       return g;
+  //     } else if (g.containAnyInactiveSensors()) {
+  //       return g;
+  //     }
+  //   });
+  //   const sensors = this.sensors.filter((s) => {
+  //     s.status === deviceStatus.disabled;
+  //   });
+  //   return new DeviceModel(bridges, gateways, sensors);
+  // };
 
   public static getPlaceholderDevice = (): IMonitoringDevice => {
     return {
