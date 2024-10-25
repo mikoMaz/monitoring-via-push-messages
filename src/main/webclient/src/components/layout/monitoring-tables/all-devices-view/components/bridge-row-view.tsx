@@ -8,7 +8,11 @@ import {
   Text,
   textDecoration,
 } from "@chakra-ui/react";
-import { Bridge, deviceType } from "../../../../../types/deviceModel";
+import {
+  Bridge,
+  deviceStatus,
+  deviceType,
+} from "../../../../../types/deviceModel";
 import { GatewayRowView } from "./gateway-row-view";
 import { StatusDotIndicator } from "../../../status-dot-indicator";
 import { Link } from "react-router-dom";
@@ -16,9 +20,13 @@ import { DeviceDetailsLink } from "./device-details-link";
 
 interface IBridgeRowViewProps {
   bridge: Bridge;
+  inactiveOnly: boolean;
 }
 
-export const BridgeRowView = ({ bridge }: IBridgeRowViewProps) => {
+export const BridgeRowView = ({
+  bridge,
+  inactiveOnly,
+}: IBridgeRowViewProps) => {
   const BridgeButton = () => {
     return (
       <>
@@ -33,16 +41,36 @@ export const BridgeRowView = ({ bridge }: IBridgeRowViewProps) => {
     );
   };
 
-  return (
-    <AccordionItem key={bridge.id}>
-      <AccordionButton>
-        <BridgeButton />
-      </AccordionButton>
-      <AccordionPanel>
-        {bridge.gateways.map((gateway) => (
-          <GatewayRowView gateway={gateway} />
-        ))}
-      </AccordionPanel>
-    </AccordionItem>
-  );
+  if (
+    inactiveOnly &&
+    (bridge.status !== deviceStatus.active ||
+      bridge.containAnyInactiveGateway() ||
+      bridge.containAnyInactiveSensors())
+  ) {
+    return (
+      <AccordionItem key={bridge.id}>
+        <AccordionButton>
+          <BridgeButton />
+        </AccordionButton>
+        <AccordionPanel>
+          {bridge.gateways.map((gateway) => (
+            <GatewayRowView gateway={gateway} inactiveOnly={inactiveOnly} />
+          ))}
+        </AccordionPanel>
+      </AccordionItem>
+    );
+  } else {
+    return (
+      <AccordionItem key={bridge.id}>
+        <AccordionButton>
+          <BridgeButton />
+        </AccordionButton>
+        <AccordionPanel>
+          {bridge.gateways.map((gateway) => (
+            <GatewayRowView gateway={gateway} inactiveOnly={inactiveOnly} />
+          ))}
+        </AccordionPanel>
+      </AccordionItem>
+    );
+  }
 };

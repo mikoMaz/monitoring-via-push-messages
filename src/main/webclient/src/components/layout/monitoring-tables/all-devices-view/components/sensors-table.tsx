@@ -10,44 +10,79 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { Sensor } from "../../../../../types/deviceModel";
+import { deviceStatus, Sensor } from "../../../../../types/deviceModel";
 import { DeviceRowView } from "../../single-device-view/components/device-row-view";
 
 interface ISensorsTableProps {
   sensors: Sensor[];
+  inactiveOnly: boolean;
 }
 
-export const SensorsTable = ({ sensors }: ISensorsTableProps) => {
-  if (sensors.length) {
-    return (
-      <TableContainer borderRadius="lg">
-        <Table variant="simple" bg="white">
-          <Thead>
-            <Tr>
-              <Th>Device ID</Th>
-              <Th>Last Ping</Th>
-              <Th>Status</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            <>
-              {sensors.map((sensor) => {
-                return <DeviceRowView {...sensor} />;
-              })}
-            </>
-          </Tbody>
-        </Table>
-      </TableContainer>
-    );
+const NoData = () => {
+  return (
+    <Card align="center">
+      <CardBody>
+        <HStack>
+          <Text fontSize="md">No data</Text>
+        </HStack>
+      </CardBody>
+    </Card>
+  );
+};
+
+const SensorsTableHead = () => {
+  return (
+    <Thead>
+      <Tr>
+        <Th>Device ID</Th>
+        <Th>Last Ping</Th>
+        <Th>Status</Th>
+      </Tr>
+    </Thead>
+  );
+};
+
+export const SensorsTable = ({ sensors, inactiveOnly }: ISensorsTableProps) => {
+  const inactiveSensors = sensors.filter((s) => {
+    return s.status !== deviceStatus.active;
+  });
+  if (inactiveOnly) {
+    if (inactiveSensors.length) {
+      return (
+        <TableContainer borderRadius="lg">
+          <Table variant="simple" bg="white">
+            <SensorsTableHead />
+            <Tbody>
+              <>
+                {inactiveSensors.map((sensor) => {
+                  return <DeviceRowView {...sensor} />;
+                })}
+              </>
+            </Tbody>
+          </Table>
+        </TableContainer>
+      );
+    } else {
+      return <NoData />;
+    }
   } else {
-    return (
-      <Card align="center">
-        <CardBody>
-          <HStack>
-            <Text fontSize="md">No data</Text>
-          </HStack>
-        </CardBody>
-      </Card>
-    );
+    if (sensors.length) {
+      return (
+        <TableContainer borderRadius="lg">
+          <Table variant="simple" bg="white">
+            <SensorsTableHead />
+            <Tbody>
+              <>
+                {sensors.map((sensor) => {
+                  return <DeviceRowView {...sensor} />;
+                })}
+              </>
+            </Tbody>
+          </Table>
+        </TableContainer>
+      );
+    } else {
+      return <NoData />;
+    }
   }
 };

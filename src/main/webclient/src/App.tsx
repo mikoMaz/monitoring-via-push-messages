@@ -130,9 +130,9 @@ export default function App() {
   //   return <div>Loading ...</div>;
   // }
 
-  if (isAuthenticated) {
-    return <LoginPage />;
-  }
+  // if (!isAuthenticated) {
+  //   return <LoginPage />;
+  // }
 
   return <AppBody {...props} />;
 }

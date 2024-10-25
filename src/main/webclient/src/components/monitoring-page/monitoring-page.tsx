@@ -29,6 +29,9 @@ export const MonitoringPage = (model: DeviceModel) => {
     viewOption.allDevices
   );
 
+  const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
+    useState<boolean>(false);
+
   const setFilteringSectionEnabled = () => {
     switch (filteringHeigth) {
       case "0px":
@@ -68,7 +71,7 @@ export const MonitoringPage = (model: DeviceModel) => {
   const renderSelectedView = () => {
     switch (selectedViewOption) {
       case viewOption.allDevices:
-        return <AllDevicesView model={model} />;
+        return <AllDevicesView model={model} inactiveOnly={inactiveSwitchEnabled}/>;
       case viewOption.sensors:
         return <SingleDeviceView model={model.getSensorsArray()} />;
       case viewOption.gateways:
@@ -117,15 +120,19 @@ export const MonitoringPage = (model: DeviceModel) => {
           marginBottom="28px"
         >
           <Grid templateColumns="repeat(10, 1fr)">
-            <GridItem colSpan={5}> 
+            <GridItem colSpan={5}>
               <ViewTypeSelectionTabs
                 index={selectedViewOption}
                 onSelectionChanged={onSelectedViewChanged}
               />
             </GridItem>
-            <GridItem colStart={8} colEnd={11}>
+            <GridItem colStart={7} colEnd={11}>
               <FilterSectionButtons
                 setFilterEnabled={setFilteringSectionEnabled}
+                inactiveSwitchEnabled={inactiveSwitchEnabled}
+                inactiveDevicesSwitched={() => {
+                  setInactiveSwitchEnabled(!inactiveSwitchEnabled);
+                }}
               />
             </GridItem>
           </Grid>
