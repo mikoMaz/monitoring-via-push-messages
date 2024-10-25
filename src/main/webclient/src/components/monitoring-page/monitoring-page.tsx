@@ -122,14 +122,14 @@ export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchE
           marginTop="28px"
           marginBottom="28px"
         >
-          <Grid templateColumns="repeat(10, 1fr)">
+          <Grid templateColumns="repeat(12, 1fr)">
             <GridItem colSpan={5}>
               <ViewTypeSelectionTabs
                 index={selectedViewOption}
                 onSelectionChanged={onSelectedViewChanged}
               />
             </GridItem>
-            <GridItem colStart={7} colEnd={11}>
+            <GridItem colStart={8} colEnd={13}>
               <FilterSectionButtons
                 setFilterEnabled={setFilteringSectionEnabled}
                 inactiveSwitchEnabled={inactiveSwitchEnabled}

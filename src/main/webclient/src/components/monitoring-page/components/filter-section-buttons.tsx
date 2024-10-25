@@ -38,13 +38,14 @@ export const FilterSectionButtons = ({
   return (
     <Grid templateColumns="3fr 1fr 2fr 1fr 2fr 1fr 3fr">
       <GridItem>
-        <FormControl alignItems="center">
-          <FormLabel htmlFor="inactive-switch" mb="0">
+        <FormControl display='flex' alignItems="center" marginTop="2">
+          <FormLabel htmlFor="inactive-switch"  mb="0">
             Inactive only
           </FormLabel>
           <Switch
             id="inactive-switch"
             isChecked={inactiveSwitchEnabled}
+            colorScheme="primary"
             onChange={(e) => {
               inactiveDevicesSwitched();
             }}
