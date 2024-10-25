@@ -32,6 +32,15 @@ export class Sensor implements ISensor {
   lastPinged: Date;
   deviceType: deviceType;
 
+  public toIMonitoringDevice(): IMonitoringDevice {
+    return {
+      id: this.id,
+      deviceType: this.deviceType,
+      status: this.status,
+      lastPinged: this.lastPinged,
+    };
+  }
+
   constructor(id: string, status: deviceStatus, lastPinged: Date) {
     this.id = id;
     this.status = status;
@@ -46,6 +55,27 @@ export class Gateway implements IGateway {
   lastPinged: Date;
   deviceType: deviceType;
   sensors: Sensor[];
+
+  public toIMonitoringDevice(): IMonitoringDevice {
+    return {
+      id: this.id,
+      deviceType: this.deviceType,
+      status: this.status,
+      lastPinged: this.lastPinged,
+    };
+  }
+
+  private getInactiveSensors() {
+    return this.sensors.filter((s) => {
+      return s.status === deviceStatus.disabled;
+    });
+  }
+
+  public getInactiveDevices(): IMonitoringDevice[] {
+    return this.getInactiveSensors().map((s) => {
+      return s.toIMonitoringDevice();
+    });
+  }
 
   public containAnyInactiveSensors(): boolean {
     return (
@@ -76,6 +106,39 @@ export class Bridge implements IBridge {
   deviceType: deviceType;
   gateways: Gateway[];
   sensors: Sensor[];
+
+  public toIMonitoringDevice(): IMonitoringDevice {
+    return {
+      id: this.id,
+      deviceType: this.deviceType,
+      status: this.status,
+      lastPinged: this.lastPinged,
+    };
+  }
+
+  private getInactiveGateways() {
+    return this.gateways.filter((g) => {
+      return g.status === deviceStatus.disabled;
+    });
+  }
+
+  private getInactiveSensors() {
+    return this.sensors.filter((s) => {
+      return s.status === deviceStatus.disabled;
+    });
+  }
+
+  public getInactiveDevices(): IMonitoringDevice[] {
+    const sensors: IMonitoringDevice[] = this.getInactiveSensors().map((s) => {
+      return s.toIMonitoringDevice();
+    });
+    const gateways: IMonitoringDevice[] = this.getInactiveGateways().map(
+      (g) => {
+        return g.toIMonitoringDevice();
+      }
+    );
+    return Array.prototype.concat(sensors, gateways);
+  }
 
   public containAnyInactiveSensors(): boolean {
     return (
@@ -274,31 +337,29 @@ export class DeviceModel implements IDeviceModel {
     return this.bridges;
   };
 
-  public getInactiveDevicesArray = () => {
+  public getInactiveDevicesArray = (): IMonitoringDevice[] => {
     const devices: IMonitoringDevice[] = [];
-    //does it copy reference?
-    const bridges = this.bridges;
-    const gateways = this.gateways;
-    const sensors = this.sensors;
-    gateways.forEach((g) => {
-      sensors.push.apply(g.sensors);
-    });
-    bridges.forEach((b) => {
-      gateways.push.apply(b.gateways);
+    this.bridges.forEach((b) => {
       b.gateways.forEach((g) => {
-        sensors.push.apply(g.sensors);
+        devices.push(...g.getInactiveDevices());
       });
+      devices.push(...b.getInactiveDevices());
+      if (b.status !== deviceStatus.active) {
+        devices.push(b.toIMonitoringDevice());
+      }
     });
-    devices.push(...this.sensors);
-    devices.push(...this.gateways);
-    devices.push(...this.bridges);
-    return (
-      devices.filter((d) => {
-        if (d.status !== deviceStatus.active) {
-          return d;
-        }
-      }) ?? []
-    );
+    this.gateways.forEach((g) => {
+      devices.push(...g.getInactiveDevices());
+      if (g.status !== deviceStatus.active) {
+        devices.push(g.toIMonitoringDevice());
+      }
+    });
+    this.sensors.forEach((s) => {
+      if (s.status !== deviceStatus.active) {
+        devices.push(s.toIMonitoringDevice());
+      }
+    });
+    return devices;
   };
 
   // public filterInactiveDevicesDeviceModel = (): DeviceModel => {

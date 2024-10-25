@@ -87,6 +87,7 @@ export default function App() {
     const checkInactiveDevices = () => {
       const inactiveDevices: IMonitoringDevice[] =
         deviceModel.getInactiveDevicesArray();
+        console.log("inactiveDevices: ", inactiveDevices)
       if (inactiveDevices.length) {
         toast({
           status: "error",
