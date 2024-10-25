@@ -17,7 +17,13 @@ enum viewOption {
   sensors,
 }
 
-export const MonitoringPage = (model: DeviceModel) => {
+interface IMonitoringPage {
+  model: DeviceModel,
+  setInactiveSwitchEnabled: (value: boolean) => void,
+  inactiveSwitchEnabled: boolean
+}
+
+export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchEnabled}: IMonitoringPage) => {
   const ui = UIProps;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -28,9 +34,6 @@ export const MonitoringPage = (model: DeviceModel) => {
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.allDevices
   );
-
-  const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
-    useState<boolean>(false);
 
   const setFilteringSectionEnabled = () => {
     switch (filteringHeigth) {

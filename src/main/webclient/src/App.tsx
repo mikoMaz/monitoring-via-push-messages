@@ -21,18 +21,26 @@ import { MonitoringDevicePage } from "./components/monitoring-device-page/monito
 import { useAuth0 } from "@auth0/auth0-react";
 import { LoginPage } from "./components/login-page/login-page";
 import config from "./config/config.json";
-import { useToast } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Button,
+  useToast,
+} from "@chakra-ui/react";
 
 const refreshTime = 3; //minutes
 
 export default function App() {
-  const { user, isAuthenticated, isLoading, error } =
-    useAuth0();
+  const { user, isAuthenticated, isLoading, error } = useAuth0();
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
   );
   const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
+
+  const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
+    useState<boolean>(false);
 
   // const [accessToken, setAccessToken] = useState<string>("");
 
@@ -44,7 +52,13 @@ export default function App() {
       <Route
         key="monitoring"
         path="/monitoring"
-        element={<MonitoringPage {...deviceModel} />}
+        element={
+          <MonitoringPage
+            model={deviceModel}
+            inactiveSwitchEnabled={inactiveSwitchEnabled}
+            setInactiveSwitchEnabled={setInactiveSwitchEnabled}
+          />
+        }
       />,
       <Route
         key="monitoring-device"
@@ -86,13 +100,26 @@ export default function App() {
   const checkInactiveDevices = (model: DeviceModel) => {
     const inactiveDevices: IMonitoringDevice[] =
       model.getInactiveDevicesArray();
-      console.log("inactiveDevices: ", inactiveDevices)
+    console.log("inactiveDevices: ", inactiveDevices);
     if (inactiveDevices.length) {
       toast({
         status: "error",
         title: `${inactiveDevices.length} devices are inactive!`,
         position: "top",
         isClosable: true,
+        render: () => (
+          <Alert
+            status="error"
+            variant="solid"
+            onClick={() => {
+              setInactiveSwitchEnabled(true);
+              toast.closeAll();
+            }}
+          >
+            <AlertIcon />
+            <AlertTitle>{`${inactiveDevices.length} devices is inactive!`}</AlertTitle>
+          </Alert>
+        ),
       });
     }
   };
