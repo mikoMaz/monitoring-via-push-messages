@@ -362,33 +362,6 @@ export class DeviceModel implements IDeviceModel {
     return devices;
   };
 
-  // public filterInactiveDevicesDeviceModel = (): DeviceModel => {
-  //   const bridges = this.bridges.filter((b) => {
-  //     if (b.status === deviceStatus.disabled) {
-  //       return b;
-  //     } else if (b.containAnyInactiveGateway()) {
-  //       return b;
-  //     } else if (
-  //       b.gateways.find((b) => {
-  //         b.containAnyInactiveSensors() === true;
-  //       })
-  //     ) {
-  //       return b;
-  //     }
-  //   });
-  //   const gateways = this.gateways.filter((g) => {
-  //     if (g.status === deviceStatus.disabled) {
-  //       return g;
-  //     } else if (g.containAnyInactiveSensors()) {
-  //       return g;
-  //     }
-  //   });
-  //   const sensors = this.sensors.filter((s) => {
-  //     s.status === deviceStatus.disabled;
-  //   });
-  //   return new DeviceModel(bridges, gateways, sensors);
-  // };
-
   public static getPlaceholderDevice = (): IMonitoringDevice => {
     return {
       id: "undefined",
