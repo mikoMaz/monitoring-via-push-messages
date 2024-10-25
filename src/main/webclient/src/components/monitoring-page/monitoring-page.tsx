@@ -73,11 +73,11 @@ export const MonitoringPage = (model: DeviceModel) => {
       case viewOption.allDevices:
         return <AllDevicesView model={model} inactiveOnly={inactiveSwitchEnabled}/>;
       case viewOption.sensors:
-        return <SingleDeviceView model={model.getSensorsArray()} />;
+        return <SingleDeviceView model={model.getSensorsArray()} inactiveOnly={inactiveSwitchEnabled}/>;
       case viewOption.gateways:
-        return <SingleDeviceView model={model.getGatewaysArray()} />;
+        return <SingleDeviceView model={model.getGatewaysArray()} inactiveOnly={inactiveSwitchEnabled}/>;
       case viewOption.bridges:
-        return <SingleDeviceView model={model.getBridgesArray()} />;
+        return <SingleDeviceView model={model.getBridgesArray()} inactiveOnly={inactiveSwitchEnabled}/>;
     }
   };
 
