@@ -8,7 +8,7 @@ export type ProjectColorsDictionary = {
   accent: string;
   background: string;
   table: { active: string; disabled: string };
-  charts: { active: string; disabled: string, background: string };
+  charts: { active: string; disabled: string; background: string };
 };
 
 export interface IUIProps {
@@ -22,6 +22,8 @@ export interface IUIProps {
 export interface IAppProps {
   routes: JSX.Element[];
   model: DeviceModel;
+  alertsEnabled: boolean;
+  setAlertsEnabled: (value: boolean) => void;
 }
 
 export type FilteringHeigth = "0px" | "200px";

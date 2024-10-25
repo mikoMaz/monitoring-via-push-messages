@@ -9,21 +9,13 @@ import { AboutPage } from "./components/about-page/about-page";
 import { LandingPage } from "./components/landing-page/landing-page";
 import { NotFoundPage } from "./components/not-found-page/not-found-page";
 import { IAppProps } from "./types/projectTypes";
-import {
-  DeviceModel,
-  IMonitoringDevice,
-} from "./types/deviceModel";
+import { DeviceModel, IMonitoringDevice } from "./types/deviceModel";
 import { UIProps } from "./config/config";
 import { APIClient } from "./api/api-client";
 import { MonitoringDevicePage } from "./components/monitoring-device-page/monitoring-device-page";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LoginPage } from "./components/login-page/login-page";
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  useToast,
-} from "@chakra-ui/react";
+import { Alert, AlertIcon, AlertTitle, useToast } from "@chakra-ui/react";
 
 const refreshTime = 3; //minutes
 
@@ -38,7 +30,7 @@ export default function App() {
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);
 
-  // const [accessToken, setAccessToken] = useState<string>("");
+  const [alertsEnabled, setAlertsEnabled] = useState<boolean>(true);
 
   const toast = useToast();
 
@@ -75,17 +67,9 @@ export default function App() {
       <Route key="landing-page" path="/" element={<LandingPage />} />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
+    alertsEnabled: alertsEnabled,
+    setAlertsEnabled: (value: boolean) => {setAlertsEnabled(value)},
   };
-
-  // const acquireAccessToken = async () => {
-  //   const token = await getAccessTokenSilently({
-  //     authorizationParams: {
-  //       audience: config.auth0.audience,
-  //       scope: config.auth0.scope,
-  //     },
-  //   });
-  //   setAccessToken(token);
-  // };
 
   const updateModel = async () => {
     const data = await APIClient.getDummyDeviceModel();
@@ -94,29 +78,31 @@ export default function App() {
   };
 
   const checkInactiveDevices = (model: DeviceModel) => {
-    const inactiveDevices: IMonitoringDevice[] =
-      model.getInactiveDevicesArray();
-    console.log("inactiveDevices: ", inactiveDevices);
-    if (inactiveDevices.length && isAuthenticated) {
-      toast({
-        status: "error",
-        title: `${inactiveDevices.length} devices are inactive!`,
-        position: "top",
-        isClosable: true,
-        render: () => (
-          <Alert
-            status="error"
-            variant="solid"
-            onClick={() => {
-              setInactiveSwitchEnabled(true);
-              toast.closeAll();
-            }}
-          >
-            <AlertIcon />
-            <AlertTitle>{`${inactiveDevices.length} devices is inactive!`}</AlertTitle>
-          </Alert>
-        ),
-      });
+    console.error(alertsEnabled)
+    if (alertsEnabled) {
+      const inactiveDevices: IMonitoringDevice[] =
+        model.getInactiveDevicesArray();
+      if (inactiveDevices.length && isAuthenticated) {
+        toast({
+          status: "error",
+          title: `${inactiveDevices.length} devices are inactive!`,
+          position: "top",
+          isClosable: true,
+          render: () => (
+            <Alert
+              status="error"
+              variant="solid"
+              onClick={() => {
+                setInactiveSwitchEnabled(true);
+                toast.closeAll();
+              }}
+            >
+              <AlertIcon />
+              <AlertTitle>{`${inactiveDevices.length} devices is inactive!`}</AlertTitle>
+            </Alert>
+          ),
+        });
+      }
     }
   };
 
@@ -143,7 +129,7 @@ export default function App() {
     setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [alertsEnabled]);
 
   if (error) {
     return <div>Athentication error occured: {error.message}</div>;
