@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import "@mantine/core/styles.css";
 import { AppBody } from "./components/app-body/app-body";
-import { Route, useNavigate } from "react-router-dom";
+import { Route } from "react-router-dom";
 import { MonitoringPage } from "./components/monitoring-page/monitoring-page";
 import { DashboardPage } from "./components/dashboard-page/dashboard-page";
 import { AboutPage } from "./components/about-page/about-page";
@@ -11,8 +11,6 @@ import { NotFoundPage } from "./components/not-found-page/not-found-page";
 import { IAppProps } from "./types/projectTypes";
 import {
   DeviceModel,
-  deviceStatus,
-  deviceType,
   IMonitoringDevice,
 } from "./types/deviceModel";
 import { UIProps } from "./config/config";
@@ -20,12 +18,10 @@ import { APIClient } from "./api/api-client";
 import { MonitoringDevicePage } from "./components/monitoring-device-page/monitoring-device-page";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LoginPage } from "./components/login-page/login-page";
-import config from "./config/config.json";
 import {
   Alert,
   AlertIcon,
   AlertTitle,
-  Button,
   useToast,
 } from "@chakra-ui/react";
 
@@ -101,7 +97,7 @@ export default function App() {
     const inactiveDevices: IMonitoringDevice[] =
       model.getInactiveDevicesArray();
     console.log("inactiveDevices: ", inactiveDevices);
-    if (inactiveDevices.length) {
+    if (inactiveDevices.length && isAuthenticated) {
       toast({
         status: "error",
         title: `${inactiveDevices.length} devices are inactive!`,
@@ -135,9 +131,9 @@ export default function App() {
       .catch((error: any) => {
         console.error(error);
       });
-    // await fetchUptimeValues().catch((error: any) => {
-    //   console.error(error);
-    // });
+    await fetchUptimeValues().catch((error: any) => {
+      console.error(error);
+    });
   };
 
   useEffect(() => {
@@ -153,13 +149,13 @@ export default function App() {
     return <div>Athentication error occured: {error.message}</div>;
   }
 
-  // if (isLoading) {
-  //   return <div>Loading ...</div>;
-  // }
+  if (isLoading) {
+    return <div>Loading ...</div>;
+  }
 
-  // if (!isAuthenticated) {
-  //   return <LoginPage />;
-  // }
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
 
-  return <AppBody {...props} />;
+  return isAuthenticated && <AppBody {...props} />;
 }

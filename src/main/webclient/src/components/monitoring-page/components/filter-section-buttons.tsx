@@ -7,7 +7,6 @@ import {
   InputGroup,
   InputLeftElement,
   Switch,
-  VStack,
 } from "@chakra-ui/react";
 import { ButtonWithIcon } from "../../layout/button-with-icon";
 import FilterListIcon from "@mui/icons-material/FilterList";
