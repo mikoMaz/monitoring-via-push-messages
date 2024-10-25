@@ -26,7 +26,7 @@ import { useToast } from "@chakra-ui/react";
 const refreshTime = 3; //minutes
 
 export default function App() {
-  const { user, isAuthenticated, isLoading, error, getAccessTokenSilently } =
+  const { user, isAuthenticated, isLoading, error } =
     useAuth0();
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
@@ -34,7 +34,7 @@ export default function App() {
   );
   const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
 
-  const [accessToken, setAccessToken] = useState<string>("");
+  // const [accessToken, setAccessToken] = useState<string>("");
 
   const toast = useToast();
 
@@ -67,55 +67,54 @@ export default function App() {
     ],
   };
 
+  // const acquireAccessToken = async () => {
+  //   const token = await getAccessTokenSilently({
+  //     authorizationParams: {
+  //       audience: config.auth0.audience,
+  //       scope: config.auth0.scope,
+  //     },
+  //   });
+  //   setAccessToken(token);
+  // };
+
+  const updateModel = async () => {
+    const data = await APIClient.getDummyDeviceModel();
+    setDeviceModel(data);
+    return data;
+  };
+
+  const checkInactiveDevices = (model: DeviceModel) => {
+    const inactiveDevices: IMonitoringDevice[] =
+      model.getInactiveDevicesArray();
+      console.log("inactiveDevices: ", inactiveDevices)
+    if (inactiveDevices.length) {
+      toast({
+        status: "error",
+        title: `${inactiveDevices.length} devices are inactive!`,
+        position: "top",
+        isClosable: true,
+      });
+    }
+  };
+
+  const fetchUptimeValues = async () => {
+    const data = await APIClient.getAllDevicesHistory("1");
+    setDevicesUptimeValues(data);
+  };
+
+  const onComponentLoaded = async () => {
+    await updateModel()
+      .then((model) => checkInactiveDevices(model))
+      .catch((error: any) => {
+        console.error(error);
+      });
+    // await fetchUptimeValues().catch((error: any) => {
+    //   console.error(error);
+    // });
+  };
+
   useEffect(() => {
     document.body.style.backgroundColor = UIProps.colors.background;
-    const acquireAccessToken = async () => {
-      const token = await getAccessTokenSilently({
-        authorizationParams: {
-          audience: config.auth0.audience,
-          scope: config.auth0.scope,
-        },
-      });
-      setAccessToken(token);
-    };
-
-    const updateModel = async () => {
-      const data = await APIClient.getDummyDeviceModel();
-      setDeviceModel(data);
-    };
-
-    const checkInactiveDevices = () => {
-      const inactiveDevices: IMonitoringDevice[] =
-        deviceModel.getInactiveDevicesArray();
-        console.log("inactiveDevices: ", inactiveDevices)
-      if (inactiveDevices.length) {
-        toast({
-          status: "error",
-          title: `${inactiveDevices.length} devices are inactive!`,
-          position: "top",
-          isClosable: true,
-        });
-      }
-    };
-
-    const fetchUptimeValues = async () => {
-      const data = await APIClient.getAllDevicesHistory("1");
-      setDevicesUptimeValues(data);
-    };
-
-    const onComponentLoaded = async () => {
-      // await acquireAccessToken().catch((error: any) => {
-      //   console.error(error);
-      // });
-      await updateModel()
-        .then(() => checkInactiveDevices())
-        .catch((error: any) => {
-          console.error(error);
-        });
-      // await fetchUptimeValues().catch((error: any) => {
-      //   console.error(error);
-      // });
-    };
 
     onComponentLoaded().catch((error: any) => {});
     setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
