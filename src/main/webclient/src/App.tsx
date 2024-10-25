@@ -72,13 +72,12 @@ export default function App() {
   };
 
   const updateModel = async () => {
-    const data = await APIClient.getDummyDeviceModel();
+    const data = await APIClient.getUpdatedDeviceModel();
     setDeviceModel(data);
     return data;
   };
 
   const checkInactiveDevices = (model: DeviceModel) => {
-    console.error(alertsEnabled)
     if (alertsEnabled) {
       const inactiveDevices: IMonitoringDevice[] =
         model.getInactiveDevicesArray();
