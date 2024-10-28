@@ -8,20 +8,28 @@ import {
   DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
-  Container,
   GridItem,
   Grid,
   Switch,
-  Text,
   Button,
   HStack,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
 
-export const UserSidebar = () => {
+interface IUserSidebar {
+  alertsEnabled: boolean;
+  setAlertsEnabled: (value: boolean) => void;
+}
+
+export const UserSidebar = ({
+  alertsEnabled,
+  setAlertsEnabled,
+}: IUserSidebar) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { logout, user} = useAuth0();
+  const { logout, user } = useAuth0();
   return (
     <>
       <IconButton
@@ -46,16 +54,19 @@ export const UserSidebar = () => {
           <DrawerBody>
             <Grid templateRows="2fr 1fr 8fr">
               <GridItem>
-                <Container>
-                  <Grid templateColumns="1fr 2fr">
-                    <GridItem>
-                      <Switch />
-                    </GridItem>
-                    <GridItem>
-                      <Text>Alerts</Text>
-                    </GridItem>
-                  </Grid>
-                </Container>
+                <FormControl display="flex" alignItems="center">
+                  <FormLabel htmlFor="alerts-switch" mb="0">
+                    Alerts
+                  </FormLabel>
+                  <Switch
+                    id="alerts-switch"
+                    colorScheme="primary"
+                    isChecked={alertsEnabled}
+                    onChange={(e) => {
+                      setAlertsEnabled(!alertsEnabled);
+                    }}
+                  />
+                </FormControl>
               </GridItem>
               <GridItem>Settings</GridItem>
             </Grid>

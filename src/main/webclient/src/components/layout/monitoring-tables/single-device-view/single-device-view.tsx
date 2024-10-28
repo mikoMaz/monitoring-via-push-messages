@@ -1,26 +1,60 @@
 import { Table, TableContainer, Tbody, Th, Thead, Tr } from "@chakra-ui/react";
-import { IMonitoringDevice } from "../../../../types/deviceModel";
+import { deviceStatus, IMonitoringDevice } from "../../../../types/deviceModel";
 import { DeviceRowView } from "./components/device-row-view";
 
-export const SingleDeviceView = ({ model }: { model: IMonitoringDevice[] }) => {
+interface ISingleDeviceView {
+  model: IMonitoringDevice[];
+  inactiveOnly: boolean;
+}
+
+const TableHead = () => {
   return (
-    <TableContainer borderRadius="lg">
-      <Table variant="simple" bg="white" size="sm">
-        <Thead>
-          <Tr>
-            <Th>Device ID</Th>
-            <Th>Last Ping</Th>
-            <Th>Status</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          <>
-            {model.map((device) => {
-              return <DeviceRowView {...device} />;
-            })}
-          </>
-        </Tbody>
-      </Table>
-    </TableContainer>
+    <Thead>
+      <Tr>
+        <Th>Device ID</Th>
+        <Th>Last Ping</Th>
+        <Th>Status</Th>
+      </Tr>
+    </Thead>
   );
+};
+
+export const SingleDeviceView = ({
+  model,
+  inactiveOnly,
+}: ISingleDeviceView) => {
+  if (inactiveOnly) {
+    const inactiveDevices = model.filter((d) => {
+      return d.status !== deviceStatus.active;
+    });
+    return (
+      <TableContainer borderRadius="lg">
+        <Table variant="simple" bg="white" size="sm">
+          <TableHead />
+          <Tbody>
+            <>
+              {inactiveDevices.map((device) => {
+                return <DeviceRowView {...device} />;
+              })}
+            </>
+          </Tbody>
+        </Table>
+      </TableContainer>
+    );
+  } else {
+    return (
+      <TableContainer borderRadius="lg">
+        <Table variant="simple" bg="white" size="sm">
+          <TableHead />
+          <Tbody>
+            <>
+              {model.map((device) => {
+                return <DeviceRowView {...device} />;
+              })}
+            </>
+          </Tbody>
+        </Table>
+      </TableContainer>
+    );
+  }
 };
