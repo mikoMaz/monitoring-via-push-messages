@@ -8,7 +8,7 @@ RUN npm install yarn
 
 RUN yarn install
 
-#ENV PORT=2137
-EXPOSE 2137
+#ENV PORT=3000
+EXPOSE 3000
 
 CMD ["yarn", "start"]

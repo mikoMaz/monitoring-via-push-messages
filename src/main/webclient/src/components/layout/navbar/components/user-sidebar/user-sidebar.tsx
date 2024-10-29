@@ -8,23 +8,35 @@ import {
   DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
-  Container,
   GridItem,
   Grid,
   Switch,
-  Text,
+  Button,
+  HStack,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
-import { IUIProps } from "../../../../../types/projectTypes";
+import { UIProps } from "../../../../../config/config";
+import { useAuth0 } from "@auth0/auth0-react";
 
-export const UserSidebar = ({ ...ui }: IUIProps) => {
+interface IUserSidebar {
+  alertsEnabled: boolean;
+  setAlertsEnabled: (value: boolean) => void;
+}
+
+export const UserSidebar = ({
+  alertsEnabled,
+  setAlertsEnabled,
+}: IUserSidebar) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { logout, user } = useAuth0();
   return (
     <>
       <IconButton
         onClick={onOpen}
         icon={<Avatar size="sm" />}
         aria-label={"Profile"}
-        colorScheme={ui.colors.accent}
+        colorScheme={UIProps.colors.accent}
         paddingTop="10px"
         paddingLeft="40px"
       />
@@ -32,21 +44,29 @@ export const UserSidebar = ({ ...ui }: IUIProps) => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Profile</DrawerHeader>
+          <DrawerHeader>
+            <HStack>
+              <>{user?.mail ?? user?.nickname ?? user?.name}</>
+              <Button onClick={() => logout()}>Logout</Button>
+            </HStack>
+          </DrawerHeader>
 
           <DrawerBody>
             <Grid templateRows="2fr 1fr 8fr">
               <GridItem>
-                <Container>
-                  <Grid templateColumns="1fr 2fr">
-                    <GridItem>
-                      <Switch />
-                    </GridItem>
-                    <GridItem>
-                      <Text>Alerts</Text>
-                    </GridItem>
-                  </Grid>
-                </Container>
+                <FormControl display="flex" alignItems="center">
+                  <FormLabel htmlFor="alerts-switch" mb="0">
+                    Alerts
+                  </FormLabel>
+                  <Switch
+                    id="alerts-switch"
+                    colorScheme="primary"
+                    isChecked={alertsEnabled}
+                    onChange={(e) => {
+                      setAlertsEnabled(!alertsEnabled);
+                    }}
+                  />
+                </FormControl>
               </GridItem>
               <GridItem>Settings</GridItem>
             </Grid>

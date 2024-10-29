@@ -1,11 +1,10 @@
 version: "v2.26.1-desktop.1"
 
 services:
-   front-end:
-     build: ./src/main/webclient
-     ports:
-       - 3000:3000
-
+  front-end:
+    build: ./src/main/webclient
+    ports:
+      - 3000:3000
 
   timescaledb2:
     image: timescale/timescaledb-ha:pg16

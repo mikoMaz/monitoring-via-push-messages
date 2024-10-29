@@ -23,4 +23,5 @@ public class DeviceStatus {
     @ManyToMany(mappedBy = "ignoredDevicesList")
     private List<AlertData> ignoringAlert;
     private Long logged_at;
+    private Long first_logged_at;
 }

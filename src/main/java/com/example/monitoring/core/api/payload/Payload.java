@@ -37,7 +37,7 @@ public class Payload implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return deviceType;
     }
 
     @Override

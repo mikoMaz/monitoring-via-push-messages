@@ -1,7 +1,4 @@
 package com.example.monitoring.core.api;
-
-import com.example.monitoring.core.alert.AlertData;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

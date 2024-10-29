@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class RegisterRequest {
     private String deviceId;
     private String deviceType;
-    private String password;
 }

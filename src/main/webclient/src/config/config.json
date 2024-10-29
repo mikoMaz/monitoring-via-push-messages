@@ -1,10 +1,15 @@
-[
-  {
-    "key": "LOCAL",
-    "value": {
-      "SERVER_URL": "http://localhost:3000",
+{
+  "appVersions": {
+    "LOCAL": {
+      "APP_URL": "http://localhost:3000",
       "HOST": "localhost:3000",
       "API_URL": ""
     }
+  },
+  "auth0": {
+    "clientID": "g9keOoztaSkyWNDErDpBE6qkoMJTXEcA",
+    "domain": "dev-5neb7art3ltrcarr.us.auth0.com",
+    "audience": "https://dev-5neb7art3ltrcarr.us.auth0.com/api/v2/",
+    "scope": "read:users"
   }
-]
+}

@@ -7,6 +7,8 @@ export type ProjectColorsDictionary = {
   secondary: string;
   accent: string;
   background: string;
+  table: { active: string; disabled: string };
+  charts: { active: string; disabled: string; background: string };
 };
 
 export interface IUIProps {
@@ -20,6 +22,12 @@ export interface IUIProps {
 export interface IAppProps {
   routes: JSX.Element[];
   model: DeviceModel;
+  alertsEnabled: boolean;
+  setAlertsEnabled: (value: boolean) => void;
 }
 
 export type FilteringHeigth = "0px" | "200px";
+
+export const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};

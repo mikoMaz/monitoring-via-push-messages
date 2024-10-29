@@ -8,7 +8,11 @@ import {
   HStack,
   Text,
 } from "@chakra-ui/react";
-import { Gateway, deviceType } from "../../../../../types/deviceModel";
+import {
+  Gateway,
+  deviceStatus,
+  deviceType,
+} from "../../../../../types/deviceModel";
 import { SensorsTable } from "./sensors-table";
 import { StatusDotIndicator } from "../../../status-dot-indicator";
 import { Link } from "react-router-dom";
@@ -16,9 +20,13 @@ import { DeviceDetailsLink } from "./device-details-link";
 
 interface IGatewayRowViewProps {
   gateway: Gateway;
+  inactiveOnly: boolean;
 }
 
-export const GatewayRowView = ({ gateway }: IGatewayRowViewProps) => {
+export const GatewayRowView = ({
+  gateway,
+  inactiveOnly,
+}: IGatewayRowViewProps) => {
   const GatewayButton = () => {
     return (
       <>
@@ -33,16 +41,41 @@ export const GatewayRowView = ({ gateway }: IGatewayRowViewProps) => {
     );
   };
 
-  return (
-    <Accordion allowMultiple key={gateway.id}>
-      <AccordionItem key={gateway.id}>
-        <AccordionButton>
-          <GatewayButton />
-        </AccordionButton>
-        <AccordionPanel pb={4}>
-          <SensorsTable sensors={gateway.sensors} />
-        </AccordionPanel>
-      </AccordionItem>
-    </Accordion>
-  );
+  if (
+    inactiveOnly &&
+    (gateway.status !== deviceStatus.active ||
+      gateway.containAnyInactiveSensors())
+  ) {
+    return (
+      <Accordion allowMultiple key={gateway.id} defaultIndex={[0]}>
+        <AccordionItem key={gateway.id}>
+          <AccordionButton>
+            <GatewayButton />
+          </AccordionButton>
+          <AccordionPanel pb={4}>
+            <SensorsTable
+              sensors={gateway.sensors}
+              inactiveOnly={inactiveOnly}
+            />
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+    );
+  } else {
+    return (
+      <Accordion allowMultiple key={gateway.id} defaultIndex={[0]}>
+        <AccordionItem key={gateway.id}>
+          <AccordionButton>
+            <GatewayButton />
+          </AccordionButton>
+          <AccordionPanel pb={4}>
+            <SensorsTable
+              sensors={gateway.sensors}
+              inactiveOnly={inactiveOnly}
+            />
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
+    );
+  }
 };
