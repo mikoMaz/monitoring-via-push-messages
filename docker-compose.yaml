@@ -1,10 +1,10 @@
 version: "v2.26.1-desktop.1"
 
 services:
-  front-end:
-    build: ./src/main/webclient
-    ports:
-      - 2137:2137
+   front-end:
+     build: ./src/main/webclient
+     ports:
+       - 3000:3000
 
 
   timescaledb2:

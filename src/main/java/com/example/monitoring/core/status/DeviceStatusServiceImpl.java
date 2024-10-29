@@ -18,7 +18,10 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
                 DeviceStatus ds=DeviceStatus.builder().Id(Id).logged_at(Timestamp).build();
                 repository.save(ds);
         }
-        public Integer getStatus(String Id)
+        public void saveToDatabase(DeviceStatus deviceStatus){
+                repository.save(deviceStatus);
+        }
+        public Integer getCalculatedStatus(String Id)
         {
 
                 DeviceStatus ds=repository.getObjectById(Id);
