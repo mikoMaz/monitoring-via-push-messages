@@ -22,6 +22,8 @@ const Auth0ProviderWithNavigation = ({ children }: { children: ReactNode }) => {
       clientId={config.auth0.clientID}
       authorizationParams={{
         redirect_uri: `${config.appVersions.LOCAL.APP_URL}`,
+        audience: `${config.auth0.audience}`,
+        scope: `${config.auth0.scope}`,
       }}
       onRedirectCallback={onRedirectCallback}
     >

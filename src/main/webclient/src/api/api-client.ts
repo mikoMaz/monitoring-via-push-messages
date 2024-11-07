@@ -82,9 +82,13 @@ export class APIClient {
       });
   };
 
-  public static getAllDevicesHistory = async (id: string): Promise<number[]> => {
+  public static getAllDevicesHistory = async (id: string, token: string): Promise<number[]> => {
     const apiUrl = `http://localhost:8080/api/v1/historyTree?id=${id}`;
-    return axios.get(apiUrl).then((response) => {
+    return axios.get(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).then((response) => {
       const data: AllDevicesUptimeJson = response.data;
       return data.uptimes;
     })
