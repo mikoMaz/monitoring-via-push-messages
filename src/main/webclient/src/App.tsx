@@ -20,7 +20,8 @@ import { Alert, AlertIcon, AlertTitle, useToast } from "@chakra-ui/react";
 const refreshTime = 3; //minutes
 
 export default function App() {
-  const { user, isAuthenticated, isLoading, error, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, isLoading, error, getAccessTokenSilently } =
+    useAuth0();
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
@@ -32,56 +33,9 @@ export default function App() {
 
   const [alertsEnabled, setAlertsEnabled] = useState<boolean>(true);
 
-  const [accessToken, setAccessToken] = useState('');
-
-  const [apiResponseMessage, setAPIResponseMessage] = useState('');
+  const [accessToken, setAccessToken] = useState<string>("");
 
   const toast = useToast();
-
-
-  /*useEffect(() => {
-    setAPIResponseMessage('');
-    const getAccessToken = async () => {
-      try {
-        const accessToken = await getAccessTokenSilently({
-          audience: configData.audience,
-          scope: configData.scope,
-        });
-        setAccessToken(accessToken);
-      } catch (e) {
-        console.log(e.message);
-      }
-    };
-
-    getAccessToken();
-  }, [getAccessTokenSilently, setAPIResponseMessage]);*/
-
-  /*useEffect(() => {
-    setAPIResponseMessage('');
-    const getAccessToken = async () => {
-      try {
-        const accessToken = await getAccessTokenSilently();
-        setAccessToken(accessToken);
-      } catch (e: any) {
-        console.log(e.message);
-      }
-    };
-
-    getAccessToken();
-  }, [getAccessTokenSilently, setAPIResponseMessage]);*/
-
-  useEffect(() => {
-    setAPIResponseMessage('');
-    const getAccessToken = async () => {
-      try {
-        setAcc(await getAccessTokenSilently());
-      } catch (e: any) {
-        console.log(e.message);
-      }
-    };
-
-    getAccessToken();
-  }, [getAccessTokenSilently, setAPIResponseMessage]);
 
   const props: IAppProps = {
     model: deviceModel,
@@ -100,7 +54,9 @@ export default function App() {
       <Route
         key="monitoring-device"
         path="/monitoring/:device"
-        element={<MonitoringDevicePage {...deviceModel} />}
+        element={
+          <MonitoringDevicePage model={deviceModel} accessToken={accessToken} />
+        }
       />,
       <Route
         key="dashboard"
@@ -117,13 +73,20 @@ export default function App() {
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
     alertsEnabled: alertsEnabled,
-    setAlertsEnabled: (value: boolean) => {setAlertsEnabled(value)},
+    setAlertsEnabled: (value: boolean) => {
+      setAlertsEnabled(value);
+    },
   };
 
-  const updateModel = async () => {
-    const data = await APIClient.getUpdatedDeviceModel();
-    setDeviceModel(data);
-    return data;
+  const updateModel = async (token: string) => {
+    try {
+      const data = await APIClient.getUpdatedDeviceModel(token);
+      setDeviceModel(data);
+      return data;
+    } catch (e: any) {
+      console.error("updateModel error: " + e.message);
+      return new DeviceModel();
+    }
   };
 
   const checkInactiveDevices = (model: DeviceModel) => {
@@ -154,26 +117,50 @@ export default function App() {
     }
   };
 
-  const fetchUptimeValues = async () => {
-    const data = await APIClient.getAllDevicesHistory("1");
-    setDevicesUptimeValues(data);
+  const getAccessToken = async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      console.log("token: " + token);
+      setAccessToken(await getAccessTokenSilently());
+      return token;
+    } catch (e: any) {
+      console.error("getAccessToken error: " + e.message);
+      return undefined;
+    }
+  };
+
+  const fetchUptimeValues = async (token: string) => {
+    try {
+      const data = await APIClient.getAllDevicesHistory("1", accessToken);
+      setDevicesUptimeValues(data);
+      return data;
+    } catch (e: any) {
+      console.error("fetchUptimeValues error: " + e.message);
+      setDevicesUptimeValues([]);
+      return [];
+    }
   };
 
   const onComponentLoaded = async () => {
-    await updateModel()
-      .then((model) => checkInactiveDevices(model))
-      .catch((error: any) => {
+    const token = await getAccessToken();
+    if (token) {
+      await updateModel(token)
+        .then((model) => checkInactiveDevices(model))
+        .catch((error: any) => {
+          console.error("Update model error: " + error);
+        });
+      await fetchUptimeValues(token).catch((error: any) => {
         console.error(error);
       });
-    await fetchUptimeValues().catch((error: any) => {
-      console.error(error);
-    });
+    }
   };
 
   useEffect(() => {
     document.body.style.backgroundColor = UIProps.colors.background;
 
-    onComponentLoaded().catch((error: any) => {});
+    onComponentLoaded().catch((error: any) => {
+      console.error("Error happaned while recurrent updates: " + error.message);
+    });
     setInterval(onComponentLoaded, 100 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
