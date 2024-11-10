@@ -52,6 +52,14 @@ export class APIClient {
       ]),
     ]);
   };
+  public static getUserInfo = async (accessToken: string) => {
+    const info = await axios.get("https://localhost:3000/userinfo",{
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    console.log(info)
+  }
   public static getUpdatedDeviceModel = async (accessToken: string) => {
     const apiURL = "http://localhost:8080/api/v1/kluczdostepu?id=1";
     return axios

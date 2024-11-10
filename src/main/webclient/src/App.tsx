@@ -16,6 +16,7 @@ import { MonitoringDevicePage } from "./components/monitoring-device-page/monito
 import { useAuth0 } from "@auth0/auth0-react";
 import { LoginPage } from "./components/login-page/login-page";
 import { Alert, AlertIcon, AlertTitle, useToast } from "@chakra-ui/react";
+import { jwtDecode } from "jwt-decode";
 
 const refreshTime = 3; //minutes
 
@@ -121,6 +122,9 @@ export default function App() {
     try {
       const token = await getAccessTokenSilently();
       console.log("token: " + token);
+      console.log(jwtDecode(token))
+      console.log(isAuthenticated)
+      // await APIClient.getUserInfo(token);
       setAccessToken(await getAccessTokenSilently());
       return token;
     } catch (e: any) {
