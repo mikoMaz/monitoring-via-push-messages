@@ -24,6 +24,13 @@ export default function App() {
   const { user, isAuthenticated, isLoading, error, getAccessTokenSilently } =
     useAuth0();
 
+  const [mail, setMail] = useState<string>(user?.email ?? "");
+
+  useEffect(() => {
+    setMail(user?.mail ?? "");
+    console.log(user?.email);
+  }, [user]);
+
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
   );
@@ -122,9 +129,8 @@ export default function App() {
     try {
       const token = await getAccessTokenSilently();
       console.log("token: " + token);
-      console.log(jwtDecode(token))
-      console.log(isAuthenticated)
-      console.log(user)
+      console.log(jwtDecode(token));
+
       // await APIClient.getUserInfo(token);
       setAccessToken(await getAccessTokenSilently());
       return token;
@@ -147,8 +153,8 @@ export default function App() {
   };
 
   const onComponentLoaded = async () => {
-    // const token = await getAccessToken();
-    const token = ''
+    const token = await getAccessToken();
+    // const token = ''
     if (token) {
       await updateModel(token)
         .then((model) => checkInactiveDevices(model))
@@ -174,15 +180,13 @@ export default function App() {
 
   if (error) {
     return <div>Athentication error occured: {error.message}</div>;
-  }
-
-  if (isLoading) {
+  } else if (isLoading) {
     return <div>Loading ...</div>;
-  }
-
-  if (!isAuthenticated) {
+  } else if (!isAuthenticated) {
     return <LoginPage />;
+  } else if (isAuthenticated) {
+    return <AppBody {...props} />;
+  } else {
+    return <></>;
   }
-
-  return isAuthenticated && <AppBody {...props} />;
 }
