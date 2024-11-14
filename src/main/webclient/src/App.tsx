@@ -124,6 +124,7 @@ export default function App() {
       console.log("token: " + token);
       console.log(jwtDecode(token))
       console.log(isAuthenticated)
+      console.log(user)
       // await APIClient.getUserInfo(token);
       setAccessToken(await getAccessTokenSilently());
       return token;
@@ -146,7 +147,8 @@ export default function App() {
   };
 
   const onComponentLoaded = async () => {
-    const token = await getAccessToken();
+    // const token = await getAccessToken();
+    const token = ''
     if (token) {
       await updateModel(token)
         .then((model) => checkInactiveDevices(model))

@@ -12,7 +12,7 @@ const Auth0ProviderWithNavigation = ({ children }: { children: ReactNode }) => {
         pathname: "/monitoring",
         search: new URLSearchParams({ view: "allDevices" }).toString(),
       },
-      { replace: true }
+      { replace: false }
     );
   };
 
