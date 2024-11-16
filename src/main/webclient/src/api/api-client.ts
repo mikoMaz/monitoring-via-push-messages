@@ -53,19 +53,23 @@ export class APIClient {
     ]);
   };
   public static getUserInfo = async (accessToken: string) => {
-    const info = await axios.get("https://localhost:3000/userinfo",{
+    const info = await axios.get("https://localhost:3000/userinfo", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    })
-    console.log(info)
-  }
-  public static getUpdatedDeviceModel = async (accessToken: string) => {
+    });
+    console.log(info);
+  };
+  public static getUpdatedDeviceModel = async (
+    accessToken: string,
+    email: string
+  ) => {
     const apiURL = "http://localhost:8080/api/v1/kluczdostepu?id=1";
     return axios
       .get(apiURL, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          Email: `${email}`,
         },
       })
       .then((response) => {
@@ -82,13 +86,15 @@ export class APIClient {
   public static getDeviceUptime = async (
     type: deviceType,
     id: string,
-    accessToken: string
+    accessToken: string,
+    email: string
   ) => {
     const apiUrl = `http://localhost:8080/api/v1/history?id=${type}&device_id=${id}`;
     return axios
       .get(apiUrl, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          Email: `${email}`,
         },
       })
       .then((response) => {
@@ -104,13 +110,15 @@ export class APIClient {
 
   public static getAllDevicesHistory = async (
     id: string,
-    accessToken: string
+    accessToken: string,
+    email: string
   ): Promise<number[]> => {
     const apiUrl = `http://localhost:8080/api/v1/historyTree?id=${id}`;
     return axios
       .get(apiUrl, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          Email: `${email}`,
         },
       })
       .then((response) => {

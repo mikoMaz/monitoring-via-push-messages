@@ -64,7 +64,11 @@ export default function App() {
         key="monitoring-device"
         path="/monitoring/:device"
         element={
-          <MonitoringDevicePage model={deviceModel} accessToken={accessToken} />
+          <MonitoringDevicePage
+            model={deviceModel}
+            accessToken={accessToken}
+            email={email}
+          />
         }
       />,
       <Route
@@ -87,9 +91,9 @@ export default function App() {
     },
   };
 
-  const updateModel = async (token: string) => {
+  const updateModel = async (token: string, email: string) => {
     try {
-      const data = await APIClient.getUpdatedDeviceModel(token);
+      const data = await APIClient.getUpdatedDeviceModel(token, email);
       setDeviceModel(data);
       return data;
     } catch (e: any) {
@@ -141,9 +145,13 @@ export default function App() {
     }
   };
 
-  const fetchUptimeValues = async (token: string) => {
+  const fetchUptimeValues = async (token: string, email: string) => {
     try {
-      const data = await APIClient.getAllDevicesHistory("1", accessToken);
+      const data = await APIClient.getAllDevicesHistory(
+        "1",
+        accessToken,
+        email
+      );
       setDevicesUptimeValues(data);
       return data;
     } catch (e: any) {
@@ -161,12 +169,12 @@ export default function App() {
       }
       const token = await getAccessToken();
       if (token) {
-        await updateModel(token)
+        await updateModel(token, userEmail)
           .then((model) => checkInactiveDevices(model))
           .catch((error: any) => {
             console.error("Update model error: " + error);
           });
-        await fetchUptimeValues(token).catch((error: any) => {
+        await fetchUptimeValues(token, userEmail).catch((error: any) => {
           console.error(error);
         });
       }
