@@ -24,11 +24,12 @@ export default function App() {
   const { user, isAuthenticated, isLoading, error, getAccessTokenSilently } =
     useAuth0();
 
-  const [mail, setMail] = useState<string>(user?.email ?? "");
+  const [email, setEmail] = useState<string>("");
 
   useEffect(() => {
-    setMail(user?.mail ?? "");
-    console.log(user?.email);
+    if (user?.email) {
+      setEmail(user?.email);
+    }
   }, [user]);
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
@@ -153,17 +154,22 @@ export default function App() {
   };
 
   const onComponentLoaded = async () => {
-    const token = await getAccessToken();
-    // const token = ''
-    if (token) {
-      await updateModel(token)
-        .then((model) => checkInactiveDevices(model))
-        .catch((error: any) => {
-          console.error("Update model error: " + error);
+    if (email || user?.email) {
+      const userEmail = email ?? user?.email;
+      if (!email) {
+        setEmail(userEmail);
+      }
+      const token = await getAccessToken();
+      if (token) {
+        await updateModel(token)
+          .then((model) => checkInactiveDevices(model))
+          .catch((error: any) => {
+            console.error("Update model error: " + error);
+          });
+        await fetchUptimeValues(token).catch((error: any) => {
+          console.error(error);
         });
-      await fetchUptimeValues(token).catch((error: any) => {
-        console.error(error);
-      });
+      }
     }
   };
 
@@ -176,7 +182,7 @@ export default function App() {
     setInterval(onComponentLoaded, 100 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alertsEnabled]);
+  }, [alertsEnabled, email]);
 
   if (error) {
     return <div>Athentication error occured: {error.message}</div>;
