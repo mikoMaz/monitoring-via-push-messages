@@ -10,3 +10,4 @@ INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VA
 INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (7, 'sensor', 'device_id', (SELECT id FROM device_types WHERE device_type = 'sensor'));
 INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (8, 'reading_time', 'timestamp', (SELECT id FROM device_types WHERE device_type = 'sensor'));
 INSERT INTO device_payload_fields (id, key_name, table_key_name, device_type) VALUES (9, 'company_id', 'company_id', (SELECT id FROM device_types WHERE device_type = 'sensor'));
+INSERT INTO users (id, email, role) VALUES (1, 'test@test.pl', 'ADMIN');
