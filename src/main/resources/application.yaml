@@ -27,3 +27,6 @@ spring:
           jws-algorithms: RS256
 
 # spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+logging:
+  level:
+    org.springframework.security: DEBUG
