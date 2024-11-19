@@ -111,14 +111,14 @@ export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
   return (
     <TabPanel>
       <Center>
-        {parseFloat(percentFragmentationVariable) === 0 ||
-        isNaN(parseFloat(percentFragmentationVariable)) ? (
+        {parseFloat(percentFragmentationVariable) > 0.001 &&
+        !isNaN(parseFloat(percentFragmentationVariable)) ? (
+          template.drawChart()
+        ) : (
           <p>
             We can't show you the chart, if you put "0" or nothing into the
             input section. Please write a number between 0.001 and 100.
           </p>
-        ) : (
-          template.drawChart()
         )}
       </Center>
     </TabPanel>

@@ -13,11 +13,19 @@ import {
   Grid,
   Switch,
   Text,
+  Button,
 } from "@chakra-ui/react";
 import { IUIProps } from "../../../../../types/projectTypes";
+import { LocalStorageManager } from "../../../../../types/fileSaver";
 
 export const UserSidebar = ({ ...ui }: IUIProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleClearLocalStorage = () => {
+    LocalStorageManager.clearLocalStorage();
+    window.location.reload();
+  };
+
   return (
     <>
       <IconButton
@@ -49,6 +57,15 @@ export const UserSidebar = ({ ...ui }: IUIProps) => {
                 </Container>
               </GridItem>
               <GridItem>Settings</GridItem>
+              <GridItem>
+                <Button
+                  colorScheme="red"
+                  onClick={handleClearLocalStorage}
+                  marginTop="20px"
+                >
+                  Clear Local Storage
+                </Button>
+              </GridItem>
             </Grid>
           </DrawerBody>
         </DrawerContent>

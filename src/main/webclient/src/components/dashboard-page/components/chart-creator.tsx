@@ -10,9 +10,10 @@ import {
   TabPanels,
   Tabs,
   Tooltip,
+  VStack,
 } from "@chakra-ui/react";
 import { DeviceModel } from "../../../types/deviceModel";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ChartTabPanel,
   ChartTemplate,
@@ -26,6 +27,7 @@ import {
   localStorageKey,
   LocalStorageManager,
   FileSaver,
+  chartTemplateJsonObject,
 } from "../../../types/fileSaver";
 
 interface IChartCreator {
@@ -59,22 +61,10 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   const [chartPresets, setChartPresets] = useState<ChartTemplate[]>(() => {
     const presets =
       LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
-    console.log(presets);
     if (presets.length > 0) {
       return presets;
     }
-    return [
-      new ChartTemplate("current custom", chartType.Current, {
-        devicesHistoryValues: devicesUptime,
-        model: model,
-        percentFragmentation: 0.5,
-      }),
-      new ChartTemplate("recent custom", chartType.Recent, {
-        devicesHistoryValues: devicesUptime,
-        percentFragmentation: 0.5,
-        model: model,
-      }),
-    ];
+    return [];
   });
 
   // const saveChartPresets = (templates: ChartTemplate[]) => {
@@ -116,7 +106,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
         updatedPresets,
         model
       );
-      FileSaver.saveChartPresetsToJson(updatedPresets);
+      FileSaver.saveChartPresetsToJson(updatedPresets, model);
       console.log(updatedPresets);
       return updatedPresets;
     });
@@ -126,13 +116,13 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     setSelectedTemplateIndex(index);
   };
 
-  useEffect(() => {
-    const savedPresets =
-      LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
-    if (savedPresets.length > 0) {
-      setChartPresets(savedPresets);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedPresets =
+  //     LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
+  //   if (savedPresets.length > 0) {
+  //     setChartPresets(savedPresets);
+  //   }
+  // }, []);
 
   const [newChartTemplate, setNewChartTemplate] = useState<ChartTemplate>(
     getEmptyPreset(model, devicesUptime)
@@ -149,6 +139,34 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
       const index = chartPresets.length - 1;
       setChartPresets([...chartPresets, emptyPreset]);
       setSelectedTemplateIndex(index + 1);
+    }
+  };
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result;
+        if (content) {
+          try {
+            const importedPresets: chartTemplateJsonObject = JSON.parse(content as string);
+            const parsedPresets = FileSaver.parseJsonToChartTemplates(importedPresets);
+            LocalStorageManager.saveJsonToLocalStorage(localStorageKey, importedPresets)
+            setChartPresets(parsedPresets)
+            console.log("Imported presets:", importedPresets);
+          } catch (error) {
+            console.error("Error parsing imported file:", error);
+          }
+        }
+      };
+      reader.readAsText(file);
     }
   };
 
@@ -231,21 +249,35 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
         Main
       </GridItem> */}
       <GridItem marginBottom="20px">
-        <HStack>
-          <Button colorScheme="green" onClick={createNewPreset}>
-            New
-          </Button>
-          <Flex alignItems="center" justifyContent="flex-start" height="100%">
-            <Tooltip
-              label="Create new custom chart"
-              bg="gray.100"
-              color="gray.500"
-              placement="right"
-            >
-              <InfoOutlined style={{ color: UIProps.colors.accent }} />
-            </Tooltip>
-          </Flex>
-        </HStack>
+        <VStack align="stretch">
+          <HStack>
+            <Button colorScheme="green" onClick={createNewPreset}>
+              New
+            </Button>
+            <Flex alignItems="center" justifyContent="flex-start" height="100%">
+              <Tooltip
+                label="Create new custom chart"
+                bg="gray.100"
+                color="gray.500"
+                placement="right"
+              >
+                <InfoOutlined style={{ color: UIProps.colors.accent }} />
+              </Tooltip>
+            </Flex>
+          </HStack>
+          <HStack>
+            <Button colorScheme="primary" onClick={handleImportClick}>
+              Import
+            </Button>
+            <input
+              type="file"
+              accept=".json"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </HStack>
+        </VStack>
       </GridItem>
       <GridItem>
         <Tabs

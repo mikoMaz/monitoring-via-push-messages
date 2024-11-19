@@ -18,7 +18,11 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { ChartTemplate, chartType, chartTypeFromString } from "../../../types/chartTemplate";
+import {
+  ChartTemplate,
+  chartType,
+  chartTypeFromString,
+} from "../../../types/chartTemplate";
 import { deviceType, returnDeviceTypesArray } from "../../../types/deviceModel";
 
 interface INewCustomChartCreator {
@@ -45,7 +49,9 @@ INewCustomChartCreator) => {
   const handleSave = () => {
     template.name = templateName;
     template.type = selectedType;
-    template.chartModel.percentFragmentation = parseFloat(percentFragmentationVariable);
+    template.chartModel.percentFragmentation = parseFloat(
+      percentFragmentationVariable
+    );
     editFunction(template);
     // saveFunction();
   };
