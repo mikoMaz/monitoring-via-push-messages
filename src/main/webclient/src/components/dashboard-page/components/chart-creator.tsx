@@ -156,11 +156,21 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
         const content = e.target?.result;
         if (content) {
           try {
-            const importedPresets: chartTemplateJsonObject = JSON.parse(content as string);
-            const parsedPresets = FileSaver.parseJsonToChartTemplates(importedPresets);
-            LocalStorageManager.saveJsonToLocalStorage(localStorageKey, importedPresets)
-            setChartPresets(parsedPresets)
-            console.log("Imported presets:", importedPresets);
+            const importedPresets: chartTemplateJsonObject = JSON.parse(
+              content as string
+            );
+            const parsedPresets =
+              FileSaver.parseJsonToChartTemplates(importedPresets);
+            setChartPresets((prevPresets) => {
+              const allPresets = [...prevPresets, ...parsedPresets];
+              LocalStorageManager.savePresetsToLocalStorage(
+                localStorageKey,
+                allPresets,
+                model
+              );
+              console.log("Imported presets:", importedPresets);
+              return allPresets;
+            });
           } catch (error) {
             console.error("Error parsing imported file:", error);
           }

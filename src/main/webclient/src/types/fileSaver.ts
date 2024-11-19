@@ -14,11 +14,6 @@ export interface chartTemplateJsonObject {
 
 export class FileSaver {
   public static saveChartPresetsToJson(templates: ChartTemplate[], model: IDeviceModel) {
-    // const presetsJSON = JSON.stringify(
-    //   templates.map((preset) => preset.toJSON()),
-    //   null,
-    //   2
-    // );
     const presetsJSON = JSON.stringify(FileSaver.parsePresetsToJson(templates, model))
     const blob = new Blob([presetsJSON], { type: "application/json" });
     saveAs(blob, "chartPresets.json");
@@ -77,9 +72,6 @@ export class LocalStorageManager {
   ): ChartTemplate[] {
     const savedPresetsItem = localStorage.getItem(key);
     if (savedPresetsItem) {
-      // return JSON.parse(savedPresets).map((presetData: any) =>
-      //   ChartTemplate.fromJSON(presetData)
-      // );
       const presets: chartTemplateJsonObject = JSON.parse(savedPresetsItem);
       return FileSaver.parseJsonToChartTemplates(presets);
     }
@@ -102,21 +94,6 @@ export class LocalStorageManager {
       key,
       JSON.stringify(json)
     );
-  }
-
-  public static addPresetsToLocalStorage(
-    key: localStorageKey,
-    presets: ChartTemplate[],
-    model: IDeviceModel,
-    existingPresets: ChartTemplate[]
-  ) {
-    const newList = existingPresets.concat(presets)
-    console.log(newList)
-    localStorage.setItem(
-      key,
-      JSON.stringify(FileSaver.parsePresetsToJson(newList, model))
-    );
-    return newList;
   }
 
   public static clearLocalStorageEntry(key: localStorageKey) {
