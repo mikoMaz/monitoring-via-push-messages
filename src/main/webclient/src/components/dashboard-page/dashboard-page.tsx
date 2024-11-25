@@ -5,6 +5,8 @@ import { useState } from "react";
 import { ViewChartsTabs } from "./components/view-charts-tabs";
 import { RecentChart } from "./components/recent-chart";
 import { CurrentChart } from "./components/current-chart";
+import { ChartCreator } from "./components/chart-creator";
+import { IChartTemplateModel } from "../../types/chartTemplate";
 
 enum viewOption {
   current,
@@ -21,6 +23,13 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.current
   );
+
+  const chartModel: IChartTemplateModel = {
+    devicesHistoryValues: devicesUptime,
+    model: model,
+    percentFragmentation: 0.5,
+    brushActive: false,
+  };
 
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
@@ -43,17 +52,17 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
       case viewOption.current:
         return (
           <Center>
-            <CurrentChart model={model} devices={devicesUptime}/>
+            <CurrentChart {...chartModel} />
           </Center>
         );
       case viewOption.recent:
         return (
           <Center>
-            <RecentChart devices={devicesUptime} />
+            <RecentChart {...chartModel} />
           </Center>
         );
       case viewOption.custom:
-        return <>custom</>;
+        return <ChartCreator model={model} devicesUptime={devicesUptime} />;
     }
   };
 
@@ -72,7 +81,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
           marginBottom="28px"
         ></GridItem>
         <Grid templateColumns="3fr 7fr">
-          <GridItem>
+          <GridItem marginBottom="30px">
             <ViewChartsTabs
               index={selectedViewOption}
               onSelectionChanged={onSelectedViewChanged}

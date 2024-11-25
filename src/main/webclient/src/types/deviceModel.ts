@@ -9,6 +9,10 @@ export enum deviceType {
   bridge,
 }
 
+export const returnDeviceTypesArray = (): string[] => {
+  return Object.values(deviceType).filter((t): t is string => typeof t === "string");
+}
+
 export interface IMonitoringDevice {
   id: string;
   status: deviceStatus;
@@ -172,7 +176,7 @@ export class Bridge implements IBridge {
   }
 }
 
-interface IDeviceModel {
+export interface IDeviceModel {
   bridges: IBridge[];
   gateways: IGateway[];
   sensors: ISensor[];
