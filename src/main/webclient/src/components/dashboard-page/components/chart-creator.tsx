@@ -107,7 +107,6 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
         updatedPresets,
         model
       );
-      FileSaver.saveSingleChartPresetToJson(newPreset, model);
       console.log(updatedPresets);
       return updatedPresets;
     });

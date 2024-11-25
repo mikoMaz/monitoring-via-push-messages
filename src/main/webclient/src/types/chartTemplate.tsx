@@ -5,6 +5,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  HStack,
   Input,
   NumberDecrementStepper,
   NumberIncrementStepper,
@@ -13,6 +14,7 @@ import {
   NumberInputStepper,
   Switch,
   TabPanel,
+  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import { CurrentChart } from "../components/dashboard-page/components/current-chart";
@@ -20,6 +22,8 @@ import { RecentChart } from "../components/dashboard-page/components/recent-char
 import { useState } from "react";
 import { DeviceModel, IDeviceModel } from "./deviceModel";
 import { NewCustomChartCreator } from "../components/dashboard-page/components/new-custom-chart-creator";
+import { FileSaver } from "./fileSaver";
+import saveAs from "file-saver";
 
 export enum chartType {
   EmptyPreset,
@@ -114,6 +118,10 @@ export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
     setIsEditing((prev) => !prev);
   };
 
+  const handleExport = () => {
+    FileSaver.saveSingleChartPresetToJson(template, template.chartModel.model);
+  };
+
   return (
     <TabPanel>
       <VStack spacing={4} align="start" w="100%">
@@ -139,15 +147,20 @@ export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
         </Box>
 
         <Box position="relative" w="100%">
-          <Button
-            onClick={handleEditToggle}
-            colorScheme="primary"
-            position="absolute"
-            right={0}
-            bottom={-10}
-          >
-            {isEditing ? "Back to View" : "Edit"}
-          </Button>
+          <HStack spacing={4} justify="flex-end">
+            <Button
+              onClick={handleEditToggle}
+              colorScheme="primary"
+              position="relative"
+            >
+              {isEditing ? "Back to View" : "Edit"}
+            </Button>
+            <Tooltip label="Export data od the chart to JSON" aria-label="Export tooltip">
+              <Button onClick={handleExport} colorScheme="green">
+                Export
+              </Button>
+            </Tooltip>
+          </HStack>
         </Box>
       </VStack>
     </TabPanel>
