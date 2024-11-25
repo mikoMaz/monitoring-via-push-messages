@@ -4,7 +4,12 @@ import { UserSidebar } from "./components/user-sidebar/user-sidebar";
 import { Logo } from "./components/logo/logo";
 import { UIProps } from "../../../config/config";
 
-export const Navbar = () => {
+interface INavbar {
+  alertsEnabled: boolean;
+  setAlertsEnabled: (value: boolean) => void;
+}
+
+export const Navbar = ({ alertsEnabled, setAlertsEnabled }: INavbar) => {
   const ui = UIProps;
   return (
     <Box>
@@ -25,10 +30,13 @@ export const Navbar = () => {
           <div className="navbar-empty-space" />
         </GridItem>
         <GridItem>
-          <NavigationButtons {...ui} />
+          <NavigationButtons />
         </GridItem>
         <GridItem>
-          <UserSidebar {...ui} />
+          <UserSidebar
+            alertsEnabled={alertsEnabled}
+            setAlertsEnabled={setAlertsEnabled}
+          />
         </GridItem>
       </Grid>
     </Box>

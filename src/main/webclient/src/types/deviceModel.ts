@@ -36,6 +36,15 @@ export class Sensor implements ISensor {
   lastPinged: Date;
   deviceType: deviceType;
 
+  public toIMonitoringDevice(): IMonitoringDevice {
+    return {
+      id: this.id,
+      deviceType: this.deviceType,
+      status: this.status,
+      lastPinged: this.lastPinged,
+    };
+  }
+
   constructor(id: string, status: deviceStatus, lastPinged: Date) {
     this.id = id;
     this.status = status;
@@ -50,6 +59,35 @@ export class Gateway implements IGateway {
   lastPinged: Date;
   deviceType: deviceType;
   sensors: Sensor[];
+
+  public toIMonitoringDevice(): IMonitoringDevice {
+    return {
+      id: this.id,
+      deviceType: this.deviceType,
+      status: this.status,
+      lastPinged: this.lastPinged,
+    };
+  }
+
+  private getInactiveSensors() {
+    return this.sensors.filter((s) => {
+      return s.status === deviceStatus.disabled;
+    });
+  }
+
+  public getInactiveDevices(): IMonitoringDevice[] {
+    return this.getInactiveSensors().map((s) => {
+      return s.toIMonitoringDevice();
+    });
+  }
+
+  public containAnyInactiveSensors(): boolean {
+    return (
+      this.sensors.find((s) => {
+        return s.status === deviceStatus.disabled;
+      }) !== undefined
+    );
+  }
 
   constructor(
     id: string,
@@ -72,6 +110,55 @@ export class Bridge implements IBridge {
   deviceType: deviceType;
   gateways: Gateway[];
   sensors: Sensor[];
+
+  public toIMonitoringDevice(): IMonitoringDevice {
+    return {
+      id: this.id,
+      deviceType: this.deviceType,
+      status: this.status,
+      lastPinged: this.lastPinged,
+    };
+  }
+
+  private getInactiveGateways() {
+    return this.gateways.filter((g) => {
+      return g.status === deviceStatus.disabled;
+    });
+  }
+
+  private getInactiveSensors() {
+    return this.sensors.filter((s) => {
+      return s.status === deviceStatus.disabled;
+    });
+  }
+
+  public getInactiveDevices(): IMonitoringDevice[] {
+    const sensors: IMonitoringDevice[] = this.getInactiveSensors().map((s) => {
+      return s.toIMonitoringDevice();
+    });
+    const gateways: IMonitoringDevice[] = this.getInactiveGateways().map(
+      (g) => {
+        return g.toIMonitoringDevice();
+      }
+    );
+    return Array.prototype.concat(sensors, gateways);
+  }
+
+  public containAnyInactiveSensors(): boolean {
+    return (
+      this.sensors.find((s) => {
+        return s.status === deviceStatus.disabled;
+      }) !== undefined
+    );
+  }
+
+  public containAnyInactiveGateway(): boolean {
+    return (
+      this.gateways.find((g) => {
+        return g.status === deviceStatus.disabled;
+      }) !== undefined
+    );
+  }
 
   constructor(
     id: string,
@@ -252,6 +339,31 @@ export class DeviceModel implements IDeviceModel {
 
   public getBridgesArray = () => {
     return this.bridges;
+  };
+
+  public getInactiveDevicesArray = (): IMonitoringDevice[] => {
+    const devices: IMonitoringDevice[] = [];
+    this.bridges.forEach((b) => {
+      b.gateways.forEach((g) => {
+        devices.push(...g.getInactiveDevices());
+      });
+      devices.push(...b.getInactiveDevices());
+      if (b.status !== deviceStatus.active) {
+        devices.push(b.toIMonitoringDevice());
+      }
+    });
+    this.gateways.forEach((g) => {
+      devices.push(...g.getInactiveDevices());
+      if (g.status !== deviceStatus.active) {
+        devices.push(g.toIMonitoringDevice());
+      }
+    });
+    this.sensors.forEach((s) => {
+      if (s.status !== deviceStatus.active) {
+        devices.push(s.toIMonitoringDevice());
+      }
+    });
+    return devices;
   };
 
   public static getPlaceholderDevice = (): IMonitoringDevice => {

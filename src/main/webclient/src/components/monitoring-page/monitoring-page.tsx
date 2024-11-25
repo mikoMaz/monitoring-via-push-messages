@@ -17,7 +17,13 @@ enum viewOption {
   sensors,
 }
 
-export const MonitoringPage = (model: DeviceModel) => {
+interface IMonitoringPage {
+  model: DeviceModel,
+  setInactiveSwitchEnabled: (value: boolean) => void,
+  inactiveSwitchEnabled: boolean
+}
+
+export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchEnabled}: IMonitoringPage) => {
   const ui = UIProps;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -68,13 +74,13 @@ export const MonitoringPage = (model: DeviceModel) => {
   const renderSelectedView = () => {
     switch (selectedViewOption) {
       case viewOption.allDevices:
-        return <AllDevicesView model={model} />;
+        return <AllDevicesView model={model} inactiveOnly={inactiveSwitchEnabled}/>;
       case viewOption.sensors:
-        return <SingleDeviceView model={model.getSensorsArray()} />;
+        return <SingleDeviceView model={model.getSensorsArray()} inactiveOnly={inactiveSwitchEnabled}/>;
       case viewOption.gateways:
-        return <SingleDeviceView model={model.getGatewaysArray()} />;
+        return <SingleDeviceView model={model.getGatewaysArray()} inactiveOnly={inactiveSwitchEnabled}/>;
       case viewOption.bridges:
-        return <SingleDeviceView model={model.getBridgesArray()} />;
+        return <SingleDeviceView model={model.getBridgesArray()} inactiveOnly={inactiveSwitchEnabled}/>;
     }
   };
 
@@ -116,16 +122,20 @@ export const MonitoringPage = (model: DeviceModel) => {
           marginTop="28px"
           marginBottom="28px"
         >
-          <Grid templateColumns="repeat(10, 1fr)">
-            <GridItem colSpan={5}> 
+          <Grid templateColumns="repeat(12, 1fr)">
+            <GridItem colSpan={5}>
               <ViewTypeSelectionTabs
                 index={selectedViewOption}
                 onSelectionChanged={onSelectedViewChanged}
               />
             </GridItem>
-            <GridItem colStart={8} colEnd={11}>
+            <GridItem colStart={8} colEnd={13}>
               <FilterSectionButtons
                 setFilterEnabled={setFilteringSectionEnabled}
+                inactiveSwitchEnabled={inactiveSwitchEnabled}
+                inactiveDevicesSwitched={() => {
+                  setInactiveSwitchEnabled(!inactiveSwitchEnabled);
+                }}
               />
             </GridItem>
           </Grid>

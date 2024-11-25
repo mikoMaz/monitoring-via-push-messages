@@ -4,7 +4,7 @@ services:
   front-end:
     build: ./src/main/webclient
     ports:
-      - 2137:2137
+      - 3000:3000
 
 
   timescaledb2:

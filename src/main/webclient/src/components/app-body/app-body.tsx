@@ -16,7 +16,7 @@ export const AppBody = ({ ...props }: IAppProps) => {
       background="background"
     >
       <GridItem area={"header"}>
-        <Navbar />
+        <Navbar {...props} />
       </GridItem>
       <GridItem area={"main"}>
         <Suspense fallback={<div>Loading...</div>}>
