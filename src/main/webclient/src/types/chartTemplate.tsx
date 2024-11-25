@@ -3,6 +3,7 @@ import {
   Button,
   Center,
   HStack,
+  IconButton,
   TabPanel,
   Tooltip,
   VStack,
@@ -13,6 +14,7 @@ import { useState } from "react";
 import { DeviceModel, IDeviceModel } from "./deviceModel";
 import { NewCustomChartCreator } from "../components/dashboard-page/components/new-custom-chart-creator";
 import { FileSaver } from "./fileSaver";
+import { Delete } from "@mui/icons-material";
 
 export enum chartType {
   EmptyPreset,
@@ -46,7 +48,6 @@ export interface IChartTemplate {
   name: string;
   type: chartType;
   chartModel: IChartTemplateModel;
-  // brushActive: boolean;
 }
 
 export class ChartTemplate implements IChartTemplate {
@@ -100,9 +101,14 @@ export class ChartTemplate implements IChartTemplate {
 interface IChartTabPanel {
   template: ChartTemplate;
   editFunction: (editedTemplate: ChartTemplate) => void;
+  deleteFunction: () => void;
 }
 
-export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
+export const ChartTabPanel = ({
+  template,
+  editFunction,
+  deleteFunction,
+}: IChartTabPanel) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEditToggle = () => {
@@ -147,12 +153,20 @@ export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
               {isEditing ? "Back to View" : "Edit"}
             </Button>
             <Tooltip
-              label="Export data od the chart to JSON"
+              label="Export data of the chart to JSON"
               aria-label="Export tooltip"
             >
               <Button onClick={handleExport} colorScheme="green">
                 Export
               </Button>
+            </Tooltip>
+            <Tooltip label="Delete preset" aria-label="Delete tooltip">
+              <IconButton
+                icon={<Delete />}
+                colorScheme="red"
+                aria-label="Delete preset"
+                onClick={deleteFunction}
+              />
             </Tooltip>
           </HStack>
         </Box>

@@ -136,6 +136,25 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     }
   };
 
+  const handleDeletePreset = (id: number) => {
+    if (window.confirm("Are you sure you want to delete this preset?")) {
+      const updatedPresets = chartPresets.filter((preset) => preset.id !== id);
+      setChartPresets(updatedPresets);
+      if (updatedPresets.length > 0) {
+        LocalStorageManager.savePresetsToLocalStorage(
+          localStorageKey,
+          updatedPresets,
+          model
+        );
+      } else {
+        LocalStorageManager.clearLocalStorageEntry(localStorageKey);
+      }
+      if (selectedTemplateIndex >= updatedPresets.length) {
+        setSelectedTemplateIndex(0);
+      }
+    }
+  };
+
   const TabListElements = () => {
     return (
       <TabList>
@@ -157,8 +176,10 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
           if (preset.type !== chartType.EmptyPreset) {
             return (
               <ChartTabPanel
+                key={preset.id}
                 template={preset}
                 editFunction={handlePresetChanged}
+                deleteFunction={() => handleDeletePreset(preset.id)}
               />
             );
           } else {
@@ -167,7 +188,6 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
                 <NewCustomChartCreator
                   template={newChartTemplate}
                   editFunction={handlePresetChanged}
-                  // saveFunction={saveChartPresets}
                 />
               </TabPanel>
             );
