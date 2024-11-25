@@ -15,6 +15,7 @@ import {
   HStack,
   FormControl,
   FormLabel,
+  DrawerFooter,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -52,10 +53,7 @@ export const UserSidebar = ({
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <HStack>
-              <>{user?.mail ?? user?.nickname ?? user?.name}</>
-              <Button onClick={() => logout()}>Logout</Button>
-            </HStack>
+            <>{user?.mail ?? user?.nickname ?? user?.name}</>
           </DrawerHeader>
 
           <DrawerBody>
@@ -87,6 +85,9 @@ export const UserSidebar = ({
               </GridItem>
             </Grid>
           </DrawerBody>
+          <DrawerFooter>
+            <Button onClick={() => logout()}>Logout</Button>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>
