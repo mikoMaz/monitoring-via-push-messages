@@ -38,6 +38,7 @@ export interface IChartTemplateModel {
   devicesHistoryValues: number[]; //devices percent values of active time history
   model: IDeviceModel;
   percentFragmentation: number; //fragmentation of data into chunks by % points
+  isBrushActive: boolean;
 }
 
 export interface IChartTemplate {
@@ -161,5 +162,6 @@ export const getEmptyPreset = (model: DeviceModel, uptimeValues: number[]) => {
     model: model,
     devicesHistoryValues: uptimeValues,
     percentFragmentation: 0.5,
+    isBrushActive: false
   });
 };

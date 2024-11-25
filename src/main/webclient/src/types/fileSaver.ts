@@ -42,6 +42,7 @@ export class FileSaver {
           chartModel: {
             devicesHistoryValues: temp.chartModel.devicesHistoryValues,
             percentFragmentation: temp.chartModel.percentFragmentation,
+            isBrushActive: temp.chartModel.isBrushActive,
             model: {
               bridges: [],
               gateways: [],
@@ -63,6 +64,7 @@ export class FileSaver {
         devicesHistoryValues: temp.chartModel.devicesHistoryValues,
         model: json.model,
         percentFragmentation: temp.chartModel.percentFragmentation,
+        isBrushActive: temp.chartModel.isBrushActive,
       });
       template.id = temp.id;
       return template;

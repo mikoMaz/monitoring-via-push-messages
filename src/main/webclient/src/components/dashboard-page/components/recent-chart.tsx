@@ -59,6 +59,7 @@ const CustomTooltip = ({
 export const RecentChart = ({
   devicesHistoryValues,
   percentFragmentation,
+  isBrushActive,  // Accept the prop
 }: IChartTemplateModel) => {
   const chartData = getDensityRecentChart(
     devicesHistoryValues,
@@ -102,7 +103,9 @@ export const RecentChart = ({
           <CartesianGrid strokeDasharray="1 1" />
           <YAxis dataKey="number" />
           <XAxis dataKey="name" />
-          <Brush dataKey="max" height={30} stroke={UIProps.colors.primary} />
+          {isBrushActive && (
+            <Brush dataKey="max" height={30} stroke={UIProps.colors.primary} />
+          )}
           <Bar dataKey="number" barSize={40} fill={UIProps.colors.secondary} />
           <Tooltip
             content={<CustomTooltip />}

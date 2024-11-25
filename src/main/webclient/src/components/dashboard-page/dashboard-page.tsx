@@ -1,4 +1,4 @@
-import { Box, Center, Grid, GridItem, localStorageManager } from "@chakra-ui/react";
+import { Box, Center, Grid, GridItem } from "@chakra-ui/react";
 import { DeviceModel } from "../../types/deviceModel";
 import { UIProps } from "../../config/config";
 import { useState } from "react";
@@ -7,7 +7,6 @@ import { RecentChart } from "./components/recent-chart";
 import { CurrentChart } from "./components/current-chart";
 import { ChartCreator } from "./components/chart-creator";
 import { IChartTemplateModel } from "../../types/chartTemplate";
-import { LocalStorageManager } from "../../types/fileSaver";
 
 enum viewOption {
   current,
@@ -29,6 +28,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
     devicesHistoryValues: devicesUptime,
     model: model,
     percentFragmentation: 0.5,
+    isBrushActive: false
   };
 
   const onSelectedViewChanged = (index: number) => {
