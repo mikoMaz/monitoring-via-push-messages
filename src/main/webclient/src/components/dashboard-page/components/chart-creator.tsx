@@ -151,7 +151,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
 
   const handleExportClick = () => {
     FileSaver.saveChartPresetsToJson(chartPresets, model);
-  }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -227,42 +227,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   };
 
   return (
-    <Grid
-    //   templateAreas={`"nav header"
-    //     "nav main"`}
-    //   gridTemplateRows={"200px 1fr"}
-    //   gridTemplateColumns={"120px 1fr"}
-    //   h="1000px"
-    //   gap="1"
-    //   color="blackAlpha.700"
-    //   fontWeight="bold"
-    >
-      {/* <GridItem pl="2" bg="pink.300" area={"nav"}>
-        <Button
-          leftIcon={<Add />}
-          colorScheme="green"
-          variant="solid"
-          size="md"
-          marginBottom="20px"
-          onClick={createNewPreset}
-        >
-          New
-        </Button>
-        {/* <Tabs orientation="vertical" colorScheme="green">
-          <TabListElements />
-          <TabPanelsElements />
-        </Tabs> */}
-      {/* </GridItem>
-      <GridItem pl="2" bg="orange.300" area={"header"}>
-        {" "}
-        <NewCustomChartCreator
-          template={newChartTemplate}
-          editFunction={handlePresetChanged}
-        />
-      </GridItem>
-      <GridItem pl="2" bg="green.300" area={"main"}>
-        Main
-      </GridItem> */}
+    <Grid>
       <GridItem marginBottom="20px">
         <VStack align="stretch" spacing={4}>
           <HStack spacing={2}>
