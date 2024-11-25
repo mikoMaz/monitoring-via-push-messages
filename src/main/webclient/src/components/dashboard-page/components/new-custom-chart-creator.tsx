@@ -22,6 +22,7 @@ import {
   ChartTemplate,
   chartType,
   chartTypeFromString,
+  chartTypeToString,
 } from "../../../types/chartTemplate";
 import { returnDeviceTypesArray } from "../../../types/deviceModel";
 
@@ -35,28 +36,24 @@ export const NewCustomChartCreator = ({
   editFunction,
 }: INewCustomChartCreator) => {
   const [percentFragmentationVariable, setPercentFragmentationVariable] =
-    useState<string>("0.5");
+    useState<string>(template.chartModel.percentFragmentation.toString());
   const [templateName, setTemplateName] = useState<string>(template.name);
-  const [selectedType, setSelectedType] = useState<chartType>(
-    template.type ?? chartType.EmptyPreset
-  );
+  const [selectedType, setSelectedType] = useState<chartType>(template.type);
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
     returnDeviceTypesArray().map((t) => false)
   );
-  const [isBrushActive, setIsBrushActive] = useState<boolean>(false);
-  
+  const [isBrushActive, setIsBrushActive] = useState<boolean>(
+    template.chartModel.brushActive
+  );
+
   const handleSave = () => {
     template.name = templateName;
     template.type = selectedType;
     template.chartModel.percentFragmentation = parseFloat(
       percentFragmentationVariable
     );
+    template.chartModel.brushActive = isBrushActive;
     editFunction(template);
-  };
-
-  const variableChanged = (v: string) => {
-    setPercentFragmentationVariable(v);
-    template.chartModel.percentFragmentation = parseFloat(v);
   };
 
   const drawEditPresetNumberInputs = () => {
@@ -72,7 +69,9 @@ export const NewCustomChartCreator = ({
             clampValueOnBlur={false}
             maxW={20}
             value={percentFragmentationVariable}
-            onChange={(valueString) => variableChanged(valueString)}
+            onChange={(valueString) =>
+              setPercentFragmentationVariable(valueString)
+            }
           >
             <NumberInputField />
             <NumberInputStepper>
@@ -113,7 +112,7 @@ export const NewCustomChartCreator = ({
               colorScheme="primary"
               id="active-brush"
               isChecked={isBrushActive}
-              onChange={(e) => setIsBrushActive(e.target.checked)} // Update the state
+              onChange={(e) => setIsBrushActive(e.target.checked)}
             />
           </Flex>
         </HStack>
@@ -127,7 +126,14 @@ export const NewCustomChartCreator = ({
     };
 
     return (
-      <Select placeholder="Select type of the chart" onChange={handleChange}>
+      <Select
+        placeholder={
+          template.type === chartType.EmptyPreset
+            ? "Select type of the chart"
+            : chartTypeToString(template.type)
+        }
+        onChange={handleChange}
+      >
         {Object.values(chartType)
           .filter((type): type is string => typeof type === "string")
           .map((type) => (

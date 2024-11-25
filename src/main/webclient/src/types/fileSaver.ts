@@ -12,18 +12,27 @@ export interface chartTemplateJsonObject {
 }
 
 export class FileSaver {
-  public static saveChartPresetsToJson(templates: ChartTemplate[], model: IDeviceModel) {
-    const presetsJSON = JSON.stringify(FileSaver.parsePresetsToJson(templates, model))
+  public static saveChartPresetsToJson(
+    templates: ChartTemplate[],
+    model: IDeviceModel
+  ) {
+    const presetsJSON = JSON.stringify(
+      FileSaver.parsePresetsToJson(templates, model)
+    );
     const blob = new Blob([presetsJSON], { type: "application/json" });
     saveAs(blob, "chartPresets.json");
   }
 
-  public static saveSingleChartPresetToJson(preset: ChartTemplate, model: IDeviceModel) {
-    const singlePresetJSON = JSON.stringify(FileSaver.parsePresetsToJson([preset], model)); // Przekazujemy pojedynczy preset w tablicy
+  public static saveSingleChartPresetToJson(
+    preset: ChartTemplate,
+    model: IDeviceModel
+  ) {
+    const singlePresetJSON = JSON.stringify(
+      FileSaver.parsePresetsToJson([preset], model)
+    ); // Przekazujemy pojedynczy preset w tablicy
     const blob = new Blob([singlePresetJSON], { type: "application/json" });
-    saveAs(blob, `${preset.name || "chartPreset"}.json`); 
+    saveAs(blob, `${preset.name || "chartPreset"}.json`);
   }
-  
 
   public static parsePresetsToJson(
     chartTemplates: ChartTemplate[],
@@ -42,7 +51,7 @@ export class FileSaver {
           chartModel: {
             devicesHistoryValues: temp.chartModel.devicesHistoryValues,
             percentFragmentation: temp.chartModel.percentFragmentation,
-            isBrushActive: temp.chartModel.isBrushActive,
+            brushActive: temp.chartModel.brushActive,
             model: {
               bridges: [],
               gateways: [],
@@ -64,7 +73,7 @@ export class FileSaver {
         devicesHistoryValues: temp.chartModel.devicesHistoryValues,
         model: json.model,
         percentFragmentation: temp.chartModel.percentFragmentation,
-        isBrushActive: temp.chartModel.isBrushActive,
+        brushActive: temp.chartModel.brushActive,
       });
       template.id = temp.id;
       return template;
@@ -97,11 +106,11 @@ export class LocalStorageManager {
     );
   }
 
-  public static saveJsonToLocalStorage(key: localStorageKey, json: chartTemplateJsonObject) {
-    localStorage.setItem(
-      key,
-      JSON.stringify(json)
-    );
+  public static saveJsonToLocalStorage(
+    key: localStorageKey,
+    json: chartTemplateJsonObject
+  ) {
+    localStorage.setItem(key, JSON.stringify(json));
   }
 
   public static clearLocalStorageEntry(key: localStorageKey) {

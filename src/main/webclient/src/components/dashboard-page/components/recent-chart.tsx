@@ -59,7 +59,7 @@ const CustomTooltip = ({
 export const RecentChart = ({
   devicesHistoryValues,
   percentFragmentation,
-  isBrushActive,  // Accept the prop
+  brushActive,
 }: IChartTemplateModel) => {
   const chartData = getDensityRecentChart(
     devicesHistoryValues,
@@ -72,10 +72,14 @@ export const RecentChart = ({
       device.minPercentActivityRangePoint = 0;
     }
     if (!Number.isInteger(device.minPercentActivityRangePoint)) {
-      device.minPercentActivityRangePoint = parseFloat(device.minPercentActivityRangePoint.toFixed(2))
+      device.minPercentActivityRangePoint = parseFloat(
+        device.minPercentActivityRangePoint.toFixed(2)
+      );
     }
     if (!Number.isInteger(device.maxPercentActivityRangePoint)) {
-      device.maxPercentActivityRangePoint = parseFloat(device.maxPercentActivityRangePoint.toFixed(2))
+      device.maxPercentActivityRangePoint = parseFloat(
+        device.maxPercentActivityRangePoint.toFixed(2)
+      );
     }
 
     return {
@@ -87,6 +91,7 @@ export const RecentChart = ({
   });
 
   if (devicesHistoryValues.length) {
+    console.log(brushActive);
     return (
       <Box>
         <BarChart
@@ -103,7 +108,7 @@ export const RecentChart = ({
           <CartesianGrid strokeDasharray="1 1" />
           <YAxis dataKey="number" />
           <XAxis dataKey="name" />
-          {isBrushActive && (
+          {brushActive && (
             <Brush dataKey="max" height={30} stroke={UIProps.colors.primary} />
           )}
           <Bar dataKey="number" barSize={40} fill={UIProps.colors.secondary} />

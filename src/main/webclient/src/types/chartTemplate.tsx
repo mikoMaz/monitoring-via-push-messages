@@ -38,7 +38,7 @@ export interface IChartTemplateModel {
   devicesHistoryValues: number[]; //devices percent values of active time history
   model: IDeviceModel;
   percentFragmentation: number; //fragmentation of data into chunks by % points
-  isBrushActive: boolean;
+  brushActive: boolean;
 }
 
 export interface IChartTemplate {
@@ -46,6 +46,7 @@ export interface IChartTemplate {
   name: string;
   type: chartType;
   chartModel: IChartTemplateModel;
+  // brushActive: boolean;
 }
 
 export class ChartTemplate implements IChartTemplate {
@@ -145,7 +146,10 @@ export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
             >
               {isEditing ? "Back to View" : "Edit"}
             </Button>
-            <Tooltip label="Export data od the chart to JSON" aria-label="Export tooltip">
+            <Tooltip
+              label="Export data od the chart to JSON"
+              aria-label="Export tooltip"
+            >
               <Button onClick={handleExport} colorScheme="green">
                 Export
               </Button>
@@ -162,6 +166,6 @@ export const getEmptyPreset = (model: DeviceModel, uptimeValues: number[]) => {
     model: model,
     devicesHistoryValues: uptimeValues,
     percentFragmentation: 0.5,
-    isBrushActive: false
+    brushActive: false,
   });
 };

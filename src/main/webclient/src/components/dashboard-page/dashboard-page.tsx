@@ -28,7 +28,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
     devicesHistoryValues: devicesUptime,
     model: model,
     percentFragmentation: 0.5,
-    isBrushActive: false
+    brushActive: false,
   };
 
   const onSelectedViewChanged = (index: number) => {

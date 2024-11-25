@@ -54,7 +54,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
     setChartPresets((prevPresets) => {
       const updatedPresets = [...prevPresets];
       const index = updatedPresets.findIndex(
-        (preset) => preset.name === newPreset.name
+        (preset) => preset.id === newPreset.id
       );
       if (index !== -1) {
         updatedPresets[index] = newPreset;
