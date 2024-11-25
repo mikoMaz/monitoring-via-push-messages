@@ -19,6 +19,13 @@ export class FileSaver {
     saveAs(blob, "chartPresets.json");
   }
 
+  public static saveSingleChartPresetToJson(preset: ChartTemplate, model: IDeviceModel) {
+    const singlePresetJSON = JSON.stringify(FileSaver.parsePresetsToJson([preset], model)); // Przekazujemy pojedynczy preset w tablicy
+    const blob = new Blob([singlePresetJSON], { type: "application/json" });
+    saveAs(blob, `${preset.name || "chartPreset"}.json`); 
+  }
+  
+
   public static parsePresetsToJson(
     chartTemplates: ChartTemplate[],
     deviceModel: IDeviceModel

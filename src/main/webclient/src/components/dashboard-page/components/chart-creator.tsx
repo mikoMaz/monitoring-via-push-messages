@@ -4,6 +4,7 @@ import {
   Grid,
   GridItem,
   HStack,
+  IconButton,
   Tab,
   TabList,
   TabPanel,
@@ -20,7 +21,7 @@ import {
   chartType,
   getEmptyPreset,
 } from "../../../types/chartTemplate";
-import { InfoOutlined } from "@mui/icons-material";
+import { Download, InfoOutlined, Upgrade, Upload } from "@mui/icons-material";
 import { NewCustomChartCreator } from "./new-custom-chart-creator";
 import { UIProps } from "../../../config/config";
 import {
@@ -106,7 +107,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
         updatedPresets,
         model
       );
-      FileSaver.saveChartPresetsToJson(updatedPresets, model);
+      FileSaver.saveSingleChartPresetToJson(newPreset, model);
       console.log(updatedPresets);
       return updatedPresets;
     });
@@ -147,6 +148,10 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   const handleImportClick = () => {
     fileInputRef.current?.click();
   };
+
+  const handleExportClick = () => {
+    FileSaver.saveChartPresetsToJson(chartPresets, model);
+  }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -259,9 +264,9 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
         Main
       </GridItem> */}
       <GridItem marginBottom="20px">
-        <VStack align="stretch">
-          <HStack>
-            <Button colorScheme="green" onClick={createNewPreset}>
+        <VStack align="stretch" spacing={4}>
+          <HStack spacing={2}>
+            <Button colorScheme="green" onClick={createNewPreset} width="100px">
               New
             </Button>
             <Flex alignItems="center" justifyContent="flex-start" height="100%">
@@ -275,17 +280,34 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
               </Tooltip>
             </Flex>
           </HStack>
-          <HStack>
-            <Button colorScheme="primary" onClick={handleImportClick}>
-              Import
-            </Button>
-            <input
-              type="file"
-              accept=".json"
-              ref={fileInputRef}
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-            />
+          <HStack spacing={2}>
+            <Flex width="100px" justifyContent="space-between" gap={2}>
+              <Tooltip label="Import" aria-label="Import tooltip">
+                <IconButton
+                  icon={<Upload />}
+                  colorScheme="primary"
+                  onClick={handleImportClick}
+                  aria-label="Import"
+                  flex="1"
+                />
+              </Tooltip>
+              <input
+                type="file"
+                accept=".json"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+              <Tooltip label="Export All" aria-label="Export tooltip">
+                <IconButton
+                  icon={<Download />}
+                  colorScheme="primary"
+                  onClick={handleExportClick}
+                  aria-label="Export All"
+                  flex="1"
+                />
+              </Tooltip>
+            </Flex>
           </HStack>
         </VStack>
       </GridItem>
