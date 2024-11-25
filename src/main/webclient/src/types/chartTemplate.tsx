@@ -116,44 +116,41 @@ export const ChartTabPanel = ({ template, editFunction }: IChartTabPanel) => {
 
   return (
     <TabPanel>
-  <VStack spacing={4} align="start" w="100%">
-    {/* Kontener dla wykresu */}
-    <Box w="100%">
-      {/* Wyświetlanie wykresu */}
-      {isEditing ? (
-        <NewCustomChartCreator
-          template={template}
-          editFunction={editFunction}
-        />
-      ) : (
-        <Center>
-          {template.chartModel.percentFragmentation > 0.001 ? (
-            template.drawChart()
+      <VStack spacing={4} align="start" w="100%">
+        <Box w="100%">
+          {isEditing ? (
+            <NewCustomChartCreator
+              template={template}
+              editFunction={editFunction}
+            />
           ) : (
-            <p>
-              We can't show you the chart, if you put "0" or nothing into the
-              input section. Please write a number between 0.001 and 100.
-            </p>
+            <Center>
+              {template.chartModel.percentFragmentation > 0.001 ? (
+                template.drawChart()
+              ) : (
+                <p>
+                  We can't show you the chart, if you put "0" or nothing into
+                  the input section. Please write a number between 0.001 and
+                  100.
+                </p>
+              )}
+            </Center>
           )}
-        </Center>
-      )}
-    </Box>
+        </Box>
 
-    {/* Przycisk poniżej wykresu */}
-    <Box position="relative" w="100%">
-      <Button
-        onClick={handleEditToggle}
-        colorScheme="primary"
-        position="absolute"
-        right={0}  // Przyciśnij przycisk do prawej strony
-        bottom={-10} // Ustala odległość poniżej wykresu
-      >
-        {isEditing ? "Back to View" : "Edit"}
-      </Button>
-    </Box>
-  </VStack>
-</TabPanel>
-
+        <Box position="relative" w="100%">
+          <Button
+            onClick={handleEditToggle}
+            colorScheme="primary"
+            position="absolute"
+            right={0}
+            bottom={-10}
+          >
+            {isEditing ? "Back to View" : "Edit"}
+          </Button>
+        </Box>
+      </VStack>
+    </TabPanel>
   );
 };
 
