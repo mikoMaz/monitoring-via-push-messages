@@ -23,18 +23,17 @@
     chartType,
     chartTypeFromString,
   } from "../../../types/chartTemplate";
-  import { deviceType, returnDeviceTypesArray } from "../../../types/deviceModel";
+  import { returnDeviceTypesArray } from "../../../types/deviceModel";
 
   interface INewCustomChartCreator {
     template: ChartTemplate;
     editFunction: (editedTemplate: ChartTemplate) => void;
-    // saveFunction: () => void;
   }
 
   export const NewCustomChartCreator = ({
     template,
     editFunction,
-  }: // saveFunction,
+  }: 
   INewCustomChartCreator) => {
     const [percentFragmentationVariable, setPercentFragmentationVariable] =
       useState<string>("0.5");
@@ -53,7 +52,6 @@
         percentFragmentationVariable
       );
       editFunction(template);
-      // saveFunction();
     };
 
     const variableChanged = (v: string) => {
@@ -119,9 +117,6 @@
 
     const drawEditSelectChartType = () => {
       const handleChange = (event: any) => {
-        // const value =
-        //   chartType[event.target.value as keyof typeof chartType] ??
-        //   chartType.EmptyPreset;
         setSelectedType(chartTypeFromString(event.target.value.toString()));
       };
 

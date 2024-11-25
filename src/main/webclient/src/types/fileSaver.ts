@@ -1,7 +1,6 @@
 import saveAs from "file-saver";
 import {
   ChartTemplate,
-  chartType,
   chartTypeFromString,
   IChartTemplate,
 } from "./chartTemplate";

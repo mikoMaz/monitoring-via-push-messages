@@ -2,17 +2,7 @@ import {
   Box,
   Button,
   Center,
-  Flex,
-  Grid,
-  GridItem,
   HStack,
-  Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Switch,
   TabPanel,
   Tooltip,
   VStack,
@@ -23,7 +13,6 @@ import { useState } from "react";
 import { DeviceModel, IDeviceModel } from "./deviceModel";
 import { NewCustomChartCreator } from "../components/dashboard-page/components/new-custom-chart-creator";
 import { FileSaver } from "./fileSaver";
-import saveAs from "file-saver";
 
 export enum chartType {
   EmptyPreset,
