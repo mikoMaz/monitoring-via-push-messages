@@ -137,7 +137,7 @@ export default function App() {
       console.log(jwtDecode(token));
 
       // await APIClient.getUserInfo(token);
-      setAccessToken(await getAccessTokenSilently());
+      setAccessToken(token);
       return token;
     } catch (e: any) {
       console.error("getAccessToken error: " + e.message);
@@ -149,7 +149,7 @@ export default function App() {
     try {
       const data = await APIClient.getAllDevicesHistory(
         "1",
-        accessToken,
+        token,
         email
       );
       setDevicesUptimeValues(data);
