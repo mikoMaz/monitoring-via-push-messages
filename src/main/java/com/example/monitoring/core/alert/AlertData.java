@@ -26,7 +26,12 @@ public class AlertData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
+    private String emailAdress;
     private Integer company_id;
+    private Integer frequency; 
+    private Integer duration;
+    private Integer delay; 
+    private Boolean ignore;
     @JsonIgnore
     @ManyToMany
     @JoinTable(

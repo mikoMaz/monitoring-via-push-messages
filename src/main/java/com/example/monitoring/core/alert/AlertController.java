@@ -39,11 +39,11 @@ public class AlertController {
             
     ){
         JsonObject payloadJson=JsonParser.parseString(payload).getAsJsonObject();
-        JsonObject alertJson=payloadJson.getAsJsonObject("details");
+        JsonObject detailsJson=payloadJson.getAsJsonObject("details");
         JsonArray ignoredDevices=payloadJson.getAsJsonArray("ignored_devices");
         JsonArray observedDevices=payloadJson.getAsJsonArray("observed_devices");
 
-        AlertData alertObject=alertService.buildObject(alertJson.toString());
+        AlertData alertObject=alertService.buildObject(detailsJson.toString());
         List<DeviceStatus>ignoredDevicesStatus = new ArrayList<>();
         for (JsonElement deviceId : ignoredDevices){
             String id=deviceId.getAsString();

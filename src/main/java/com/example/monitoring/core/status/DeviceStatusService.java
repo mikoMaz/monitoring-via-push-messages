@@ -16,6 +16,8 @@ public interface DeviceStatusService {
 
     Integer getCalculatedStatus(String Id);
     Integer getCalculatedStatus(DeviceStatus deviceStatus);
+    Integer getCalculatedStatus(String Id,Long compareTime);
+
     DeviceStatus getDeviceStatus(String Id);
    
 

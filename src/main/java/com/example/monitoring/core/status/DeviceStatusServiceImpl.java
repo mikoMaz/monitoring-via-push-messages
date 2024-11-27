@@ -21,13 +21,25 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         public void saveToDatabase(DeviceStatus deviceStatus){
                 repository.save(deviceStatus);
         }
+        public Integer getCalculatedStatus(String Id,Long compareTime)
+        {
 
+                DeviceStatus ds=repository.getObjectById(Id);
+                if(ds==null)
+                return 0;
+                Long time=ds.getLogged_at();
+
+                if(compareTime-time<maxTimeout){
+                        return 1;
+                }
+                else return 0;
+        }
         public Integer getCalculatedStatus(String Id)
         {
 
                 DeviceStatus ds=repository.getObjectById(Id);
                 if(ds==null)
-                return null;
+                return 0;
                 Long time=ds.getLogged_at();
                 Long unixTime = System.currentTimeMillis() / 1000L;
 
