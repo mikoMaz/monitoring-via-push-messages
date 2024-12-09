@@ -163,21 +163,21 @@ public class WebWriteController {
         for (String topLevelDeviceId : toplevelDevices) {
             Double topLevelStatus = historyService.uptimePercent(topLevelDeviceId);
             if (topLevelStatus != null) {
-                deviceTypeMap.get("2").add(new JsonPrimitive(String.valueOf(topLevelStatus)));
+                deviceTypeMap.get("2").add(new JsonPrimitive(topLevelStatus));
 
                 List<String> midList = dataHolderService.getAllChildrenForGivenDeviceId(topLevelDeviceId);
                 if (midList != null) {
                     for (String midLevelId : midList) {
                         Double midLevelStatus = historyService.uptimePercent(midLevelId);
                         if (midLevelStatus != null) {
-                            deviceTypeMap.get("1").add(new JsonPrimitive(String.valueOf(midLevelStatus)));
+                            deviceTypeMap.get("1").add(new JsonPrimitive(midLevelStatus));
 
                             List<String> bottomList = dataHolderService.getAllChildrenForGivenDeviceId(midLevelId);
                             if (bottomList != null) {
                                 for (String bottomLevelId : bottomList) {
                                     Double bottomLevelStatus = historyService.uptimePercent(bottomLevelId);
                                     if (bottomLevelStatus != null) {
-                                        deviceTypeMap.get("0").add(new JsonPrimitive(String.valueOf(bottomLevelStatus)));
+                                        deviceTypeMap.get("0").add(new JsonPrimitive(bottomLevelStatus));
                                     }
                                 }
                             }
