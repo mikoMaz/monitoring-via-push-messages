@@ -84,21 +84,18 @@ export class APIClient {
 
   public static getAllDevicesHistory = async (
     id: string
-  ): Promise<number[]> => {
+  ): Promise<AllDevicesUptimeJson> => {
     const apiUrl = `http://localhost:8080/api/v1/historyTree?id=${id}`;
     return axios
       .get(apiUrl)
       .then((response) => {
         const data: AllDevicesUptimeJson = response.data;
-        const sensors = data[0];
-        const gateways = data[1];
-        const bridges = data[2];
-        return [...(sensors ?? []), ...(gateways ?? []), ...(bridges ?? [])];
+        return data;
       })
       .catch(function (error) {
         console.log("error");
         console.error(error);
-        return [];
+        return {};
       });
   };
 

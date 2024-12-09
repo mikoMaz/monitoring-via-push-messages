@@ -9,7 +9,11 @@ import { AboutPage } from "./components/about-page/about-page";
 import { LandingPage } from "./components/landing-page/landing-page";
 import { NotFoundPage } from "./components/not-found-page/not-found-page";
 import { IAppProps } from "./types/projectTypes";
-import { DeviceModel, IMonitoringDevice } from "./types/deviceModel";
+import {
+  AllDevicesUptimeJson,
+  DeviceModel,
+  IMonitoringDevice,
+} from "./types/deviceModel";
 import { UIProps } from "./config/config";
 import { APIClient } from "./api/api-client";
 import { MonitoringDevicePage } from "./components/monitoring-device-page/monitoring-device-page";
@@ -25,7 +29,8 @@ export default function App() {
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
   );
-  const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
+  const [devicesUptimeValues, setDevicesUptimeValues] =
+    useState<AllDevicesUptimeJson>({});
 
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);
@@ -68,7 +73,9 @@ export default function App() {
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
     alertsEnabled: alertsEnabled,
-    setAlertsEnabled: (value: boolean) => {setAlertsEnabled(value)},
+    setAlertsEnabled: (value: boolean) => {
+      setAlertsEnabled(value);
+    },
   };
 
   const updateModel = async () => {

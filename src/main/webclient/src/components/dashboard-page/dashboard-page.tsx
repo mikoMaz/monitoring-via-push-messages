@@ -1,5 +1,5 @@
 import { Box, Center, Grid, GridItem } from "@chakra-ui/react";
-import { DeviceModel } from "../../types/deviceModel";
+import { AllDevicesUptimeJson, DeviceModel } from "../../types/deviceModel";
 import { UIProps } from "../../config/config";
 import { useState } from "react";
 import { ViewChartsTabs } from "./components/view-charts-tabs";
@@ -16,7 +16,7 @@ enum viewOption {
 
 interface IDashboardPage {
   model: DeviceModel;
-  devicesUptime: number[];
+  devicesUptime: AllDevicesUptimeJson;
 }
 
 export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
@@ -24,8 +24,14 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
     viewOption.current
   );
 
+  const historyValues = [
+    ...(devicesUptime[0] ?? []),
+    ...(devicesUptime[1] ?? []),
+    ...(devicesUptime[2] ?? []),
+  ];
+
   const chartModel: IChartTemplateModel = {
-    devicesHistoryValues: devicesUptime,
+    devicesHistoryValues: historyValues,
     model: model,
     percentFragmentation: 0.5,
     brushActive: false,
@@ -62,7 +68,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
           </Center>
         );
       case viewOption.custom:
-        return <ChartCreator model={model} devicesUptime={devicesUptime} />;
+        return <ChartCreator model={model} devicesUptime={historyValues} />;
     }
   };
 
