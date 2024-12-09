@@ -202,7 +202,7 @@ export type DeviceUptimeJson = {
 };
 
 export type AllDevicesUptimeJson = {
-  uptimes: number[];
+  [key in deviceType]?: number[];
 };
 
 export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
