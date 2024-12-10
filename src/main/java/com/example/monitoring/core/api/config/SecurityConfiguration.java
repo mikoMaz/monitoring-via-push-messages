@@ -2,12 +2,10 @@ package com.example.monitoring.core.api.config;
 
 import com.example.monitoring.core.user.Role;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,17 +13,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.stream.Collectors;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +29,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter authenticationFilter;
     private final UserAuthorizationFilter userAuthorizationFilter;
-//    private final AuthenticationProvider authenticationProvider;
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public FilterRegistrationBean registration(JwtAuthenticationFilter filter) {
@@ -71,29 +67,34 @@ public class SecurityConfiguration {
     @Order(2)
     public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .securityMatcher("/api/v1/user/**", "/api/v1/device/**")
-                .cors(AbstractHttpConfigurer::disable)  // TODO custom configuration
+//                .cors(AbstractHttpConfigurer::disable)  // TODO custom configuration
                 .csrf(AbstractHttpConfigurer::disable)  // TODO
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/api/v1/kluczdostepu").hasRole(Role.ADMIN.name())
+                        // TODO: add roles to rest of the paths
+                        .requestMatchers("/api/v1/kluczdostepu").hasRole(Role.ADMIN.name())
 //                        .requestMatchers("/api/v1/kluczdostepu").hasAuthority(Role.ADMIN.name())
 //                        .requestMatchers("/api/v1/kluczdostepu").hasAuthority("SCOPE_profile")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(withDefaults())
-                        // when using custom converter
-//                        .jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtAuthenticationConverter()))
-                )  // TODO audience check
-                .addFilterBefore(userAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtAuthenticationConverter()))
+                );  // TODO audience check
         return http.build();
     }
 
-//    private Converter<Jwt, AbstractAuthenticationToken> customJwtAuthenticationConverter() {
-//        return jwt -> {
-////            Collection<GrantedAuthority> authorities = Collections.emptyList();
-//            Collection<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-//            return new JwtAuthenticationToken(jwt, authorities);
-//        };
-//    }
+    private Converter<Jwt, AbstractAuthenticationToken> customJwtAuthenticationConverter() {
+            JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+            converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+                // TODO: extract email from claims when deployed
+//                String email = jwt.getClaimAsString("Email");
+//                String email = jwt.getClaims().toString();
+                String email = "test@test.pl";
+                UserDetails user = userDetailsService.loadUserByUsername(email);
+//                return new SimpleGrantedAuthority("ROLE_" + user.getAuthorities());
+                return user.getAuthorities().stream()
+                        .map(authority -> (GrantedAuthority) authority)
+                        .collect(Collectors.toList());
+            });
+        return converter;
+    }
 }
