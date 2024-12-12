@@ -7,10 +7,12 @@ import { RecentChart } from "./components/recent-chart";
 import { CurrentChart } from "./components/current-chart";
 import { ChartCreator } from "./components/chart-creator";
 import { IChartTemplateModel } from "../../types/chartTemplate";
+import { HistoryChart } from "./components/history-chart";
 
 enum viewOption {
   current,
   recent,
+  recentHistory,
   custom,
 }
 
@@ -40,6 +42,9 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
         setSelectedViewOption(viewOption.recent);
         break;
       case 2:
+        setSelectedViewOption(viewOption.recentHistory);
+        break;
+      case 3:
         setSelectedViewOption(viewOption.custom);
         break;
       default:
@@ -61,6 +66,12 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
             <RecentChart {...chartModel} />
           </Center>
         );
+      case viewOption.recentHistory:
+        return (
+          <Center>
+            <HistoryChart />
+          </Center>
+        );
       case viewOption.custom:
         return <ChartCreator model={model} devicesUptime={devicesUptime} />;
     }
@@ -80,7 +91,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
           marginTop="10px"
           marginBottom="28px"
         ></GridItem>
-        <Grid templateColumns="3fr 7fr">
+        <Grid templateColumns="4fr 7fr">
           <GridItem marginBottom="30px">
             <ViewChartsTabs
               index={selectedViewOption}

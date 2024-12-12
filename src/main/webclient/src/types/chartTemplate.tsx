@@ -15,11 +15,13 @@ import { DeviceModel, IDeviceModel } from "./deviceModel";
 import { NewCustomChartCreator } from "../components/dashboard-page/components/new-custom-chart-creator";
 import { FileSaver } from "./fileSaver";
 import { Delete } from "@mui/icons-material";
+import { HistoryChart } from "../components/dashboard-page/components/history-chart";
 
 export enum chartType {
   EmptyPreset,
   Current,
   Recent,
+  History,
 }
 
 export const chartTypeToString = (type: chartType): string => {
@@ -83,6 +85,8 @@ export class ChartTemplate implements IChartTemplate {
         return <CurrentChart {...this.chartModel} />;
       case chartType.Recent:
         return <RecentChart {...this.chartModel} />;
+      case chartType.History:
+        return <HistoryChart />;
       default:
         return this.invalidChart();
     }
