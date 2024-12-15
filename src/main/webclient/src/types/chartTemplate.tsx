@@ -37,10 +37,13 @@ export const returnChartTypesArray = (): string[] => {
 };
 
 export interface IChartTemplateModel {
-  devicesHistoryValues: number[]; //devices percent values of active time history
-  model: IDeviceModel;
   percentFragmentation: number; //fragmentation of data into chunks by % points
   brushActive: boolean;
+}
+
+export interface IChartTemplateModelDrawing extends IChartTemplateModel {
+  devicesHistoryValues: number[];
+  model: IDeviceModel;
 }
 
 export interface IChartTemplate {
@@ -77,12 +80,24 @@ export class ChartTemplate implements IChartTemplate {
     return <>Data model is not present</>;
   }
 
-  public drawChart() {
+  public drawChart(model: IDeviceModel, uptimeValues: number[]) {
     switch (this.type) {
       case chartType.Current:
-        return <CurrentChart {...this.chartModel} />;
+        return (
+          <CurrentChart
+            model={model}
+            devicesHistoryValues={uptimeValues}
+            {...this.chartModel}
+          />
+        );
       case chartType.Recent:
-        return <RecentChart {...this.chartModel} />;
+        return (
+          <RecentChart
+            model={model}
+            devicesHistoryValues={uptimeValues}
+            {...this.chartModel}
+          />
+        );
       default:
         return this.invalidChart();
     }
@@ -102,12 +117,16 @@ interface IChartTabPanel {
   template: ChartTemplate;
   editFunction: (editedTemplate: ChartTemplate) => void;
   deleteFunction: () => void;
+  model: IDeviceModel;
+  uptimeValues: number[];
 }
 
 export const ChartTabPanel = ({
   template,
   editFunction,
   deleteFunction,
+  model,
+  uptimeValues,
 }: IChartTabPanel) => {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -116,7 +135,7 @@ export const ChartTabPanel = ({
   };
 
   const handleExport = () => {
-    FileSaver.saveSingleChartPresetToJson(template, template.chartModel.model);
+    FileSaver.saveSingleChartPresetToJson(template);
   };
 
   return (
@@ -131,7 +150,7 @@ export const ChartTabPanel = ({
           ) : (
             <Center>
               {template.chartModel.percentFragmentation > 0.001 ? (
-                template.drawChart()
+                template.drawChart(model, uptimeValues)
               ) : (
                 <p>
                   We can't show you the chart, if you put "0" or nothing into
@@ -177,8 +196,6 @@ export const ChartTabPanel = ({
 
 export const getEmptyPreset = (model: DeviceModel, uptimeValues: number[]) => {
   return new ChartTemplate("New", chartType.EmptyPreset, {
-    model: model,
-    devicesHistoryValues: uptimeValues,
     percentFragmentation: 0.5,
     brushActive: false,
   });

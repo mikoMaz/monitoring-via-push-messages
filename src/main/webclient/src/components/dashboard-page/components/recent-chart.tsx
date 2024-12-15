@@ -11,7 +11,7 @@ import {
 import { Box } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
 import { getDensityRecentChart } from "../util/density-devices-recent";
-import { IChartTemplateModel } from "../../../types/chartTemplate";
+import { IChartTemplateModel, IChartTemplateModelDrawing } from "../../../types/chartTemplate";
 
 interface CustomTooltipPayload {
   min: number;
@@ -60,7 +60,7 @@ export const RecentChart = ({
   devicesHistoryValues,
   percentFragmentation,
   brushActive,
-}: IChartTemplateModel) => {
+}: IChartTemplateModelDrawing) => {
   const chartData = getDensityRecentChart(
     devicesHistoryValues,
     percentFragmentation

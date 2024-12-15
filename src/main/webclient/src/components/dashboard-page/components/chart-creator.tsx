@@ -180,6 +180,8 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
                 template={preset}
                 editFunction={handlePresetChanged}
                 deleteFunction={() => handleDeletePreset(preset.id)}
+                model={model}
+                uptimeValues={devicesUptime}
               />
             );
           } else {
