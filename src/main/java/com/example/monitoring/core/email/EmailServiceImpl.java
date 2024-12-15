@@ -15,17 +15,24 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    final private EmailCreator emailCreator;
+
     @Value("${spring.mail.username}")
     private String sender;
 
-    public String sendMail(String recipient, String subject, String body) {
+    public EmailServiceImpl(EmailCreator emailCreator) {
+        this.emailCreator = emailCreator;
+    }
+
+    public String sendMail(Email email) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
 
             message.setFrom(sender);
-            message.setTo(recipient);
-            message.setSubject(subject);
-            message.setText(body);
+            message.setTo(email.getRecipient());
+            message.setSubject(email.getSubject());
+            message.setText(email.getBody());
 
             mailSender.send(message);
             return "Email sent successfully";
@@ -34,15 +41,17 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    public String sendHtmlMail(String recipient, String subject, String htmlBody) {
+    public String sendHtmlMail(Email email) {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper;
+
         try {
             messageHelper = new MimeMessageHelper(message, true);
             messageHelper.setFrom(sender);
-            messageHelper.setTo(recipient);
-            messageHelper.setSubject(subject);
-            messageHelper.setText(htmlBody, true);
+            messageHelper.setTo(email.getRecipient());
+            messageHelper.setSubject(email.getSubject());
+            messageHelper.setText(email.getBody(), true);
+
             mailSender.send(message);
             return "Email sent successfully";
         } catch (MessagingException e) {
