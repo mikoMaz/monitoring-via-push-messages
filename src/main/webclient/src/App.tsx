@@ -30,7 +30,11 @@ export default function App() {
     new DeviceModel()
   );
   const [devicesUptimeValues, setDevicesUptimeValues] =
-    useState<AllDevicesUptimeJson>({});
+    useState<AllDevicesUptimeJson>({
+      upperLevel: [],
+      middleLevel: [],
+      bottomLevel: [],
+    });
 
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);

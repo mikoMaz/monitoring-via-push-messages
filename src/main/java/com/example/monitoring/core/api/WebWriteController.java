@@ -143,9 +143,9 @@ public class WebWriteController {
     @GetMapping("/historyTree")
     public ResponseEntity<String> historyTree(@RequestParam String id) {
         Map<String, JsonArray> deviceTypeMap = new HashMap<>();
-        deviceTypeMap.put("0", new JsonArray());
-        deviceTypeMap.put("1", new JsonArray());
-        deviceTypeMap.put("2", new JsonArray());
+        deviceTypeMap.put("upperLevel", new JsonArray());
+        deviceTypeMap.put("middleLevel", new JsonArray());
+        deviceTypeMap.put("bottomLevel", new JsonArray());
 
         List<String> devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
         if (devicesList == null) {
@@ -163,21 +163,21 @@ public class WebWriteController {
         for (String topLevelDeviceId : toplevelDevices) {
             Double topLevelStatus = historyService.uptimePercent(topLevelDeviceId);
             if (topLevelStatus != null) {
-                deviceTypeMap.get("2").add(new JsonPrimitive(topLevelStatus));
+                deviceTypeMap.get("upperLevel").add(new JsonPrimitive(topLevelStatus));
 
                 List<String> midList = dataHolderService.getAllChildrenForGivenDeviceId(topLevelDeviceId);
                 if (midList != null) {
                     for (String midLevelId : midList) {
                         Double midLevelStatus = historyService.uptimePercent(midLevelId);
                         if (midLevelStatus != null) {
-                            deviceTypeMap.get("1").add(new JsonPrimitive(midLevelStatus));
+                            deviceTypeMap.get("middleLevel").add(new JsonPrimitive(midLevelStatus));
 
                             List<String> bottomList = dataHolderService.getAllChildrenForGivenDeviceId(midLevelId);
                             if (bottomList != null) {
                                 for (String bottomLevelId : bottomList) {
                                     Double bottomLevelStatus = historyService.uptimePercent(bottomLevelId);
                                     if (bottomLevelStatus != null) {
-                                        deviceTypeMap.get("0").add(new JsonPrimitive(bottomLevelStatus));
+                                        deviceTypeMap.get("bottomLevel").add(new JsonPrimitive(bottomLevelStatus));
                                     }
                                 }
                             }

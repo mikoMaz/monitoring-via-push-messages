@@ -10,8 +10,10 @@ export enum deviceType {
 }
 
 export const returnDeviceTypesArray = (): string[] => {
-  return Object.values(deviceType).filter((t): t is string => typeof t === "string");
-}
+  return Object.values(deviceType).filter(
+    (t): t is string => typeof t === "string"
+  );
+};
 
 export interface IMonitoringDevice {
   id: string;
@@ -201,9 +203,11 @@ export type DeviceUptimeJson = {
   uptime: number;
 };
 
-export type AllDevicesUptimeJson = {
-  [key in deviceType]?: number[];
-};
+export interface AllDevicesUptimeJson {
+  upperLevel: number[];
+  middleLevel: number[];
+  bottomLevel: number[];
+}
 
 export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
   const bridges: Bridge[] = [];

@@ -95,7 +95,11 @@ export class APIClient {
       .catch(function (error) {
         console.log("error");
         console.error(error);
-        return {};
+        return {
+          upper_level: [],
+          middle_level: [],
+          bottom_level: [],
+        };
       });
   };
 

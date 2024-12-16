@@ -24,15 +24,15 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
     viewOption.current
   );
 
-  //
+  //TODO
   // remove
-  // add parameter to chartTemplateModel that will load 
+  // add parameter to chartTemplateModel that will load
   // either all or certain decice type uptime values
   //
   const historyValues = [
-    ...(devicesUptime[0] ?? []),
-    ...(devicesUptime[1] ?? []),
-    ...(devicesUptime[2] ?? []),
+    ...(devicesUptime.upperLevel ?? []),
+    ...(devicesUptime.middleLevel ?? []),
+    ...(devicesUptime.bottomLevel ?? []),
   ];
 
   const chartModel: IChartTemplateModel = {
@@ -61,13 +61,21 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
       case viewOption.current:
         return (
           <Center>
-            <CurrentChart model={model} devicesHistoryValues={historyValues} {...chartModel} />
+            <CurrentChart
+              model={model}
+              devicesHistoryValues={historyValues}
+              {...chartModel}
+            />
           </Center>
         );
       case viewOption.recent:
         return (
           <Center>
-            <RecentChart model={model} devicesHistoryValues={historyValues} {...chartModel} />
+            <RecentChart
+              model={model}
+              devicesHistoryValues={historyValues}
+              {...chartModel}
+            />
           </Center>
         );
       case viewOption.custom:
