@@ -1,12 +1,6 @@
 import { Box } from "@chakra-ui/react";
-import { red } from "@mui/material/colors";
 import {
-  Area,
-  AreaChart,
-  Bar,
   CartesianGrid,
-  ComposedChart,
-  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -18,46 +12,40 @@ import {
 export const HistoryChart = () => {
   const chartData = [
     {
-      name: "January 1",
-      green: 40,
-      red: 35,
-      yellow: 25,
+      timestamp: "26.10",
+      active: 90,
+      inactive: 1,
+      disabled: 9,
     },
     {
-      name: "January 2",
-      green: 50,
-      red: 30,
-      yellow: 20,
+      timestamp: "27.10",
+      active: 80,
+      inactive: 5,
+      disabled: 15,
     },
     {
-      name: "January 3",
-      green: 60,
-      red: 25,
-      yellow: 15,
+      timestamp: "28.10",
+      active: 90,
+      inactive: 1,
+      disabled: 9,
     },
     {
-      name: "January 4",
-      green: 30,
-      red: 40,
-      yellow: 30,
+      timestamp: "29.10",
+      active: 80,
+      inactive: 5,
+      disabled: 15,
     },
     {
-      name: "January 5",
-      green: 20,
-      red: 50,
-      yellow: 30,
+      timestamp: "30.10",
+      active: 90,
+      inactive: 1,
+      disabled: 9,
     },
     {
-      name: "January 6",
-      green: 35,
-      red: 45,
-      yellow: 20,
-    },
-    {
-      name: "January 7",
-      green: 55,
-      red: 30,
-      yellow: 15,
+      timestamp: "31.10",
+      active: 80,
+      inactive: 5,
+      disabled: 15,
     },
   ];
 
@@ -76,17 +64,17 @@ export const HistoryChart = () => {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
+          <XAxis dataKey="timestamp" />
           <YAxis />
           <Tooltip />
           <Line
             type="monotone"
-            dataKey="green"
+            dataKey="active"
             stroke="green"
             activeDot={{ r: 8 }}
           />
-          <Line type="monotone" dataKey="red" stroke="red" />
-          <Line type="monotone" dataKey="yellow" stroke="orange" />
+          <Line type="monotone" dataKey="inactive" stroke="red" />
+          <Line type="monotone" dataKey="disabled" stroke="orange" />
         </LineChart>
       </ResponsiveContainer>
     </Box>
