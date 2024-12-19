@@ -72,7 +72,7 @@ export default function App() {
   };
 
   const updateModel = async () => {
-    const data = await APIClient.getDummyDeviceModel();
+    const data = await APIClient.getUpdatedDeviceModel();
     setDeviceModel(data);
     return data;
   };
@@ -106,7 +106,7 @@ export default function App() {
   };
 
   const fetchUptimeValues = async () => {
-    const data = await APIClient.getDummyDevicesHistory();
+    const data = await APIClient.getAllDevicesHistory("1");
     setDevicesUptimeValues(data);
   };
 
