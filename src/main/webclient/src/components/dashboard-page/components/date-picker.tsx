@@ -77,7 +77,7 @@ function useDatePickerStyles() {
       borderColor: "gray.100",
       "& .react-datepicker": {
         "&--open": {
-          borderColor: "green.500", // Zielone obramowanie dla otwartego kalendarza
+          borderColor: "green.500", 
         },
         "&__header": {
           bg: "green",

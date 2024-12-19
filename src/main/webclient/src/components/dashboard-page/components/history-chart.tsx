@@ -57,10 +57,10 @@ export const HistoryChart = () => {
           height={400}
           data={chartData}
           margin={{
-            top: 10,
-            right: 30,
-            left: 0,
-            bottom: 0,
+            top: 50,
+            right: 50,
+            left: 50,
+            bottom: 50,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />

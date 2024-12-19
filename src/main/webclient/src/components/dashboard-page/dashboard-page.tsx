@@ -1,4 +1,4 @@
-import { Box, Center, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Center, Grid, GridItem, Text } from "@chakra-ui/react";
 import { DeviceModel } from "../../types/deviceModel";
 import { UIProps } from "../../config/config";
 import { useState } from "react";
@@ -25,6 +25,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.current
   );
+  const currentTime = new Date().toLocaleString();
 
   const chartModel: IChartTemplateModel = {
     devicesHistoryValues: devicesUptime,
@@ -56,21 +57,30 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
     switch (selectedViewOption) {
       case viewOption.current:
         return (
-          <Center>
-            <CurrentChart {...chartModel} />
-          </Center>
+          <>
+            <Center>
+              <CurrentChart {...chartModel} />
+            </Center>
+            <Text>Generated: {currentTime}</Text>
+          </>
         );
       case viewOption.recent:
         return (
-          <Center>
-            <RecentChart {...chartModel} />
-          </Center>
+          <>
+            <Center>
+              <RecentChart {...chartModel} />
+            </Center>
+            <Text>Generated: {currentTime}</Text>
+          </>
         );
       case viewOption.recentHistory:
         return (
-          <Center>
-            <HistoryChart />
-          </Center>
+          <>
+            <Center>
+              <HistoryChart />
+            </Center>
+            <Text>Generated: {currentTime}</Text>
+          </>
         );
       case viewOption.custom:
         return <ChartCreator model={model} devicesUptime={devicesUptime} />;
