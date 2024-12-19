@@ -16,6 +16,16 @@ import {
   FormControl,
   FormLabel,
   DrawerFooter,
+  Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Input,
+  Textarea,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -31,12 +41,23 @@ export const UserSidebar = ({
   setAlertsEnabled,
 }: IUserSidebar) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onClose: onModalClose,
+  } = useDisclosure();
   const { logout, user } = useAuth0();
 
   const handleClearLocalStorage = () => {
     LocalStorageManager.clearLocalStorage();
     window.location.reload();
   };
+
+  const Overlay = () => (
+    <ModalOverlay
+      backdropFilter='blur(10px) hue-rotate(90deg)'
+    />
+  )
 
   return (
     <>
@@ -57,8 +78,8 @@ export const UserSidebar = ({
           </DrawerHeader>
 
           <DrawerBody>
-            <Grid templateRows="2fr 1fr 8fr">
-              <GridItem>
+            <Grid templateRows="2fr auto auto auto">
+              <GridItem mb={8}>
                 <FormControl display="flex" alignItems="center">
                   <FormLabel htmlFor="alerts-switch" mb="0">
                     Alerts
@@ -73,12 +94,26 @@ export const UserSidebar = ({
                   />
                 </FormControl>
               </GridItem>
-              <GridItem>Settings</GridItem>
+              <GridItem mb={4}>
+                <Heading size="md">Settings</Heading>
+              </GridItem>
+              <GridItem>
+                <Button
+                  colorScheme="green"
+                  onClick={() => {
+                    onModalOpen();
+                    onClose();
+                  }}
+                  variant="ghost"
+                >
+                  E-mail message
+                </Button>
+              </GridItem>
               <GridItem>
                 <Button
                   colorScheme="red"
                   onClick={handleClearLocalStorage}
-                  marginTop="20px"
+                  variant="ghost"
                 >
                   Clear Local Storage
                 </Button>
@@ -90,6 +125,29 @@ export const UserSidebar = ({
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+
+      <Modal isOpen={isModalOpen} onClose={onModalClose} isCentered size="lg">
+        <Overlay/>
+        <ModalContent>
+          <ModalHeader>
+            <Input focusBorderColor="green.700" placeholder="Title" />
+          </ModalHeader>
+          <ModalBody>
+            <Textarea
+              focusBorderColor="green.500"
+              placeholder="Write a message "
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="primary" mr={3} onClick={onModalClose}>
+              Close
+            </Button>
+            <Button colorScheme="primary" variant="ghost">
+              Save
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 };
