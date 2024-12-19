@@ -1,12 +1,15 @@
 import { Box, Center, Grid, GridItem } from "@chakra-ui/react";
-import { AllDevicesUptimeJson, DeviceModel } from "../../types/deviceModel";
+import {
+  AllDevicesUptimeJson,
+  DeviceModel,
+} from "../../types/deviceModel";
 import { UIProps } from "../../config/config";
 import { useState } from "react";
 import { ViewChartsTabs } from "./components/view-charts-tabs";
 import { RecentChart } from "./components/recent-chart";
 import { CurrentChart } from "./components/current-chart";
 import { ChartCreator } from "./components/chart-creator";
-import { IChartTemplateModel } from "../../types/chartTemplate";
+import { getEmptyPreset, IChartTemplateModel } from "../../types/chartTemplate";
 
 enum viewOption {
   current,
@@ -24,21 +27,13 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
     viewOption.current
   );
 
-  //TODO
-  // remove
-  // add parameter to chartTemplateModel that will load
-  // either all or certain decice type uptime values
-  //
-  const historyValues = [
-    ...(devicesUptime.upperLevel ?? []),
-    ...(devicesUptime.middleLevel ?? []),
-    ...(devicesUptime.bottomLevel ?? []),
+  const allHistoryValues = [
+    ...devicesUptime.upperLevel,
+    ...devicesUptime.middleLevel,
+    ...devicesUptime.bottomLevel,
   ];
 
-  const chartModel: IChartTemplateModel = {
-    percentFragmentation: 0.5,
-    brushActive: false,
-  };
+  const chartModel: IChartTemplateModel = getEmptyPreset().chartModel;
 
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
@@ -63,7 +58,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
           <Center>
             <CurrentChart
               model={model}
-              devicesHistoryValues={historyValues}
+              devicesHistoryValues={allHistoryValues}
               {...chartModel}
             />
           </Center>
@@ -73,13 +68,13 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
           <Center>
             <RecentChart
               model={model}
-              devicesHistoryValues={historyValues}
+              devicesHistoryValues={allHistoryValues}
               {...chartModel}
             />
           </Center>
         );
       case viewOption.custom:
-        return <ChartCreator model={model} devicesUptime={historyValues} />;
+        return <ChartCreator model={model} devicesUptime={devicesUptime} />;
     }
   };
 

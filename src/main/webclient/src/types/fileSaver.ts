@@ -4,7 +4,7 @@ import {
   chartTypeFromString,
   IChartTemplate,
 } from "./chartTemplate";
-import { IDeviceModel } from "./deviceModel";
+import { IDeviceModel, deviceType } from "./deviceModel";
 
 export interface chartTemplateJsonObject {
   templates: IChartTemplate[];
@@ -15,16 +15,12 @@ export class FileSaver {
     templates: ChartTemplate[],
     model: IDeviceModel
   ) {
-    const presetsJSON = JSON.stringify(
-      FileSaver.parsePresetsToJson(templates)
-    );
+    const presetsJSON = JSON.stringify(FileSaver.parsePresetsToJson(templates));
     const blob = new Blob([presetsJSON], { type: "application/json" });
     saveAs(blob, "chartPresets.json");
   }
 
-  public static saveSingleChartPresetToJson(
-    preset: ChartTemplate
-  ) {
+  public static saveSingleChartPresetToJson(preset: ChartTemplate) {
     const singlePresetJSON = JSON.stringify(
       FileSaver.parsePresetsToJson([preset])
     ); // Przekazujemy pojedynczy preset w tablicy
@@ -46,7 +42,8 @@ export class FileSaver {
               : temp.type,
           chartModel: {
             percentFragmentation: temp.chartModel.percentFragmentation,
-            brushActive: temp.chartModel.brushActive
+            brushActive: temp.chartModel.brushActive,
+            deviceTypes: temp.chartModel.deviceTypes,
           },
         };
         return jsonTemplate;
@@ -62,6 +59,7 @@ export class FileSaver {
       const template = new ChartTemplate(temp.name, temp.type, {
         percentFragmentation: temp.chartModel.percentFragmentation,
         brushActive: temp.chartModel.brushActive,
+        deviceTypes: temp.chartModel.deviceTypes,
       });
       template.id = temp.id;
       return template;

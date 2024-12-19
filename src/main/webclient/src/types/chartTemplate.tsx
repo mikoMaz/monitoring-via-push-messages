@@ -11,7 +11,7 @@ import {
 import { CurrentChart } from "../components/dashboard-page/components/current-chart";
 import { RecentChart } from "../components/dashboard-page/components/recent-chart";
 import { useState } from "react";
-import { DeviceModel, IDeviceModel } from "./deviceModel";
+import { DeviceModel, deviceType, IDeviceModel } from "./deviceModel";
 import { NewCustomChartCreator } from "../components/dashboard-page/components/new-custom-chart-creator";
 import { FileSaver } from "./fileSaver";
 import { Delete } from "@mui/icons-material";
@@ -39,6 +39,7 @@ export const returnChartTypesArray = (): string[] => {
 export interface IChartTemplateModel {
   percentFragmentation: number; //fragmentation of data into chunks by % points
   brushActive: boolean;
+  deviceTypes: deviceType[];
 }
 
 export interface IChartTemplateModelDrawing extends IChartTemplateModel {
@@ -194,9 +195,10 @@ export const ChartTabPanel = ({
   );
 };
 
-export const getEmptyPreset = (model: DeviceModel, uptimeValues: number[]) => {
+export const getEmptyPreset = () => {
   return new ChartTemplate("New", chartType.EmptyPreset, {
     percentFragmentation: 0.5,
     brushActive: false,
+    deviceTypes: [deviceType.sensor, deviceType.gateway, deviceType.bridge],
   });
 };

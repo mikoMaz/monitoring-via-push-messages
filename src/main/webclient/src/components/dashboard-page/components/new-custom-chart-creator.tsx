@@ -17,14 +17,15 @@ import {
   Checkbox,
   Stack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ChartTemplate,
   chartType,
   chartTypeFromString,
   chartTypeToString,
+  getEmptyPreset,
 } from "../../../types/chartTemplate";
-import { returnDeviceTypesArray } from "../../../types/deviceModel";
+import { deviceType, returnDeviceTypesArray } from "../../../types/deviceModel";
 
 interface INewCustomChartCreator {
   template: ChartTemplate;
@@ -40,8 +41,46 @@ export const NewCustomChartCreator = ({
   const [templateName, setTemplateName] = useState<string>(template.name);
   const [selectedType, setSelectedType] = useState<chartType>(template.type);
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
-    returnDeviceTypesArray().map((t) => false)
+    returnDeviceTypesArray().map((t) => true)
   );
+
+  useEffect(() => {
+    let checked = returnDeviceTypesArray().map((t) => false);
+    if (
+      template.chartModel.deviceTypes.length === returnDeviceTypesArray().length
+    ) {
+      checked = returnDeviceTypesArray().map((t) => true);
+    } else {
+      if (template.chartModel.deviceTypes.includes(deviceType.sensor)) {
+        checked[deviceType.sensor] = true;
+      }
+      if (template.chartModel.deviceTypes.includes(deviceType.gateway)) {
+        checked[deviceType.gateway] = true;
+      }
+      if (template.chartModel.deviceTypes.includes(deviceType.bridge)) {
+        checked[deviceType.bridge] = true;
+      }
+      setCheckedItems(checked);
+    }
+  }, [template.chartModel.deviceTypes]);
+
+  const getDeviceTypeArray = () => {
+    if (checkedItems.map((e) => e).length === checkedItems.length) {
+      return getEmptyPreset().chartModel.deviceTypes;
+    }
+    let devices: deviceType[] = [];
+    if (checkedItems[deviceType.sensor]) {
+      devices.push(deviceType.sensor);
+    }
+    if (checkedItems[deviceType.gateway]) {
+      devices.push(deviceType.gateway);
+    }
+    if (checkedItems[deviceType.bridge]) {
+      devices.push(deviceType.bridge);
+    }
+    return devices;
+  };
+
   const [isBrushActive, setIsBrushActive] = useState<boolean>(
     template.chartModel.brushActive
   );
@@ -53,6 +92,7 @@ export const NewCustomChartCreator = ({
       percentFragmentationVariable
     );
     template.chartModel.brushActive = isBrushActive;
+    template.chartModel.deviceTypes = getDeviceTypeArray();
     editFunction(template);
   };
 
@@ -164,11 +204,11 @@ export const NewCustomChartCreator = ({
           <Checkbox
             isChecked={allChecked}
             isIndeterminate={isIndeterminate}
-            onChange={(e) =>
+            onChange={(e) => {
               setCheckedItems(
                 returnDeviceTypesArray().map((t) => e.target.checked)
-              )
-            }
+              );
+            }}
           >
             All Devices
           </Checkbox>
@@ -176,11 +216,11 @@ export const NewCustomChartCreator = ({
             {returnDeviceTypesArray().map((value, index) => (
               <Checkbox
                 isChecked={checkedItems[index]}
-                onChange={(e) =>
+                onChange={(e) => {
                   setCheckedItems(
                     replaceAtIndex(checkedItems, index, e.target.checked)
-                  )
-                }
+                  );
+                }}
               >
                 {value}
               </Checkbox>

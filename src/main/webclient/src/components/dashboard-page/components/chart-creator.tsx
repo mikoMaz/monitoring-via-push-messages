@@ -13,7 +13,11 @@ import {
   Tooltip,
   VStack,
 } from "@chakra-ui/react";
-import { DeviceModel } from "../../../types/deviceModel";
+import {
+  AllDevicesUptimeJson,
+  DeviceModel,
+  deviceType,
+} from "../../../types/deviceModel";
 import { useRef, useState } from "react";
 import {
   ChartTabPanel,
@@ -24,6 +28,7 @@ import {
 import { Download, InfoOutlined, Upload } from "@mui/icons-material";
 import { NewCustomChartCreator } from "./new-custom-chart-creator";
 import { UIProps } from "../../../config/config";
+import { returnDeviceTypesArray } from "../../../types/deviceModel";
 import {
   localStorageKey,
   LocalStorageManager,
@@ -33,10 +38,35 @@ import {
 
 interface IChartCreator {
   model: DeviceModel;
-  devicesUptime: number[];
+  devicesUptime: AllDevicesUptimeJson;
 }
 
 export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
+  const allHistoryValues = [
+    ...devicesUptime.upperLevel,
+    ...devicesUptime.middleLevel,
+    ...devicesUptime.bottomLevel,
+  ];
+
+  const returnDeviceUptimesByDeviceType = (devices: deviceType[]) => {
+    let uptimeValues: number[] = [];
+    if (devices) {
+      if (devices.length === returnDeviceTypesArray().length) {
+        return allHistoryValues;
+      }
+      if (devices.includes(deviceType.sensor)) {
+        uptimeValues = [...uptimeValues, ...devicesUptime.bottomLevel];
+      }
+      if (devices.includes(deviceType.gateway)) {
+        uptimeValues = [...uptimeValues, ...devicesUptime.middleLevel];
+      }
+      if (devices.includes(deviceType.bridge)) {
+        uptimeValues = [...uptimeValues, ...devicesUptime.upperLevel];
+      }
+    }
+    return uptimeValues;
+  };
+
   const localStorageKey: localStorageKey = "chartPresets";
 
   const [selectedTemplateIndex, setSelectedTemplateIndex] = useState<number>(0);
@@ -77,7 +107,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
   };
 
   const [newChartTemplate, setNewChartTemplate] = useState<ChartTemplate>(
-    getEmptyPreset(model, devicesUptime)
+    getEmptyPreset()
   );
 
   const handlePresetChanged = (editedTemplate: ChartTemplate) => {
@@ -86,7 +116,7 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
 
   const createNewPreset = () => {
     if (!chartPresets.find((p) => p.type === chartType.EmptyPreset)) {
-      const emptyPreset = getEmptyPreset(model, devicesUptime);
+      const emptyPreset = getEmptyPreset();
       setNewChartTemplate(emptyPreset);
       const index = chartPresets.length - 1;
       setChartPresets([...chartPresets, emptyPreset]);
@@ -181,7 +211,9 @@ export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
                 editFunction={handlePresetChanged}
                 deleteFunction={() => handleDeletePreset(preset.id)}
                 model={model}
-                uptimeValues={devicesUptime}
+                uptimeValues={returnDeviceUptimesByDeviceType(
+                  preset.chartModel.deviceTypes
+                )}
               />
             );
           } else {
