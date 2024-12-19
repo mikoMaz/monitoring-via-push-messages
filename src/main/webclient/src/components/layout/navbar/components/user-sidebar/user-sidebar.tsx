@@ -41,23 +41,12 @@ export const UserSidebar = ({
   setAlertsEnabled,
 }: IUserSidebar) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isModalOpen,
-    onOpen: onModalOpen,
-    onClose: onModalClose,
-  } = useDisclosure();
   const { logout, user } = useAuth0();
 
   const handleClearLocalStorage = () => {
     LocalStorageManager.clearLocalStorage();
     window.location.reload();
   };
-
-  const Overlay = () => (
-    <ModalOverlay
-      backdropFilter='blur(10px) hue-rotate(90deg)'
-    />
-  )
 
   return (
     <>
@@ -99,18 +88,6 @@ export const UserSidebar = ({
               </GridItem>
               <GridItem>
                 <Button
-                  colorScheme="green"
-                  onClick={() => {
-                    onModalOpen();
-                    onClose();
-                  }}
-                  variant="ghost"
-                >
-                  E-mail message
-                </Button>
-              </GridItem>
-              <GridItem>
-                <Button
                   colorScheme="red"
                   onClick={handleClearLocalStorage}
                   variant="ghost"
@@ -125,29 +102,6 @@ export const UserSidebar = ({
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-
-      <Modal isOpen={isModalOpen} onClose={onModalClose} isCentered size="lg">
-        <Overlay/>
-        <ModalContent>
-          <ModalHeader>
-            <Input focusBorderColor="green.700" placeholder="Title" />
-          </ModalHeader>
-          <ModalBody>
-            <Textarea
-              focusBorderColor="green.500"
-              placeholder="Write a message "
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="primary" mr={3} onClick={onModalClose}>
-              Close
-            </Button>
-            <Button colorScheme="primary" variant="ghost">
-              Save
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </>
   );
 };
