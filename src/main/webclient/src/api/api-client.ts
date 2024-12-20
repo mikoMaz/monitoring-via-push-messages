@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   AllDevicesUptimeJson,
   Bridge,
@@ -11,8 +11,34 @@ import {
   deviceStatus,
   deviceType,
 } from "../types/deviceModel";
+import { IUserInfoResponse } from "../types/IUserInfoResponse";
 
 export class APIClient {
+
+  public static getUserInfo = async (
+    accessToken: string
+  ): Promise<IUserInfoResponse> => {
+    const apiURL = `http://localhost:8080/api/v1/user/userInfo?token=${accessToken};`;
+    return axios
+      .post(apiURL)
+      .then((response) => {
+        const data: IUserInfoResponse = response.data;
+        return data;
+      })
+      .catch((error: AxiosError) => {
+        const deniedUser: IUserInfoResponse = {
+          email: "",
+          userType: "external",
+        };
+        if (error.code === "403") {
+          return deniedUser;
+        } else {
+          console.error(error.message);
+          return deniedUser;
+        }
+      });
+  };
+
   public static getDummyDeviceModel = () => {
     return new DeviceModel([
       new Bridge("bridge1", deviceStatus.active, new Date(), [
@@ -82,20 +108,28 @@ export class APIClient {
       });
   };
 
-  public static getAllDevicesHistory = async (id: string): Promise<number[]> => {
+  public static getAllDevicesHistory = async (
+    id: string
+  ): Promise<number[]> => {
     const apiUrl = `http://localhost:8080/api/v1/historyTree?id=${id}`;
-    return axios.get(apiUrl).then((response) => {
-      const data: AllDevicesUptimeJson = response.data;
-      return data.uptimes;
-    })
-    .catch(function (error) {
-      console.log("error");
-      console.error(error);
-      return [];
-    });
+    return axios
+      .get(apiUrl)
+      .then((response) => {
+        const data: AllDevicesUptimeJson = response.data;
+        return data.uptimes;
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        return [];
+      });
   };
 
   public static getDummyDevicesHistory = () => {
-    return [87.2, 89.7, 90.1, 90.4, 90.8, 91.3, 93.4, 96.3, 96.6, 96.6, 97.1, 97.5, 98.3, 98.5, 98.6, 98.7, 98.9, 99.2, 99.3, 99.7, 99.7, 99.8, 99.8, 99.9, 99.9, 99.9, 99.9]
-  }
+    return [
+      87.2, 89.7, 90.1, 90.4, 90.8, 91.3, 93.4, 96.3, 96.6, 96.6, 97.1, 97.5,
+      98.3, 98.5, 98.6, 98.7, 98.9, 99.2, 99.3, 99.7, 99.7, 99.8, 99.8, 99.9,
+      99.9, 99.9, 99.9,
+    ];
+  };
 }
