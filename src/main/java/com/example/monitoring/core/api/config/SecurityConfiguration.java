@@ -86,7 +86,7 @@ public class SecurityConfiguration {
             JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
             converter.setJwtGrantedAuthoritiesConverter(jwt -> {
                 // TODO: extract email from claims when deployed
-//                String email = jwt.getClaimAsString("Email");
+//                String email = jwt.getClaimAsString("email");
 //                String email = jwt.getClaims().toString();
                 String email = "test@test.pl";
                 UserDetails user = userDetailsService.loadUserByUsername(email);
