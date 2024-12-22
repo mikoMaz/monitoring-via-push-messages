@@ -20,7 +20,7 @@ import { Alert, AlertIcon, AlertTitle, useToast } from "@chakra-ui/react";
 const refreshTime = 3; //minutes
 
 export default function App() {
-  const { user, isAuthenticated, isLoading, error } = useAuth0();
+  const { isAuthenticated, isLoading, error } = useAuth0();
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()

@@ -3,4 +3,4 @@ export interface IUserInfoResponse {
   userType: userType;
 }
 
-export type userType = "external" | "readOnly" |"admin" | "superAdmin";
+export type userType = "EXTERNAL" | "READ_ONLY" |"ADMIN" | "SUPER_ADMIN";

@@ -28,9 +28,9 @@ export class APIClient {
       .catch((error: AxiosError) => {
         const deniedUser: IUserInfoResponse = {
           email: "",
-          userType: "external",
+          userType: "EXTERNAL",
         };
-        if (error.code === "403") {
+        if (error.code === "401") {
           return deniedUser;
         } else {
           console.error(error.message);
