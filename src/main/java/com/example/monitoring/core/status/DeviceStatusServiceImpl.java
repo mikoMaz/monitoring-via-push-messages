@@ -1,9 +1,12 @@
 package com.example.monitoring.core.status;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import com.example.monitoring.core.external.DataHolderService;
 
 
 import lombok.RequiredArgsConstructor;
@@ -12,6 +15,7 @@ import lombok.val;
 @RequiredArgsConstructor
 public class DeviceStatusServiceImpl implements DeviceStatusService {
         private final DeviceStatusRepository repository;
+        private final DataHolderService dataHolderService;
         private final Integer maxTimeout=60*5;
 
         public void saveFromArgs(String Id,Long Timestamp,Long firstLoggedAt){
@@ -26,7 +30,7 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
                 DeviceStatus ds=repository.getObjectById(Id);
                 if(ds==null)
-                return 0;
+                return null;
                 Long time=ds.getLogged_at();
 
                 if(compareTime-time<maxTimeout){
@@ -39,7 +43,7 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
 
                 DeviceStatus ds=repository.getObjectById(Id);
                 if(ds==null)
-                return 0;
+                return null;
                 Long time=ds.getLogged_at();
                 Long unixTime = System.currentTimeMillis() / 1000L;
 
@@ -61,6 +65,18 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         public     DeviceStatus getDeviceStatus(String Id)
         {               
                 return  repository.getObjectById(Id);
+        }
+        public List<DeviceStatus> getOfflineDevices(String id){
+                List<String> devicesToCheckIds=dataHolderService.getAllChildrenForGivenCompanyId(id);
+                Long unixTime= System.currentTimeMillis() / 1000L;
+                
+                //TODO: make treshold a global variable 
+                if(devicesToCheckIds!=null)
+                {
+                        return repository.findOfflineAndIdIn(devicesToCheckIds,unixTime,300L);
+                }
+                else return new ArrayList<DeviceStatus>();
+                
         }
 
 }
