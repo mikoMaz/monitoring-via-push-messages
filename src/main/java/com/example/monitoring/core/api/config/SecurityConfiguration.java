@@ -71,7 +71,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)  // TODO
                 .authorizeHttpRequests(auth -> auth
                         // TODO: add roles to rest of the paths
-                        .requestMatchers("/api/v1/user/kluczdostepu").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/api/v1/user/kluczdostepu").hasRole(Role.SUPER_ADMIN.name())
 //                        .requestMatchers("/api/v1/kluczdostepu").hasAuthority(Role.ADMIN.name())
 //                        .requestMatchers("/api/v1/kluczdostepu").hasAuthority("SCOPE_profile")
                         .anyRequest().authenticated())
