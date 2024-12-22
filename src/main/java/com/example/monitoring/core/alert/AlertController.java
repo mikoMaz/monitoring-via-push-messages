@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -26,12 +27,23 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/alert/")
 @RequiredArgsConstructor
 public class AlertController {
-    org.slf4j.Logger  logger =LoggerFactory.getLogger(AuthenticationController.class);
+    org.slf4j.Logger  logger =LoggerFactory.getLogger(AlertController.class);
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectReader reader = new ObjectMapper().readerFor(Map.class);
     private final AlertService alertService;
     private final DeviceStatusService deviceStatusService;
+    private final SendAlert sendAlert;
+    @PostMapping("/stop-alert")
+    public ResponseEntity<String>stopAlert(
+            @RequestBody  String  alertId,
+            @RequestHeader("Authorization") String authHeader
 
+    ){
+        alertService.setAlertIgnoreState(alertId,true);
+        sendAlert.stopAlert(alertId);
+        return ResponseEntity.ok(" ");
+
+    };
     @PostMapping("/new-alert")
     public ResponseEntity<String>addNewAlert(
             @RequestBody  String  payload,
@@ -42,7 +54,9 @@ public class AlertController {
         JsonObject detailsJson=payloadJson.getAsJsonObject("details");
         JsonArray ignoredDevices=payloadJson.getAsJsonArray("ignored_devices");
         JsonArray observedDevices=payloadJson.getAsJsonArray("observed_devices");
-
+        logger.info("{}",detailsJson.toString());
+        logger.info("{}",ignoredDevices.toString());
+        logger.info("{}",observedDevices.toString());
         AlertData alertObject=alertService.buildObject(detailsJson.toString());
         List<DeviceStatus>ignoredDevicesStatus = new ArrayList<>();
         for (JsonElement deviceId : ignoredDevices){
@@ -90,6 +104,29 @@ public class AlertController {
             @RequestHeader("Authorization") String authHeader
     ){
         return ResponseEntity.ok(" ");
+    };
+    @PostMapping("/ignore")
+    public ResponseEntity<String>ignoreAlert(
+        @RequestBody Map<String, Object>  payloadJson,
+        @RequestHeader("Authorization") String authHeader
+    ){
+        return ResponseEntity.ok(" ");
+    };
+    @GetMapping("/get-alerts")
+    public ResponseEntity<String>getAlertsForCompany(
+        @RequestBody String  companyId,
+        @RequestHeader("Authorization") String authHeader
+    ){
+        AlertDataSerializer ads= new AlertDataSerializer();
+        JsonObject root=new JsonObject();
+        JsonArray jsonAlerts= new JsonArray();
+        ArrayList<AlertData> companyAlerts= alertService.getAlertsForCompany(companyId);
+        for(AlertData alert:companyAlerts)
+        {
+            jsonAlerts.add(ads.serialize(alert,alert.getClass(), null));
+        }
+        root.add("Alerts", jsonAlerts);
+        return ResponseEntity.ok().body(root.toString());  
     };
 }
 

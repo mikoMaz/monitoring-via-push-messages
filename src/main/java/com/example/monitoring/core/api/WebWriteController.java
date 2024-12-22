@@ -76,10 +76,11 @@ public class WebWriteController {
         JsonObject subDevice=new JsonObject();
         for(int i=0;i<ToplevelDevices.size();i++)
         {   String ToplevelID=ToplevelDevices.get(i);
+
             Integer ToplevelStatus=statusService.getCalculatedStatus(ToplevelID);
             if(ToplevelStatus!=null){
 
-            
+
             Long ToplevelTimestamp=statusService.getDeviceStatus(ToplevelID).getLogged_at();
             Integer ToplevelType=2;
 
@@ -106,11 +107,10 @@ public class WebWriteController {
                 for (String BottomlevelID : BottomList) {
                     sensorIdArray.add(new JsonPrimitive(BottomlevelID));
                 }
-                
                 Integer MidlevelStatus=statusService.getCalculatedStatus(MidlevelId);
-                Long MidlevelTimestamp=statusService.getDeviceStatus(MidlevelId).getLogged_at();
                 Integer MidlevelType=1;
                 if(MidlevelStatus!=null){
+                    Long MidlevelTimestamp=statusService.getDeviceStatus(MidlevelId).getLogged_at();
 
                     subDevice=proc.convertToJsonTreeComponent(MidlevelId,MidlevelStatus,MidlevelTimestamp,MidlevelType);
                     subDevice.add("children",sensorIdArray);
@@ -119,6 +119,8 @@ public class WebWriteController {
                     for(int k=0;k<BottomList.size();k++)
                     {
                         String BottomlevelID =BottomList.get(k) ;
+                        logger.info("kd 4");
+
                         Integer BottomlevelStatus=statusService.getCalculatedStatus(BottomlevelID);
                         if(BottomlevelStatus!=null){
                             Long BottomlevelTimestamp=statusService.getDeviceStatus(BottomlevelID).getLogged_at();

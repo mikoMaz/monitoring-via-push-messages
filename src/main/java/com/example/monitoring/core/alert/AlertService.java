@@ -1,5 +1,6 @@
 package com.example.monitoring.core.alert;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -11,4 +12,9 @@ public interface AlertService {
     void saveToDatabase(String objectJson);
     AlertData buildObject(String objectJson);
     void deleteById(String id);
+    ArrayList<AlertData> getAlertsForCompany(String companyId);
+    ArrayList<AlertData> getAlertsForDevice(String deviceId);
+    void setAlertIgnoreState(String alertId,boolean stateValue);
+    void getDevicesThatGiveAlert(String companyId);
+    
 }
