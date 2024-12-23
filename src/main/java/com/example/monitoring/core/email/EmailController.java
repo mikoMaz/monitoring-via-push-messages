@@ -14,8 +14,8 @@ import java.util.Map;
 @RequestMapping("/api/v1/user/email")
 public class EmailController {
 
-    final private EmailService emailService;
-    final private EmailCreator emailCreator;
+    private final EmailService emailService;
+    private final EmailCreator emailCreator;
 
     @Autowired
     public EmailController(EmailService emailService, EmailCreator emailCreator) {
