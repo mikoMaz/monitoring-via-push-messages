@@ -21,7 +21,7 @@ import { MonitoringPage } from "../monitoring-page/monitoring-page";
 import { NotFoundPage } from "../not-found-page/not-found-page";
 import { useAuth0 } from "@auth0/auth0-react";
 import { jwtDecode } from "jwt-decode";
-import { deniedUser, IUserInfoResponse } from "../../types/IUserInfoResponse";
+import { IUserInfoResponse } from "../../types/IUserInfoResponse";
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
 
 const refreshTime = 3; //minutes
@@ -106,12 +106,12 @@ export const AppBody = () => {
     },
   };
 
-  const getAccessToken = async () => {
+  const getAccessToken = async (email?: string) => {
     try {
       const token = await getAccessTokenSilently();
       // console.log("token: " + token);
       // console.log(jwtDecode(token));
-      const user = await APIClient.getUserInfo(token);
+      const user = await APIClient.getUserInfo(token, email);
 
       setUserInfo(user);
       setAccessToken(token);
@@ -179,7 +179,7 @@ export const AppBody = () => {
       if (!email) {
         setEmail(userEmail);
       }
-      const token = await getAccessToken();
+      const token = await getAccessToken(userEmail);
       if (token) {
         await updateModel(token, userEmail)
           .then((model) => checkInactiveDevices(model))

@@ -11,12 +11,15 @@ import {
   deviceStatus,
   deviceType,
 } from "../types/deviceModel";
-import { deniedUser, IUserInfoResponse } from "../types/IUserInfoResponse";
+import {
+  getDeniedUserInfoResponse,
+  IUserInfoResponse,
+} from "../types/IUserInfoResponse";
 
 export class APIClient {
-
   public static getUserInfo = async (
-    accessToken: string
+    accessToken: string,
+    email?: string
   ): Promise<IUserInfoResponse> => {
     const apiURL = `http://localhost:8080/api/v1/user/userInfo?token=${accessToken};`;
     return axios
@@ -27,10 +30,10 @@ export class APIClient {
       })
       .catch((error: AxiosError) => {
         if (error.code === "401") {
-          return deniedUser;
+          return getDeniedUserInfoResponse(email);
         } else {
           console.error(error.message);
-          return deniedUser;
+          return getDeniedUserInfoResponse(email);
         }
       });
   };

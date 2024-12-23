@@ -3,9 +3,15 @@ export interface IUserInfoResponse {
   userType: userType;
 }
 
-export type userType = "EXTERNAL" | "READ_ONLY" |"ADMIN" | "SUPER_ADMIN";
+export type userType = "EXTERNAL" | "READ_ONLY" | "ADMIN" | "SUPER_ADMIN";
 
-export const deniedUser: IUserInfoResponse = {
-  email: "",
-  userType: "EXTERNAL",
+export const getDeniedUserInfoResponse = (email?: string) => {
+  const deniedUser: IUserInfoResponse = {
+    email: "",
+    userType: "EXTERNAL",
+  };
+  if (email) {
+    deniedUser.email = email;
+  }
+  return deniedUser;
 };
