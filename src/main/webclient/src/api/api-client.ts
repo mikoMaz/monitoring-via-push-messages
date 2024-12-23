@@ -52,10 +52,26 @@ export class APIClient {
       ]),
     ]);
   };
-  public static getUpdatedDeviceModel = async () => {
-    const apiURL = "http://localhost:8080/api/v1/kluczdostepu?id=1";
+  public static getUserInfo = async (accessToken: string) => {
+    const info = await axios.get("https://localhost:3000/userinfo", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log(info);
+  };
+  public static getUpdatedDeviceModel = async (
+    accessToken: string,
+    email: string
+  ) => {
+    const apiURL = "http://localhost:8080/api/v1/user/kluczdostepu?id=1";
     return axios
-      .get(apiURL)
+      .get(apiURL, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Email: `${email}`,
+        },
+      })
       .then((response) => {
         const data: DeviceTreeModelJson = response.data;
         return createDeviceModelFromJson(data);
@@ -67,10 +83,20 @@ export class APIClient {
       });
   };
 
-  public static getDeviceUptime = async (type: deviceType, id: string) => {
-    const apiUrl = `http://localhost:8080/api/v1/history?id=${type}&device_id=${id}`;
+  public static getDeviceUptime = async (
+    type: deviceType,
+    id: string,
+    accessToken: string,
+    email: string
+  ) => {
+    const apiUrl = `http://localhost:8080/api/v1/user/history?id=${type}&device_id=${id}`;
     return axios
-      .get(apiUrl)
+      .get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Email: `${email}`,
+        },
+      })
       .then((response) => {
         const data: DeviceUptimeJson = response.data;
         return data.uptime;
@@ -82,20 +108,35 @@ export class APIClient {
       });
   };
 
-  public static getAllDevicesHistory = async (id: string): Promise<number[]> => {
-    const apiUrl = `http://localhost:8080/api/v1/historyTree?id=${id}`;
-    return axios.get(apiUrl).then((response) => {
-      const data: AllDevicesUptimeJson = response.data;
-      return data.uptimes;
-    })
-    .catch(function (error) {
-      console.log("error");
-      console.error(error);
-      return [];
-    });
+  public static getAllDevicesHistory = async (
+    id: string,
+    accessToken: string,
+    email: string
+  ): Promise<number[]> => {
+    const apiUrl = `http://localhost:8080/api/v1/user/historyTree?id=${id}`;
+    return axios
+      .get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Email: `${email}`,
+        },
+      })
+      .then((response) => {
+        const data: AllDevicesUptimeJson = response.data;
+        return data.uptimes;
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        return [];
+      });
   };
 
   public static getDummyDevicesHistory = () => {
-    return [87.2, 89.7, 90.1, 90.4, 90.8, 91.3, 93.4, 96.3, 96.6, 96.6, 97.1, 97.5, 98.3, 98.5, 98.6, 98.7, 98.9, 99.2, 99.3, 99.7, 99.7, 99.8, 99.8, 99.9, 99.9, 99.9, 99.9]
-  }
+    return [
+      87.2, 89.7, 90.1, 90.4, 90.8, 91.3, 93.4, 96.3, 96.6, 96.6, 97.1, 97.5,
+      98.3, 98.5, 98.6, 98.7, 98.9, 99.2, 99.3, 99.7, 99.7, 99.8, 99.8, 99.9,
+      99.9, 99.9, 99.9,
+    ];
+  };
 }

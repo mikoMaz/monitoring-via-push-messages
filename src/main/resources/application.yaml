@@ -18,6 +18,13 @@ spring:
     database: postgresql
   profiles:
     active: development
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-5neb7art3ltrcarr.us.auth0.com/
+          jwk-set-uri: https://dev-5neb7art3ltrcarr.us.auth0.com/.well-known/jwks.json
+          jws-algorithms: RS256
   mail:
     host: smtp-mail.outlook.com
     port: 587
@@ -31,3 +38,6 @@ spring:
       timeout: 5000
 
 # spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+logging:
+  level:
+    org.springframework.security: DEBUG

@@ -24,7 +24,17 @@ import { APIClient } from "../../api/api-client";
 
 export type monitoringDeviceType = "sensor" | "gateway" | "bridge" | "other";
 
-export const MonitoringDevicePage = (model: DeviceModel) => {
+interface IMonitoringDevicePage {
+  model: DeviceModel;
+  accessToken: string;
+  email: string;
+}
+
+export const MonitoringDevicePage = ({
+  model,
+  accessToken,
+  email,
+}: IMonitoringDevicePage) => {
   const [activeTime, setActiveTime] = useState<number>(0);
   const ui = UIProps;
   const { device } = useParams();
@@ -81,13 +91,21 @@ export const MonitoringDevicePage = (model: DeviceModel) => {
   }, [device, model]);
 
   useEffect(() => {
-    const fetchDeviceActiveTime = async (type: deviceType, id: string) => {
-      var time = await APIClient.getDeviceUptime(1, id);
+    const fetchDeviceActiveTime = async (
+      type: deviceType,
+      id: string,
+      email: string
+    ) => {
+      var time = await APIClient.getDeviceUptime(1, id, accessToken, email);
       setActiveTime(time);
     };
 
     if (selectedDevice !== DeviceModel.getPlaceholderDevice()) {
-      fetchDeviceActiveTime(selectedDevice.deviceType, selectedDevice.id);
+      fetchDeviceActiveTime(
+        selectedDevice.deviceType,
+        selectedDevice.id,
+        email
+      );
     }
   }, [selectedDevice]);
 

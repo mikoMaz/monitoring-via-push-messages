@@ -16,11 +16,21 @@ import { MonitoringDevicePage } from "./components/monitoring-device-page/monito
 import { useAuth0 } from "@auth0/auth0-react";
 import { LoginPage } from "./components/login-page/login-page";
 import { Alert, AlertIcon, AlertTitle, useToast } from "@chakra-ui/react";
+import { jwtDecode } from "jwt-decode";
 
 const refreshTime = 3; //minutes
 
 export default function App() {
-  const { user, isAuthenticated, isLoading, error } = useAuth0();
+  const { user, isAuthenticated, isLoading, error, getAccessTokenSilently } =
+    useAuth0();
+
+  const [email, setEmail] = useState<string>("");
+
+  useEffect(() => {
+    if (user?.email) {
+      setEmail(user?.email);
+    }
+  }, [user]);
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
@@ -31,6 +41,8 @@ export default function App() {
     useState<boolean>(false);
 
   const [alertsEnabled, setAlertsEnabled] = useState<boolean>(true);
+
+  const [accessToken, setAccessToken] = useState<string>("");
 
   const toast = useToast();
 
@@ -51,7 +63,13 @@ export default function App() {
       <Route
         key="monitoring-device"
         path="/monitoring/:device"
-        element={<MonitoringDevicePage {...deviceModel} />}
+        element={
+          <MonitoringDevicePage
+            model={deviceModel}
+            accessToken={accessToken}
+            email={email}
+          />
+        }
       />,
       <Route
         key="dashboard"
@@ -68,13 +86,20 @@ export default function App() {
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
     alertsEnabled: alertsEnabled,
-    setAlertsEnabled: (value: boolean) => {setAlertsEnabled(value)},
+    setAlertsEnabled: (value: boolean) => {
+      setAlertsEnabled(value);
+    },
   };
 
-  const updateModel = async () => {
-    const data = await APIClient.getUpdatedDeviceModel();
-    setDeviceModel(data);
-    return data;
+  const updateModel = async (token: string, email: string) => {
+    try {
+      const data = await APIClient.getUpdatedDeviceModel(token, email);
+      setDeviceModel(data);
+      return data;
+    } catch (e: any) {
+      console.error("updateModel error: " + e.message);
+      return new DeviceModel();
+    }
   };
 
   const checkInactiveDevices = (model: DeviceModel) => {
@@ -105,42 +130,77 @@ export default function App() {
     }
   };
 
-  const fetchUptimeValues = async () => {
-    const data = await APIClient.getAllDevicesHistory("1");
-    setDevicesUptimeValues(data);
+  const getAccessToken = async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      console.log("token: " + token);
+      console.log(jwtDecode(token));
+
+      // await APIClient.getUserInfo(token);
+      setAccessToken(token);
+      return token;
+    } catch (e: any) {
+      console.error("getAccessToken error: " + e.message);
+      return undefined;
+    }
+  };
+
+  const fetchUptimeValues = async (token: string, email: string) => {
+    try {
+      const data = await APIClient.getAllDevicesHistory(
+        "1",
+        token,
+        email
+      );
+      setDevicesUptimeValues(data);
+      return data;
+    } catch (e: any) {
+      console.error("fetchUptimeValues error: " + e.message);
+      setDevicesUptimeValues([]);
+      return [];
+    }
   };
 
   const onComponentLoaded = async () => {
-    await updateModel()
-      .then((model) => checkInactiveDevices(model))
-      .catch((error: any) => {
-        console.error(error);
-      });
-    await fetchUptimeValues().catch((error: any) => {
-      console.error(error);
-    });
+    if (email || user?.email) {
+      const userEmail = email ?? user?.email;
+      if (!email) {
+        setEmail(userEmail);
+      }
+      const token = await getAccessToken();
+      if (token) {
+        await updateModel(token, userEmail)
+          .then((model) => checkInactiveDevices(model))
+          .catch((error: any) => {
+            console.error("Update model error: " + error);
+          });
+        await fetchUptimeValues(token, userEmail).catch((error: any) => {
+          console.error(error);
+        });
+      }
+    }
   };
 
   useEffect(() => {
     document.body.style.backgroundColor = UIProps.colors.background;
 
-    onComponentLoaded().catch((error: any) => {});
-    setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
+    onComponentLoaded().catch((error: any) => {
+      console.error("Error happaned while recurrent updates: " + error.message);
+    });
+    setInterval(onComponentLoaded, 100 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alertsEnabled]);
+  }, [alertsEnabled, email]);
 
   if (error) {
     return <div>Athentication error occured: {error.message}</div>;
-  }
-
-  if (isLoading) {
+  } else if (isLoading) {
     return <div>Loading ...</div>;
-  }
-
-  if (!isAuthenticated) {
+  } else if (!isAuthenticated) {
     return <LoginPage />;
+  } else if (isAuthenticated) {
+    return <AppBody {...props} />;
+  } else {
+    return <></>;
   }
-
-  return isAuthenticated && <AppBody {...props} />;
 }
