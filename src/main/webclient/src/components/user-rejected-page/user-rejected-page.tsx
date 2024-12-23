@@ -1,7 +1,8 @@
 import { Box, Center, Grid, GridItem, Heading } from "@chakra-ui/react";
 import { UIProps } from "../../config/config";
 
-export const LandingPage = () => {
+export const UserRejectedPage = ({ email }: { email: string }) => {
+  document.body.style.backgroundColor = UIProps.colors.background;
   return (
     <Box
       paddingLeft="47px"
@@ -12,7 +13,7 @@ export const LandingPage = () => {
       <Center>
         <Grid templateRows="repeat(2, 1fr)" gap={20}>
           <GridItem>
-            <Heading>Landing page</Heading>
+            <Heading>{`User ${email} doesn't have necessary rights to view this page`}</Heading>
           </GridItem>
         </Grid>
       </Center>

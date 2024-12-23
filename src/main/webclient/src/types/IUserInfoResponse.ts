@@ -4,3 +4,8 @@ export interface IUserInfoResponse {
 }
 
 export type userType = "EXTERNAL" | "READ_ONLY" |"ADMIN" | "SUPER_ADMIN";
+
+export const deniedUser: IUserInfoResponse = {
+  email: "",
+  userType: "EXTERNAL",
+};

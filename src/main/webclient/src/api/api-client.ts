@@ -11,7 +11,7 @@ import {
   deviceStatus,
   deviceType,
 } from "../types/deviceModel";
-import { IUserInfoResponse } from "../types/IUserInfoResponse";
+import { deniedUser, IUserInfoResponse } from "../types/IUserInfoResponse";
 
 export class APIClient {
 
@@ -26,10 +26,6 @@ export class APIClient {
         return data;
       })
       .catch((error: AxiosError) => {
-        const deniedUser: IUserInfoResponse = {
-          email: "",
-          userType: "EXTERNAL",
-        };
         if (error.code === "401") {
           return deniedUser;
         } else {

@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Navbar } from "../layout/navbar/navbar";
 import { IAppProps } from "../../types/projectTypes";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { Suspense, useEffect, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";
@@ -21,12 +21,14 @@ import { MonitoringPage } from "../monitoring-page/monitoring-page";
 import { NotFoundPage } from "../not-found-page/not-found-page";
 import { useAuth0 } from "@auth0/auth0-react";
 import { jwtDecode } from "jwt-decode";
+import { deniedUser, IUserInfoResponse } from "../../types/IUserInfoResponse";
+import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
 
 const refreshTime = 3; //minutes
 
 export const AppBody = () => {
-  const { user, isAuthenticated, getAccessTokenSilently } =
-    useAuth0();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   const [email, setEmail] = useState<string>("");
 
@@ -37,6 +39,8 @@ export const AppBody = () => {
   }, [user]);
 
   const [accessToken, setAccessToken] = useState<string>("");
+
+  const [userInfo, setUserInfo] = useState<IUserInfoResponse>();
 
   const ui = UIProps;
 
@@ -69,7 +73,13 @@ export const AppBody = () => {
       <Route
         key="monitoring-device"
         path="/monitoring/:device"
-        element={<MonitoringDevicePage accessToken={accessToken} email={email} model={deviceModel} />}
+        element={
+          <MonitoringDevicePage
+            accessToken={accessToken}
+            email={email}
+            model={deviceModel}
+          />
+        }
       />,
       <Route
         key="dashboard"
@@ -83,6 +93,11 @@ export const AppBody = () => {
       />,
       <Route key="about" path="/about" element={<AboutPage />} />,
       <Route key="landing-page" path="/" element={<LandingPage />} />,
+      <Route
+        key="user-rejected"
+        path="/permission-required"
+        element={<UserRejectedPage email={email} />}
+      />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
     alertsEnabled: alertsEnabled,
@@ -94,10 +109,11 @@ export const AppBody = () => {
   const getAccessToken = async () => {
     try {
       const token = await getAccessTokenSilently();
-      console.log("token: " + token);
-      console.log(jwtDecode(token));
+      // console.log("token: " + token);
+      // console.log(jwtDecode(token));
+      const user = await APIClient.getUserInfo(token);
 
-      // await APIClient.getUserInfo(token);
+      setUserInfo(user);
       setAccessToken(token);
       return token;
     } catch (e: any) {
@@ -147,11 +163,7 @@ export const AppBody = () => {
 
   const fetchUptimeValues = async (token: string, email: string) => {
     try {
-      const data = await APIClient.getAllDevicesHistory(
-        "1",
-        token,
-        email
-      );
+      const data = await APIClient.getAllDevicesHistory("1", token, email);
       setDevicesUptimeValues(data);
       return data;
     } catch (e: any) {
@@ -182,6 +194,7 @@ export const AppBody = () => {
   };
 
   useEffect(() => {
+    document.body.style.backgroundColor = UIProps.colors.background;
     onComponentLoaded().catch((error: any) => {
       console.error("Error happaned while recurrent updates: " + error.message);
     });
@@ -190,11 +203,18 @@ export const AppBody = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alertsEnabled, email]);
 
+  useEffect(() => {
+    if (userInfo && userInfo.userType === "EXTERNAL") {
+      navigate("/permission-required", { replace: true });
+      console.log(userInfo)
+    }
+  }, [userInfo, navigate]);
+
   return (
     <Grid
       templateAreas={`"header header"
-	"main main"
-	"footer footer"`}
+  "main main"
+  "footer footer"`}
       gridTemplateRows={`${ui.heigth.navbar} 1fr ${ui.heigth.footer}`}
       background="background"
     >
