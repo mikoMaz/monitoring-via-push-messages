@@ -13,6 +13,8 @@ public class EmailCreatorImpl implements EmailCreator {
 
     private final EmailDataRepository emailDataRepository;
 
+    org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(EmailCreatorImpl.class);
+
     @Autowired
     public EmailCreatorImpl(EmailDataRepository emailDataRepository) {
         this.emailDataRepository = emailDataRepository;
@@ -26,6 +28,9 @@ public class EmailCreatorImpl implements EmailCreator {
         for (ContextFields.Fields field : fieldsMap.keySet()) {
             emailBody = this.emailFieldCompiler(emailBody, field, fieldsMap.get(field));
         }
+
+        logger.info("Email is creating within {} context.", emailContext);
+
         return emailBody;
     }
 
@@ -33,12 +38,14 @@ public class EmailCreatorImpl implements EmailCreator {
         EmailData emailData = emailDataRepository.findByContext(emailContext);
 
         if (emailData == null) {
+            logger.error("Email data not found!");
             throw new NullPointerException("No data found for the given context. Please add missing data to db.");
         }
 
         String emailBody = emailData.getMailBody();
 
         if (emailBody == null) {
+            logger.error("Email body not found!");
             throw new NullPointerException("No email body found for the given context. Please add missing email body for this context.");
         }
 
@@ -69,6 +76,7 @@ public class EmailCreatorImpl implements EmailCreator {
         ContextFields contextFields = new ContextFields();
         // check if fields are within the given context
         if (!new HashSet<>(contextFields.getContexts(emailContext)).containsAll(fields)) {
+            logger.error("Context fields are not valid!");
             throw new IllegalArgumentException("Context fields are not valid");
         }
     }

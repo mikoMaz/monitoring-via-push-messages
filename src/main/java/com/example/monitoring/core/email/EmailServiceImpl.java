@@ -14,6 +14,8 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
 
+    org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(EmailServiceImpl.class);
+
     @Value("${spring.mail.username}")
     private String sender;
 
@@ -50,8 +52,10 @@ public class EmailServiceImpl implements EmailService {
             messageHelper.setText(email.getBody(), true);
 
             mailSender.send(message);
+            logger.info("Email was sent.");
             return "Email sent successfully";
         } catch (MessagingException e) {
+            logger.error("Problem occurred when sending email. Email has not been sent.");
             throw new RuntimeException("Unable to send email");
         }
     }

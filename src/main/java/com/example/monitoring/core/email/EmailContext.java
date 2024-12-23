@@ -6,4 +6,3 @@ public enum EmailContext {
     DELETE_ACCOUNT,
     TEST
 }
-
