@@ -72,8 +72,6 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         // TODO: add roles to rest of the paths
                         .requestMatchers("/api/v1/user/kluczdostepu").hasRole(Role.SUPER_ADMIN.name())
-//                        .requestMatchers("/api/v1/kluczdostepu").hasAuthority(Role.ADMIN.name())
-//                        .requestMatchers("/api/v1/kluczdostepu").hasAuthority("SCOPE_profile")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2
