@@ -32,7 +32,7 @@ public class EmailController {
         map.put(ContextFields.Fields.DEVICE_ID, List.of("id_6", "id_7", "id_8"));
         // IMPORTANT: you can't pass context field not associated with EmailContext
         // NOTE: if fields are not given then it will leave /BEGIN/<field>/END/ as a plain text in mail. DELETE FIELD FROM CONTEXT IF YOU CAN'T PROVIDE THE DATA!
-        String body = emailCreator.createEmail(EmailContext.WELCOME_MESSAGE, map);
+        String body = emailCreator.createEmail(EmailContext.TEST, map);
 
         Email emailObj = new Email();
         emailObj.setBody(body);
