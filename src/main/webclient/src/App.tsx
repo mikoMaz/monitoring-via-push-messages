@@ -11,15 +11,13 @@ export default function App() {
 
   if (error) {
     return <div>Athentication error occured: {error.message}</div>;
-  }
-
-  if (isLoading) {
+  } else if (isLoading) {
     return <div>Loading ...</div>;
-  }
-
-  if (!isAuthenticated) {
+  } else if (!isAuthenticated) {
     return <LoginPage />;
+  } else if (isAuthenticated) {
+    return <AppBody />;
+  } else {
+    return <></>;
   }
-
-  return isAuthenticated && <AppBody />;
 }

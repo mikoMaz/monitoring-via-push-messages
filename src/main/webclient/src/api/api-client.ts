@@ -78,10 +78,28 @@ export class APIClient {
       ]),
     ]);
   };
-  public static getUpdatedDeviceModel = async () => {
-    const apiURL = "http://localhost:8080/api/v1/kluczdostepu?id=1";
+
+  // public static getUserInfo = async (accessToken: string) => {
+  //   const info = await axios.get("https://localhost:3000/userinfo", {
+  //     headers: {
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },
+  //   });
+  //   console.log(info);
+  // };
+
+  public static getUpdatedDeviceModel = async (
+    accessToken: string,
+    email: string
+  ) => {
+    const apiURL = "http://localhost:8080/api/v1/user/kluczdostepu?id=1";
     return axios
-      .get(apiURL)
+      .get(apiURL, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Email: `${email}`,
+        },
+      })
       .then((response) => {
         const data: DeviceTreeModelJson = response.data;
         return createDeviceModelFromJson(data);
@@ -93,10 +111,20 @@ export class APIClient {
       });
   };
 
-  public static getDeviceUptime = async (type: deviceType, id: string) => {
-    const apiUrl = `http://localhost:8080/api/v1/history?id=${type}&device_id=${id}`;
+  public static getDeviceUptime = async (
+    type: deviceType,
+    id: string,
+    accessToken: string,
+    email: string
+  ) => {
+    const apiUrl = `http://localhost:8080/api/v1/user/history?id=${type}&device_id=${id}`;
     return axios
-      .get(apiUrl)
+      .get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Email: `${email}`,
+        },
+      })
       .then((response) => {
         const data: DeviceUptimeJson = response.data;
         return data.uptime;
@@ -109,11 +137,18 @@ export class APIClient {
   };
 
   public static getAllDevicesHistory = async (
-    id: string
+    id: string,
+    accessToken: string,
+    email: string
   ): Promise<number[]> => {
-    const apiUrl = `http://localhost:8080/api/v1/historyTree?id=${id}`;
+    const apiUrl = `http://localhost:8080/api/v1/user/historyTree?id=${id}`;
     return axios
-      .get(apiUrl)
+      .get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Email: `${email}`,
+        },
+      })
       .then((response) => {
         const data: AllDevicesUptimeJson = response.data;
         return data.uptimes;

@@ -20,11 +20,24 @@ import { MonitoringDevicePage } from "../monitoring-device-page/monitoring-devic
 import { MonitoringPage } from "../monitoring-page/monitoring-page";
 import { NotFoundPage } from "../not-found-page/not-found-page";
 import { useAuth0 } from "@auth0/auth0-react";
+import { jwtDecode } from "jwt-decode";
 
 const refreshTime = 3; //minutes
 
 export const AppBody = () => {
-  const { isAuthenticated } = useAuth0();
+  const { user, isAuthenticated, getAccessTokenSilently } =
+    useAuth0();
+
+  const [email, setEmail] = useState<string>("");
+
+  useEffect(() => {
+    if (user?.email) {
+      setEmail(user?.email);
+    }
+  }, [user]);
+
+  const [accessToken, setAccessToken] = useState<string>("");
+
   const ui = UIProps;
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
@@ -56,7 +69,7 @@ export const AppBody = () => {
       <Route
         key="monitoring-device"
         path="/monitoring/:device"
-        element={<MonitoringDevicePage {...deviceModel} />}
+        element={<MonitoringDevicePage accessToken={accessToken} email={email} model={deviceModel} />}
       />,
       <Route
         key="dashboard"
@@ -78,10 +91,30 @@ export const AppBody = () => {
     },
   };
 
-  const updateModel = async () => {
-    const data = await APIClient.getUpdatedDeviceModel();
-    setDeviceModel(data);
-    return data;
+  const getAccessToken = async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      console.log("token: " + token);
+      console.log(jwtDecode(token));
+
+      // await APIClient.getUserInfo(token);
+      setAccessToken(token);
+      return token;
+    } catch (e: any) {
+      console.error("getAccessToken error: " + e.message);
+      return undefined;
+    }
+  };
+
+  const updateModel = async (token: string, email: string) => {
+    try {
+      const data = await APIClient.getUpdatedDeviceModel(token, email);
+      setDeviceModel(data);
+      return data;
+    } catch (e: any) {
+      console.error("updateModel error: " + e.message);
+      return new DeviceModel();
+    }
   };
 
   const checkInactiveDevices = (model: DeviceModel) => {
@@ -112,28 +145,50 @@ export const AppBody = () => {
     }
   };
 
-  const fetchUptimeValues = async () => {
-    const data = await APIClient.getAllDevicesHistory("1");
-    setDevicesUptimeValues(data);
+  const fetchUptimeValues = async (token: string, email: string) => {
+    try {
+      const data = await APIClient.getAllDevicesHistory(
+        "1",
+        token,
+        email
+      );
+      setDevicesUptimeValues(data);
+      return data;
+    } catch (e: any) {
+      console.error("fetchUptimeValues error: " + e.message);
+      setDevicesUptimeValues([]);
+      return [];
+    }
   };
 
   const onComponentLoaded = async () => {
-    await updateModel()
-      .then((model) => checkInactiveDevices(model))
-      .catch((error: any) => {
-        console.error(error);
-      });
-    await fetchUptimeValues().catch((error: any) => {
-      console.error(error);
-    });
+    if (email || user?.email) {
+      const userEmail = email ?? user?.email;
+      if (!email) {
+        setEmail(userEmail);
+      }
+      const token = await getAccessToken();
+      if (token) {
+        await updateModel(token, userEmail)
+          .then((model) => checkInactiveDevices(model))
+          .catch((error: any) => {
+            console.error("Update model error: " + error);
+          });
+        await fetchUptimeValues(token, userEmail).catch((error: any) => {
+          console.error(error);
+        });
+      }
+    }
   };
 
   useEffect(() => {
-    onComponentLoaded().catch((error: any) => {});
-    setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
+    onComponentLoaded().catch((error: any) => {
+      console.error("Error happaned while recurrent updates: " + error.message);
+    });
+    setInterval(onComponentLoaded, 100 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alertsEnabled]);
+  }, [alertsEnabled, email]);
 
   return (
     <Grid

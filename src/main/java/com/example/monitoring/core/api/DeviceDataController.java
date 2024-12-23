@@ -18,7 +18,7 @@ import com.example.monitoring.core.api.history.DeviceHistoryService;
 import com.example.monitoring.core.status.DeviceStatus;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class DeviceDataController {
 
@@ -32,7 +32,7 @@ public class DeviceDataController {
     Long unixTime;
 
 
-    @PostMapping("/send-data")
+    @PostMapping("/sensor/send-data")
     public ResponseEntity<String>hello(
             @RequestBody Map<String, Object>  payloadJson,
             @RequestHeader("Authorization") String authHeader
@@ -65,7 +65,7 @@ public class DeviceDataController {
         }
         return ResponseEntity.ok("Everything is alright.");
     }
-    @PostMapping("/prehistory")
+    @PostMapping("/user/prehistory")
     public ResponseEntity<String>prehistory(
         @RequestBody Map<String, Object>  payloadJson,
         @RequestHeader("Authorization") String authHeader
