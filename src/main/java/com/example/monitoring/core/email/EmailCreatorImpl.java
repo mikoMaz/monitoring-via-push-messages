@@ -11,8 +11,12 @@ import java.util.Set;
 @Service
 public class EmailCreatorImpl implements EmailCreator {
 
+    private final EmailDataRepository emailDataRepository;
+
     @Autowired
-    EmailDataRepository emailDataRepository;
+    public EmailCreatorImpl(EmailDataRepository emailDataRepository) {
+        this.emailDataRepository = emailDataRepository;
+    }
 
     public String createEmail(EmailContext emailContext, Map<ContextFields.Fields, List<String>> fieldsMap) {
 
