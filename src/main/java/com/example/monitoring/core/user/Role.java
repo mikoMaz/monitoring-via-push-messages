@@ -1,7 +1,7 @@
 package com.example.monitoring.core.user;
 
 public enum Role {
-    USER,
-    SUPPORT,
-    ADMIN
+    READ_ONLY,
+    ADMIN,
+    SUPER_ADMIN
 }
