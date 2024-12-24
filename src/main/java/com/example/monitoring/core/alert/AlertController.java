@@ -50,44 +50,8 @@ public class AlertController {
             @RequestHeader("Authorization") String authHeader
             
     ){
-        JsonObject payloadJson=JsonParser.parseString(payload).getAsJsonObject();
-        JsonObject detailsJson=payloadJson.getAsJsonObject("details");
-        JsonArray ignoredDevices=payloadJson.getAsJsonArray("ignored_devices");
-        JsonArray observedDevices=payloadJson.getAsJsonArray("observed_devices");
-        logger.info("{}",detailsJson.toString());
-        logger.info("{}",ignoredDevices.toString());
-        logger.info("{}",observedDevices.toString());
-        AlertData alertObject=alertService.buildObject(detailsJson.toString());
-        List<DeviceStatus>ignoredDevicesStatus = new ArrayList<>();
-        for (JsonElement deviceId : ignoredDevices){
-            String id=deviceId.getAsString();
-            ignoredDevicesStatus.add(deviceStatusService.getDeviceStatus(id));
-        }
-        List<DeviceStatus>observedDevicesStatus = new ArrayList<>();
-        for (JsonElement deviceId : observedDevices){
-            String id=deviceId.getAsString();
-            DeviceStatus ds =deviceStatusService.getDeviceStatus(id);
-            observedDevicesStatus.add(ds);
-        }
-        
-        alertObject.setIgnoredDevicesList(ignoredDevicesStatus);
-        alertObject.setObservedDevicesList(observedDevicesStatus);
-
-        alertService.saveToDatabase(alertObject);
-        for (DeviceStatus deviceStatus : ignoredDevicesStatus){
-            List<AlertData> adList =deviceStatus.getIgnoringAlert();
-            adList.add(alertObject);
-            deviceStatus.setIgnoringAlert(adList);
-            deviceStatusService.saveToDatabase(deviceStatus);
-        }
-        alertService.saveToDatabase(alertObject);
-        for (DeviceStatus deviceStatus : observedDevicesStatus){
-            List<AlertData> adList =deviceStatus.getObservingAlert();
-            adList.add(alertObject);
-            deviceStatus.setObservingAlert(adList);
-            deviceStatusService.saveToDatabase(deviceStatus);
-        }
-        return ResponseEntity.ok(" ");
+        alertService.addNewAlert(payload);
+            return ResponseEntity.ok(" ");
     };
     @PostMapping("/remove-alert")
     public ResponseEntity<String>removeAlert(

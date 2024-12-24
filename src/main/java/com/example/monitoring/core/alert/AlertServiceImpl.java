@@ -20,6 +20,10 @@ import com.example.monitoring.core.status.DeviceStatusService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +51,45 @@ private final DataHolderService dataHolderService;
         }
         return alertData;
         
+    }
+    public void addNewAlert(String payload){
+        JsonObject payloadJson=JsonParser.parseString(payload).getAsJsonObject();
+        JsonObject detailsJson=payloadJson.getAsJsonObject("details");
+        JsonArray ignoredDevices=payloadJson.getAsJsonArray("ignored_devices");
+        JsonArray observedDevices=payloadJson.getAsJsonArray("observed_devices");
+        log.info("{}",detailsJson.toString());
+        log.info("{}",ignoredDevices.toString());
+        log.info("{}",observedDevices.toString());
+        AlertData alertObject=this.buildObject(detailsJson.toString());
+        List<DeviceStatus>ignoredDevicesStatus = new ArrayList<>();
+        for (JsonElement deviceId : ignoredDevices){
+            String id=deviceId.getAsString();
+            ignoredDevicesStatus.add(statusService.getDeviceStatus(id));
+        }
+        List<DeviceStatus>observedDevicesStatus = new ArrayList<>();
+        for (JsonElement deviceId : observedDevices){
+            String id=deviceId.getAsString();
+            DeviceStatus ds =statusService.getDeviceStatus(id);
+            observedDevicesStatus.add(ds);
+        }
+        
+        alertObject.setIgnoredDevicesList(ignoredDevicesStatus);
+        alertObject.setObservedDevicesList(observedDevicesStatus);
+
+        this.saveToDatabase(alertObject);
+        for (DeviceStatus deviceStatus : ignoredDevicesStatus){
+            List<AlertData> adList =deviceStatus.getIgnoringAlert();
+            adList.add(alertObject);
+            deviceStatus.setIgnoringAlert(adList);
+            statusService.saveToDatabase(deviceStatus);
+        }
+        this.saveToDatabase(alertObject);
+        for (DeviceStatus deviceStatus : observedDevicesStatus){
+            List<AlertData> adList =deviceStatus.getObservingAlert();
+            adList.add(alertObject);
+            deviceStatus.setObservingAlert(adList);
+            statusService.saveToDatabase(deviceStatus);
+        }
     }
     public ArrayList<AlertData> getAlertsForCompany(String companyId)
     {

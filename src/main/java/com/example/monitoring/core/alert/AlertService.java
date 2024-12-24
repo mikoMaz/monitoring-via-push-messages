@@ -16,5 +16,6 @@ public interface AlertService {
     ArrayList<AlertData> getAlertsForDevice(String deviceId);
     void setAlertIgnoreState(String alertId,boolean stateValue);
     void getDevicesThatGiveAlert(String companyId);
-    
+    void addNewAlert(String payload);
+
 }

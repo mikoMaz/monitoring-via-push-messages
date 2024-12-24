@@ -26,7 +26,7 @@ public class DeviceDataController {
     private final AuthenticationService authenticationService;
     private final DeviceDataService deviceDataService;
     private final DeviceHistoryService historyService;
-    org.slf4j.Logger  logger =LoggerFactory.getLogger(AuthenticationController.class);
+    org.slf4j.Logger  logger =LoggerFactory.getLogger(DeviceDataController.class);
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectReader reader = new ObjectMapper().readerFor(Map.class);
     Long unixTime;

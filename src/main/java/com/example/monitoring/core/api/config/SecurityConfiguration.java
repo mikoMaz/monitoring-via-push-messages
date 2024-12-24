@@ -24,7 +24,6 @@ public class SecurityConfiguration {
         http.cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                        auth.requestMatchers("/api/v1/alert/**").permitAll(); //TODO: add authentication to alerts
                         auth.requestMatchers("/api/v1/**").permitAll()
                         .anyRequest().authenticated();
                         })

@@ -140,7 +140,7 @@ public void checkDevicesInEveryCompany3() {
 
     
 
-    
+
 
 public void stopAlert(String alertId){
     List<ActiveAlert> listOfAlertsToShutDown = new ArrayList();
