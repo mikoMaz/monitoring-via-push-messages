@@ -29,6 +29,7 @@ const refreshTime = 3; //minutes
 export const AppBody = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const apiClient = new APIClient();
 
   const [email, setEmail] = useState<string>("");
 
@@ -75,6 +76,7 @@ export const AppBody = () => {
         path="/monitoring/:device"
         element={
           <MonitoringDevicePage
+            apiClient={apiClient}
             accessToken={accessToken}
             email={email}
             model={deviceModel}
@@ -111,7 +113,7 @@ export const AppBody = () => {
       const token = await getAccessTokenSilently();
       // console.log("token: " + token);
       // console.log(jwtDecode(token));
-      const user = await APIClient.getUserInfo(token, email);
+      const user = await apiClient.getUserInfo(token, email);
 
       setUserInfo(user);
       setAccessToken(token);
@@ -124,7 +126,7 @@ export const AppBody = () => {
 
   const updateModel = async (token: string, email: string) => {
     try {
-      const data = await APIClient.getUpdatedDeviceModel(token, email);
+      const data = await apiClient.getUpdatedDeviceModel(token, email);
       setDeviceModel(data);
       return data;
     } catch (e: any) {
@@ -163,7 +165,7 @@ export const AppBody = () => {
 
   const fetchUptimeValues = async (token: string, email: string) => {
     try {
-      const data = await APIClient.getAllDevicesHistory("1", token, email);
+      const data = await apiClient.getAllDevicesHistory("1", token, email);
       setDevicesUptimeValues(data);
       return data;
     } catch (e: any) {
@@ -206,7 +208,7 @@ export const AppBody = () => {
   useEffect(() => {
     if (userInfo && userInfo.userType === "EXTERNAL") {
       navigate("/permission-required", { replace: true });
-      console.log(userInfo)
+      console.log(userInfo);
     }
   }, [userInfo, navigate]);
 
