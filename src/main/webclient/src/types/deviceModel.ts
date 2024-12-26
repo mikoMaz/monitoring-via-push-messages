@@ -10,8 +10,10 @@ export enum deviceType {
 }
 
 export const returnDeviceTypesArray = (): string[] => {
-  return Object.values(deviceType).filter((t): t is string => typeof t === "string");
-}
+  return Object.values(deviceType).filter(
+    (t): t is string => typeof t === "string"
+  );
+};
 
 export interface IMonitoringDevice {
   id: string;
@@ -180,6 +182,7 @@ export interface IDeviceModel {
   bridges: IBridge[];
   gateways: IGateway[];
   sensors: ISensor[];
+  getDevicesCount: () => number;
 }
 
 interface ITreeModelDevice {
@@ -364,6 +367,14 @@ export class DeviceModel implements IDeviceModel {
       }
     });
     return devices;
+  };
+
+  public getDevicesCount = () => {
+    return [
+      ...this.getBridgesArray(),
+      ...this.getGatewaysArray(),
+      ...this.getSensorsArray(),
+    ].length;
   };
 
   public static getPlaceholderDevice = (): IMonitoringDevice => {

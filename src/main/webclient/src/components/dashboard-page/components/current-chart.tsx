@@ -4,10 +4,10 @@ import { IChartTemplateModel } from "../../../types/chartTemplate";
 import { createDeviceModel } from "../../../types/deviceModel";
 
 
-export const CurrentChart = ({ model, devicesHistoryValues }: IChartTemplateModel) => {
+export const CurrentChart = ({ model }: IChartTemplateModel) => {
 	const deviceModel = createDeviceModel(model);
 
-	if (devicesHistoryValues.length) {
+	if (model.getDevicesCount()) {
 		return (
 			<HStack>
 			  <StatusPieChart devices={deviceModel.getSensorsArray()} heading="Sensors" />
@@ -16,6 +16,6 @@ export const CurrentChart = ({ model, devicesHistoryValues }: IChartTemplateMode
 			</HStack>
 		  );
 	} else {
-		return <>No data</>;
+		return <>Invalid data</>;
 	}
 };

@@ -89,7 +89,7 @@ export const AppBody = () => {
         element={
           <DashboardPage
             model={deviceModel}
-            devicesUptime={devicesUptimeValues}
+            devicesUptime={devicesUptimeValues ?? []}
           />
         }
       />,

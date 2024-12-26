@@ -56,6 +56,10 @@ export class FileSaver {
               bridges: [],
               gateways: [],
               sensors: [],
+              //temporary solution, fixed in MON-84
+              getDevicesCount: () => {
+                return 0;
+              },
             },
           },
         };
