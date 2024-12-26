@@ -79,10 +79,10 @@ export class APIClient implements IAPIClient {
         return data;
       })
       .catch((error: AxiosError) => {
+        console.error("User was permitted to endter the website", error.message);
         if (error.code === "401") {
           return getDeniedUserInfoResponse(email);
         } else {
-          console.error(error.message);
           return getDeniedUserInfoResponse(email);
         }
       });
