@@ -66,12 +66,14 @@ export class APIClient implements IAPIClient {
     accessToken: string,
     email?: string
   ): Promise<IUserInfoResponse> => {
-    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/userInfo?token=${accessToken}`;
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/userInfo`;
     if (this.useTestData()) {
       return this.testApiClient.getUserInfo(accessToken, email);
     }
     return axios
-      .post(apiURL)
+      .get(apiURL, {headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },})
       .then((response) => {
         const data: IUserInfoResponse = response.data;
         return data;
