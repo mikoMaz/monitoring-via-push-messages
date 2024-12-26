@@ -20,17 +20,19 @@ import {
 import { CustomAccordionButton } from "./components/custom-accordion-buttons";
 import { capitalizeFirstLetter } from "../../types/projectTypes";
 import { DeviceDetailsTable } from "./components/device-details-table";
-import { APIClient } from "../../api/api-client";
+import { APIClient, IAPIClient } from "../../api/api-client";
 
 export type monitoringDeviceType = "sensor" | "gateway" | "bridge" | "other";
 
 interface IMonitoringDevicePage {
+  apiClient: IAPIClient;
   model: DeviceModel;
   accessToken: string;
   email: string;
 }
 
 export const MonitoringDevicePage = ({
+  apiClient,
   model,
   accessToken,
   email,
@@ -96,7 +98,7 @@ export const MonitoringDevicePage = ({
       id: string,
       email: string
     ) => {
-      var time = await APIClient.getDeviceUptime(1, id, accessToken, email);
+      var time = await apiClient.getDeviceUptime(1, id, accessToken, email);
       setActiveTime(time);
     };
 
@@ -107,7 +109,7 @@ export const MonitoringDevicePage = ({
         email
       );
     }
-  }, [selectedDevice]);
+  }, [selectedDevice, apiClient, accessToken, email]);
 
   return (
     <Box

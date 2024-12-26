@@ -24,7 +24,6 @@ import {
   chartTypeFromString,
   chartTypeToString,
 } from "../../../types/chartTemplate";
-import DatePicker from "react-datepicker";
 import { returnDeviceTypesArray } from "../../../types/deviceModel";
 import "react-datepicker/dist/react-datepicker.css";
 import { ChakraDatePicker } from "./date-picker";
