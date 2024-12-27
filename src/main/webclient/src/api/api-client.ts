@@ -103,11 +103,14 @@ export class APIClient {
       });
   };
 
-  public static getDummyDevicesHistory = () => {
-    return [
-      87.2, 89.7, 90.1, 90.4, 90.8, 91.3, 93.4, 96.3, 96.6, 96.6, 97.1, 97.5,
-      98.3, 98.5, 98.6, 98.7, 98.9, 99.2, 99.3, 99.7, 99.7, 99.8, 99.8, 99.9,
-      99.9, 99.9, 99.9,
-    ];
+  public static getDummyDevicesHistory = (): AllDevicesUptimeJson => {
+    return {
+      upperLevel: [87.2, 89.7, 90.1],
+      middleLevel: [90.4, 90.8, 91.3, 93.4, 96.3, 96.6, 96.6],
+      bottomLevel: [
+        97.1, 97.5, 98.3, 98.5, 98.6, 98.7, 98.9, 99.2, 99.3, 99.7, 99.7, 99.8,
+        99.8, 99.9, 99.9, 99.9, 99.9,
+      ],
+    };
   };
 }

@@ -68,19 +68,15 @@ export const NewCustomChartCreator = ({
   );
 
   const handleSave = () => {
-    const updatedTemplate = new ChartTemplate(
-      templateName,
-      selectedType,
-      {
-        percentFragmentation: parseFloat(percentFragmentationVariable),
-        brushActive: isBrushActive,
-        deviceTypes: getDeviceTypeArray(),
-      }
-    );
-  
+    const updatedTemplate = new ChartTemplate(templateName, selectedType, {
+      percentFragmentation: parseFloat(percentFragmentationVariable),
+      brushActive: isBrushActive,
+      deviceTypes: getDeviceTypeArray(),
+    });
+
     updatedTemplate.id = template.id;
     editFunction(updatedTemplate);
-  };  
+  };
 
   const drawEditPresetNumberInputs = () => {
     if (selectedType === chartType.Recent) {
@@ -195,6 +191,7 @@ export const NewCustomChartCreator = ({
                 returnDeviceTypesArray().map((t) => e.target.checked)
               );
             }}
+            colorScheme="primary"
           >
             All Devices
           </Checkbox>
@@ -208,6 +205,7 @@ export const NewCustomChartCreator = ({
                     replaceAtIndex(checkedItems, index, e.target.checked)
                   );
                 }}
+                colorScheme="primary"
               >
                 {value}
               </Checkbox>
