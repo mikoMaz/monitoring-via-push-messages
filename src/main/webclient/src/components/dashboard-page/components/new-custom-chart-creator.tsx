@@ -26,6 +26,8 @@ import {
   getEmptyPreset,
 } from "../../../types/chartTemplate";
 import { deviceType, returnDeviceTypesArray } from "../../../types/deviceModel";
+import "react-datepicker/dist/react-datepicker.css";
+import { ChakraDatePicker } from "./date-picker";
 
 interface INewCustomChartCreator {
   template: ChartTemplate;
@@ -66,6 +68,8 @@ export const NewCustomChartCreator = ({
   const [isBrushActive, setIsBrushActive] = useState<boolean>(
     template.chartModel.brushActive
   );
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   const handleSave = () => {
     const updatedTemplate = new ChartTemplate(templateName, selectedType, {
@@ -216,6 +220,38 @@ export const NewCustomChartCreator = ({
     }
   };
 
+  const drawDatePicker = () => {
+    if (selectedType !== chartType.EmptyPreset) {
+      return (
+        <HStack>
+          <Heading size="sm">From:</Heading>
+          <ChakraDatePicker
+            value={startDate}
+            onChange={(date) => {
+              const newStartDate = date ?? new Date();
+              setStartDate(newStartDate);
+              if (newStartDate > endDate) {
+                setEndDate(newStartDate);
+              }
+            }}
+          />
+          <Heading size="sm">To:</Heading>
+          <ChakraDatePicker
+            value={endDate}
+            onChange={(date) => {
+              const newEndDate = date ?? new Date();
+              if (newEndDate < startDate) {
+                setEndDate(startDate);
+              } else {
+                setEndDate(newEndDate);
+              }
+            }}
+          />
+        </HStack>
+      );
+    }
+  };
+
   return (
     <Grid templateColumns="repeat(2, 1fr)" gap="10">
       <GridItem colSpan={1}>
@@ -227,7 +263,10 @@ export const NewCustomChartCreator = ({
         </VStack>
       </GridItem>
       <GridItem colSpan={1}>
-        <VStack alignItems="start">{drawEditCheckboxDeviceType()}</VStack>
+        <VStack alignItems="start">
+          {drawEditCheckboxDeviceType()}
+          {drawDatePicker()}
+        </VStack>
       </GridItem>
     </Grid>
   );

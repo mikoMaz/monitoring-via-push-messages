@@ -182,6 +182,7 @@ export interface IDeviceModel {
   bridges: IBridge[];
   gateways: IGateway[];
   sensors: ISensor[];
+  getDevicesCount: () => number;
 }
 
 interface ITreeModelDevice {
@@ -208,6 +209,12 @@ export interface AllDevicesUptimeJson {
   middleLevel: number[];
   bottomLevel: number[];
 }
+
+export const emptyAllDevicesUptimeJson: AllDevicesUptimeJson = {
+  upperLevel: [],
+  middleLevel: [],
+  bottomLevel: [],
+};
 
 export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
   const bridges: Bridge[] = [];
@@ -368,6 +375,14 @@ export class DeviceModel implements IDeviceModel {
       }
     });
     return devices;
+  };
+
+  public getDevicesCount = () => {
+    return [
+      ...this.getBridgesArray(),
+      ...this.getGatewaysArray(),
+      ...this.getSensorsArray(),
+    ].length;
   };
 
   public static getPlaceholderDevice = (): IMonitoringDevice => {

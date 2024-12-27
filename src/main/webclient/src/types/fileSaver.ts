@@ -4,7 +4,7 @@ import {
   chartTypeFromString,
   IChartTemplate,
 } from "./chartTemplate";
-import { IDeviceModel, deviceType } from "./deviceModel";
+import { IDeviceModel } from "./deviceModel";
 
 export interface chartTemplateJsonObject {
   templates: IChartTemplate[];

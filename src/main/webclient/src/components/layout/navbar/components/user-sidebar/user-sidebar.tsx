@@ -16,6 +16,16 @@ import {
   FormControl,
   FormLabel,
   DrawerFooter,
+  Heading,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Input,
+  Textarea,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -57,8 +67,8 @@ export const UserSidebar = ({
           </DrawerHeader>
 
           <DrawerBody>
-            <Grid templateRows="2fr 1fr 8fr">
-              <GridItem>
+            <Grid templateRows="2fr auto auto auto">
+              <GridItem mb={8}>
                 <FormControl display="flex" alignItems="center">
                   <FormLabel htmlFor="alerts-switch" mb="0">
                     Alerts
@@ -73,12 +83,14 @@ export const UserSidebar = ({
                   />
                 </FormControl>
               </GridItem>
-              <GridItem>Settings</GridItem>
+              <GridItem mb={4}>
+                <Heading size="md">Settings</Heading>
+              </GridItem>
               <GridItem>
                 <Button
                   colorScheme="red"
                   onClick={handleClearLocalStorage}
-                  marginTop="20px"
+                  variant="ghost"
                 >
                   Clear Local Storage
                 </Button>

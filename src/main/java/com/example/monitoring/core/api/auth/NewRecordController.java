@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.monitoring.core.sensor.SensorDataSimplifiedService;
 @RestController
-@RequestMapping("/api/v1/new-record")
+@RequestMapping("/api/v1/sensor/new-record")
 @RequiredArgsConstructor
 public class NewRecordController {
     private final PayloadService payloadService;

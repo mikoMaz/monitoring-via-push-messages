@@ -5,12 +5,11 @@ import { createDeviceModel, deviceType } from "../../../types/deviceModel";
 
 export const CurrentChart = ({
   model,
-  devicesHistoryValues,
   deviceTypes,
 }: IChartTemplateModelDrawing & { deviceTypes: number[] }) => {
   const deviceModel = createDeviceModel(model);
 
-  if (devicesHistoryValues.length) {
+  if (model.getDevicesCount()) {
     return (
       <HStack>
         {deviceTypes.includes(deviceType.sensor) && (
@@ -34,6 +33,6 @@ export const CurrentChart = ({
       </HStack>
     );
   } else {
-    return <>No data</>;
+    return <>Invalid data</>;
   }
 };

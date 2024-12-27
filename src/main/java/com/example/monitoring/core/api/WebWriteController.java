@@ -36,7 +36,7 @@ import com.example.monitoring.core.api.history.DeviceHistoryService;
 import com.google.gson.*;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class WebWriteController {
 

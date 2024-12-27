@@ -5,21 +5,24 @@ import {
   HStack,
   IconButton,
   TabPanel,
+  Text,
   Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import { CurrentChart } from "../components/dashboard-page/components/current-chart";
 import { RecentChart } from "../components/dashboard-page/components/recent-chart";
 import { useState } from "react";
-import { DeviceModel, deviceType, IDeviceModel } from "./deviceModel";
+import { deviceType, IDeviceModel } from "./deviceModel";
 import { NewCustomChartCreator } from "../components/dashboard-page/components/new-custom-chart-creator";
 import { FileSaver } from "./fileSaver";
 import { Delete } from "@mui/icons-material";
+import { HistoryChart } from "../components/dashboard-page/components/history-chart";
 
 export enum chartType {
   EmptyPreset,
   Current,
   Recent,
+  History,
 }
 
 export const chartTypeToString = (type: chartType): string => {
@@ -99,6 +102,8 @@ export class ChartTemplate implements IChartTemplate {
             {...this.chartModel}
           />
         );
+      case chartType.History:
+        return <HistoryChart />;
       default:
         return this.invalidChart();
     }
@@ -130,6 +135,8 @@ export const ChartTabPanel = ({
   uptimeValues,
 }: IChartTabPanel) => {
   const [isEditing, setIsEditing] = useState(false);
+
+  const currentTime = new Date().toLocaleString();
 
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
@@ -165,6 +172,8 @@ export const ChartTabPanel = ({
 
         <Box position="relative" w="100%">
           <HStack spacing={4} justify="flex-end">
+            <Text>Generated: {currentTime}</Text>
+
             <Button
               onClick={handleEditToggle}
               colorScheme="primary"

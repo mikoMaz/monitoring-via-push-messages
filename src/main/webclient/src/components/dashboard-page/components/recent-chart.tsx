@@ -90,7 +90,7 @@ export const RecentChart = ({
     };
   });
 
-  if (devicesHistoryValues.length) {
+  if (devicesHistoryValues && devicesHistoryValues.length) {
     console.log(brushActive);
     return (
       <Box>
