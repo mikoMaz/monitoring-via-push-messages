@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ViewChartsTabs } from "./components/view-charts-tabs";
 import { RecentChart } from "./components/recent-chart";
 import { CurrentChart } from "./components/current-chart";
-import { ChartCreator } from "./components/chart-creator";
+import { CustomChartsTab } from "./components/custom-charts-tab";
 import { getEmptyPreset, IChartTemplateModel } from "../../types/chartTemplate";
 import { HistoryChart } from "./components/history-chart";
 
@@ -92,7 +92,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
           </>
         );
       case viewOption.custom:
-        return <ChartCreator model={model} devicesUptime={devicesUptime} />;
+        return <CustomChartsTab model={model} devicesUptime={devicesUptime} />;
     }
   };
 

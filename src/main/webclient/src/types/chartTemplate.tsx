@@ -13,7 +13,7 @@ import { CurrentChart } from "../components/dashboard-page/components/current-ch
 import { RecentChart } from "../components/dashboard-page/components/recent-chart";
 import { useState } from "react";
 import { deviceType, IDeviceModel } from "./deviceModel";
-import { NewCustomChartCreator } from "../components/dashboard-page/components/new-custom-chart-creator";
+import { ChartCreator } from "../components/dashboard-page/components/chart-creator";
 import { FileSaver } from "./fileSaver";
 import { Delete } from "@mui/icons-material";
 import { HistoryChart } from "../components/dashboard-page/components/history-chart";
@@ -151,7 +151,7 @@ export const ChartTabPanel = ({
       <VStack spacing={4} align="start" w="100%">
         <Box w="100%">
           {isEditing ? (
-            <NewCustomChartCreator
+            <ChartCreator
               template={template}
               editFunction={editFunction}
             />

@@ -1,299 +1,270 @@
 import {
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Input,
+  Switch,
+  Grid,
   Button,
   Flex,
-  Grid,
   GridItem,
   HStack,
-  IconButton,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  Tooltip,
   VStack,
+  Heading,
+  Select,
+  Checkbox,
+  Stack,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import {
-  AllDevicesUptimeJson,
-  DeviceModel,
-  deviceType,
-} from "../../../types/deviceModel";
-import { useRef, useState } from "react";
-import {
-  ChartTabPanel,
   ChartTemplate,
   chartType,
+  chartTypeFromString,
+  chartTypeToString,
   getEmptyPreset,
 } from "../../../types/chartTemplate";
-import { Download, InfoOutlined, Upload } from "@mui/icons-material";
-import { NewCustomChartCreator } from "./new-custom-chart-creator";
-import { UIProps } from "../../../config/config";
-import { returnDeviceTypesArray } from "../../../types/deviceModel";
-import {
-  localStorageKey,
-  LocalStorageManager,
-  FileSaver,
-  chartTemplateJsonObject,
-} from "../../../types/fileSaver";
+import { deviceType, returnDeviceTypesArray } from "../../../types/deviceModel";
+import "react-datepicker/dist/react-datepicker.css";
+import { ChakraDatePicker } from "./date-picker";
 
 interface IChartCreator {
-  model: DeviceModel;
-  devicesUptime: AllDevicesUptimeJson;
+  template: ChartTemplate;
+  editFunction: (editedTemplate: ChartTemplate) => void;
 }
 
-export const ChartCreator = ({ model, devicesUptime }: IChartCreator) => {
-  const allHistoryValues = [
-    ...devicesUptime.upperLevel,
-    ...devicesUptime.middleLevel,
-    ...devicesUptime.bottomLevel,
-  ];
-
-  const returnDeviceUptimesByDeviceType = (devices: deviceType[]) => {
-    let uptimeValues: number[] = [];
-    if (devices) {
-      if (devices.length === returnDeviceTypesArray().length) {
-        return allHistoryValues;
-      }
-      if (devices.includes(deviceType.sensor)) {
-        uptimeValues = [...uptimeValues, ...devicesUptime.bottomLevel];
-      }
-      if (devices.includes(deviceType.gateway)) {
-        uptimeValues = [...uptimeValues, ...devicesUptime.middleLevel];
-      }
-      if (devices.includes(deviceType.bridge)) {
-        uptimeValues = [...uptimeValues, ...devicesUptime.upperLevel];
-      }
-    }
-    return uptimeValues;
-  };
-
-  const localStorageKey: localStorageKey = "chartPresets";
-
-  const [selectedTemplateIndex, setSelectedTemplateIndex] = useState<number>(0);
-
-  const [chartPresets, setChartPresets] = useState<ChartTemplate[]>(() => {
-    const presets =
-      LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
-    if (presets.length > 0) {
-      return presets;
-    }
-    return [];
-  });
-
-  const addOrUpdatePreset = (newPreset: ChartTemplate) => {
-    setChartPresets((prevPresets) => {
-      const updatedPresets = [...prevPresets];
-      const index = updatedPresets.findIndex(
-        (preset) => preset.id === newPreset.id
-      );
-      if (index !== -1) {
-        updatedPresets[index] = newPreset;
-        console.log("is type updated ", newPreset.type);
-      } else {
-        updatedPresets.push(newPreset);
-      }
-      LocalStorageManager.savePresetsToLocalStorage(
-        localStorageKey,
-        updatedPresets,
-        model
-      );
-      console.log(updatedPresets);
-      return updatedPresets;
-    });
-  };
-
-  const handlePresetTabSelected = (index: number) => {
-    setSelectedTemplateIndex(index);
-  };
-
-  const [newChartTemplate, setNewChartTemplate] = useState<ChartTemplate>(
-    getEmptyPreset()
+export const ChartCreator = ({ template, editFunction }: IChartCreator) => {
+  const [percentFragmentationVariable, setPercentFragmentationVariable] =
+    useState<string>(template.chartModel.percentFragmentation.toString());
+  const [templateName, setTemplateName] = useState<string>(template.name);
+  const [selectedType, setSelectedType] = useState<chartType>(template.type);
+  const [checkedItems, setCheckedItems] = useState<boolean[]>(
+    returnDeviceTypesArray().map((t) => true)
   );
 
-  const handlePresetChanged = (editedTemplate: ChartTemplate) => {
-    addOrUpdatePreset(editedTemplate);
+  useEffect(() => {
+    let checked = returnDeviceTypesArray().map((t) => false);
+    template.chartModel.deviceTypes.forEach((device) => {
+      checked[device] = true;
+    });
+    setCheckedItems(checked);
+  }, [template.chartModel.deviceTypes]);
+
+  const getDeviceTypeArray = () => {
+    if (checkedItems.every((e) => !e)) {
+      return getEmptyPreset().chartModel.deviceTypes;
+    }
+    let devices: deviceType[] = [];
+    if (checkedItems[deviceType.sensor]) devices.push(deviceType.sensor);
+    if (checkedItems[deviceType.gateway]) devices.push(deviceType.gateway);
+    if (checkedItems[deviceType.bridge]) devices.push(deviceType.bridge);
+    return devices;
   };
 
-  const createNewPreset = () => {
-    if (!chartPresets.find((p) => p.type === chartType.EmptyPreset)) {
-      const emptyPreset = getEmptyPreset();
-      setNewChartTemplate(emptyPreset);
-      const index = chartPresets.length - 1;
-      setChartPresets([...chartPresets, emptyPreset]);
-      setSelectedTemplateIndex(index + 1);
+  const [isBrushActive, setIsBrushActive] = useState<boolean>(
+    template.chartModel.brushActive
+  );
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+  const handleSave = () => {
+    const updatedTemplate = new ChartTemplate(templateName, selectedType, {
+      percentFragmentation: parseFloat(percentFragmentationVariable),
+      brushActive: isBrushActive,
+      deviceTypes: getDeviceTypeArray(),
+    });
+
+    updatedTemplate.id = template.id;
+    editFunction(updatedTemplate);
+  };
+
+  const drawEditPresetNumberInputs = () => {
+    if (selectedType === chartType.Recent) {
+      return (
+        <HStack>
+          <Heading size="sm">Fragmentation: </Heading>
+          <NumberInput
+            step={0.05}
+            precision={2}
+            min={0.001}
+            keepWithinRange={false}
+            clampValueOnBlur={false}
+            maxW={20}
+            value={percentFragmentationVariable}
+            onChange={(valueString) =>
+              setPercentFragmentationVariable(valueString)
+            }
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </HStack>
+      );
     }
   };
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleImportClick = () => {
-    fileInputRef.current?.click();
+  const drawEditPresetNameInput = () => {
+    return (
+      <HStack justifyContent="flex-start">
+        <Heading size="sm">Name:</Heading>
+        <Input
+          htmlSize={15}
+          width="auto"
+          value={templateName}
+          onChange={(e) => setTemplateName(e.target.value)}
+        />
+        <Button onClick={handleSave} colorScheme="secondary">
+          Save
+        </Button>
+      </HStack>
+    );
   };
 
-  const handleExportClick = () => {
-    FileSaver.saveChartPresetsToJson(chartPresets, model);
+  const drawEditBrushSwitch = () => {
+    if (selectedType === chartType.Recent) {
+      return (
+        <HStack>
+          <Heading size="sm">Brush: </Heading>
+          <Flex alignItems="center" justifyContent="flex-start" height="100%">
+            <Switch
+              size="lg"
+              colorScheme="primary"
+              id="active-brush"
+              isChecked={isBrushActive}
+              onChange={(e) => setIsBrushActive(e.target.checked)}
+            />
+          </Flex>
+        </HStack>
+      );
+    }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target?.result;
-        if (content) {
-          try {
-            const importedPresets: chartTemplateJsonObject = JSON.parse(
-              content as string
-            );
-            const parsedPresets =
-              FileSaver.parseJsonToChartTemplates(importedPresets);
-            setChartPresets((prevPresets) => {
-              const allPresets = [...prevPresets, ...parsedPresets];
-              LocalStorageManager.savePresetsToLocalStorage(
-                localStorageKey,
-                allPresets,
-                model
-              );
-              console.log("Imported presets:", importedPresets);
-              return allPresets;
-            });
-          } catch (error) {
-            console.error("Error parsing imported file:", error);
-          }
+  const drawEditSelectChartType = () => {
+    const handleChange = (event: any) => {
+      setSelectedType(chartTypeFromString(event.target.value.toString()));
+    };
+
+    return (
+      <Select
+        placeholder={
+          template.type === chartType.EmptyPreset
+            ? "Select type of the chart"
+            : chartTypeToString(template.type)
         }
-      };
-      reader.readAsText(file);
-    }
-  };
-
-  const handleDeletePreset = (id: number) => {
-    if (window.confirm("Are you sure you want to delete this preset?")) {
-      const updatedPresets = chartPresets.filter((preset) => preset.id !== id);
-      setChartPresets(updatedPresets);
-      if (updatedPresets.length > 0) {
-        LocalStorageManager.savePresetsToLocalStorage(
-          localStorageKey,
-          updatedPresets,
-          model
-        );
-      } else {
-        LocalStorageManager.clearLocalStorageEntry(localStorageKey);
-      }
-      if (selectedTemplateIndex >= updatedPresets.length) {
-        setSelectedTemplateIndex(0);
-      }
-    }
-  };
-
-  const TabListElements = () => {
-    return (
-      <TabList>
-        {chartPresets.map((preset) => {
-          return (
-            <Tab width="120px" mb={4}>
-              {preset.name}
-            </Tab>
-          );
-        })}
-      </TabList>
+        onChange={handleChange}
+      >
+        {Object.values(chartType)
+          .filter((type): type is string => typeof type === "string")
+          .map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+      </Select>
     );
   };
 
-  const TabPanelsElements = () => {
-    return (
-      <TabPanels>
-        {chartPresets.map((preset) => {
-          if (preset.type !== chartType.EmptyPreset) {
-            return (
-              <ChartTabPanel
-                key={preset.id}
-                template={preset}
-                editFunction={handlePresetChanged}
-                deleteFunction={() => handleDeletePreset(preset.id)}
-                model={model}
-                uptimeValues={returnDeviceUptimesByDeviceType(
-                  preset.chartModel.deviceTypes
-                )}
-              />
-            );
-          } else {
-            return (
-              <TabPanel>
-                <NewCustomChartCreator
-                  template={newChartTemplate}
-                  editFunction={handlePresetChanged}
-                />
-              </TabPanel>
-            );
-          }
-        })}
-      </TabPanels>
-    );
+  const drawEditCheckboxDeviceType = () => {
+    const allChecked = checkedItems.every(Boolean);
+    const isIndeterminate = checkedItems.some(Boolean) && !allChecked;
+
+    function replaceAtIndex<T>(arr: T[], index: number, newValue: T): T[] {
+      if (index >= 0 && index < arr.length) {
+        const newArr = [...arr];
+        newArr[index] = newValue;
+        return newArr;
+      }
+      return arr;
+    }
+
+    if (selectedType !== chartType.EmptyPreset) {
+      return (
+        <>
+          <Checkbox
+            isChecked={allChecked}
+            isIndeterminate={isIndeterminate}
+            onChange={(e) => {
+              setCheckedItems(
+                returnDeviceTypesArray().map((t) => e.target.checked)
+              );
+            }}
+            colorScheme="primary"
+          >
+            All Devices
+          </Checkbox>
+          <Stack pl={6} mt={1} spacing={1}>
+            {returnDeviceTypesArray().map((value, index) => (
+              <Checkbox
+                key={index}
+                isChecked={checkedItems[index]}
+                onChange={(e) => {
+                  setCheckedItems(
+                    replaceAtIndex(checkedItems, index, e.target.checked)
+                  );
+                }}
+                colorScheme="primary"
+              >
+                {value}
+              </Checkbox>
+            ))}
+          </Stack>
+        </>
+      );
+    }
+  };
+
+  const drawDatePicker = () => {
+    if (selectedType !== chartType.EmptyPreset) {
+      return (
+        <HStack>
+          <Heading size="sm">From:</Heading>
+          <ChakraDatePicker
+            value={startDate}
+            onChange={(date) => {
+              const newStartDate = date ?? new Date();
+              setStartDate(newStartDate);
+              if (newStartDate > endDate) {
+                setEndDate(newStartDate);
+              }
+            }}
+          />
+          <Heading size="sm">To:</Heading>
+          <ChakraDatePicker
+            value={endDate}
+            onChange={(date) => {
+              const newEndDate = date ?? new Date();
+              if (newEndDate < startDate) {
+                setEndDate(startDate);
+              } else {
+                setEndDate(newEndDate);
+              }
+            }}
+          />
+        </HStack>
+      );
+    }
   };
 
   return (
-    <Grid>
-      <GridItem marginBottom="20px">
-        <VStack align="stretch" spacing={4}>
-          <HStack spacing={2}>
-            <Button colorScheme="green" onClick={createNewPreset} width="100px">
-              New
-            </Button>
-            <Flex alignItems="center" justifyContent="flex-start" height="100%">
-              <Tooltip
-                label="Create new custom chart"
-                bg="gray.100"
-                color="gray.500"
-                placement="right"
-              >
-                <InfoOutlined style={{ color: UIProps.colors.accent }} />
-              </Tooltip>
-            </Flex>
-          </HStack>
-          <HStack spacing={2}>
-            <Flex width="100px" justifyContent="space-between" gap={2}>
-              <Tooltip label="Import" aria-label="Import tooltip">
-                <IconButton
-                  icon={<Upload />}
-                  colorScheme="primary"
-                  onClick={handleImportClick}
-                  aria-label="Import"
-                  flex="1"
-                />
-              </Tooltip>
-              <input
-                type="file"
-                accept=".json"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-              <Tooltip label="Export All" aria-label="Export tooltip">
-                <IconButton
-                  icon={<Download />}
-                  colorScheme="primary"
-                  onClick={handleExportClick}
-                  aria-label="Export All"
-                  flex="1"
-                />
-              </Tooltip>
-            </Flex>
-          </HStack>
+    <Grid templateColumns="repeat(2, 1fr)" gap="10">
+      <GridItem colSpan={1}>
+        <VStack alignItems="start">
+          {drawEditPresetNameInput()}
+          {drawEditSelectChartType()}
+          {drawEditPresetNumberInputs()}
+          {drawEditBrushSwitch()}
         </VStack>
       </GridItem>
-      <GridItem>
-        <Tabs
-          isLazy
-          index={selectedTemplateIndex}
-          onChange={handlePresetTabSelected}
-          orientation="vertical"
-          colorScheme="green"
-        >
-          <TabListElements />
-          <TabPanelsElements />
-        </Tabs>
+      <GridItem colSpan={1}>
+        <VStack alignItems="start">
+          {drawEditCheckboxDeviceType()}
+          {drawDatePicker()}
+        </VStack>
       </GridItem>
-      <GridItem></GridItem>
     </Grid>
   );
 };
