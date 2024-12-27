@@ -1,7 +1,7 @@
 import { HStack } from "@chakra-ui/react";
 import { StatusPieChart } from "./status-pie-chart";
 import { IChartTemplateModelDrawing } from "../../../types/chartTemplate";
-import { createDeviceModel } from "../../../types/deviceModel";
+import { createDeviceModel, deviceType } from "../../../types/deviceModel";
 
 export const CurrentChart = ({
   model,
@@ -13,19 +13,19 @@ export const CurrentChart = ({
   if (devicesHistoryValues.length) {
     return (
       <HStack>
-        {deviceTypes.includes(0) && (
+        {deviceTypes.includes(deviceType.sensor) && (
           <StatusPieChart
             devices={deviceModel.getSensorsArray()}
             heading="Sensors"
           />
         )}
-        {deviceTypes.includes(1) && (
+        {deviceTypes.includes(deviceType.gateway) && (
           <StatusPieChart
             devices={deviceModel.getGatewaysArray()}
             heading="Gateways"
           />
         )}
-        {deviceTypes.includes(2) && (
+        {deviceTypes.includes(deviceType.bridge) && (
           <StatusPieChart
             devices={deviceModel.getBridgesArray()}
             heading="Bridges"
