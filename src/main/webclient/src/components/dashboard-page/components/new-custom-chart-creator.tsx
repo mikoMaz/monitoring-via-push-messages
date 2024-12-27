@@ -46,38 +46,20 @@ export const NewCustomChartCreator = ({
 
   useEffect(() => {
     let checked = returnDeviceTypesArray().map((t) => false);
-    if (
-      template.chartModel.deviceTypes.length === returnDeviceTypesArray().length
-    ) {
-      checked = returnDeviceTypesArray().map((t) => true);
-    } else {
-      if (template.chartModel.deviceTypes.includes(deviceType.sensor)) {
-        checked[deviceType.sensor] = true;
-      }
-      if (template.chartModel.deviceTypes.includes(deviceType.gateway)) {
-        checked[deviceType.gateway] = true;
-      }
-      if (template.chartModel.deviceTypes.includes(deviceType.bridge)) {
-        checked[deviceType.bridge] = true;
-      }
-      setCheckedItems(checked);
-    }
+    template.chartModel.deviceTypes.forEach((device) => {
+      checked[device] = true;
+    });
+    setCheckedItems(checked);
   }, [template.chartModel.deviceTypes]);
 
   const getDeviceTypeArray = () => {
-    if (checkedItems.map((e) => e).length === checkedItems.length) {
+    if (checkedItems.every((e) => e)) {
       return getEmptyPreset().chartModel.deviceTypes;
     }
     let devices: deviceType[] = [];
-    if (checkedItems[deviceType.sensor]) {
-      devices.push(deviceType.sensor);
-    }
-    if (checkedItems[deviceType.gateway]) {
-      devices.push(deviceType.gateway);
-    }
-    if (checkedItems[deviceType.bridge]) {
-      devices.push(deviceType.bridge);
-    }
+    if (checkedItems[deviceType.sensor]) devices.push(deviceType.sensor);
+    if (checkedItems[deviceType.gateway]) devices.push(deviceType.gateway);
+    if (checkedItems[deviceType.bridge]) devices.push(deviceType.bridge);
     return devices;
   };
 
@@ -86,15 +68,19 @@ export const NewCustomChartCreator = ({
   );
 
   const handleSave = () => {
-    template.name = templateName;
-    template.type = selectedType;
-    template.chartModel.percentFragmentation = parseFloat(
-      percentFragmentationVariable
+    const updatedTemplate = new ChartTemplate(
+      templateName,
+      selectedType,
+      {
+        percentFragmentation: parseFloat(percentFragmentationVariable),
+        brushActive: isBrushActive,
+        deviceTypes: getDeviceTypeArray(),
+      }
     );
-    template.chartModel.brushActive = isBrushActive;
-    template.chartModel.deviceTypes = getDeviceTypeArray();
-    editFunction(template);
-  };
+  
+    updatedTemplate.id = template.id;
+    editFunction(updatedTemplate);
+  };  
 
   const drawEditPresetNumberInputs = () => {
     if (selectedType === chartType.Recent) {
@@ -215,6 +201,7 @@ export const NewCustomChartCreator = ({
           <Stack pl={6} mt={1} spacing={1}>
             {returnDeviceTypesArray().map((value, index) => (
               <Checkbox
+                key={index}
                 isChecked={checkedItems[index]}
                 onChange={(e) => {
                   setCheckedItems(
