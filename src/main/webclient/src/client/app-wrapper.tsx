@@ -31,9 +31,7 @@ export const AppWrapper = ({ children }: { children: ReactNode }) => {
 
   return (
     <BrowserRouter>
-      <Auth0ProviderWithNavigation>
-        <ChakraProvider theme={chakraTheme}>{children}</ChakraProvider>
-      </Auth0ProviderWithNavigation>
+      <ChakraProvider theme={chakraTheme}>{children}</ChakraProvider>
     </BrowserRouter>
   );
 };

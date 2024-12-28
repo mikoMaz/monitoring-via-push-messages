@@ -207,7 +207,7 @@ export const AppBody = () => {
 
   useEffect(() => {
     if (userInfo && userInfo.userType === "EXTERNAL") {
-      navigate("/permission-required", { replace: true });
+      navigate("/application/permission-required", { replace: true });
       console.log(userInfo);
     }
   }, [userInfo, navigate]);
