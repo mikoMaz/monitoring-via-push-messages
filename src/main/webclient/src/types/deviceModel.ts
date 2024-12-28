@@ -204,8 +204,16 @@ export type DeviceUptimeJson = {
   uptime: number;
 };
 
-export type AllDevicesUptimeJson = {
-  uptimes: number[];
+export interface AllDevicesUptimeJson {
+  upperLevel: number[];
+  middleLevel: number[];
+  bottomLevel: number[];
+}
+
+export const emptyAllDevicesUptimeJson: AllDevicesUptimeJson = {
+  upperLevel: [],
+  middleLevel: [],
+  bottomLevel: [],
 };
 
 export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {

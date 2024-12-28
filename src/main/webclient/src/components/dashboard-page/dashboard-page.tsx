@@ -1,12 +1,12 @@
 import { Box, Center, Grid, GridItem, Text } from "@chakra-ui/react";
-import { DeviceModel } from "../../types/deviceModel";
+import { AllDevicesUptimeJson, DeviceModel } from "../../types/deviceModel";
 import { UIProps } from "../../config/config";
 import { useState } from "react";
 import { ViewChartsTabs } from "./components/view-charts-tabs";
 import { RecentChart } from "./components/recent-chart";
 import { CurrentChart } from "./components/current-chart";
-import { ChartCreator } from "./components/chart-creator";
-import { IChartTemplateModel } from "../../types/chartTemplate";
+import { CustomChartsTab } from "./components/custom-charts-tab";
+import { getEmptyPreset, IChartTemplateModel } from "../../types/chartTemplate";
 import { HistoryChart } from "./components/history-chart";
 
 enum viewOption {
@@ -18,7 +18,7 @@ enum viewOption {
 
 interface IDashboardPage {
   model: DeviceModel;
-  devicesUptime: number[];
+  devicesUptime: AllDevicesUptimeJson;
 }
 
 export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
@@ -27,12 +27,13 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
   );
   const currentTime = new Date().toLocaleString();
 
-  const chartModel: IChartTemplateModel = {
-    devicesHistoryValues: devicesUptime,
-    model: model,
-    percentFragmentation: 0.5,
-    brushActive: false,
-  };
+  const allHistoryValues = [
+    ...devicesUptime.upperLevel,
+    ...devicesUptime.middleLevel,
+    ...devicesUptime.bottomLevel,
+  ];
+
+  const chartModel: IChartTemplateModel = getEmptyPreset().chartModel;
 
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
@@ -59,7 +60,11 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
         return (
           <>
             <Center>
-              <CurrentChart {...chartModel} />
+              <CurrentChart
+                model={model}
+                devicesHistoryValues={allHistoryValues}
+                {...chartModel}
+              />
             </Center>
             <Text>Generated: {currentTime}</Text>
           </>
@@ -68,7 +73,11 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
         return (
           <>
             <Center>
-              <RecentChart {...chartModel} />
+              <RecentChart
+                model={model}
+                devicesHistoryValues={allHistoryValues}
+                {...chartModel}
+              />
             </Center>
             <Text>Generated: {currentTime}</Text>
           </>
@@ -83,7 +92,7 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
           </>
         );
       case viewOption.custom:
-        return <ChartCreator model={model} devicesUptime={devicesUptime} />;
+        return <CustomChartsTab model={model} devicesUptime={devicesUptime} />;
     }
   };
 

@@ -12,7 +12,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { Suspense, useEffect, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";
-import { DeviceModel, IMonitoringDevice } from "../../types/deviceModel";
+import { AllDevicesUptimeJson, DeviceModel, emptyAllDevicesUptimeJson, IMonitoringDevice } from "../../types/deviceModel";
 import { AboutPage } from "../about-page/about-page";
 import { DashboardPage } from "../dashboard-page/dashboard-page";
 import { LandingPage } from "../landing-page/landing-page";
@@ -20,7 +20,6 @@ import { MonitoringDevicePage } from "../monitoring-device-page/monitoring-devic
 import { MonitoringPage } from "../monitoring-page/monitoring-page";
 import { NotFoundPage } from "../not-found-page/not-found-page";
 import { useAuth0 } from "@auth0/auth0-react";
-import { jwtDecode } from "jwt-decode";
 import { IUserInfoResponse } from "../../types/IUserInfoResponse";
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
 
@@ -48,7 +47,8 @@ export const AppBody = () => {
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
     new DeviceModel()
   );
-  const [devicesUptimeValues, setDevicesUptimeValues] = useState<number[]>([]);
+  const [devicesUptimeValues, setDevicesUptimeValues] =
+    useState<AllDevicesUptimeJson>(emptyAllDevicesUptimeJson);
 
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);
@@ -170,7 +170,7 @@ export const AppBody = () => {
       return data;
     } catch (e: any) {
       console.error("fetchUptimeValues error: " + e.message);
-      setDevicesUptimeValues([]);
+      setDevicesUptimeValues(emptyAllDevicesUptimeJson);
       return [];
     }
   };

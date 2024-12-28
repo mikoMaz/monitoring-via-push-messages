@@ -12,8 +12,8 @@ import {
 import { CurrentChart } from "../components/dashboard-page/components/current-chart";
 import { RecentChart } from "../components/dashboard-page/components/recent-chart";
 import { useState } from "react";
-import { DeviceModel, IDeviceModel } from "./deviceModel";
-import { NewCustomChartCreator } from "../components/dashboard-page/components/new-custom-chart-creator";
+import { deviceType, IDeviceModel } from "./deviceModel";
+import { ChartCreator } from "../components/dashboard-page/components/chart-creator";
 import { FileSaver } from "./fileSaver";
 import { Delete } from "@mui/icons-material";
 import { HistoryChart } from "../components/dashboard-page/components/history-chart";
@@ -40,10 +40,14 @@ export const returnChartTypesArray = (): string[] => {
 };
 
 export interface IChartTemplateModel {
-  devicesHistoryValues: number[]; //devices percent values of active time history
-  model: IDeviceModel;
   percentFragmentation: number; //fragmentation of data into chunks by % points
   brushActive: boolean;
+  deviceTypes: deviceType[];
+}
+
+export interface IChartTemplateModelDrawing extends IChartTemplateModel {
+  devicesHistoryValues: number[];
+  model: IDeviceModel;
 }
 
 export interface IChartTemplate {
@@ -80,12 +84,24 @@ export class ChartTemplate implements IChartTemplate {
     return <>Data model is not present</>;
   }
 
-  public drawChart() {
+  public drawChart(model: IDeviceModel, uptimeValues: number[]) {
     switch (this.type) {
       case chartType.Current:
-        return <CurrentChart {...this.chartModel} />;
+        return (
+          <CurrentChart
+            model={model}
+            devicesHistoryValues={uptimeValues}
+            {...this.chartModel}
+          />
+        );
       case chartType.Recent:
-        return <RecentChart {...this.chartModel} />;
+        return (
+          <RecentChart
+            model={model}
+            devicesHistoryValues={uptimeValues}
+            {...this.chartModel}
+          />
+        );
       case chartType.History:
         return <HistoryChart />;
       default:
@@ -107,15 +123,19 @@ interface IChartTabPanel {
   template: ChartTemplate;
   editFunction: (editedTemplate: ChartTemplate) => void;
   deleteFunction: () => void;
+  model: IDeviceModel;
+  uptimeValues: number[];
 }
 
 export const ChartTabPanel = ({
   template,
   editFunction,
   deleteFunction,
+  model,
+  uptimeValues,
 }: IChartTabPanel) => {
   const [isEditing, setIsEditing] = useState(false);
-  
+
   const currentTime = new Date().toLocaleString();
 
   const handleEditToggle = () => {
@@ -123,7 +143,7 @@ export const ChartTabPanel = ({
   };
 
   const handleExport = () => {
-    FileSaver.saveSingleChartPresetToJson(template, template.chartModel.model);
+    FileSaver.saveSingleChartPresetToJson(template);
   };
 
   return (
@@ -131,14 +151,14 @@ export const ChartTabPanel = ({
       <VStack spacing={4} align="start" w="100%">
         <Box w="100%">
           {isEditing ? (
-            <NewCustomChartCreator
+            <ChartCreator
               template={template}
               editFunction={editFunction}
             />
           ) : (
             <Center>
               {template.chartModel.percentFragmentation > 0.001 ? (
-                template.drawChart()
+                template.drawChart(model, uptimeValues)
               ) : (
                 <p>
                   We can't show you the chart, if you put "0" or nothing into
@@ -184,11 +204,10 @@ export const ChartTabPanel = ({
   );
 };
 
-export const getEmptyPreset = (model: DeviceModel, uptimeValues: number[]) => {
+export const getEmptyPreset = () => {
   return new ChartTemplate("New", chartType.EmptyPreset, {
-    model: model,
-    devicesHistoryValues: uptimeValues,
     percentFragmentation: 0.5,
     brushActive: false,
+    deviceTypes: [deviceType.sensor, deviceType.gateway, deviceType.bridge],
   });
 };

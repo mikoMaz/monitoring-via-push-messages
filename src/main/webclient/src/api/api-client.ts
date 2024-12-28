@@ -6,6 +6,7 @@ import {
   DeviceUptimeJson,
   createDeviceModelFromJson,
   deviceType,
+  emptyAllDevicesUptimeJson,
 } from "../types/deviceModel";
 import {
   getDeniedUserInfoResponse,
@@ -33,7 +34,7 @@ export interface IAPIClient {
     id: string,
     accessToken: string,
     email: string
-  ) => Promise<number[]>;
+  ) => Promise<AllDevicesUptimeJson>;
 }
 
 export class APIClient implements IAPIClient {
@@ -71,15 +72,20 @@ export class APIClient implements IAPIClient {
       return this.testApiClient.getUserInfo(accessToken, email);
     }
     return axios
-      .get(apiURL, {headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },})
+      .get(apiURL, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
       .then((response) => {
         const data: IUserInfoResponse = response.data;
         return data;
       })
       .catch((error: AxiosError) => {
-        console.error("User was permitted to endter the website", error.message);
+        console.error(
+          "User was permitted to endter the website",
+          error.message
+        );
         if (error.code === "401") {
           return getDeniedUserInfoResponse(email);
         } else {
@@ -143,7 +149,7 @@ export class APIClient implements IAPIClient {
     id: string,
     accessToken: string,
     email: string
-  ): Promise<number[]> => {
+  ): Promise<AllDevicesUptimeJson> => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historyTree?id=${id}`;
     if (this.useTestData()) {
       return this.testApiClient.getAllDevicesHistory(id, accessToken, email);
@@ -157,12 +163,12 @@ export class APIClient implements IAPIClient {
       })
       .then((response) => {
         const data: AllDevicesUptimeJson = response.data;
-        return data.uptimes;
+        return data;
       })
       .catch(function (error) {
         console.log("error");
         console.error(error);
-        return [];
+        return emptyAllDevicesUptimeJson;
       });
   };
 }
