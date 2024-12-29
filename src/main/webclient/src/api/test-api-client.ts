@@ -1,3 +1,4 @@
+import { ICompanyUser } from "../types/ICompanyUser";
 import {
   Bridge,
   DeviceModel,
@@ -10,6 +11,65 @@ import { IUserInfoResponse } from "../types/IUserInfoResponse";
 import { IAPIClient } from "./api-client";
 
 export class TestAPIClient implements IAPIClient {
+  public getAllCompanies = () => {
+    return Promise.resolve(["Company1", "Company2", "Company3", "Company4"]);
+  };
+  public getUsersFromCompany = () => {
+    const users: ICompanyUser[] = [
+      {
+        company: "Company1",
+        name: "John Doe",
+        role: "ADMIN",
+      },
+      {
+        company: "Company1",
+        name: "Alice Johnson",
+        role: "ADMIN",
+      },
+      {
+        company: "Company1",
+        name: "Bob Smith",
+        role: "READ_ONLY",
+      },
+      {
+        company: "Company2",
+        name: "Eve Adams",
+        role: "SUPER_ADMIN",
+      },
+      {
+        company: "Company2",
+        name: "Charlie Brown",
+        role: "READ_ONLY",
+      },
+      {
+        company: "Company3",
+        name: "David Williams",
+        role: "ADMIN",
+      },
+      {
+        company: "Company3",
+        name: "Grace Lee",
+        role: "EXTERNAL",
+      },
+      {
+        company: "Company3",
+        name: "Stachu Jones",
+        role: "READ_ONLY",
+      },
+      {
+        company: "Company4",
+        name: "James Harris",
+        role: "READ_ONLY",
+      },
+      {
+        company: "Company4",
+        name: "Nina Patel",
+        role: "SUPER_ADMIN",
+      },
+    ];
+    return Promise.resolve(users);
+  };
+
   public getUserInfo = (accessToken: string, email?: string) => {
     const user: IUserInfoResponse = {
       email: email ?? "test_email@test.com",

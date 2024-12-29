@@ -110,7 +110,7 @@ export const AppBody = () => {
       <Route
         key="admin-panel-page"
         path="/admin"
-        element={<AdminPanelPage />}
+        element={<AdminPanelPage apiClient={new APIClient} />}
       />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],

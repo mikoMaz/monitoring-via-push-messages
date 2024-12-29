@@ -14,6 +14,7 @@ import {
 } from "../types/IUserInfoResponse";
 import config from "../config/config.json";
 import { TestAPIClient } from "./test-api-client";
+import { ICompanyUser } from "../types/ICompanyUser";
 
 export interface IAPIClient {
   getUserInfo: (
@@ -35,6 +36,8 @@ export interface IAPIClient {
     accessToken: string,
     email: string
   ) => Promise<AllDevicesUptimeJson>;
+  getAllCompanies: () => Promise<String[]>;
+  getUsersFromCompany: () => Promise<ICompanyUser[]>;
 }
 
 export class APIClient implements IAPIClient {
@@ -170,5 +173,12 @@ export class APIClient implements IAPIClient {
         console.error(error);
         return emptyAllDevicesUptimeJson;
       });
+  };
+
+  public getAllCompanies = () => {
+    return this.testApiClient.getAllCompanies();
+  };
+  public getUsersFromCompany = () => {
+    return this.testApiClient.getUsersFromCompany();
   };
 }
