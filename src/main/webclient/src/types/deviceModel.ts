@@ -9,6 +9,12 @@ export enum deviceType {
   bridge,
 }
 
+export const returnDeviceTypesArray = (): string[] => {
+  return Object.values(deviceType).filter(
+    (t): t is string => typeof t === "string"
+  );
+};
+
 export interface IMonitoringDevice {
   id: string;
   status: deviceStatus;
@@ -172,10 +178,11 @@ export class Bridge implements IBridge {
   }
 }
 
-interface IDeviceModel {
+export interface IDeviceModel {
   bridges: IBridge[];
   gateways: IGateway[];
   sensors: ISensor[];
+  getDevicesCount: () => number;
 }
 
 interface ITreeModelDevice {
@@ -197,8 +204,16 @@ export type DeviceUptimeJson = {
   uptime: number;
 };
 
-export type AllDevicesUptimeJson = {
-  uptimes: number[];
+export interface AllDevicesUptimeJson {
+  upperLevel: number[];
+  middleLevel: number[];
+  bottomLevel: number[];
+}
+
+export const emptyAllDevicesUptimeJson: AllDevicesUptimeJson = {
+  upperLevel: [],
+  middleLevel: [],
+  bottomLevel: [],
 };
 
 export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
@@ -360,6 +375,14 @@ export class DeviceModel implements IDeviceModel {
       }
     });
     return devices;
+  };
+
+  public getDevicesCount = () => {
+    return [
+      ...this.getBridgesArray(),
+      ...this.getGatewaysArray(),
+      ...this.getSensorsArray(),
+    ].length;
   };
 
   public static getPlaceholderDevice = (): IMonitoringDevice => {

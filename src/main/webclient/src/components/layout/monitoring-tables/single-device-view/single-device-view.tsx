@@ -23,38 +23,42 @@ export const SingleDeviceView = ({
   model,
   inactiveOnly,
 }: ISingleDeviceView) => {
-  if (inactiveOnly) {
-    const inactiveDevices = model.filter((d) => {
-      return d.status !== deviceStatus.active;
-    });
-    return (
-      <TableContainer borderRadius="lg">
-        <Table variant="simple" bg="white" size="sm">
-          <TableHead />
-          <Tbody>
-            <>
-              {inactiveDevices.map((device) => {
-                return <DeviceRowView {...device} />;
-              })}
-            </>
-          </Tbody>
-        </Table>
-      </TableContainer>
-    );
+  if (model.length) {
+    if (inactiveOnly) {
+      const inactiveDevices = model.filter((d) => {
+        return d.status !== deviceStatus.active;
+      });
+      return (
+        <TableContainer borderRadius="lg">
+          <Table variant="simple" bg="white" size="sm">
+            <TableHead />
+            <Tbody>
+              <>
+                {inactiveDevices.map((device) => {
+                  return <DeviceRowView {...device} />;
+                })}
+              </>
+            </Tbody>
+          </Table>
+        </TableContainer>
+      );
+    } else {
+      return (
+        <TableContainer borderRadius="lg">
+          <Table variant="simple" bg="white" size="sm">
+            <TableHead />
+            <Tbody>
+              <>
+                {model.map((device) => {
+                  return <DeviceRowView {...device} />;
+                })}
+              </>
+            </Tbody>
+          </Table>
+        </TableContainer>
+      );
+    }
   } else {
-    return (
-      <TableContainer borderRadius="lg">
-        <Table variant="simple" bg="white" size="sm">
-          <TableHead />
-          <Tbody>
-            <>
-              {model.map((device) => {
-                return <DeviceRowView {...device} />;
-              })}
-            </>
-          </Tbody>
-        </Table>
-      </TableContainer>
-    );
+    return <>No devices to display</>
   }
 };

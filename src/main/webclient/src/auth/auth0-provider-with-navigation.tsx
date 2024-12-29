@@ -9,10 +9,10 @@ const Auth0ProviderWithNavigation = ({ children }: { children: ReactNode }) => {
   const onRedirectCallback = (appState?: AppState) => {
     navigate(
       {
-        pathname: "/monitoring",
+        pathname: "/application/monitoring",
         search: new URLSearchParams({ view: "allDevices" }).toString(),
       },
-      { replace: true }
+      { replace: false }
     );
   };
 
@@ -22,6 +22,8 @@ const Auth0ProviderWithNavigation = ({ children }: { children: ReactNode }) => {
       clientId={config.auth0.clientID}
       authorizationParams={{
         redirect_uri: `${config.appVersions.LOCAL.APP_URL}`,
+        audience: `${config.auth0.audience}`,
+        // scope: `${config.auth0.scope}`,
       }}
       onRedirectCallback={onRedirectCallback}
     >
