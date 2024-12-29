@@ -9,7 +9,7 @@ const Auth0ProviderWithNavigation = ({ children }: { children: ReactNode }) => {
   const onRedirectCallback = (appState?: AppState) => {
     navigate(
       {
-        pathname: "/monitoring",
+        pathname: "/application/monitoring",
         search: new URLSearchParams({ view: "allDevices" }).toString(),
       },
       { replace: false }

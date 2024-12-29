@@ -45,21 +45,21 @@ export const NavigationButtons = () => {
       <TabList>
         <Tab
           onClick={() => {
-            navigate("/monitoring");
+            navigate("/application/monitoring");
           }}
         >
           Monitoring
         </Tab>
         <Tab
           onClick={() => {
-            navigate("/dashboard");
+            navigate("/application/dashboard");
           }}
         >
           Dashboard
         </Tab>
         <Tab
           onClick={() => {
-            navigate("/about");
+            navigate("/application/about");
           }}
         >
           About
