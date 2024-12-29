@@ -26,7 +26,7 @@ public class DeviceDataController {
     private final AuthenticationService authenticationService;
     private final DeviceDataService deviceDataService;
     private final DeviceHistoryService historyService;
-    org.slf4j.Logger  logger =LoggerFactory.getLogger(AuthenticationController.class);
+    org.slf4j.Logger  logger =LoggerFactory.getLogger(DeviceDataController.class);
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectReader reader = new ObjectMapper().readerFor(Map.class);
     Long unixTime;
@@ -46,17 +46,14 @@ public class DeviceDataController {
         DeviceStatus deviceStatus = statusService.getDeviceStatus(pal.getDeviceId());
 
         if (deviceStatus == null) {
+            logger.info("no device status");
             logger.info(pal.getDeviceId());
-            logger.info(String.valueOf(pal.getTimestamp()));
-
             statusService.saveFromArgs(pal.getDeviceId(), pal.getTimestamp(), pal.getTimestamp());
         }
         else {
-            int status = statusService.getCalculatedStatus(deviceStatus);
-            unixTime = System.currentTimeMillis() / 1000L;
+            int status = statusService.getCalculatedStatus(pal.getDeviceId(),pal.getTimestamp());
             Long latestLoggedTime = deviceStatus.getLogged_at();
-
-            if (status == 0&&pal.getTimestamp() - latestLoggedTime>300) {
+            if (status == 0) {
                 historyService.save(DeviceHistory.builder().deviceId(pal.getDeviceId()).end_timestamp(pal.getTimestamp()).start_timestamp(latestLoggedTime).length(pal.getTimestamp() - latestLoggedTime).build());
             }
             logger.info(pal.getDeviceId(), pal.getTimestamp(), deviceStatus.getFirst_logged_at());
