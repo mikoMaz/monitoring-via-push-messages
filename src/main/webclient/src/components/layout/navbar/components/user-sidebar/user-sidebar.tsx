@@ -30,6 +30,7 @@ import {
 import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LocalStorageManager } from "../../../../../types/fileSaver";
+import { useNavigate } from "react-router-dom";
 
 interface IUserSidebar {
   alertsEnabled: boolean;
@@ -47,6 +48,8 @@ export const UserSidebar = ({
     LocalStorageManager.clearLocalStorage();
     window.location.reload();
   };
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -98,7 +101,25 @@ export const UserSidebar = ({
             </Grid>
           </DrawerBody>
           <DrawerFooter>
-            <Button onClick={() => logout()}>Logout</Button>
+            <HStack>
+              <Button
+                colorScheme="green"
+                variant="ghost"
+                onClick={() => {
+                  navigate("/application/admin");
+                  onClose();
+                }}
+              >
+                Admin panel
+              </Button>
+              <Button
+                colorScheme="purple"
+                variant="ghost"
+                onClick={() => logout()}
+              >
+                Logout
+              </Button>
+            </HStack>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

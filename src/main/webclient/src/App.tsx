@@ -9,6 +9,12 @@ import { PreviewPage } from "./components/preview-external-users/preview-page";
 export default function App() {
   document.body.style.backgroundColor = UIProps.colors.background;
 
+  // TODO: włączanie aplikacji z application / preview
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   navigate("/application");
+  // }, [navigate]);
+
   return (
     <Routes>
       <Route path="/preview" key="preview" element={<PreviewPage />} />

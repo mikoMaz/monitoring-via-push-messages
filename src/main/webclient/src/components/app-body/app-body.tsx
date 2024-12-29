@@ -12,7 +12,12 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { Suspense, useEffect, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";
-import { AllDevicesUptimeJson, DeviceModel, emptyAllDevicesUptimeJson, IMonitoringDevice } from "../../types/deviceModel";
+import {
+  AllDevicesUptimeJson,
+  DeviceModel,
+  emptyAllDevicesUptimeJson,
+  IMonitoringDevice,
+} from "../../types/deviceModel";
 import { AboutPage } from "../about-page/about-page";
 import { DashboardPage } from "../dashboard-page/dashboard-page";
 import { LandingPage } from "../landing-page/landing-page";
@@ -22,6 +27,7 @@ import { NotFoundPage } from "../not-found-page/not-found-page";
 import { useAuth0 } from "@auth0/auth0-react";
 import { IUserInfoResponse } from "../../types/IUserInfoResponse";
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
+import { AdminPanelPage } from "../admin-panel-page/admin-panel-page";
 
 const refreshTime = 3; //minutes
 
@@ -99,6 +105,11 @@ export const AppBody = () => {
         key="user-rejected"
         path="/permission-required"
         element={<UserRejectedPage email={email} />}
+      />,
+      <Route
+        key="admin-panel-page"
+        path="/admin"
+        element={<AdminPanelPage />}
       />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
