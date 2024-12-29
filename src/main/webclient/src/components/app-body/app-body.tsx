@@ -106,6 +106,7 @@ export const AppBody = () => {
         path="/permission-required"
         element={<UserRejectedPage email={email} />}
       />,
+      // TODO: weryfikacja, czy osoba która wchodzi ma uprawnienia
       <Route
         key="admin-panel-page"
         path="/admin"
