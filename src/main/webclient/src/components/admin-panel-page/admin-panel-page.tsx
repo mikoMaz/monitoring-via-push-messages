@@ -6,6 +6,7 @@ import {
   CheckboxGroup,
   Grid,
   GridItem,
+  Heading,
   HStack,
   IconButton,
   Select,
@@ -31,6 +32,8 @@ export const AdminPanelPage = ({ apiClient }: { apiClient: APIClient }) => {
   const [companySelect, setCompanySelect] = useState<string>("");
   const [companies, setCompanies] = useState<string[]>([]);
   const [users, setUsers] = useState<ICompanyUser[]>([]);
+  const [fileName, setFileName] = useState<string>("no file detected");
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     apiClient.getAllCompanies().then((companies) => setCompanies(companies));
@@ -60,6 +63,29 @@ export const AdminPanelPage = ({ apiClient }: { apiClient: APIClient }) => {
     );
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setFileName(selectedFile.name);
+    }
+  };
+
+  //   const handleSendFile = () => {
+  //     if (file) {
+  //       const formData = new FormData();
+  //       formData.append("file", file);
+  //       apiClient
+  //         .uploadFile(formData)
+  //         .then((response) => {
+  //           console.log("File uploaded successfully", response);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error uploading file", error);
+  //         });
+  //     }
+  //   };
+
   const UserRole = () => {
     return (
       <TableContainer>
@@ -79,7 +105,8 @@ export const AdminPanelPage = ({ apiClient }: { apiClient: APIClient }) => {
                 {userTypesArray.map((role) => (
                   <Td key={role}>
                     <CheckboxGroup value={[user.role]}>
-                      <Checkbox colorScheme="primary"
+                      <Checkbox
+                        colorScheme="primary"
                         value={role}
                         isChecked={user.role === role}
                         onChange={() => handleRoleChange(user.name, role)}
@@ -126,25 +153,37 @@ export const AdminPanelPage = ({ apiClient }: { apiClient: APIClient }) => {
       </GridItem>
 
       <GridItem colSpan={1}>
-        <HStack spacing={4} justify="center">
-          <Text>file</Text>
-          <Tooltip label="Import" aria-label="Import tooltip">
-            <IconButton
-              icon={<Upload />}
-              colorScheme="primary"
-              onClick={() => console.log("Import clicked")}
-              aria-label="Import"
-            />
-          </Tooltip>
-          <Tooltip label="Send" aria-label="Send tooltip">
-            <IconButton
-              icon={<Send />}
-              colorScheme="primary"
-              onClick={() => console.log("Send clicked")}
-              aria-label="Send"
-            />
-          </Tooltip>
-        </HStack>
+        <Card variant="filled" bg="whiteAlpha.600">
+          <CardHeader><Heading size='md'>Upload new devices</Heading></CardHeader>
+          <CardBody>
+            <HStack spacing={4} justify="center">
+              <Text>{fileName}</Text>
+              <Tooltip label="Upload" aria-label="Upload tooltip">
+                <IconButton
+                  icon={<Upload />}
+                  colorScheme="primary"
+                  onClick={() => document.getElementById("file-input")?.click()}
+                  aria-label="Upload"
+                />
+              </Tooltip>
+              <input
+                type="file"
+                id="file-input"
+                style={{ display: "none" }}
+                accept=".csv"
+                onChange={handleFileChange}
+              />
+              <Tooltip label="Send" aria-label="Send tooltip">
+                <IconButton
+                  icon={<Send />}
+                  colorScheme="primary"
+                  //   onClick={handleSendFile}
+                  aria-label="Send"
+                />
+              </Tooltip>
+            </HStack>
+          </CardBody>
+        </Card>
       </GridItem>
     </Grid>
   );
