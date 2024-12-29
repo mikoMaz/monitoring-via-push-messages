@@ -84,7 +84,8 @@ export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchE
     }
   };
 
-  //onload function
+  //TODO czy wciąż kontekst linku działa po zalogowaniu auth0
+  //np monitoring?view=sensors czy wciąż przeniesie do sensors po zalogowaniu czy domyślna wartość
   useEffect(() => {
     let params = new URLSearchParams(window.location.search);
     let viewType = params.get("view");
