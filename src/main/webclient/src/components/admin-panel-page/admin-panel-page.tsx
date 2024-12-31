@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   Card,
   CardBody,
@@ -33,6 +34,7 @@ import {
   userType,
   userTypesArray,
 } from "../../types/IUserInfoResponse";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const AdminPanelPage = ({
   apiClient,
@@ -47,6 +49,7 @@ export const AdminPanelPage = ({
   const [fileName, setFileName] = useState<string>("no file detected");
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { user } = useAuth0();
 
   useEffect(() => {
     apiClient.getAllCompanies().then((companies) => setCompanies(companies));
@@ -183,7 +186,26 @@ export const AdminPanelPage = ({
 
       <GridItem colSpan={1}>
         <VStack align="stretch">
-          <Card variant="filled" bg="whiteAlpha.600"></Card>
+          <Card variant="filled" bg="whiteAlpha.600" align="center">
+            <CardHeader paddingBottom={-1}>
+              <Avatar
+                name={user?.name ?? user?.nickname ?? user?.mail}
+                size="xl"
+              />
+            </CardHeader>
+            <CardBody
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Heading padding={1} size="lg">{user?.name ?? "You"}</Heading>
+              {/* <Heading padding={1} size="md">{user?.nickname ?? "No nickname"}</Heading> */}
+              <Heading padding={1} size="sm">{user?.email ?? "No email"}</Heading>
+              <Heading paddingTop={5} size="sm">{userInfo.userType}</Heading>
+            </CardBody>
+          </Card>
+
           <Card variant="filled" bg="whiteAlpha.600">
             <CardHeader>
               <Heading size="md">Upload new devices</Heading>

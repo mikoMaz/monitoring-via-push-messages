@@ -46,7 +46,7 @@ export const UserSidebar = ({
     <>
       <IconButton
         onClick={onOpen}
-        icon={<Avatar size="sm" />}
+        icon={<Avatar size="sm" name={user?.name ?? user?.nickname ?? user?.mail}/>}
         aria-label={"Profile"}
         colorScheme={UIProps.colors.accent}
         paddingTop="10px"
