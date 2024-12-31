@@ -83,4 +83,12 @@ export class TestAPIClient implements IAPIClient {
     };
     return Promise.resolve(values);
   };
+
+  public getPreviewDeviceModel = (secret: string, id: string) => {
+    return this.getUpdatedDeviceModel(secret, id);
+  };
+  
+  public getPreviewDevicesHistory = (secret: string, id: string) => {
+    return this.getAllDevicesHistory(id, secret, "");
+  };
 }

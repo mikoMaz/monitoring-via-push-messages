@@ -35,6 +35,11 @@ export interface IAPIClient {
     accessToken: string,
     email: string
   ) => Promise<AllDevicesUptimeJson>;
+  getPreviewDeviceModel: (secret: string, id: string) => Promise<DeviceModel>;
+  getPreviewDevicesHistory: (
+    secret: string,
+    id: string
+  ) => Promise<AllDevicesUptimeJson>;
 }
 
 export class APIClient implements IAPIClient {
@@ -170,5 +175,13 @@ export class APIClient implements IAPIClient {
         console.error(error);
         return emptyAllDevicesUptimeJson;
       });
+  };
+
+  public getPreviewDeviceModel = (secret: string, id: string) => {
+    return this.testApiClient.getPreviewDeviceModel(secret, id);
+  };
+  
+  public getPreviewDevicesHistory = (secret: string, id: string) => {
+    return this.testApiClient.getPreviewDevicesHistory(secret, id);
   };
 }
