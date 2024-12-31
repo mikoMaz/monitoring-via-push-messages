@@ -1,9 +1,15 @@
 import { UIProps } from "../../config/config";
 import { useEffect, useState } from "react";
 import { ValidateSecret } from "./components/validate-secret";
+import { APIClient } from "../../api/api-client";
+import {
+  PreviewChartsContainer,
+} from "./components/preview-charts-container";
 
 export const PreviewPage = () => {
   document.body.style.backgroundColor = UIProps.colors.background;
+
+  const apiClient = new APIClient();
 
   const [compamyContext, setCompanyContext] = useState<string>("");
 
@@ -23,8 +29,13 @@ export const PreviewPage = () => {
 
   if (!secret) {
     return <ValidateSecret context={compamyContext} setSecret={setSecret} />;
-  }
-  else {
-	return <>{secret}</>
+  } else {
+    return (
+      <PreviewChartsContainer
+        apiClient={apiClient}
+        context={compamyContext}
+        secret={secret}
+      />
+    );
   }
 };
