@@ -24,7 +24,7 @@ import {
   Tr,
   VStack,
 } from "@chakra-ui/react";
-import { Send, Upload } from "@mui/icons-material";
+import { InfoOutlined, Send, Upload } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";
@@ -35,6 +35,7 @@ import {
   userTypesArray,
 } from "../../types/IUserInfoResponse";
 import { useAuth0 } from "@auth0/auth0-react";
+import { FileSender } from "./components/file-sender";
 
 export const AdminPanelPage = ({
   apiClient,
@@ -46,8 +47,15 @@ export const AdminPanelPage = ({
   const [companySelect, setCompanySelect] = useState<string>("");
   const [companies, setCompanies] = useState<string[]>([]);
   const [users, setUsers] = useState<ICompanyUser[]>([]);
-  const [fileName, setFileName] = useState<string>("no file detected");
-  const [file, setFile] = useState<File | null>(null);
+  const [fileDevicesName, setFileDevicesName] =
+    useState<string>("No file detected");
+  const [fileHierarchyName, setFileHierarchyName] =
+    useState<string>("No file detected");
+  const [fileAlertsName, setFileAlertsName] =
+    useState<string>("No file detected");
+  const [fileDevices, setFileDevices] = useState<File | null>(null);
+  const [fileHierarchy, setFileHierarchy] = useState<File | null>(null);
+  const [fileAlerts, setFileAlerts] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user } = useAuth0();
 
@@ -79,11 +87,33 @@ export const AdminPanelPage = ({
     );
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileDevicesChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
-      setFile(selectedFile);
-      setFileName(selectedFile.name);
+      setFileDevices(selectedFile);
+      setFileDevicesName(selectedFile.name);
+    }
+  };
+
+  const handleFileHierarchyChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setFileHierarchy(selectedFile);
+      setFileHierarchyName(selectedFile.name);
+    }
+  };
+
+  const handleFileAlertsChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setFileAlerts(selectedFile);
+      setFileAlertsName(selectedFile.name);
     }
   };
 
@@ -199,45 +229,46 @@ export const AdminPanelPage = ({
               justifyContent="center"
               alignItems="center"
             >
-              <Heading padding={1} size="lg">{user?.name ?? "You"}</Heading>
+              <Heading padding={1} size="lg">
+                {user?.name ?? "You"}
+              </Heading>
               {/* <Heading padding={1} size="md">{user?.nickname ?? "No nickname"}</Heading> */}
-              <Heading padding={1} size="sm">{user?.email ?? "No email"}</Heading>
-              <Heading paddingTop={5} size="sm">{userInfo.userType}</Heading>
+              <Heading padding={1} size="sm">
+                {user?.email ?? "No email"}
+              </Heading>
+              <Heading paddingTop={5} size="sm">
+                {userInfo.userType}
+              </Heading>
             </CardBody>
           </Card>
-
           <Card variant="filled" bg="whiteAlpha.600">
             <CardHeader>
-              <Heading size="md">Upload new devices</Heading>
+              <Heading size="md">Upload files</Heading>
             </CardHeader>
-            <CardBody>
-              <HStack spacing={4} justify="center">
-                <Text>{fileName}</Text>
-                <Tooltip label="Upload" aria-label="Upload tooltip">
-                  <IconButton
-                    icon={<Upload />}
-                    colorScheme="primary"
-                    onClick={() =>
-                      document.getElementById("file-input")?.click()
-                    }
-                    aria-label="Upload"
-                  />
-                </Tooltip>
-                <input
-                  type="file"
-                  id="file-input"
-                  style={{ display: "none" }}
-                  accept=".csv"
-                  onChange={handleFileChange}
-                />
-                <Tooltip label="Send" aria-label="Send tooltip">
-                  <IconButton
-                    icon={<Send />}
-                    colorScheme="primary"
-                    aria-label="Send"
-                  />
-                </Tooltip>
-              </HStack>
+            <CardBody paddingX="120px">
+              <VStack spacing={4} align="stretch">
+                {/* Devices */}
+                <FileSender
+                  title="Devices"
+                  label="Devices"
+                  fileName={fileDevicesName}
+                  handleFileChange={handleFileDevicesChange}
+                ></FileSender>
+                {/* Hierarchy */}
+                <FileSender
+                  title="Hierarchy"
+                  label="Set hierarchy tree for devices in the company"
+                  fileName={fileHierarchyName}
+                  handleFileChange={handleFileHierarchyChange}
+                ></FileSender>
+                {/* Alerts */}
+                <FileSender
+                  title="Alerts"
+                  label="Create new alert for devices"
+                  fileName={fileAlertsName}
+                  handleFileChange={handleFileAlertsChange}
+                ></FileSender>
+              </VStack>
             </CardBody>
           </Card>
         </VStack>
