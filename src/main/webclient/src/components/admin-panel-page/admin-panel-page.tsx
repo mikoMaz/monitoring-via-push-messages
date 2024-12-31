@@ -47,15 +47,6 @@ export const AdminPanelPage = ({
   const [companySelect, setCompanySelect] = useState<string>("");
   const [companies, setCompanies] = useState<string[]>([]);
   const [users, setUsers] = useState<ICompanyUser[]>([]);
-  const [fileDevicesName, setFileDevicesName] =
-    useState<string>("No file detected");
-  const [fileHierarchyName, setFileHierarchyName] =
-    useState<string>("No file detected");
-  const [fileAlertsName, setFileAlertsName] =
-    useState<string>("No file detected");
-  const [fileDevices, setFileDevices] = useState<File | null>(null);
-  const [fileHierarchy, setFileHierarchy] = useState<File | null>(null);
-  const [fileAlerts, setFileAlerts] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { user } = useAuth0();
 
@@ -85,36 +76,6 @@ export const AdminPanelPage = ({
         user.name === userName ? { ...user, role: newRole } : user
       )
     );
-  };
-
-  const handleFileDevicesChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
-      setFileDevices(selectedFile);
-      setFileDevicesName(selectedFile.name);
-    }
-  };
-
-  const handleFileHierarchyChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
-      setFileHierarchy(selectedFile);
-      setFileHierarchyName(selectedFile.name);
-    }
-  };
-
-  const handleFileAlertsChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
-      setFileAlerts(selectedFile);
-      setFileAlertsName(selectedFile.name);
-    }
   };
 
   const handleSaveClick = async () => {
@@ -203,8 +164,8 @@ export const AdminPanelPage = ({
               {companySelect && (
                 <Button
                   colorScheme="primary"
-                  isLoading={isLoading} // Add loading state
-                  onClick={handleSaveClick} // Attach click handler
+                  isLoading={isLoading}
+                  onClick={handleSaveClick}
                 >
                   Save
                 </Button>
@@ -245,29 +206,27 @@ export const AdminPanelPage = ({
             <CardHeader>
               <Heading size="md">Upload files</Heading>
             </CardHeader>
-            <CardBody paddingX="120px">
+            <CardBody paddingX="100px">
               <VStack spacing={4} align="stretch">
                 {/* Devices */}
                 <FileSender
                   title="Devices"
                   label="Devices"
-                  fileName={fileDevicesName}
-                  handleFileChange={handleFileDevicesChange}
-                ></FileSender>
+                  type="device"
+                  tableName="testTableDevices" //test
+                />
                 {/* Hierarchy */}
                 <FileSender
                   title="Hierarchy"
                   label="Set hierarchy tree for devices in the company"
-                  fileName={fileHierarchyName}
-                  handleFileChange={handleFileHierarchyChange}
-                ></FileSender>
+                  type="hierarchy"
+                  tableName="testTableHierarchy" //test
+                />
                 {/* Alerts */}
                 <FileSender
                   title="Alerts"
                   label="Create new alert for devices"
-                  fileName={fileAlertsName}
-                  handleFileChange={handleFileAlertsChange}
-                ></FileSender>
+                />
               </VStack>
             </CardBody>
           </Card>
