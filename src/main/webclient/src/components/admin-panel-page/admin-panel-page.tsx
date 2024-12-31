@@ -1,6 +1,8 @@
 import {
+  Button,
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
   Checkbox,
   CheckboxGroup,
@@ -26,14 +28,25 @@ import { useEffect, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";
 import { ICompanyUser } from "../../types/ICompanyUser";
-import { userType, userTypesArray } from "../../types/IUserInfoResponse";
+import {
+  IUserInfoResponse,
+  userType,
+  userTypesArray,
+} from "../../types/IUserInfoResponse";
 
-export const AdminPanelPage = ({ apiClient }: { apiClient: APIClient }) => {
+export const AdminPanelPage = ({
+  apiClient,
+  userInfo,
+}: {
+  apiClient: APIClient;
+  userInfo: IUserInfoResponse;
+}) => {
   const [companySelect, setCompanySelect] = useState<string>("");
   const [companies, setCompanies] = useState<string[]>([]);
   const [users, setUsers] = useState<ICompanyUser[]>([]);
   const [fileName, setFileName] = useState<string>("no file detected");
   const [file, setFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     apiClient.getAllCompanies().then((companies) => setCompanies(companies));
@@ -71,29 +84,30 @@ export const AdminPanelPage = ({ apiClient }: { apiClient: APIClient }) => {
     }
   };
 
-  //   const handleSendFile = () => {
-  //     if (file) {
-  //       const formData = new FormData();
-  //       formData.append("file", file);
-  //       apiClient
-  //         .uploadFile(formData)
-  //         .then((response) => {
-  //           console.log("File uploaded successfully", response);
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error uploading file", error);
-  //         });
-  //     }
-  //   };
+  const handleSaveClick = async () => {
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // await apiClient.saveUsers(users);
+    } catch (error) {
+      console.error("Error saving users:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const UserRole = () => {
+    const filteredRoles = userTypesArray.filter(
+      (role) => role !== "EXTERNAL" && role !== "SUPER_ADMIN"
+    );
+
     return (
       <TableContainer>
         <Table variant="simple" width="full">
           <Thead>
             <Tr>
               <Th>User</Th>
-              {userTypesArray.map((role) => (
+              {filteredRoles.map((role) => (
                 <Th key={role}>{role}</Th>
               ))}
             </Tr>
@@ -102,7 +116,7 @@ export const AdminPanelPage = ({ apiClient }: { apiClient: APIClient }) => {
             {users.map((user) => (
               <Tr key={user.name}>
                 <Td>{user.name}</Td>
-                {userTypesArray.map((role) => (
+                {filteredRoles.map((role) => (
                   <Td key={role}>
                     <CheckboxGroup value={[user.role]}>
                       <Checkbox
@@ -130,60 +144,81 @@ export const AdminPanelPage = ({ apiClient }: { apiClient: APIClient }) => {
       bg={UIProps.colors.background}
     >
       <GridItem colSpan={1}>
-        <Card variant="filled" bg="whiteAlpha.600">
-          <CardHeader>
-            <Select
-              placeholder="Select company"
-              value={companySelect}
-              onChange={handleCompanyChange}
-              bg="white"
-              focusBorderColor={UIProps.colors.primary}
-            >
-              {companies.map((company, index) => (
-                <option key={index} value={company}>
-                  {company}
-                </option>
-              ))}
-            </Select>
-          </CardHeader>
-          <CardBody>
-            <Card>{companySelect && <UserRole />}</Card>
-          </CardBody>
-        </Card>
+        {userInfo.userType === "ADMIN" ||
+        userInfo.userType === "SUPER_ADMIN" ? (
+          <Card variant="filled" bg="whiteAlpha.600">
+            <CardHeader>
+              <Heading size="md">Change roles</Heading>
+            </CardHeader>
+            <CardBody>
+              <Select
+                placeholder="Select company"
+                value={companySelect}
+                onChange={handleCompanyChange}
+                bg="white"
+                focusBorderColor={UIProps.colors.primary}
+              >
+                {companies.map((company, index) => (
+                  <option key={index} value={company}>
+                    {company}
+                  </option>
+                ))}
+              </Select>
+              <Card marginTop={10}>{companySelect && <UserRole />}</Card>
+            </CardBody>
+            <CardFooter justifyContent="flex-end">
+              {companySelect && (
+                <Button
+                  colorScheme="primary"
+                  isLoading={isLoading} // Add loading state
+                  onClick={handleSaveClick} // Attach click handler
+                >
+                  Save
+                </Button>
+              )}
+            </CardFooter>
+          </Card>
+        ) : null}
       </GridItem>
 
       <GridItem colSpan={1}>
-        <Card variant="filled" bg="whiteAlpha.600">
-          <CardHeader><Heading size='md'>Upload new devices</Heading></CardHeader>
-          <CardBody>
-            <HStack spacing={4} justify="center">
-              <Text>{fileName}</Text>
-              <Tooltip label="Upload" aria-label="Upload tooltip">
-                <IconButton
-                  icon={<Upload />}
-                  colorScheme="primary"
-                  onClick={() => document.getElementById("file-input")?.click()}
-                  aria-label="Upload"
+        <VStack align="stretch">
+          <Card variant="filled" bg="whiteAlpha.600"></Card>
+          <Card variant="filled" bg="whiteAlpha.600">
+            <CardHeader>
+              <Heading size="md">Upload new devices</Heading>
+            </CardHeader>
+            <CardBody>
+              <HStack spacing={4} justify="center">
+                <Text>{fileName}</Text>
+                <Tooltip label="Upload" aria-label="Upload tooltip">
+                  <IconButton
+                    icon={<Upload />}
+                    colorScheme="primary"
+                    onClick={() =>
+                      document.getElementById("file-input")?.click()
+                    }
+                    aria-label="Upload"
+                  />
+                </Tooltip>
+                <input
+                  type="file"
+                  id="file-input"
+                  style={{ display: "none" }}
+                  accept=".csv"
+                  onChange={handleFileChange}
                 />
-              </Tooltip>
-              <input
-                type="file"
-                id="file-input"
-                style={{ display: "none" }}
-                accept=".csv"
-                onChange={handleFileChange}
-              />
-              <Tooltip label="Send" aria-label="Send tooltip">
-                <IconButton
-                  icon={<Send />}
-                  colorScheme="primary"
-                  //   onClick={handleSendFile}
-                  aria-label="Send"
-                />
-              </Tooltip>
-            </HStack>
-          </CardBody>
-        </Card>
+                <Tooltip label="Send" aria-label="Send tooltip">
+                  <IconButton
+                    icon={<Send />}
+                    colorScheme="primary"
+                    aria-label="Send"
+                  />
+                </Tooltip>
+              </HStack>
+            </CardBody>
+          </Card>
+        </VStack>
       </GridItem>
     </Grid>
   );

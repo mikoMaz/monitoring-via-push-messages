@@ -25,7 +25,7 @@ import { MonitoringDevicePage } from "../monitoring-device-page/monitoring-devic
 import { MonitoringPage } from "../monitoring-page/monitoring-page";
 import { NotFoundPage } from "../not-found-page/not-found-page";
 import { useAuth0 } from "@auth0/auth0-react";
-import { IUserInfoResponse } from "../../types/IUserInfoResponse";
+import { getDeniedUserInfoResponse, IUserInfoResponse } from "../../types/IUserInfoResponse";
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
 import { AdminPanelPage } from "../admin-panel-page/admin-panel-page";
 
@@ -110,7 +110,7 @@ export const AppBody = () => {
       <Route
         key="admin-panel-page"
         path="/admin"
-        element={<AdminPanelPage apiClient={new APIClient} />}
+        element={<AdminPanelPage apiClient={apiClient} userInfo={userInfo ?? getDeniedUserInfoResponse()}/>}
       />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
