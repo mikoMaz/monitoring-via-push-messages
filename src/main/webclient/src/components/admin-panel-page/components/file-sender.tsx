@@ -52,17 +52,16 @@ export const FileSender = ({
 
     await new Promise((resolve) => setTimeout(resolve, 2000))
       .then(() => {
-        setUploadSuccess(true);
+        // setUploadSuccess(true);
         console.log("then ", uploadSuccess);
+        setFileName("No file detected");
       })
       .catch((error) => {
         console.error("Error uploading file:", error);
-        alert("Failed to upload file");
       })
       .finally(() => {
         setIsLoading(false);
         setAlertInfoExpanded(true);
-        // setFileName("No file detected");
       });
 
     // try {
@@ -102,10 +101,10 @@ export const FileSender = ({
         <Tooltip label={label} bg="gray.100" color="gray.500" placement="left">
           <InfoOutlined style={{ color: UIProps.colors.accent }} />
         </Tooltip>
-        <Heading size="sm" w="120px">
+        <Heading size="sm" w="100px">
           {title}:
         </Heading>
-        <Text flex="1">{fileName}</Text>
+        <Text  w="250px">{fileName}</Text>
         <Tooltip label="Upload" aria-label="Upload tooltip">
           <IconButton
             icon={<Upload />}
@@ -132,21 +131,26 @@ export const FileSender = ({
         </Tooltip>
       </HStack>
       {alertInfoExpanded && (
-        <Alert status="success">
-          <AlertIcon />
-          <Box>
-            <AlertTitle>Success!</AlertTitle>
-            <AlertDescription>
-              Your application has been received. We will review your
-              application and respond within the next 48 hours.
-            </AlertDescription>
+        <Alert
+          status={uploadSuccess ? "success" : "error"}
+          variant="left-accent"
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          marginY={4}
+        >
+          <Box display="flex" alignItems="center">
+            <AlertIcon />
+            <Box ml={2}>
+              <AlertTitle>{uploadSuccess ? "Success!" : "Error!"}</AlertTitle>
+              <AlertDescription>{uploadSuccess ? "Your file has been sended." : "There was problem with sending your file. Try again."}</AlertDescription>
+            </Box>
           </Box>
           <CloseButton
-            alignSelf="flex-start"
-            position="relative"
-            right={-1}
-            top={-1}
-            onClick={()=> {setAlertInfoExpanded(false); setUploadSuccess(false)}}
+            onClick={() => {
+              setAlertInfoExpanded(false);
+              setUploadSuccess(false);
+            }}
           />
         </Alert>
       )}

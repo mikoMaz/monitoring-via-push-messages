@@ -206,7 +206,7 @@ export const AdminPanelPage = ({
             <CardHeader>
               <Heading size="md">Upload files</Heading>
             </CardHeader>
-            <CardBody paddingX="100px">
+            <CardBody paddingX="60px">
               <VStack spacing={4} align="stretch">
                 {/* Devices */}
                 <FileSender
