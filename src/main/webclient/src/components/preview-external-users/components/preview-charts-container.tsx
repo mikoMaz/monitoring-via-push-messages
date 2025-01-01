@@ -6,7 +6,14 @@ import {
   returnDevicesArrayFromAllDevicesUptimeJson,
 } from "../../../types/deviceModel";
 import { APIClient } from "../../../api/api-client";
-import { Card, CardBody, Center, VStack } from "@chakra-ui/react";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Center,
+  Heading,
+  VStack,
+} from "@chakra-ui/react";
 import { CurrentChart } from "../../dashboard-page/components/current-chart";
 import { getEmptyPreset } from "../../../types/chartTemplate";
 import { RecentChart } from "../../dashboard-page/components/recent-chart";
@@ -17,11 +24,36 @@ interface IPreviewChartsContainer {
   context: string;
 }
 
-const ChartContainer = ({ chart }: { chart: JSX.Element }) => {
+const ChartContainerWrapper = ({ chart }: { chart: JSX.Element }) => {
   return (
-    <Card variant="filled" bg="whiteAlpha.500" align="center">
+    <Card variant="filled" bg="whiteAlpha.500" align="center" marginX="20px">
       <CardBody>
         <Center>{chart}</Center>
+      </CardBody>
+    </Card>
+  );
+};
+
+const ContextCard = ({
+  context,
+  deviceModel,
+}: {
+  context: string;
+  deviceModel: DeviceModel;
+}) => {
+  return (
+    <Card variant="filled" bg="whiteAlpha.500" align="center" marginX="20px">
+      <CardHeader>
+        <Heading>{context}</Heading>
+      </CardHeader>
+      <CardBody>
+        <VStack>
+          <>
+            {deviceModel.getDevicesCount()
+              ? `Number of devices: ${deviceModel.getDevicesCount()}`
+              : ""}
+          </>
+        </VStack>
       </CardBody>
     </Card>
   );
@@ -68,8 +100,9 @@ export const PreviewChartsContainer = ({
   if (secret) {
     return (
       <Center>
-        <VStack>
-          <ChartContainer
+        <VStack align="stretch" spacing={2}>
+          <ContextCard context={context} deviceModel={deviceModel} />
+          <ChartContainerWrapper
             chart={
               <CurrentChart
                 model={deviceModel}
@@ -78,7 +111,7 @@ export const PreviewChartsContainer = ({
               />
             }
           />
-          <ChartContainer
+          <ChartContainerWrapper
             chart={
               <RecentChart
                 model={deviceModel}
