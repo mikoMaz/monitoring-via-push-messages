@@ -212,7 +212,7 @@ export const AppBody = () => {
     onComponentLoaded().catch((error: any) => {
       console.error("Error happaned while recurrent updates: " + error.message);
     });
-    setInterval(onComponentLoaded, 100 * 60 * refreshTime);
+    setInterval(onComponentLoaded, 100 * 100 * refreshTime * 6);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alertsEnabled, email]);
