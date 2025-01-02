@@ -30,11 +30,10 @@ import { ChartCreator } from "./chart-creator";
 import { UIProps } from "../../../config/config";
 import { returnDeviceTypesArray } from "../../../types/deviceModel";
 import {
-  localStorageKey,
-  LocalStorageManager,
   FileSaver,
   chartTemplateJsonObject,
 } from "../../../types/fileSaver";
+import { LocalStorageManager } from "../../../types/localStorageMenager";
 
 interface ICustomChartsTab {
   model: DeviceModel;
@@ -67,13 +66,11 @@ export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
     return uptimeValues;
   };
 
-  const localStorageKey: localStorageKey = "chartPresets";
-
   const [selectedTemplateIndex, setSelectedTemplateIndex] = useState<number>(0);
 
   const [chartPresets, setChartPresets] = useState<ChartTemplate[]>(() => {
     const presets =
-      LocalStorageManager.loadPresetsFromLocalStorage(localStorageKey);
+      LocalStorageManager.loadPresetsFromLocalStorage();
     if (presets.length > 0) {
       return presets;
     }
@@ -93,11 +90,8 @@ export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
         updatedPresets.push(newPreset);
       }
       LocalStorageManager.savePresetsToLocalStorage(
-        localStorageKey,
-        updatedPresets,
-        model
+        updatedPresets
       );
-      console.log(updatedPresets);
       return updatedPresets;
     });
   };
@@ -131,7 +125,7 @@ export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
   };
 
   const handleExportClick = () => {
-    FileSaver.saveChartPresetsToJson(chartPresets, model);
+    FileSaver.saveChartPresetsToJson(chartPresets);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,9 +144,7 @@ export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
             setChartPresets((prevPresets) => {
               const allPresets = [...prevPresets, ...parsedPresets];
               LocalStorageManager.savePresetsToLocalStorage(
-                localStorageKey,
-                allPresets,
-                model
+                allPresets
               );
               console.log("Imported presets:", importedPresets);
               return allPresets;
@@ -172,12 +164,10 @@ export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
       setChartPresets(updatedPresets);
       if (updatedPresets.length > 0) {
         LocalStorageManager.savePresetsToLocalStorage(
-          localStorageKey,
-          updatedPresets,
-          model
+          updatedPresets
         );
       } else {
-        LocalStorageManager.clearLocalStorageEntry(localStorageKey);
+        LocalStorageManager.clearLocalStorageEntry("chartPresets");
       }
       if (selectedTemplateIndex >= updatedPresets.length) {
         setSelectedTemplateIndex(0);

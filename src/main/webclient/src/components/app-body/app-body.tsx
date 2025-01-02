@@ -1,11 +1,4 @@
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Grid,
-  GridItem,
-  useToast,
-} from "@chakra-ui/react";
+import { Grid, GridItem, useToast } from "@chakra-ui/react";
 import { Navbar } from "../layout/navbar/navbar";
 import { IAppProps } from "../../types/projectTypes";
 import { Route, Routes, useNavigate } from "react-router-dom";
@@ -31,6 +24,7 @@ import {
 } from "../../types/IUserInfoResponse";
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
 import { getToastOptions } from "../layout/inactive-devices-alert-toast";
+import { LocalStorageManager } from "../../types/localStorageMenager";
 
 const refreshTime = 3; //minutes
 
@@ -62,7 +56,9 @@ export const AppBody = () => {
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);
 
-  const [deviceAlertsEnabled, setDeviceAlertsEnabled] = useState<boolean>(true);
+  const [deviceAlertsEnabled, setDeviceAlertsEnabled] = useState<boolean>(
+    LocalStorageManager.getDeviceAlertsEnabledValue()
+  );
 
   const alertsEnabledRef = useRef<boolean>(false);
 
@@ -70,7 +66,7 @@ export const AppBody = () => {
     if (deviceAlertsEnabled !== alertsEnabledRef.current) {
       alertsEnabledRef.current = deviceAlertsEnabled;
     }
-  }, [deviceAlertsEnabled])
+  }, [deviceAlertsEnabled]);
 
   const toast = useToast();
 
@@ -126,6 +122,7 @@ export const AppBody = () => {
     alertsEnabled: deviceAlertsEnabled,
     setAlertsEnabled: (value: boolean) => {
       setDeviceAlertsEnabled(value);
+      LocalStorageManager.saveDeviceAlertsEnabled(value);
     },
   };
 
@@ -184,6 +181,7 @@ export const AppBody = () => {
   };
 
   const onComponentLoaded = async () => {
+    //TODO why executed double
     if (email || user?.email) {
       const userEmail = email ?? user?.email;
       if (!email) {
