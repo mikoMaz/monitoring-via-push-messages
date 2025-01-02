@@ -4,11 +4,16 @@ import { UIProps } from "../../config/config";
 interface IButtonWithIconProps {
   icon: React.ReactElement;
   text: string;
-  onClick: () => void
+  onClick: () => void;
   props?: ButtonProps;
 }
 
-export const ButtonWithIcon = ({ text, icon, onClick, props }: IButtonWithIconProps) => {
+export const ButtonWithIcon = ({
+  text,
+  icon,
+  onClick,
+  props,
+}: IButtonWithIconProps) => {
   return (
     <Button
       leftIcon={icon}

@@ -18,12 +18,16 @@ enum viewOption {
 }
 
 interface IMonitoringPage {
-  model: DeviceModel,
-  setInactiveSwitchEnabled: (value: boolean) => void,
-  inactiveSwitchEnabled: boolean
+  model: DeviceModel;
+  setInactiveSwitchEnabled: (value: boolean) => void;
+  inactiveSwitchEnabled: boolean;
 }
 
-export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchEnabled}: IMonitoringPage) => {
+export const MonitoringPage = ({
+  model,
+  setInactiveSwitchEnabled,
+  inactiveSwitchEnabled,
+}: IMonitoringPage) => {
   const ui = UIProps;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -74,13 +78,30 @@ export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchE
   const renderSelectedView = () => {
     switch (selectedViewOption) {
       case viewOption.allDevices:
-        return <AllDevicesView model={model} inactiveOnly={inactiveSwitchEnabled}/>;
+        return (
+          <AllDevicesView model={model} inactiveOnly={inactiveSwitchEnabled} />
+        );
       case viewOption.sensors:
-        return <SingleDeviceView model={model.getSensorsArray()} inactiveOnly={inactiveSwitchEnabled}/>;
+        return (
+          <SingleDeviceView
+            model={model.getSensorsArray()}
+            inactiveOnly={inactiveSwitchEnabled}
+          />
+        );
       case viewOption.gateways:
-        return <SingleDeviceView model={model.getGatewaysArray()} inactiveOnly={inactiveSwitchEnabled}/>;
+        return (
+          <SingleDeviceView
+            model={model.getGatewaysArray()}
+            inactiveOnly={inactiveSwitchEnabled}
+          />
+        );
       case viewOption.bridges:
-        return <SingleDeviceView model={model.getBridgesArray()} inactiveOnly={inactiveSwitchEnabled}/>;
+        return (
+          <SingleDeviceView
+            model={model.getBridgesArray()}
+            inactiveOnly={inactiveSwitchEnabled}
+          />
+        );
     }
   };
 
@@ -122,14 +143,17 @@ export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchE
           marginTop="28px"
           marginBottom="28px"
         >
-          <Grid templateColumns="repeat(12, 1fr)">
-            <GridItem colSpan={5}>
+          <Grid templateColumns="auto 1fr auto" gap={2}>
+            <GridItem width="auto">
               <ViewTypeSelectionTabs
                 index={selectedViewOption}
                 onSelectionChanged={onSelectedViewChanged}
               />
             </GridItem>
-            <GridItem colStart={8} colEnd={13}>
+            <GridItem colSpan={1}>
+              <div className="empty-space" />
+            </GridItem>
+            <GridItem width="auto">
               <FilterSectionButtons
                 setFilterEnabled={setFilteringSectionEnabled}
                 inactiveSwitchEnabled={inactiveSwitchEnabled}
