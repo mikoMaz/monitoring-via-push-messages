@@ -49,8 +49,6 @@ export const UserSidebar = ({
         icon={<Avatar size="sm" name={user?.name ?? user?.nickname ?? user?.mail}/>}
         aria-label={"Profile"}
         colorScheme={UIProps.colors.accent}
-        paddingTop="10px"
-        paddingLeft="40px"
       />
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />

@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Button,
   Card,
   CardBody,
@@ -131,110 +132,116 @@ export const AdminPanelPage = ({
   };
 
   return (
-    <Grid
-      templateColumns="repeat(2, 1fr)"
-      gap={4}
-      padding={10}
+    <Box
+      paddingLeft="47px"
+      paddingRight="47px"
       bg={UIProps.colors.background}
+      boxShadow="inner"
     >
-      <GridItem colSpan={1}>
-        {userInfo.userType === "ADMIN" ||
-        userInfo.userType === "SUPER_ADMIN" ? (
-          <Card variant="filled" bg="whiteAlpha.600">
-            <CardHeader>
-              <Heading size="md">Change roles</Heading>
-            </CardHeader>
-            <CardBody>
-              <Select
-                placeholder="Select company"
-                value={companySelect}
-                onChange={handleCompanyChange}
-                bg="white"
-                focusBorderColor={UIProps.colors.primary}
-              >
-                {companies.map((company, index) => (
-                  <option key={index} value={company}>
-                    {company}
-                  </option>
-                ))}
-              </Select>
-              <Card marginTop={10}>{companySelect && <UserRole />}</Card>
-            </CardBody>
-            <CardFooter justifyContent="flex-end">
-              {companySelect && (
-                <Button
-                  colorScheme="primary"
-                  isLoading={isLoading}
-                  onClick={handleSaveClick}
-                >
-                  Save
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
-        ) : null}
-      </GridItem>
-
-      <GridItem colSpan={1}>
-        <VStack align="stretch">
-          <Card variant="filled" bg="whiteAlpha.600" align="center">
-            <CardHeader paddingBottom={-1}>
-              <Avatar
-                name={user?.name ?? user?.nickname ?? user?.mail}
-                size="xl"
-              />
-            </CardHeader>
-            <CardBody
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Heading padding={1} size="lg">
-                {user?.name ?? "You"}
-              </Heading>
-              {/* <Heading padding={1} size="md">{user?.nickname ?? "No nickname"}</Heading> */}
-              <Heading padding={1} size="sm">
-                {user?.email ?? "No email"}
-              </Heading>
-              <Heading paddingTop={5} size="sm">
-                {userInfo.userType}
-              </Heading>
-            </CardBody>
-          </Card>
-          {userInfo.userType === "SUPER_ADMIN" ? (
+      <Grid
+        templateColumns="repeat(2, 1fr)"
+        gap={4}
+        paddingY={10}
+      >
+        <GridItem colSpan={1}>
+          {userInfo.userType === "ADMIN" ||
+          userInfo.userType === "SUPER_ADMIN" ? (
             <Card variant="filled" bg="whiteAlpha.600">
               <CardHeader>
-                <Heading size="md">Upload files</Heading>
+                <Heading size="md">Change roles</Heading>
               </CardHeader>
-              <CardBody paddingX="60px">
-                <VStack spacing={4} align="stretch">
-                  {/* Devices */}
-                  <FileSender
-                    title="Devices"
-                    label="Devices"
-                    type="device"
-                    apiClient={apiClient}
-                  />
-                  {/* Hierarchy */}
-                  <FileSender
-                    title="Hierarchy"
-                    label="Set hierarchy tree for devices in the company"
-                    type="hierarchy"
-                    apiClient={apiClient}
-                  />
-                  {/* Alerts */}
-                  <FileSender
-                    title="Alerts"
-                    label="Create new alert for devices"
-                    apiClient={apiClient}
-                  />
-                </VStack>
+              <CardBody>
+                <Select
+                  placeholder="Select company"
+                  value={companySelect}
+                  onChange={handleCompanyChange}
+                  bg="white"
+                  focusBorderColor={UIProps.colors.primary}
+                >
+                  {companies.map((company, index) => (
+                    <option key={index} value={company}>
+                      {company}
+                    </option>
+                  ))}
+                </Select>
+                <Card marginTop={10}>{companySelect && <UserRole />}</Card>
               </CardBody>
+              <CardFooter justifyContent="flex-end">
+                {companySelect && (
+                  <Button
+                    colorScheme="primary"
+                    isLoading={isLoading}
+                    onClick={handleSaveClick}
+                  >
+                    Save
+                  </Button>
+                )}
+              </CardFooter>
             </Card>
           ) : null}
-        </VStack>
-      </GridItem>
-    </Grid>
+        </GridItem>
+
+        <GridItem colSpan={1}>
+          <VStack align="stretch">
+            <Card variant="filled" bg="whiteAlpha.600" align="center">
+              <CardHeader paddingBottom={-1}>
+                <Avatar
+                  name={user?.name ?? user?.nickname ?? user?.mail}
+                  size="xl"
+                />
+              </CardHeader>
+              <CardBody
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Heading padding={1} size="lg">
+                  {user?.name ?? "You"}
+                </Heading>
+                {/* <Heading padding={1} size="md">{user?.nickname ?? "No nickname"}</Heading> */}
+                <Heading padding={1} size="sm">
+                  {user?.email ?? "No email"}
+                </Heading>
+                <Heading paddingTop={5} size="sm">
+                  {userInfo.userType}
+                </Heading>
+              </CardBody>
+            </Card>
+            {userInfo.userType === "SUPER_ADMIN" ? (
+              <Card variant="filled" bg="whiteAlpha.600">
+                <CardHeader>
+                  <Heading size="md">Upload files</Heading>
+                </CardHeader>
+                <CardBody paddingX="60px">
+                  <VStack spacing={4} align="stretch">
+                    {/* Devices */}
+                    <FileSender
+                      title="Devices"
+                      label="Devices"
+                      type="device"
+                      apiClient={apiClient}
+                    />
+                    {/* Hierarchy */}
+                    <FileSender
+                      title="Hierarchy"
+                      label="Set hierarchy tree for devices in the company"
+                      type="hierarchy"
+                      apiClient={apiClient}
+                    />
+                    {/* Alerts */}
+                    <FileSender
+                      title="Alerts"
+                      label="Create new alert for devices"
+                      apiClient={apiClient}
+                    />
+                  </VStack>
+                </CardBody>
+              </Card>
+            ) : null}
+          </VStack>
+        </GridItem>
+      </Grid>
+    </Box>
   );
 };
