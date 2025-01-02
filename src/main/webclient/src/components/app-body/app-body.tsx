@@ -12,7 +12,12 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { Suspense, useEffect, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";
-import { AllDevicesUptimeJson, DeviceModel, emptyAllDevicesUptimeJson, IMonitoringDevice } from "../../types/deviceModel";
+import {
+  AllDevicesUptimeJson,
+  DeviceModel,
+  emptyAllDevicesUptimeJson,
+  IMonitoringDevice,
+} from "../../types/deviceModel";
 import { AboutPage } from "../about-page/about-page";
 import { DashboardPage } from "../dashboard-page/dashboard-page";
 import { LandingPage } from "../landing-page/landing-page";
@@ -20,7 +25,10 @@ import { MonitoringDevicePage } from "../monitoring-device-page/monitoring-devic
 import { MonitoringPage } from "../monitoring-page/monitoring-page";
 import { NotFoundPage } from "../not-found-page/not-found-page";
 import { useAuth0 } from "@auth0/auth0-react";
-import { IUserInfoResponse } from "../../types/IUserInfoResponse";
+import {
+  getDeniedUserInfoResponse,
+  IUserInfoResponse,
+} from "../../types/IUserInfoResponse";
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
 
 const refreshTime = 3; //minutes
@@ -98,7 +106,11 @@ export const AppBody = () => {
       <Route
         key="user-rejected"
         path="/permission-required"
-        element={<UserRejectedPage email={email} />}
+        element={
+          <UserRejectedPage
+            userInfo={userInfo ?? getDeniedUserInfoResponse(email)}
+          />
+        }
       />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
