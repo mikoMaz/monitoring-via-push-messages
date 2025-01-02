@@ -73,7 +73,7 @@ export class TestAPIClient implements IAPIClient {
   public getUserInfo = (accessToken: string, email?: string) => {
     const user: IUserInfoResponse = {
       email: email ?? "test_email@test.com",
-      userType: "SUPER_ADMIN",
+      userType: "ADMIN",
     };
     return Promise.resolve(user);
   };

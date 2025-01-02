@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Navbar } from "../layout/navbar/navbar";
 import { IAppProps } from "../../types/projectTypes";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Suspense, useEffect, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";
@@ -25,7 +25,10 @@ import { MonitoringDevicePage } from "../monitoring-device-page/monitoring-devic
 import { MonitoringPage } from "../monitoring-page/monitoring-page";
 import { NotFoundPage } from "../not-found-page/not-found-page";
 import { useAuth0 } from "@auth0/auth0-react";
-import { getDeniedUserInfoResponse, IUserInfoResponse } from "../../types/IUserInfoResponse";
+import {
+  getDeniedUserInfoResponse,
+  IUserInfoResponse,
+} from "../../types/IUserInfoResponse";
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
 import { AdminPanelPage } from "../admin-panel-page/admin-panel-page";
 
@@ -35,6 +38,7 @@ export const AppBody = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const apiClient = new APIClient();
+  const location = useLocation();
 
   const [email, setEmail] = useState<string>("");
 
@@ -110,7 +114,12 @@ export const AppBody = () => {
       <Route
         key="admin-panel-page"
         path="/admin"
-        element={<AdminPanelPage apiClient={apiClient} userInfo={userInfo ?? getDeniedUserInfoResponse()}/>}
+        element={
+          <AdminPanelPage
+            apiClient={apiClient}
+            userInfo={userInfo ?? getDeniedUserInfoResponse()}
+          />
+        }
       />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
@@ -220,9 +229,14 @@ export const AppBody = () => {
   useEffect(() => {
     if (userInfo && userInfo.userType === "EXTERNAL") {
       navigate("/application/permission-required", { replace: true });
-      console.log(userInfo);
+    } else if (
+      userInfo &&
+      location.pathname === "/application/admin" &&
+      (userInfo.userType === "EXTERNAL" || userInfo.userType === "READ_ONLY")
+    ) {
+      navigate("/application/permission-required", { replace: true });
     }
-  }, [userInfo, navigate]);
+  }, [userInfo, navigate, location.pathname]);
 
   return (
     <Grid

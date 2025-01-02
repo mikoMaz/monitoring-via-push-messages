@@ -202,34 +202,34 @@ export const AdminPanelPage = ({
               </Heading>
             </CardBody>
           </Card>
-          <Card variant="filled" bg="whiteAlpha.600">
-            <CardHeader>
-              <Heading size="md">Upload files</Heading>
-            </CardHeader>
-            <CardBody paddingX="60px">
-              <VStack spacing={4} align="stretch">
-                {/* Devices */}
-                <FileSender
-                  title="Devices"
-                  label="Devices"
-                  type="device"
-                  tableName="testTableDevices" //test
-                />
-                {/* Hierarchy */}
-                <FileSender
-                  title="Hierarchy"
-                  label="Set hierarchy tree for devices in the company"
-                  type="hierarchy"
-                  tableName="testTableHierarchy" //test
-                />
-                {/* Alerts */}
-                <FileSender
-                  title="Alerts"
-                  label="Create new alert for devices"
-                />
-              </VStack>
-            </CardBody>
-          </Card>
+          {userInfo.userType === "SUPER_ADMIN" ? (
+            <Card variant="filled" bg="whiteAlpha.600">
+              <CardHeader>
+                <Heading size="md">Upload files</Heading>
+              </CardHeader>
+              <CardBody paddingX="60px">
+                <VStack spacing={4} align="stretch">
+                  {/* Devices */}
+                  <FileSender
+                    title="Devices"
+                    label="Devices"
+                    type="device"
+                  />
+                  {/* Hierarchy */}
+                  <FileSender
+                    title="Hierarchy"
+                    label="Set hierarchy tree for devices in the company"
+                    type="hierarchy"
+                  />
+                  {/* Alerts */}
+                  <FileSender
+                    title="Alerts"
+                    label="Create new alert for devices"
+                  />
+                </VStack>
+              </CardBody>
+            </Card>
+          ) : null}
         </VStack>
       </GridItem>
     </Grid>

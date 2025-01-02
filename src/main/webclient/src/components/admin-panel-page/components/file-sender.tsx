@@ -11,6 +11,9 @@ import {
   AlertDescription,
   AlertTitle,
   CloseButton,
+  Editable,
+  EditableInput,
+  EditablePreview,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
 import { InfoOutlined, Send, Upload } from "@mui/icons-material";
@@ -21,18 +24,18 @@ export const FileSender = ({
   title,
   label,
   type,
-  tableName,
 }: {
   title: string;
   label: string;
   type?: string;
-  tableName?: string;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>("No file detected");
   const [file, setFile] = useState<File>();
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   const [alertInfoExpanded, setAlertInfoExpanded] = useState<boolean>(false);
+  const [editableTableName, setEditableTableName] =
+    useState<string>("Table Name");
 
   const handleSendClick = async (
     type: string,
@@ -47,7 +50,7 @@ export const FileSender = ({
     setIsLoading(true);
     // const formData = new FormData();
     // formData.append("type", type);
-    // formData.append("tableName", tableName);
+    // formData.append("tableName", editabletableName);
     // formData.append("file", file);
 
     await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -104,7 +107,22 @@ export const FileSender = ({
         <Heading size="sm" w="100px">
           {title}:
         </Heading>
-        <Text  w="250px">{fileName}</Text>
+        {type === "device" || type === "hierarchy" ? (
+          <Editable
+            value={editableTableName}
+            onChange={(nextValue) => setEditableTableName(nextValue)}
+            onBlur={() => {
+              if (!editableTableName.trim()) {
+                setEditableTableName("Table Name");
+              }
+            }}
+            defaultValue="Table Name"
+          >
+            <EditablePreview />
+            <EditableInput />
+          </Editable>
+        ) : null}
+        <Text w="200px">{fileName}</Text>
         <Tooltip label="Upload" aria-label="Upload tooltip">
           <IconButton
             icon={<Upload />}
@@ -126,7 +144,7 @@ export const FileSender = ({
             colorScheme="primary"
             aria-label="Send"
             isLoading={isLoading}
-            onClick={() => handleSendClick(type ?? "", tableName ?? "", file)}
+            onClick={() => handleSendClick(type ?? "", editableTableName ?? "", file)}
           />
         </Tooltip>
       </HStack>
@@ -143,7 +161,11 @@ export const FileSender = ({
             <AlertIcon />
             <Box ml={2}>
               <AlertTitle>{uploadSuccess ? "Success!" : "Error!"}</AlertTitle>
-              <AlertDescription>{uploadSuccess ? "Your file has been sended." : "There was problem with sending your file. Try again."}</AlertDescription>
+              <AlertDescription>
+                {uploadSuccess
+                  ? "Your file has been sended."
+                  : "There was problem with sending your file. Try again."}
+              </AlertDescription>
             </Box>
           </Box>
           <CloseButton
