@@ -9,7 +9,7 @@ import {
 import { Navbar } from "../layout/navbar/navbar";
 import { IAppProps } from "../../types/projectTypes";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";
 import {
@@ -30,6 +30,7 @@ import {
   IUserInfoResponse,
 } from "../../types/IUserInfoResponse";
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
+import { getToastOptions } from "../layout/inactive-devices-alert-toast";
 
 const refreshTime = 3; //minutes
 
@@ -61,7 +62,15 @@ export const AppBody = () => {
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);
 
-  const [alertsEnabled, setAlertsEnabled] = useState<boolean>(true);
+  const [deviceAlertsEnabled, setDeviceAlertsEnabled] = useState<boolean>(true);
+
+  const alertsEnabledRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (deviceAlertsEnabled !== alertsEnabledRef.current) {
+      alertsEnabledRef.current = deviceAlertsEnabled;
+    }
+  }, [deviceAlertsEnabled])
 
   const toast = useToast();
 
@@ -114,9 +123,9 @@ export const AppBody = () => {
       />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
-    alertsEnabled: alertsEnabled,
+    alertsEnabled: deviceAlertsEnabled,
     setAlertsEnabled: (value: boolean) => {
-      setAlertsEnabled(value);
+      setDeviceAlertsEnabled(value);
     },
   };
 
@@ -148,29 +157,16 @@ export const AppBody = () => {
   };
 
   const checkInactiveDevices = (model: DeviceModel) => {
-    if (alertsEnabled) {
+    if (alertsEnabledRef.current) {
       const inactiveDevices: IMonitoringDevice[] =
         model.getInactiveDevicesArray();
       if (inactiveDevices.length && isAuthenticated) {
-        toast({
-          status: "error",
-          title: `${inactiveDevices.length} devices are inactive!`,
-          position: "top",
-          isClosable: true,
-          render: () => (
-            <Alert
-              status="error"
-              variant="solid"
-              onClick={() => {
-                setInactiveSwitchEnabled(true);
-                toast.closeAll();
-              }}
-            >
-              <AlertIcon />
-              <AlertTitle>{`${inactiveDevices.length} devices is inactive!`}</AlertTitle>
-            </Alert>
-          ),
-        });
+        toast(
+          getToastOptions(inactiveDevices.length, () => {
+            setInactiveSwitchEnabled(true);
+            toast.closeAll();
+          })
+        );
       }
     }
   };
@@ -214,8 +210,9 @@ export const AppBody = () => {
     });
     setInterval(onComponentLoaded, 100 * 100 * refreshTime * 6);
 
+    //TODO czy email jest potrzebny? Czy aplikacja KIEDYKOLWIEK bedzie dzialala na localhost
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alertsEnabled, email]);
+  }, [user, accessToken, email]);
 
   useEffect(() => {
     if (userInfo && userInfo.userType === "EXTERNAL") {
