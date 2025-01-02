@@ -73,7 +73,7 @@ export class TestAPIClient implements IAPIClient {
   public getUserInfo = (accessToken: string, email?: string) => {
     const user: IUserInfoResponse = {
       email: email ?? "test_email@test.com",
-      userType: "ADMIN",
+      userType: "SUPER_ADMIN",
     };
     return Promise.resolve(user);
   };
@@ -142,5 +142,17 @@ export class TestAPIClient implements IAPIClient {
       ],
     };
     return Promise.resolve(values);
+  };
+
+  public postCSVData = async (type: string, tableName: string, file: File) => {
+    if (Math.floor(Math.random() * 4) / 3) {
+      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+        return 500;
+      });
+    } else {
+      return new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
+        return 200;
+      });
+    }
   };
 }

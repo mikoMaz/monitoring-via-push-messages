@@ -38,6 +38,7 @@ export interface IAPIClient {
   ) => Promise<AllDevicesUptimeJson>;
   getAllCompanies: () => Promise<String[]>;
   getUsersFromCompany: () => Promise<ICompanyUser[]>;
+  postCSVData: (type: string, tableName: string, file: File) => Promise<number>;
 }
 
 export class APIClient implements IAPIClient {
@@ -178,7 +179,31 @@ export class APIClient implements IAPIClient {
   public getAllCompanies = () => {
     return this.testApiClient.getAllCompanies();
   };
+
   public getUsersFromCompany = () => {
     return this.testApiClient.getUsersFromCompany();
+  };
+
+  public postCSVData = async (type: string, tableName: string, file: File) => {
+    if (this.useTestData()) {
+      return this.testApiClient.postCSVData(type, tableName, file);
+    }
+
+    const formData = new FormData();
+    formData.append("type", type);
+    formData.append("tableName", tableName);
+    formData.append("file", file);
+
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/upload-csv`;
+
+    return axios
+      .post(apiURL, formData)
+      .then((response) => {
+        return response.status;
+      })
+      .catch((error) => {
+        console.error("Error uploading file:", error);
+        throw new Error("Failed to upload file");
+      });
   };
 }

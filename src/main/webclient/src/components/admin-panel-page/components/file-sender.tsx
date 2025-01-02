@@ -18,16 +18,18 @@ import {
 import { UIProps } from "../../../config/config";
 import { InfoOutlined, Send, Upload } from "@mui/icons-material";
 import { useState } from "react";
-import axios from "axios";
+import { APIClient } from "../../../api/api-client";
 
 export const FileSender = ({
   title,
   label,
   type,
+  apiClient,
 }: {
   title: string;
   label: string;
   type?: string;
+  apiClient: APIClient;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>("No file detected");
@@ -48,46 +50,41 @@ export const FileSender = ({
     }
 
     setIsLoading(true);
-    // const formData = new FormData();
-    // formData.append("type", type);
-    // formData.append("tableName", editabletableName);
-    // formData.append("file", file);
-
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-      .then(() => {
-        // setUploadSuccess(true);
-        console.log("then ", uploadSuccess);
-        setFileName("No file detected");
-      })
-      .catch((error) => {
-        console.error("Error uploading file:", error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-        setAlertInfoExpanded(true);
-      });
-
-    // try {
-    //   const response = await axios.post(
-    //     "http://localhost:8080/api/v1/upload-csv",
-    //     formData,
-    //     {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     }
-    //   );
-    //   if (response.status === 200) {
-    //     alert("File uploaded successfully");
-    //   } else {
-    //     throw new Error("Failed to upload file");
-    //   }
-    // } catch (error) {
-    //   console.error("Error uploading file:", error);
-    //   alert("Failed to upload file");
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    if (type === "device" || "hierarchy") {
+      await apiClient
+        .postCSVData(type, tableName, file)
+        .then((response) => {
+          if (response === 200) {
+            setFileName("No file detected");
+            setEditableTableName("Table Name")
+            setUploadSuccess(true);
+            setFile(undefined);
+          }
+        })
+        .catch((error) => {
+          setUploadSuccess(false);
+          console.error("Error uploading file:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setAlertInfoExpanded(true);
+        });
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+        .then(() => {
+          // setUploadSuccess(true);
+          console.log("then ", uploadSuccess);
+          setFileName("No file detected");
+          setFile(undefined);
+        })
+        .catch((error) => {
+          console.error("Error uploading file:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setAlertInfoExpanded(true);
+        });
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,7 +141,9 @@ export const FileSender = ({
             colorScheme="primary"
             aria-label="Send"
             isLoading={isLoading}
-            onClick={() => handleSendClick(type ?? "", editableTableName ?? "", file)}
+            onClick={() =>
+              handleSendClick(type ?? "", editableTableName ?? "", file)
+            }
           />
         </Tooltip>
       </HStack>

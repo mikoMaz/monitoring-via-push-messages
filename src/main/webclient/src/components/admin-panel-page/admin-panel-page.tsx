@@ -214,17 +214,20 @@ export const AdminPanelPage = ({
                     title="Devices"
                     label="Devices"
                     type="device"
+                    apiClient={apiClient}
                   />
                   {/* Hierarchy */}
                   <FileSender
                     title="Hierarchy"
                     label="Set hierarchy tree for devices in the company"
                     type="hierarchy"
+                    apiClient={apiClient}
                   />
                   {/* Alerts */}
                   <FileSender
                     title="Alerts"
                     label="Create new alert for devices"
+                    apiClient={apiClient}
                   />
                 </VStack>
               </CardBody>
