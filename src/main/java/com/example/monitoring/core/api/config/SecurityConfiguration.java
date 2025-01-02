@@ -28,11 +28,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter authenticationFilter;
+    private final PreviewAuthenticationFilter previewAuthenticationFilter;
     private final UserAuthorizationFilter userAuthorizationFilter;
     private final UserDetailsService userDetailsService;
 
     @Bean
     public FilterRegistrationBean registration(JwtAuthenticationFilter filter) {
+        FilterRegistrationBean registration = new FilterRegistrationBean(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+    @Bean
+    public FilterRegistrationBean registrationPreview(PreviewAuthenticationFilter filter) {
         FilterRegistrationBean registration = new FilterRegistrationBean(filter);
         registration.setEnabled(false);
         return registration;
@@ -65,6 +73,21 @@ public class SecurityConfiguration {
 
     @Bean
     @Order(2)
+    public SecurityFilterChain previewSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/api/v1/preview/**")
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(previewAuthenticationFilter, SecurityContextPersistenceFilter.class);
+        return http.build();
+
+    }
+
+    @Bean
+    @Order(3)
     public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http
 //                .cors(AbstractHttpConfigurer::disable)  // TODO custom configuration
