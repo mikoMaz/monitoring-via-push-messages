@@ -23,7 +23,7 @@ public class PreviewAuthenticationFilter extends OncePerRequestFilter {
 
     private final CompanyRepository companyRepository;
 
-    private static final String encryptionKey = "807d16901f1752a8bc2d0b1e77f1cb72";
+    public static final String encryptionKey = "807d16901f1752a8bc2d0b1e77f1cb72";
 
     private static final String API_KEY_HEADER = "x-api-key";
 

@@ -95,6 +95,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         // TODO: add roles to rest of the paths
                         .requestMatchers("/api/v1/user/kluczdostepu").hasRole(Role.SUPER_ADMIN.name())
+                        .requestMatchers("/api/v1/user/company/change-company-password").hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2
