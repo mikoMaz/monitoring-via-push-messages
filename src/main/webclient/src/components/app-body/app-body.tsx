@@ -31,6 +31,7 @@ import {
 } from "../../types/IUserInfoResponse";
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
 import { AdminPanelPage } from "../admin-panel-page/admin-panel-page";
+import { LoadingPage } from "../loading-page/loading-page";
 
 const refreshTime = 3; //minutes
 
@@ -250,7 +251,7 @@ export const AppBody = () => {
         <Navbar {...props} />
       </GridItem>
       <GridItem area={"main"}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingPage/>}>
           <Routes>{props.routes}</Routes>
         </Suspense>
       </GridItem>

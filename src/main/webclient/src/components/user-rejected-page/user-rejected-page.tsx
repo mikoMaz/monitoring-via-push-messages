@@ -10,7 +10,7 @@ export const UserRejectedPage = ({ email }: { email: string }) => {
       bg={UIProps.colors.background}
       boxShadow="inner"
     >
-      <Center>
+      <Center h="100vh">
         <Grid templateRows="repeat(2, 1fr)" gap={20}>
           <GridItem>
             <Heading>{`User ${email} doesn't have necessary rights to view this page`}</Heading>
