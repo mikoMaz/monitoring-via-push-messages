@@ -1,19 +1,17 @@
 package com.example.monitoring.core.company;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(
-        uniqueConstraints=@UniqueConstraint(columnNames={"id", "name"})
+        uniqueConstraints=@UniqueConstraint(columnNames={"name"})
 )
 public class Company {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
