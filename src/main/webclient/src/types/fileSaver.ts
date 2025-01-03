@@ -4,17 +4,13 @@ import {
   chartTypeFromString,
   IChartTemplate,
 } from "./chartTemplate";
-import { IDeviceModel } from "./deviceModel";
 
 export interface chartTemplateJsonObject {
   templates: IChartTemplate[];
 }
 
 export class FileSaver {
-  public static saveChartPresetsToJson(
-    templates: ChartTemplate[],
-    model: IDeviceModel
-  ) {
+  public static saveChartPresetsToJson(templates: ChartTemplate[]) {
     const presetsJSON = JSON.stringify(FileSaver.parsePresetsToJson(templates));
     const blob = new Blob([presetsJSON], { type: "application/json" });
     saveAs(blob, "chartPresets.json");
@@ -64,46 +60,5 @@ export class FileSaver {
       template.id = temp.id;
       return template;
     });
-  }
-}
-
-export type localStorageKey = "chartPresets";
-
-export class LocalStorageManager {
-  public static loadPresetsFromLocalStorage(
-    key: localStorageKey
-  ): ChartTemplate[] {
-    const savedPresetsItem = localStorage.getItem(key);
-    if (savedPresetsItem) {
-      const presets: chartTemplateJsonObject = JSON.parse(savedPresetsItem);
-      return FileSaver.parseJsonToChartTemplates(presets);
-    }
-    return [];
-  }
-
-  public static savePresetsToLocalStorage(
-    key: localStorageKey,
-    presets: ChartTemplate[],
-    model: IDeviceModel
-  ) {
-    localStorage.setItem(
-      key,
-      JSON.stringify(FileSaver.parsePresetsToJson(presets))
-    );
-  }
-
-  public static saveJsonToLocalStorage(
-    key: localStorageKey,
-    json: chartTemplateJsonObject
-  ) {
-    localStorage.setItem(key, JSON.stringify(json));
-  }
-
-  public static clearLocalStorageEntry(key: localStorageKey) {
-    localStorage.removeItem(key);
-  }
-
-  public static clearLocalStorage() {
-    localStorage.clear();
   }
 }

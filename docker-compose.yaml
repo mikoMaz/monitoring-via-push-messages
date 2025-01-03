@@ -6,7 +6,6 @@ services:
     ports:
       - 3000:3000
 
-
   timescaledb2:
     image: timescale/timescaledb-ha:pg16
     ports:

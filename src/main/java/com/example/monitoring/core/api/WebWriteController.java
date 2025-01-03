@@ -84,33 +84,33 @@ public class WebWriteController {
                 Long ToplevelTimestamp = statusService.getDeviceStatus(ToplevelID).getLogged_at();
                 Integer ToplevelType = 2;
 
-                currentObject = proc.convertToJsonTreeComponent(ToplevelID, ToplevelStatus, ToplevelTimestamp, ToplevelType);
-                logger.info(currentObject.toString());
-                List<String> MidList = dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
-                if (MidList == null) {
-                    MidList = new ArrayList<String>();
+            currentObject=proc.convertToJsonTreeComponent(ToplevelID,ToplevelStatus,ToplevelTimestamp,ToplevelType);
+            logger.info(currentObject.toString());
+            List<String> MidList=dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
+            if(MidList==null){
+                MidList=new ArrayList<String>();
+            }
+            JsonArray gatewayIdArray = new JsonArray();
+            for (String MidlevelId : MidList) {
+                gatewayIdArray.add(new JsonPrimitive(MidlevelId));
+            }
+            currentObject.add("children", gatewayIdArray);
+            list.get(0).add(currentObject);
+            for(int j=0;j<MidList.size();j++)
+            {
+                String MidlevelId= MidList.get(j);
+                List<String> BottomList=dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
+                if (BottomList == null) {
+                    continue;
                 }
-                JsonArray gatewayIdArray = new JsonArray();
-                for (String MidlevelId : MidList) {
-                    gatewayIdArray.add(new JsonPrimitive(MidlevelId));
+                JsonArray sensorIdArray = new JsonArray();
+                for (String BottomlevelID : BottomList) {
+                    sensorIdArray.add(new JsonPrimitive(BottomlevelID));
                 }
-                currentObject.add("children", gatewayIdArray);
-                list.get(0).add(currentObject);
-                for (int j = 0; j < MidList.size(); j++) {
-                    String MidlevelId = MidList.get(j);
-                    List<String> BottomList = dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
-                    if (BottomList == null) {
-                        continue;
-                    }
-                    JsonArray sensorIdArray = new JsonArray();
-                    for (String BottomlevelID : BottomList) {
-                        sensorIdArray.add(new JsonPrimitive(BottomlevelID));
-                    }
-
-                    Integer MidlevelStatus = statusService.getCalculatedStatus(MidlevelId);
-                    Long MidlevelTimestamp = statusService.getDeviceStatus(MidlevelId).getLogged_at();
-                    Integer MidlevelType = 1;
-                    if (MidlevelStatus != null) {
+                Integer MidlevelStatus=statusService.getCalculatedStatus(MidlevelId);
+                Integer MidlevelType=1;
+                if(MidlevelStatus!=null){
+                    Long MidlevelTimestamp=statusService.getDeviceStatus(MidlevelId).getLogged_at();
 
                         subDevice = proc.convertToJsonTreeComponent(MidlevelId, MidlevelStatus, MidlevelTimestamp, MidlevelType);
                         subDevice.add("children", sensorIdArray);
