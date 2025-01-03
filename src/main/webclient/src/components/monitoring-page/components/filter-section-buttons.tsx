@@ -1,8 +1,6 @@
 import {
   FormControl,
   FormLabel,
-  Grid,
-  GridItem,
   HStack,
   Input,
   InputGroup,
@@ -18,15 +16,20 @@ import { UIProps } from "../../../config/config";
 interface IFilterSectionButtonsProps {
   setFilterEnabled: () => void;
   inactiveDevicesSwitched: () => void;
+  setDeviceIdFilter: (val: string) => void;
   inactiveSwitchEnabled: boolean;
+  deviceIdFilter: string;
 }
 
 export const FilterSectionButtons = ({
   setFilterEnabled,
   inactiveDevicesSwitched,
+  setDeviceIdFilter,
   inactiveSwitchEnabled,
+  deviceIdFilter,
 }: IFilterSectionButtonsProps) => {
   const ui = UIProps;
+  
   return (
     <HStack spacing={4} align="center">
       <FormControl display="flex" alignItems="center" width="auto" marginEnd={6}>
@@ -64,6 +67,8 @@ export const FilterSectionButtons = ({
           bg={ui.colors.secondary}
           color="black"
           _placeholder={{ opacity: 0.4, color: "black" }}
+          value={deviceIdFilter}
+          onChange={(e) => setDeviceIdFilter(e.target.value)} 
         />
       </InputGroup>
     </HStack>

@@ -21,12 +21,18 @@ import { DeviceDetailsLink } from "./device-details-link";
 interface IBridgeRowViewProps {
   bridge: Bridge;
   inactiveOnly: boolean;
+  deviceIdFilter: string;
 }
 
 export const BridgeRowView = ({
   bridge,
   inactiveOnly,
+  deviceIdFilter,
 }: IBridgeRowViewProps) => {
+  const filteredGateways = bridge.gateways.filter((gateway) =>
+    gateway.id.includes(deviceIdFilter)
+  );
+  
   const BridgeButton = () => {
     return (
       <>
@@ -53,8 +59,12 @@ export const BridgeRowView = ({
           <BridgeButton />
         </AccordionButton>
         <AccordionPanel>
-          {bridge.gateways.map((gateway) => (
-            <GatewayRowView gateway={gateway} inactiveOnly={inactiveOnly} />
+          {filteredGateways.map((gateway) => (
+            <GatewayRowView
+              gateway={gateway}
+              inactiveOnly={inactiveOnly}
+              deviceIdFilter={deviceIdFilter}
+            />
           ))}
         </AccordionPanel>
       </AccordionItem>
@@ -66,8 +76,12 @@ export const BridgeRowView = ({
           <BridgeButton />
         </AccordionButton>
         <AccordionPanel>
-          {bridge.gateways.map((gateway) => (
-            <GatewayRowView gateway={gateway} inactiveOnly={inactiveOnly} />
+          {filteredGateways.map((gateway) => (
+            <GatewayRowView
+              gateway={gateway}
+              inactiveOnly={inactiveOnly}
+              deviceIdFilter={deviceIdFilter}
+            />
           ))}
         </AccordionPanel>
       </AccordionItem>

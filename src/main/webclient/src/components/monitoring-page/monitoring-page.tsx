@@ -39,6 +39,8 @@ export const MonitoringPage = ({
     viewOption.allDevices
   );
 
+  const [deviceIdFilter, setDeviceIdFilter] = useState<string>("");
+
   const setFilteringSectionEnabled = () => {
     switch (filteringHeigth) {
       case "0px":
@@ -79,13 +81,18 @@ export const MonitoringPage = ({
     switch (selectedViewOption) {
       case viewOption.allDevices:
         return (
-          <AllDevicesView model={model} inactiveOnly={inactiveSwitchEnabled} />
+          <AllDevicesView
+            model={model}
+            inactiveOnly={inactiveSwitchEnabled}
+            deviceIdFilter={deviceIdFilter}
+          />
         );
       case viewOption.sensors:
         return (
           <SingleDeviceView
             model={model.getSensorsArray()}
             inactiveOnly={inactiveSwitchEnabled}
+            deviceIdFilter={deviceIdFilter}
           />
         );
       case viewOption.gateways:
@@ -93,6 +100,7 @@ export const MonitoringPage = ({
           <SingleDeviceView
             model={model.getGatewaysArray()}
             inactiveOnly={inactiveSwitchEnabled}
+            deviceIdFilter={deviceIdFilter}
           />
         );
       case viewOption.bridges:
@@ -100,6 +108,7 @@ export const MonitoringPage = ({
           <SingleDeviceView
             model={model.getBridgesArray()}
             inactiveOnly={inactiveSwitchEnabled}
+            deviceIdFilter={deviceIdFilter}
           />
         );
     }
@@ -160,6 +169,8 @@ export const MonitoringPage = ({
                 inactiveDevicesSwitched={() => {
                   setInactiveSwitchEnabled(!inactiveSwitchEnabled);
                 }}
+                deviceIdFilter={deviceIdFilter}
+                setDeviceIdFilter={setDeviceIdFilter}
               />
             </GridItem>
           </Grid>
