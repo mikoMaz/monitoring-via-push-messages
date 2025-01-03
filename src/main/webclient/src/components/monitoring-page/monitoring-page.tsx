@@ -55,18 +55,23 @@ export const MonitoringPage = ({
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
       case 0:
+        setDeviceIdFilter("");
         changeSelectedViewOption(viewOption.allDevices);
         break;
       case 1:
+        setDeviceIdFilter("");
         changeSelectedViewOption(viewOption.bridges);
         break;
       case 2:
+        setDeviceIdFilter("");
         changeSelectedViewOption(viewOption.gateways);
         break;
       case 3:
+        setDeviceIdFilter("");
         changeSelectedViewOption(viewOption.sensors);
         break;
       default:
+        setDeviceIdFilter("");
         console.error("Out of memory index");
     }
   };
