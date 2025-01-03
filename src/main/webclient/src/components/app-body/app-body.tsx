@@ -1,18 +1,16 @@
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  Grid,
-  GridItem,
-  useToast,
-} from "@chakra-ui/react";
+import { Grid, GridItem, useToast } from "@chakra-ui/react";
 import { Navbar } from "../layout/navbar/navbar";
 import { IAppProps } from "../../types/projectTypes";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";
-import { AllDevicesUptimeJson, DeviceModel, emptyAllDevicesUptimeJson, IMonitoringDevice } from "../../types/deviceModel";
+import {
+  AllDevicesUptimeJson,
+  DeviceModel,
+  emptyAllDevicesUptimeJson,
+  IMonitoringDevice,
+} from "../../types/deviceModel";
 import { AboutPage } from "../about-page/about-page";
 import { DashboardPage } from "../dashboard-page/dashboard-page";
 import { LandingPage } from "../landing-page/landing-page";
@@ -20,8 +18,13 @@ import { MonitoringDevicePage } from "../monitoring-device-page/monitoring-devic
 import { MonitoringPage } from "../monitoring-page/monitoring-page";
 import { NotFoundPage } from "../not-found-page/not-found-page";
 import { useAuth0 } from "@auth0/auth0-react";
-import { IUserInfoResponse } from "../../types/IUserInfoResponse";
+import {
+  getDeniedUserInfoResponse,
+  IUserInfoResponse,
+} from "../../types/IUserInfoResponse";
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
+import { getToastOptions } from "../layout/inactive-devices-alert-toast";
+import { LocalStorageManager } from "../../types/localStorageMenager";
 
 const refreshTime = 3; //minutes
 
@@ -53,7 +56,17 @@ export const AppBody = () => {
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);
 
-  const [alertsEnabled, setAlertsEnabled] = useState<boolean>(true);
+  const [deviceAlertsEnabled, setDeviceAlertsEnabled] = useState<boolean>(
+    LocalStorageManager.getDeviceAlertsEnabledValue()
+  );
+
+  const alertsEnabledRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (deviceAlertsEnabled !== alertsEnabledRef.current) {
+      alertsEnabledRef.current = deviceAlertsEnabled;
+    }
+  }, [deviceAlertsEnabled]);
 
   const toast = useToast();
 
@@ -98,13 +111,18 @@ export const AppBody = () => {
       <Route
         key="user-rejected"
         path="/permission-required"
-        element={<UserRejectedPage email={email} />}
+        element={
+          <UserRejectedPage
+            userInfo={userInfo ?? getDeniedUserInfoResponse(email)}
+          />
+        }
       />,
       <Route key="not-found" path="*" element={<NotFoundPage />} />,
     ],
-    alertsEnabled: alertsEnabled,
+    alertsEnabled: deviceAlertsEnabled,
     setAlertsEnabled: (value: boolean) => {
-      setAlertsEnabled(value);
+      setDeviceAlertsEnabled(value);
+      LocalStorageManager.saveDeviceAlertsEnabled(value);
     },
   };
 
@@ -136,29 +154,16 @@ export const AppBody = () => {
   };
 
   const checkInactiveDevices = (model: DeviceModel) => {
-    if (alertsEnabled) {
+    if (alertsEnabledRef.current) {
       const inactiveDevices: IMonitoringDevice[] =
         model.getInactiveDevicesArray();
       if (inactiveDevices.length && isAuthenticated) {
-        toast({
-          status: "error",
-          title: `${inactiveDevices.length} devices are inactive!`,
-          position: "top",
-          isClosable: true,
-          render: () => (
-            <Alert
-              status="error"
-              variant="solid"
-              onClick={() => {
-                setInactiveSwitchEnabled(true);
-                toast.closeAll();
-              }}
-            >
-              <AlertIcon />
-              <AlertTitle>{`${inactiveDevices.length} devices is inactive!`}</AlertTitle>
-            </Alert>
-          ),
-        });
+        toast(
+          getToastOptions(inactiveDevices.length, () => {
+            setInactiveSwitchEnabled(true);
+            toast.closeAll();
+          })
+        );
       }
     }
   };
@@ -176,6 +181,7 @@ export const AppBody = () => {
   };
 
   const onComponentLoaded = async () => {
+    //TODO why executed double
     if (email || user?.email) {
       const userEmail = email ?? user?.email;
       if (!email) {
@@ -200,10 +206,11 @@ export const AppBody = () => {
     onComponentLoaded().catch((error: any) => {
       console.error("Error happaned while recurrent updates: " + error.message);
     });
-    setInterval(onComponentLoaded, 100 * 60 * refreshTime);
+    setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
 
+    //TODO czy email jest potrzebny? Czy aplikacja KIEDYKOLWIEK bedzie dzialala na localhost
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alertsEnabled, email]);
+  }, [user, accessToken, email]);
 
   useEffect(() => {
     if (userInfo && userInfo.userType === "EXTERNAL") {

@@ -12,24 +12,14 @@ import {
   Grid,
   Switch,
   Button,
-  HStack,
   FormControl,
   FormLabel,
   DrawerFooter,
   Heading,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Input,
-  Textarea,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
-import { LocalStorageManager } from "../../../../../types/fileSaver";
+import { LocalStorageManager } from "../../../../../types/localStorageMenager";
 
 interface IUserSidebar {
   alertsEnabled: boolean;
