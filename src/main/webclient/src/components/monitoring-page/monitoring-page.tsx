@@ -1,8 +1,8 @@
-import { Box, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Card, CardBody, Grid, GridItem } from "@chakra-ui/react";
 import { DeviceModel } from "../../types/deviceModel";
 import { AllDevicesView } from "../layout/monitoring-tables/all-devices-view/all-devices-view";
 import { useEffect, useState } from "react";
-import { FilteringHeigth } from "../../types/projectTypes";
+import { FilteringHeight } from "../../types/projectTypes";
 import { FilterSectionContainer } from "./components/filter-section-container";
 import { ViewTypeSelectionTabs } from "./components/view-type-selection-tabs";
 import { FilterSectionButtons } from "./components/filter-section-buttons";
@@ -32,8 +32,8 @@ export const MonitoringPage = ({
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const [filteringHeigth, setFilteringHeigth] =
-    useState<FilteringHeigth>("0px");
+  const [filteringHeight, setFilteringHeigth] =
+    useState<FilteringHeight>("0px");
 
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.allDevices
@@ -42,11 +42,11 @@ export const MonitoringPage = ({
   const [deviceIdFilter, setDeviceIdFilter] = useState<string>("");
 
   const setFilteringSectionEnabled = () => {
-    switch (filteringHeigth) {
+    switch (filteringHeight) {
       case "0px":
-        setFilteringHeigth("200px");
+        setFilteringHeigth("100px");
         break;
-      case "200px":
+      case "100px":
         setFilteringHeigth("0px");
         break;
     }
@@ -146,7 +146,7 @@ export const MonitoringPage = ({
       bg={ui.colors.background}
       boxShadow="inner"
     >
-      <Grid templateRows={`90px ${filteringHeigth} 1fr`}>
+      <Grid templateRows={`90px ${filteringHeight} 1fr`}>
         <GridItem
           className="control-panel-buttons"
           marginTop="28px"
@@ -165,10 +165,6 @@ export const MonitoringPage = ({
             <GridItem width="auto">
               <FilterSectionButtons
                 setFilterEnabled={setFilteringSectionEnabled}
-                inactiveSwitchEnabled={inactiveSwitchEnabled}
-                inactiveDevicesSwitched={() => {
-                  setInactiveSwitchEnabled(!inactiveSwitchEnabled);
-                }}
                 deviceIdFilter={deviceIdFilter}
                 setDeviceIdFilter={setDeviceIdFilter}
               />
@@ -176,7 +172,13 @@ export const MonitoringPage = ({
           </Grid>
         </GridItem>
         <GridItem className="filter-section">
-          <FilterSectionContainer heigth={filteringHeigth} />
+          <FilterSectionContainer
+            height={filteringHeight}
+            inactiveSwitchEnabled={inactiveSwitchEnabled}
+            inactiveDevicesSwitched={() => {
+              setInactiveSwitchEnabled(!inactiveSwitchEnabled);
+            }}
+          />
         </GridItem>
         <GridItem className="monitoring-content-view">
           {renderSelectedView()}

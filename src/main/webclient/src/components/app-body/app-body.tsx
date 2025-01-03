@@ -243,7 +243,7 @@ export const AppBody = () => {
       templateAreas={`"header header"
   "main main"
   "footer footer"`}
-      gridTemplateRows={`${ui.heigth.navbar} 1fr ${ui.heigth.footer}`}
+      gridTemplateRows={`${ui.height.navbar} 1fr ${ui.height.footer}`}
       background="background"
     >
       <GridItem area={"header"}>

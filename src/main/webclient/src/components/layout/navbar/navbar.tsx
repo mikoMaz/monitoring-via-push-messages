@@ -18,7 +18,7 @@ export const Navbar = ({ alertsEnabled, setAlertsEnabled }: INavbar) => {
         gap={2}
         background={ui.colors.background}
         padding="10px"
-        height={ui.heigth.navbar}
+        height={ui.height.navbar}
       >
         <GridItem>
           <VStack spacing={4} align="center" height="100%" width="auto">
