@@ -206,7 +206,7 @@ export const AppBody = () => {
     onComponentLoaded().catch((error: any) => {
       console.error("Error happaned while recurrent updates: " + error.message);
     });
-    setInterval(onComponentLoaded, 100 * 100 * refreshTime * 6);
+    setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
 
     //TODO czy email jest potrzebny? Czy aplikacja KIEDYKOLWIEK bedzie dzialala na localhost
     // eslint-disable-next-line react-hooks/exhaustive-deps
