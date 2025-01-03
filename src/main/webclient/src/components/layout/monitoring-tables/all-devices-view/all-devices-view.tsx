@@ -15,8 +15,10 @@ export const AllDevicesView = ({
   deviceIdFilter,
 }: IAllDevicesView) => {
   if (model.getDevicesCount()) {
-    const filteredBridges = model.bridges.filter((bridge) =>
-      bridge.id.includes(deviceIdFilter)
+    const filteredBridges = model.bridges.filter(
+      (bridge) =>
+        bridge.id.includes(deviceIdFilter) ||
+        bridge.getChildDevicesCountMachingFilterPattern(deviceIdFilter) > 0
     );
     return (
       <Accordion defaultIndex={[0, 1, 2, 3]} allowMultiple>

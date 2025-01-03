@@ -29,10 +29,12 @@ export const BridgeRowView = ({
   inactiveOnly,
   deviceIdFilter,
 }: IBridgeRowViewProps) => {
-  const filteredGateways = bridge.gateways.filter((gateway) =>
-    gateway.id.includes(deviceIdFilter)
+  const filteredGateways = bridge.gateways.filter(
+    (gateway) =>
+      gateway.id.includes(deviceIdFilter) ||
+      gateway.getChildDevicesCountMachingFilterPattern(deviceIdFilter) > 0
   );
-  
+
   const BridgeButton = () => {
     return (
       <>

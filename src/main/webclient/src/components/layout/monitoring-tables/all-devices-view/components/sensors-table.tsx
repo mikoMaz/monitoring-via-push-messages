@@ -48,10 +48,7 @@ export const SensorsTable = ({
   inactiveOnly,
   deviceIdFilter,
 }: ISensorsTableProps) => {
-  const filteredSensors = sensors.filter((sensor) =>
-    sensor.id.includes(deviceIdFilter)
-  );
-  const inactiveSensors = filteredSensors.filter(
+  const inactiveSensors = sensors.filter(
     (s) => s.status !== deviceStatus.active
   );
   if (inactiveOnly) {
@@ -89,6 +86,8 @@ export const SensorsTable = ({
           </Table>
         </TableContainer>
       );
+    } else if (!sensors.length && deviceIdFilter) {
+      return <></>;
     } else {
       return <NoData />;
     }
