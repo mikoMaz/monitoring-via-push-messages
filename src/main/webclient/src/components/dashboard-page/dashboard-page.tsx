@@ -27,6 +27,13 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
   );
   const currentTime = new Date().toLocaleString();
 
+  const formatDate = (date: Date) => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   const allHistoryValues = [
     ...devicesUptime.upperLevel,
     ...devicesUptime.middleLevel,
@@ -86,7 +93,12 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
         return (
           <>
             <Center>
-              <HistoryChart />
+              <HistoryChart
+                dateFrom={formatDate(
+                  new Date(new Date().setDate(new Date().getDate() - 30))
+                )}
+                dateTo={formatDate(new Date())}
+              />
             </Center>
             <Text>Generated: {currentTime}</Text>
           </>

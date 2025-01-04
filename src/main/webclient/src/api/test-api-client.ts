@@ -9,6 +9,7 @@ import {
 } from "../types/deviceModel";
 import { IUserInfoResponse } from "../types/IUserInfoResponse";
 import { IAPIClient } from "./api-client";
+import { IHistoryChartData } from "../types/IHistoryChartData";
 
 export class TestAPIClient implements IAPIClient {
   public getAllCompanies = () => {
@@ -154,5 +155,49 @@ export class TestAPIClient implements IAPIClient {
         return 200;
       });
     }
+  };
+
+  public getDataHistoryChart = (
+    dateFrom: string,
+    dateTo: string
+  ): Promise<IHistoryChartData[]> => {
+    return Promise.resolve([
+      {
+        timestamp: "26-10-2024",
+        active: 94,
+        inactive: 1,
+        disabled: 5,
+      },
+      {
+        timestamp: "27-10-2024",
+        active: 83,
+        inactive: 5,
+        disabled: 12,
+      },
+      {
+        timestamp: "28-10-2024",
+        active: 90,
+        inactive: 1,
+        disabled: 9,
+      },
+      {
+        timestamp: "29-10-2024",
+        active: 80,
+        inactive: 5,
+        disabled: 15,
+      },
+      {
+        timestamp: "30-10-2024",
+        active: 70,
+        inactive: 11,
+        disabled: 19,
+      },
+      {
+        timestamp: "31-10-2024",
+        active: 85,
+        inactive: 5,
+        disabled: 10,
+      },
+    ]);
   };
 }

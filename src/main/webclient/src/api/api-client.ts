@@ -15,6 +15,7 @@ import {
 import config from "../config/config.json";
 import { TestAPIClient } from "./test-api-client";
 import { ICompanyUser } from "../types/ICompanyUser";
+import { IHistoryChartData } from "../types/IHistoryChartData";
 
 export interface IAPIClient {
   getUserInfo: (
@@ -39,6 +40,10 @@ export interface IAPIClient {
   getAllCompanies: () => Promise<String[]>;
   getUsersFromCompany: () => Promise<ICompanyUser[]>;
   postCSVData: (type: string, tableName: string, file: File) => Promise<number>;
+  getDataHistoryChart: (
+    dateFrom: string,
+    dateTo: string,
+  ) => Promise<IHistoryChartData[]>;
 }
 
 export class APIClient implements IAPIClient {
@@ -205,5 +210,12 @@ export class APIClient implements IAPIClient {
         console.error("Error uploading file:", error);
         throw new Error("Failed to upload file");
       });
+  };
+
+  public getDataHistoryChart = (
+    dateFrom: string,
+    dateTo: string,
+  ): Promise<IHistoryChartData[]> => {
+    return this.testApiClient.getDataHistoryChart(dateFrom, dateTo);
   };
 }

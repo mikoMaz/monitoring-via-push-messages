@@ -84,7 +84,12 @@ export class ChartTemplate implements IChartTemplate {
     return <>Data model is not present</>;
   }
 
-  public drawChart(model: IDeviceModel, uptimeValues: number[]) {
+  public drawChart(
+    model: IDeviceModel,
+    uptimeValues: number[],
+    dateFrom?: string,
+    dateTo?: string,
+  ) {
     switch (this.type) {
       case chartType.Current:
         return (
@@ -103,7 +108,7 @@ export class ChartTemplate implements IChartTemplate {
           />
         );
       case chartType.History:
-        return <HistoryChart />;
+        return <HistoryChart dateFrom={dateFrom} dateTo={dateTo} />;
       default:
         return this.invalidChart();
     }
@@ -135,8 +140,20 @@ export const ChartTabPanel = ({
   uptimeValues,
 }: IChartTabPanel) => {
   const [isEditing, setIsEditing] = useState(false);
-
   const currentTime = new Date().toLocaleString();
+
+  const formatDate = (date: Date) => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const [dateFrom, setDateFrom] = useState<string>(
+    formatDate(new Date(new Date().setDate(new Date().getDate() - 30)))
+  );
+  const [dateTo, setDateTo] = useState<string>(formatDate(new Date()));
+
 
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
@@ -151,14 +168,11 @@ export const ChartTabPanel = ({
       <VStack spacing={4} align="start" w="100%">
         <Box w="100%">
           {isEditing ? (
-            <ChartCreator
-              template={template}
-              editFunction={editFunction}
-            />
+            <ChartCreator template={template} editFunction={editFunction} />
           ) : (
             <Center>
               {template.chartModel.percentFragmentation > 0.001 ? (
-                template.drawChart(model, uptimeValues)
+                template.drawChart(model, uptimeValues, dateFrom, dateTo)
               ) : (
                 <p>
                   We can't show you the chart, if you put "0" or nothing into
