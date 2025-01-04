@@ -1,6 +1,8 @@
 package com.example.monitoring.core.api.config;
 
 import com.example.monitoring.core.user.Role;
+import com.example.monitoring.core.user.User;
+import com.example.monitoring.core.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +33,7 @@ public class SecurityConfiguration {
     private final PreviewAuthenticationFilter previewAuthenticationFilter;
     private final UserAuthorizationFilter userAuthorizationFilter;
     private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     @Bean
     public FilterRegistrationBean registration(JwtAuthenticationFilter filter) {
@@ -100,7 +103,8 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtAuthenticationConverter()))
-                );  // TODO audience check
+                )  // TODO audience check
+                .addFilterBefore(userAuthorizationFilter, SecurityContextPersistenceFilter.class);
         return http.build();
     }
 
@@ -110,9 +114,11 @@ public class SecurityConfiguration {
                 // TODO: extract email from claims when deployed
 //                String email = jwt.getClaimAsString("email");
 //                String email = jwt.getClaims().toString();
-                String email = "test@test.pl";
-                UserDetails user = userDetailsService.loadUserByUsername(email);
-//                return new SimpleGrantedAuthority("ROLE_" + user.getAuthorities());
+//                UserDetails user = userDetailsService.loadUserByUsername(email);
+
+                String subject = jwt.getSubject();
+                User user = userRepository.findByAuthTokenSubject(subject);
+
                 return user.getAuthorities().stream()
                         .map(authority -> (GrantedAuthority) authority)
                         .collect(Collectors.toList());

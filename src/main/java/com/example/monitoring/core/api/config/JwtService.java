@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -25,6 +24,22 @@ public class JwtService {
     public String extractDeviceType(String token) {
         final Claims claims = extractClaims(token);
         return claims.get("deviceType", String.class);
+    }
+
+    public Claims extractUnsecuredToken(String token) {
+        String[] parts = token.split("\\.");
+
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid JWT token");
+        }
+
+        String payload = parts[1];
+
+        // typ: JWT, alg: none
+        String newHeader = "eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0";
+        String newToken = newHeader + "." + payload + ".";
+
+        return Jwts.parser().unsecured().build().parseUnsecuredClaims(newToken).getPayload();
     }
 
     public <T> T extractClaims(String token, Function<Claims, T> claimsResolver) {
