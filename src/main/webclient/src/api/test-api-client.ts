@@ -84,10 +84,17 @@ export class TestAPIClient implements IAPIClient {
     return Promise.resolve(values);
   };
 
+  public validatePreviewSecret = (
+    secret: string,
+    company: string
+  ): Promise<boolean> => {
+    return Promise.resolve(true);
+  };
+
   public getPreviewDeviceModel = (secret: string, id: string) => {
     return this.getUpdatedDeviceModel(secret, id);
   };
-  
+
   public getPreviewDevicesHistory = (secret: string, id: string) => {
     return this.getAllDevicesHistory(id, secret, "");
   };

@@ -2,9 +2,8 @@ import { UIProps } from "../../config/config";
 import { useEffect, useState } from "react";
 import { ValidateSecret } from "./components/validate-secret";
 import { APIClient } from "../../api/api-client";
-import {
-  PreviewChartsContainer,
-} from "./components/preview-charts-container";
+import { PreviewChartsContainer } from "./components/preview-charts-container";
+import { Center } from "@chakra-ui/react";
 
 export const PreviewPage = () => {
   document.body.style.backgroundColor = UIProps.colors.background;
@@ -18,17 +17,23 @@ export const PreviewPage = () => {
   useEffect(() => {
     let params = new URLSearchParams(window.location.search);
     let context = params.get("context");
-    if (context) {
-      setCompanyContext(context);
-    }
+    setCompanyContext(context ?? "");
   }, []);
 
   useEffect(() => {
     //update state
   }, [compamyContext, secret]);
 
-  if (!secret) {
-    return <ValidateSecret context={compamyContext} setSecret={setSecret} />;
+  if (!compamyContext) {
+    return <Center>Provide company name in the url params</Center>;
+  } else if (!secret) {
+    return (
+      <ValidateSecret
+        apiClient={apiClient}
+        context={compamyContext}
+        setSecret={setSecret}
+      />
+    );
   } else {
     return (
       <PreviewChartsContainer

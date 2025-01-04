@@ -35,6 +35,7 @@ export interface IAPIClient {
     accessToken: string,
     email: string
   ) => Promise<AllDevicesUptimeJson>;
+  validatePreviewSecret: (secret: string, company: string) => Promise<boolean>;
   getPreviewDeviceModel: (secret: string, id: string) => Promise<DeviceModel>;
   getPreviewDevicesHistory: (
     secret: string,
@@ -177,10 +178,38 @@ export class APIClient implements IAPIClient {
       });
   };
 
+  public validatePreviewSecret = async (
+    secret: string,
+    company: string
+  ): Promise<boolean> => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/check-authentication?company=${company}`;
+    if (this.useTestData()) {
+      return this.testApiClient.validatePreviewSecret(secret, company);
+    }
+
+    return axios
+      .get(apiUrl, {
+        headers: {
+          xApiKey: `${secret}`
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+      .catch((error) => {
+        console.error(error.message);
+        return false;
+      });
+  };
+
   public getPreviewDeviceModel = (secret: string, id: string) => {
     return this.testApiClient.getPreviewDeviceModel(secret, id);
   };
-  
+
   public getPreviewDevicesHistory = (secret: string, id: string) => {
     return this.testApiClient.getPreviewDevicesHistory(secret, id);
   };
