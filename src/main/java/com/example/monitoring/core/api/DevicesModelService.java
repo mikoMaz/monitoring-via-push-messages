@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.example.monitoring.core.api.abstraction.IDevicesModelService;
 import com.example.monitoring.core.api.auth.AuthenticationController;
@@ -18,6 +19,7 @@ import com.google.gson.JsonPrimitive;
 
 import lombok.RequiredArgsConstructor;
 
+@Service
 @RequiredArgsConstructor
 public class DevicesModelService implements IDevicesModelService {
 
