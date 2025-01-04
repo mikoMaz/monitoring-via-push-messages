@@ -43,6 +43,8 @@ export interface IChartTemplateModel {
   percentFragmentation: number; //fragmentation of data into chunks by % points
   brushActive: boolean;
   deviceTypes: deviceType[];
+  dateFrom: Date;
+  dateTo: Date;
 }
 
 export interface IChartTemplateModelDrawing extends IChartTemplateModel {
@@ -84,12 +86,7 @@ export class ChartTemplate implements IChartTemplate {
     return <>Data model is not present</>;
   }
 
-  public drawChart(
-    model: IDeviceModel,
-    uptimeValues: number[],
-    dateFrom?: string,
-    dateTo?: string,
-  ) {
+  public drawChart(model: IDeviceModel, uptimeValues: number[]) {
     switch (this.type) {
       case chartType.Current:
         return (
@@ -108,7 +105,13 @@ export class ChartTemplate implements IChartTemplate {
           />
         );
       case chartType.History:
-        return <HistoryChart dateFrom={dateFrom} dateTo={dateTo} />;
+        return (
+          <HistoryChart
+            model={model}
+            devicesHistoryValues={uptimeValues}
+            {...this.chartModel}
+          />
+        );
       default:
         return this.invalidChart();
     }
@@ -142,19 +145,6 @@ export const ChartTabPanel = ({
   const [isEditing, setIsEditing] = useState(false);
   const currentTime = new Date().toLocaleString();
 
-  const formatDate = (date: Date) => {
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
-
-  const [dateFrom, setDateFrom] = useState<string>(
-    formatDate(new Date(new Date().setDate(new Date().getDate() - 30)))
-  );
-  const [dateTo, setDateTo] = useState<string>(formatDate(new Date()));
-
-
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
   };
@@ -172,7 +162,7 @@ export const ChartTabPanel = ({
           ) : (
             <Center>
               {template.chartModel.percentFragmentation > 0.001 ? (
-                template.drawChart(model, uptimeValues, dateFrom, dateTo)
+                template.drawChart(model, uptimeValues)
               ) : (
                 <p>
                   We can't show you the chart, if you put "0" or nothing into
@@ -223,5 +213,7 @@ export const getEmptyPreset = () => {
     percentFragmentation: 0.5,
     brushActive: false,
     deviceTypes: [deviceType.sensor, deviceType.gateway, deviceType.bridge],
+    dateFrom: new Date(new Date().setDate(new Date().getDate() - 30)),
+    dateTo: new Date(),
   });
 };

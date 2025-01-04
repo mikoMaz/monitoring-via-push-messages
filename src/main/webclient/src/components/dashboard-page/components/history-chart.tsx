@@ -11,24 +11,16 @@ import {
 } from "recharts";
 import { APIClient } from "../../../api/api-client";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
+import { IChartTemplateModelDrawing } from "../../../types/chartTemplate";
 
-interface IHistoryChart {
-  dateFrom?: string;
-  dateTo?: string;
-}
 
-export const HistoryChart = ({ dateFrom, dateTo }: IHistoryChart) => {
+export const HistoryChart = ({ dateFrom, dateTo }: IChartTemplateModelDrawing) => {
   const formatDate = (date: Date) => {
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   };
-
-  const defaultDateFrom = formatDate(
-    new Date(new Date().setDate(new Date().getDate() - 30))
-  );
-  const defaultDateTo = formatDate(new Date());
 
   const apiClient = new APIClient();
 
@@ -40,8 +32,8 @@ export const HistoryChart = ({ dateFrom, dateTo }: IHistoryChart) => {
       setLoading(true);
       try {
         const data = await apiClient.getDataHistoryChart(
-          dateFrom || defaultDateFrom,
-          dateTo || defaultDateTo
+          formatDate(dateFrom),
+          formatDate(dateTo)
         );
         setChartData(data);
       } catch (error) {

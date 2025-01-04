@@ -40,6 +40,8 @@ export class FileSaver {
             percentFragmentation: temp.chartModel.percentFragmentation,
             brushActive: temp.chartModel.brushActive,
             deviceTypes: temp.chartModel.deviceTypes,
+            dateFrom: temp.chartModel.dateFrom,
+            dateTo: temp.chartModel.dateTo,
           },
         };
         return jsonTemplate;
@@ -56,6 +58,8 @@ export class FileSaver {
         percentFragmentation: temp.chartModel.percentFragmentation,
         brushActive: temp.chartModel.brushActive,
         deviceTypes: temp.chartModel.deviceTypes,
+        dateFrom: temp.chartModel.dateFrom,
+        dateTo: temp.chartModel.dateTo,
       });
       template.id = temp.id;
       return template;
