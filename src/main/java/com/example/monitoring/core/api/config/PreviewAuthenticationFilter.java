@@ -25,7 +25,7 @@ public class PreviewAuthenticationFilter extends OncePerRequestFilter {
 
     public static final String encryptionKey = "807d16901f1752a8bc2d0b1e77f1cb72";
 
-    private static final String API_KEY_HEADER = "x-api-key";
+    private static final String API_KEY_HEADER = "CompanySecret";
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(PreviewAuthenticationFilter.class);
 
@@ -53,7 +53,7 @@ public class PreviewAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         } catch (NullPointerException e) {
-            logger.error("x-api-key header not found in request");
+            logger.error("CompanySecret header not found in request");
         } catch (Exception e) {
             logger.error("Unexpected error in PreviewAuthenticationFilter");
         }
