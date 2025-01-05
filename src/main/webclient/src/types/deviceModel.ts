@@ -238,6 +238,16 @@ export const emptyAllDevicesUptimeJson: AllDevicesUptimeJson = {
   bottomLevel: [],
 };
 
+export const returnDevicesArrayFromAllDevicesUptimeJson = (
+  devicesUptime: AllDevicesUptimeJson
+): number[] => {
+  return [
+    ...devicesUptime.upperLevel,
+    ...devicesUptime.middleLevel,
+    ...devicesUptime.bottomLevel,
+  ];
+};
+
 export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
   const bridges: Bridge[] = [];
   const gateways: Gateway[] = [];

@@ -90,6 +90,21 @@ export class TestAPIClient implements IAPIClient {
     return Promise.resolve(values);
   };
 
+  public validatePreviewSecret = (
+    secret: string,
+    company: string
+  ): Promise<boolean> => {
+    return Promise.resolve(true);
+  };
+
+  public getPreviewDeviceModel = (secret: string, id: string) => {
+    return this.getUpdatedDeviceModel(secret, id);
+  };
+
+  public getPreviewDevicesHistory = (secret: string, id: string) => {
+    return this.getAllDevicesHistory(id, secret, "");
+  };
+
   public postCSVData = async (type: string, tableName: string, file: File) => {
     if (Math.floor(Math.random() * 4) / 3) {
       return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
