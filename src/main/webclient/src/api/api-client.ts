@@ -22,7 +22,8 @@ export interface IAPIClient {
   ) => Promise<IUserInfoResponse>;
   getUpdatedDeviceModel: (
     accessToken: string,
-    email: string
+    email: string,
+    id: string,
   ) => Promise<DeviceModel>;
   getDeviceUptime: (
     type: deviceType,
@@ -100,8 +101,8 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getUpdatedDeviceModel = async (accessToken: string, email: string) => {
-    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/jsonTree?id=1`;
+  public getUpdatedDeviceModel = async (accessToken: string, email: string, id: string) => {
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/jsonTree?id=${id}`;
     if (this.useTestData()) {
       return this.testApiClient.getUpdatedDeviceModel(accessToken, email);
     }
@@ -191,7 +192,7 @@ export class APIClient implements IAPIClient {
       .get(apiUrl, {
         headers: {
           CompanySecret: `${secret}`,
-          Company: `${company}`
+          Company: `${company}`,
         },
       })
       .then((response) => {
@@ -208,10 +209,48 @@ export class APIClient implements IAPIClient {
   };
 
   public getPreviewDeviceModel = (secret: string, id: string) => {
-    return this.testApiClient.getPreviewDeviceModel(secret, id);
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/preview/jsonTree?id=${id}`;
+    if (this.useTestData()) {
+      return this.testApiClient.getPreviewDeviceModel(secret, id);
+    }
+    return axios
+      .get(apiURL, {
+        headers: {
+          CompanySecret: `${secret}`,
+          Company: `${id}`,
+        },
+      })
+      .then((response) => {
+        const data: DeviceTreeModelJson = response.data;
+        return createDeviceModelFromJson(data);
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        return new DeviceModel();
+      });
   };
 
   public getPreviewDevicesHistory = (secret: string, id: string) => {
-    return this.testApiClient.getPreviewDevicesHistory(secret, id);
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?id=${id};`;
+    if (this.useTestData()) {
+      return this.testApiClient.getPreviewDevicesHistory(secret, id);
+    }
+    return axios
+      .get(apiUrl, {
+        headers: {
+          CompanySecret: `${secret}`,
+          Company: `${id}`,
+        },
+      })
+      .then((response) => {
+        const data: AllDevicesUptimeJson = response.data;
+        return data;
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        return emptyAllDevicesUptimeJson;
+      });
   };
 }
