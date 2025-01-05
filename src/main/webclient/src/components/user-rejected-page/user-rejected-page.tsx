@@ -29,7 +29,7 @@ export const UserRejectedPage = ({
       <Center>
         <Grid templateRows="repeat(2, 1fr)" gap={20}>
           <GridItem>
-            <Heading>{`User ${userInfo} doesn't have necessary rights to view this page`}</Heading>
+            <Heading>{`User ${userInfo.email} doesn't have necessary rights to view this page`}</Heading>
           </GridItem>
         </Grid>
       </Center>

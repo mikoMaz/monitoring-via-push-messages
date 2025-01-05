@@ -95,7 +95,7 @@ export class APIClient implements IAPIClient {
   };
 
   public getUpdatedDeviceModel = async (accessToken: string, email: string) => {
-    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/kluczdostepu?id=1`;
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/jsonTree?id=1`;
     if (this.useTestData()) {
       return this.testApiClient.getUpdatedDeviceModel(accessToken, email);
     }
