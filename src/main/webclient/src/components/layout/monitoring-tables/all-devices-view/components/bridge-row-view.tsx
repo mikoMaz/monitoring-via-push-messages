@@ -5,8 +5,6 @@ import {
   AccordionPanel,
   Box,
   HStack,
-  Text,
-  textDecoration,
 } from "@chakra-ui/react";
 import {
   Bridge,
@@ -15,18 +13,25 @@ import {
 } from "../../../../../types/deviceModel";
 import { GatewayRowView } from "./gateway-row-view";
 import { StatusDotIndicator } from "../../../status-dot-indicator";
-import { Link } from "react-router-dom";
 import { DeviceDetailsLink } from "./device-details-link";
 
 interface IBridgeRowViewProps {
   bridge: Bridge;
   inactiveOnly: boolean;
+  deviceIdFilter: string;
 }
 
 export const BridgeRowView = ({
   bridge,
   inactiveOnly,
+  deviceIdFilter,
 }: IBridgeRowViewProps) => {
+  const filteredGateways = bridge.gateways.filter(
+    (gateway) =>
+      gateway.id.includes(deviceIdFilter) ||
+      gateway.getChildDevicesCountMachingFilterPattern(deviceIdFilter) > 0
+  );
+
   const BridgeButton = () => {
     return (
       <>
@@ -53,8 +58,12 @@ export const BridgeRowView = ({
           <BridgeButton />
         </AccordionButton>
         <AccordionPanel>
-          {bridge.gateways.map((gateway) => (
-            <GatewayRowView gateway={gateway} inactiveOnly={inactiveOnly} />
+          {filteredGateways.map((gateway) => (
+            <GatewayRowView
+              gateway={gateway}
+              inactiveOnly={inactiveOnly}
+              deviceIdFilter={deviceIdFilter}
+            />
           ))}
         </AccordionPanel>
       </AccordionItem>
@@ -66,8 +75,12 @@ export const BridgeRowView = ({
           <BridgeButton />
         </AccordionButton>
         <AccordionPanel>
-          {bridge.gateways.map((gateway) => (
-            <GatewayRowView gateway={gateway} inactiveOnly={inactiveOnly} />
+          {filteredGateways.map((gateway) => (
+            <GatewayRowView
+              gateway={gateway}
+              inactiveOnly={inactiveOnly}
+              deviceIdFilter={deviceIdFilter}
+            />
           ))}
         </AccordionPanel>
       </AccordionItem>

@@ -2,7 +2,7 @@ import { Box, Grid, GridItem } from "@chakra-ui/react";
 import { DeviceModel } from "../../types/deviceModel";
 import { AllDevicesView } from "../layout/monitoring-tables/all-devices-view/all-devices-view";
 import { useEffect, useState } from "react";
-import { FilteringHeigth } from "../../types/projectTypes";
+import { FilteringHeight } from "../../types/projectTypes";
 import { FilterSectionContainer } from "./components/filter-section-container";
 import { ViewTypeSelectionTabs } from "./components/view-type-selection-tabs";
 import { FilterSectionButtons } from "./components/filter-section-buttons";
@@ -18,29 +18,35 @@ enum viewOption {
 }
 
 interface IMonitoringPage {
-  model: DeviceModel,
-  setInactiveSwitchEnabled: (value: boolean) => void,
-  inactiveSwitchEnabled: boolean
+  model: DeviceModel;
+  setInactiveSwitchEnabled: (value: boolean) => void;
+  inactiveSwitchEnabled: boolean;
 }
 
-export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchEnabled}: IMonitoringPage) => {
+export const MonitoringPage = ({
+  model,
+  setInactiveSwitchEnabled,
+  inactiveSwitchEnabled,
+}: IMonitoringPage) => {
   const ui = UIProps;
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const [filteringHeigth, setFilteringHeigth] =
-    useState<FilteringHeigth>("0px");
+  const [filteringHeight, setFilteringHeigth] =
+    useState<FilteringHeight>("0px");
 
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.allDevices
   );
 
+  const [deviceIdFilter, setDeviceIdFilter] = useState<string>("");
+
   const setFilteringSectionEnabled = () => {
-    switch (filteringHeigth) {
+    switch (filteringHeight) {
       case "0px":
-        setFilteringHeigth("200px");
+        setFilteringHeigth("100px");
         break;
-      case "200px":
+      case "100px":
         setFilteringHeigth("0px");
         break;
     }
@@ -49,18 +55,23 @@ export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchE
   const onSelectedViewChanged = (index: number) => {
     switch (index) {
       case 0:
+        setDeviceIdFilter("");
         changeSelectedViewOption(viewOption.allDevices);
         break;
       case 1:
+        setDeviceIdFilter("");
         changeSelectedViewOption(viewOption.bridges);
         break;
       case 2:
+        setDeviceIdFilter("");
         changeSelectedViewOption(viewOption.gateways);
         break;
       case 3:
+        setDeviceIdFilter("");
         changeSelectedViewOption(viewOption.sensors);
         break;
       default:
+        setDeviceIdFilter("");
         console.error("Out of memory index");
     }
   };
@@ -74,13 +85,37 @@ export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchE
   const renderSelectedView = () => {
     switch (selectedViewOption) {
       case viewOption.allDevices:
-        return <AllDevicesView model={model} inactiveOnly={inactiveSwitchEnabled}/>;
+        return (
+          <AllDevicesView
+            model={model}
+            inactiveOnly={inactiveSwitchEnabled}
+            deviceIdFilter={deviceIdFilter}
+          />
+        );
       case viewOption.sensors:
-        return <SingleDeviceView model={model.getSensorsArray()} inactiveOnly={inactiveSwitchEnabled}/>;
+        return (
+          <SingleDeviceView
+            model={model.getSensorsArray()}
+            inactiveOnly={inactiveSwitchEnabled}
+            deviceIdFilter={deviceIdFilter}
+          />
+        );
       case viewOption.gateways:
-        return <SingleDeviceView model={model.getGatewaysArray()} inactiveOnly={inactiveSwitchEnabled}/>;
+        return (
+          <SingleDeviceView
+            model={model.getGatewaysArray()}
+            inactiveOnly={inactiveSwitchEnabled}
+            deviceIdFilter={deviceIdFilter}
+          />
+        );
       case viewOption.bridges:
-        return <SingleDeviceView model={model.getBridgesArray()} inactiveOnly={inactiveSwitchEnabled}/>;
+        return (
+          <SingleDeviceView
+            model={model.getBridgesArray()}
+            inactiveOnly={inactiveSwitchEnabled}
+            deviceIdFilter={deviceIdFilter}
+          />
+        );
     }
   };
 
@@ -117,32 +152,39 @@ export const MonitoringPage = ({model, setInactiveSwitchEnabled, inactiveSwitchE
       bg={ui.colors.background}
       boxShadow="inner"
     >
-      <Grid templateRows={`90px ${filteringHeigth} 1fr`}>
+      <Grid templateRows={`90px ${filteringHeight} 1fr`}>
         <GridItem
           className="control-panel-buttons"
           marginTop="28px"
           marginBottom="28px"
         >
-          <Grid templateColumns="repeat(12, 1fr)">
-            <GridItem colSpan={5}>
+          <Grid templateColumns="auto 1fr auto" gap={2}>
+            <GridItem width="auto">
               <ViewTypeSelectionTabs
                 index={selectedViewOption}
                 onSelectionChanged={onSelectedViewChanged}
               />
             </GridItem>
-            <GridItem colStart={8} colEnd={13}>
+            <GridItem colSpan={1}>
+              <div className="empty-space" />
+            </GridItem>
+            <GridItem width="auto">
               <FilterSectionButtons
                 setFilterEnabled={setFilteringSectionEnabled}
-                inactiveSwitchEnabled={inactiveSwitchEnabled}
-                inactiveDevicesSwitched={() => {
-                  setInactiveSwitchEnabled(!inactiveSwitchEnabled);
-                }}
+                deviceIdFilter={deviceIdFilter}
+                setDeviceIdFilter={setDeviceIdFilter}
               />
             </GridItem>
           </Grid>
         </GridItem>
         <GridItem className="filter-section">
-          <FilterSectionContainer heigth={filteringHeigth} />
+          <FilterSectionContainer
+            height={filteringHeight}
+            inactiveSwitchEnabled={inactiveSwitchEnabled}
+            inactiveDevicesSwitched={() => {
+              setInactiveSwitchEnabled(!inactiveSwitchEnabled);
+            }}
+          />
         </GridItem>
         <GridItem className="monitoring-content-view">
           {renderSelectedView()}

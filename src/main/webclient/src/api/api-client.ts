@@ -14,6 +14,8 @@ import {
 } from "../types/IUserInfoResponse";
 import config from "../config/config.json";
 import { TestAPIClient } from "./test-api-client";
+import { ICompanyUser } from "../types/ICompanyUser";
+import { IHistoryChartData } from "../types/IHistoryChartData";
 
 export interface IAPIClient {
   getUserInfo: (
@@ -42,6 +44,17 @@ export interface IAPIClient {
     secret: string,
     id: string
   ) => Promise<AllDevicesUptimeJson>;
+  getAllCompanies: () => Promise<String[]>;
+  getUsersFromCompany: (company: string) => Promise<ICompanyUser[]>;
+  postCSVData: (type: string, tableName: string, file: File) => Promise<number>;
+  getDataHistoryChart: (
+    dateFrom: string,
+    dateTo: string
+  ) => Promise<IHistoryChartData[]>;
+  updateUsersPermissions: (
+    users: ICompanyUser[],
+    company: string
+  ) => Promise<void>;
 }
 
 export class APIClient implements IAPIClient {
@@ -253,5 +266,47 @@ export class APIClient implements IAPIClient {
         console.error(error);
         return emptyAllDevicesUptimeJson;
       });
+  };
+
+  public getAllCompanies = () => {
+    return this.testApiClient.getAllCompanies();
+  };
+
+  public getUsersFromCompany = (company: string) => {
+    return this.testApiClient.getUsersFromCompany(company);
+  };
+
+  public postCSVData = async (type: string, tableName: string, file: File) => {
+    if (this.useTestData()) {
+      return this.testApiClient.postCSVData(type, tableName, file);
+    }
+
+    const formData = new FormData();
+    formData.append("type", type);
+    formData.append("tableName", tableName);
+    formData.append("file", file);
+
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/upload-csv`;
+
+    return axios
+      .post(apiURL, formData)
+      .then((response) => {
+        return response.status;
+      })
+      .catch((error) => {
+        console.error("Error uploading file:", error);
+        throw new Error("Failed to upload file");
+      });
+  };
+
+  public getDataHistoryChart = (
+    dateFrom: string,
+    dateTo: string
+  ): Promise<IHistoryChartData[]> => {
+    return this.testApiClient.getDataHistoryChart(dateFrom, dateTo);
+  };
+
+  public updateUsersPermissions = (users: ICompanyUser[], company: string) => {
+    return this.testApiClient.updateUsersPermissions(users, company);
   };
 }

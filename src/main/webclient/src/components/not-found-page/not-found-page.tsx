@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Heading, VStack, Text } from "@chakra-ui/react";
 import { UIProps } from "../../config/config";
 
 export const NotFoundPage = () => {
@@ -10,7 +10,10 @@ export const NotFoundPage = () => {
       bg={UIProps.colors.background}
       boxShadow="inner"
     >
-      <div>Not found</div>
+      <VStack spacing={5} bg={UIProps.colors.background} paddingTop={25}>
+        <Heading>Not found</Heading>
+        <Text>URL not found</Text>
+      </VStack>
     </Box>
   );
 };

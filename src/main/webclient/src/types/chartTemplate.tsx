@@ -43,6 +43,8 @@ export interface IChartTemplateModel {
   percentFragmentation: number; //fragmentation of data into chunks by % points
   brushActive: boolean;
   deviceTypes: deviceType[];
+  dateFrom: string;
+  dateTo: string;
 }
 
 export interface IChartTemplateModelDrawing extends IChartTemplateModel {
@@ -103,7 +105,13 @@ export class ChartTemplate implements IChartTemplate {
           />
         );
       case chartType.History:
-        return <HistoryChart />;
+        return (
+          <HistoryChart
+            model={model}
+            devicesHistoryValues={uptimeValues}
+            {...this.chartModel}
+          />
+        );
       default:
         return this.invalidChart();
     }
@@ -135,7 +143,6 @@ export const ChartTabPanel = ({
   uptimeValues,
 }: IChartTabPanel) => {
   const [isEditing, setIsEditing] = useState(false);
-
   const currentTime = new Date().toLocaleString();
 
   const handleEditToggle = () => {
@@ -151,10 +158,7 @@ export const ChartTabPanel = ({
       <VStack spacing={4} align="start" w="100%">
         <Box w="100%">
           {isEditing ? (
-            <ChartCreator
-              template={template}
-              editFunction={editFunction}
-            />
+            <ChartCreator template={template} editFunction={editFunction} />
           ) : (
             <Center>
               {template.chartModel.percentFragmentation > 0.001 ? (
@@ -209,5 +213,7 @@ export const getEmptyPreset = () => {
     percentFragmentation: 0.5,
     brushActive: false,
     deviceTypes: [deviceType.sensor, deviceType.gateway, deviceType.bridge],
+    dateFrom: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(),
+    dateTo: new Date().toISOString(),
   });
 };

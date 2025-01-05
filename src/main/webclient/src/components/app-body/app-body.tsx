@@ -1,7 +1,7 @@
 import { Grid, GridItem, useToast } from "@chakra-ui/react";
 import { Navbar } from "../layout/navbar/navbar";
 import { IAppProps } from "../../types/projectTypes";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";
@@ -25,6 +25,8 @@ import {
 import { UserRejectedPage } from "../user-rejected-page/user-rejected-page";
 import { getToastOptions } from "../layout/inactive-devices-alert-toast";
 import { LocalStorageManager } from "../../types/localStorageMenager";
+import { AdminPanelPage } from "../admin-panel-page/admin-panel-page";
+import { LoadingPage } from "../loading-page/loading-page";
 
 const refreshTime = 3; //minutes
 
@@ -32,6 +34,7 @@ export const AppBody = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const apiClient = new APIClient();
+  const location = useLocation();
 
   const [email, setEmail] = useState<string>("");
 
@@ -114,6 +117,17 @@ export const AppBody = () => {
         element={
           <UserRejectedPage
             userInfo={userInfo ?? getDeniedUserInfoResponse(email)}
+          />
+        }
+      />,
+      // TODO: weryfikacja, czy osoba która wchodzi ma uprawnienia
+      <Route
+        key="admin-panel-page"
+        path="/admin"
+        element={
+          <AdminPanelPage
+            apiClient={apiClient}
+            userInfo={userInfo ?? getDeniedUserInfoResponse()}
           />
         }
       />,
@@ -216,23 +230,28 @@ export const AppBody = () => {
   useEffect(() => {
     if (userInfo && userInfo.userType === "EXTERNAL") {
       navigate("/application/permission-required", { replace: true });
-      console.log(userInfo);
+    } else if (
+      userInfo &&
+      location.pathname === "/application/admin" &&
+      (userInfo.userType === "EXTERNAL" || userInfo.userType === "READ_ONLY")
+    ) {
+      navigate("/application/permission-required", { replace: true });
     }
-  }, [userInfo, navigate]);
+  }, [userInfo, navigate, location.pathname]);
 
   return (
     <Grid
       templateAreas={`"header header"
   "main main"
   "footer footer"`}
-      gridTemplateRows={`${ui.heigth.navbar} 1fr ${ui.heigth.footer}`}
+      gridTemplateRows={`${ui.height.navbar} 1fr ${ui.height.footer}`}
       background="background"
     >
       <GridItem area={"header"}>
         <Navbar {...props} />
       </GridItem>
       <GridItem area={"main"}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingPage/>}>
           <Routes>{props.routes}</Routes>
         </Suspense>
       </GridItem>

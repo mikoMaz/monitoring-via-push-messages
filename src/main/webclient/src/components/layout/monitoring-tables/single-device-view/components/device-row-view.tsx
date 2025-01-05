@@ -1,4 +1,4 @@
-import { Box, HStack, Td, Tr } from "@chakra-ui/react";
+import { Box, Td, Tr } from "@chakra-ui/react";
 import {
   IMonitoringDevice,
   deviceStatus,

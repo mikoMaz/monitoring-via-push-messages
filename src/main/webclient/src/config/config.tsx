@@ -19,7 +19,7 @@ export const UIProps: IUIProps = {
       background: theme.colors.gray[200]
     }
   },
-  heigth: {
+  height: {
     navbar: "70px",
     footer: "0px",
   },

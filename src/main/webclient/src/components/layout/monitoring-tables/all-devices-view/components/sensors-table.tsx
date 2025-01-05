@@ -16,6 +16,7 @@ import { DeviceRowView } from "../../single-device-view/components/device-row-vi
 interface ISensorsTableProps {
   sensors: Sensor[];
   inactiveOnly: boolean;
+  deviceIdFilter: string;
 }
 
 const NoData = () => {
@@ -42,10 +43,14 @@ const SensorsTableHead = () => {
   );
 };
 
-export const SensorsTable = ({ sensors, inactiveOnly }: ISensorsTableProps) => {
-  const inactiveSensors = sensors.filter((s) => {
-    return s.status !== deviceStatus.active;
-  });
+export const SensorsTable = ({
+  sensors,
+  inactiveOnly,
+  deviceIdFilter,
+}: ISensorsTableProps) => {
+  const inactiveSensors = sensors.filter(
+    (s) => s.status !== deviceStatus.active
+  );
   if (inactiveOnly) {
     if (inactiveSensors.length) {
       return (
@@ -81,6 +86,8 @@ export const SensorsTable = ({ sensors, inactiveOnly }: ISensorsTableProps) => {
           </Table>
         </TableContainer>
       );
+    } else if (!sensors.length && deviceIdFilter) {
+      return <></>;
     } else {
       return <NoData />;
     }

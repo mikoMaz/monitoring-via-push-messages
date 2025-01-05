@@ -4,7 +4,7 @@
       "APP_URL": "http://localhost:3000/application",
       "HOST": "localhost",
       "API_URL": "http://localhost:8080",
-      "USE_TEST_DATA": false
+      "USE_TEST_DATA": true
     }
   },
   "auth0": {

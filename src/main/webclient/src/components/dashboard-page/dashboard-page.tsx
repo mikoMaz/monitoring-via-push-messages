@@ -87,7 +87,11 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
         return (
           <>
             <Center>
-              <HistoryChart />
+              <HistoryChart
+                model={model}
+                devicesHistoryValues={allHistoryValues}
+                {...chartModel}
+              />
             </Center>
             <Text>Generated: {currentTime}</Text>
           </>
