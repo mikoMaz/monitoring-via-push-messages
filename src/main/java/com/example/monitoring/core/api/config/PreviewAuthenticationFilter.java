@@ -1,13 +1,7 @@
 package com.example.monitoring.core.api.config;
 
-import com.example.monitoring.core.company.Company;
-import com.example.monitoring.core.company.CompanyRepository;
-import com.example.monitoring.core.company.EncryptionUtil;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +9,15 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
+import com.example.monitoring.core.company.Company;
+import com.example.monitoring.core.company.CompanyRepository;
+import com.example.monitoring.core.company.EncryptionUtil;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +27,8 @@ public class PreviewAuthenticationFilter extends OncePerRequestFilter {
 
     public static final String encryptionKey = "807d16901f1752a8bc2d0b1e77f1cb72";
 
-    private static final String API_KEY_HEADER = "CompanySecret";
+    private static final String COMPANYSECRET_HEADER = "CompanySecret";
+    private static final String COMPANY_HEADER = "Company";
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(PreviewAuthenticationFilter.class);
 
@@ -36,10 +39,9 @@ public class PreviewAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String companyName = request.getParameter("company");
-
         try {
-            String apiKey = request.getHeader(API_KEY_HEADER);
+            String companyName = request.getHeader(COMPANY_HEADER);
+            String apiKey = request.getHeader(COMPANYSECRET_HEADER);
             String encryptedKey = EncryptionUtil.encrypt(apiKey, encryptionKey);
             Company company = companyRepository.getCompanyByNameAndEncryptedKey(companyName, encryptedKey);
 
