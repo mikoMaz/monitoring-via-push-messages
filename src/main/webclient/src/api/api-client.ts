@@ -210,6 +210,7 @@ export class APIClient implements IAPIClient {
 
   public getPreviewDeviceModel = (secret: string, id: string) => {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/preview/jsonTree?id=${id}`;
+    
     if (this.useTestData()) {
       return this.testApiClient.getPreviewDeviceModel(secret, id);
     }
