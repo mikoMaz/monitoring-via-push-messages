@@ -208,7 +208,7 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getPreviewDeviceModel = (secret: string, id: string) => {
+  public getPreviewDeviceModel = async (secret: string, id: string) => {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/preview/jsonTree?id=${id}`;
     
     if (this.useTestData()) {
@@ -232,7 +232,7 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getPreviewDevicesHistory = (secret: string, id: string) => {
+  public getPreviewDevicesHistory = async (secret: string, id: string) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?id=${id};`;
     if (this.useTestData()) {
       return this.testApiClient.getPreviewDevicesHistory(secret, id);
