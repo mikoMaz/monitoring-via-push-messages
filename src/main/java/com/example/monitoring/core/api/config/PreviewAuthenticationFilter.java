@@ -42,11 +42,16 @@ public class PreviewAuthenticationFilter extends OncePerRequestFilter {
         try {
             String companyName = request.getHeader(COMPANY_HEADER);
             String apiKey = request.getHeader(COMPANYSECRET_HEADER);
+
+            if (companyName == null || apiKey == null) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Company not found or invalid Company Sectet");
+                return;
+            }
             String encryptedKey = EncryptionUtil.encrypt(apiKey, encryptionKey);
             Company company = companyRepository.getCompanyByNameAndEncryptedKey(companyName, encryptedKey);
 
             if (company == null) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Company not found or invalid API Key");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Company not found or invalid Company Sectet");
                 return;
             } else {
                 PreviewAuthenticationToken authToken = new PreviewAuthenticationToken(company);
