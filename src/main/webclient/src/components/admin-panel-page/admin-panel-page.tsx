@@ -1,4 +1,8 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Avatar,
   Box,
   Button,
@@ -8,6 +12,7 @@ import {
   CardHeader,
   Checkbox,
   CheckboxGroup,
+  CloseButton,
   Grid,
   GridItem,
   Heading,
@@ -49,6 +54,9 @@ export const AdminPanelPage = ({
   const [companies, setCompanies] = useState<string[]>([]);
   const [users, setUsers] = useState<ICompanyUser[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
+  const [alertInfo, setAlertInfo] = useState<boolean>(false);
+
   const { user } = useAuth0();
 
   useEffect(() => {
@@ -79,12 +87,15 @@ export const AdminPanelPage = ({
   const handleSaveClick = async () => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
       await apiClient.updateUsersPermissions(users, companySelect);
+      setUploadSuccess(true);
     } catch (error) {
       console.error("Error saving users:", error);
+      setUploadSuccess(false);
     } finally {
       setIsLoading(false);
+      setAlertInfo(true);
     }
   };
 
@@ -160,15 +171,42 @@ export const AdminPanelPage = ({
                 <Card marginTop={10}>{companySelect && <UserRole />}</Card>
               </CardBody>
               <CardFooter justifyContent="flex-end">
-                {companySelect && (
-                  <Button
-                    colorScheme="primary"
-                    isLoading={isLoading}
-                    onClick={handleSaveClick}
-                  >
-                    Save
-                  </Button>
-                )}
+                <HStack width="100%" justifyContent="flex-end" alignItems="stretch">
+                  {alertInfo && (
+                    <Alert
+                      status={uploadSuccess ? "success" : "error"}
+                      variant="top-accent"
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      width="100%"
+                      paddingY={1}
+                    >
+                      <AlertIcon />
+                      <AlertDescription>
+                        {uploadSuccess
+                          ? "Update successful."
+                          : "There was problem with updating permissions. Try again."}
+                      </AlertDescription>
+                      <CloseButton
+                        onClick={() => {
+                          setAlertInfo(false);
+                          setUploadSuccess(false);
+                        }}
+                      />
+                    </Alert>
+                  )}
+                  {companySelect && (
+                    <Button
+                      colorScheme="primary"
+                      isLoading={isLoading}
+                      onClick={handleSaveClick}
+                      size="md"
+                    >
+                      Save
+                    </Button>
+                  )}
+                </HStack>
               </CardFooter>
             </Card>
           ) : null}

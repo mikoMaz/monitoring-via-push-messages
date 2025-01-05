@@ -93,7 +93,7 @@ export class TestAPIClient implements IAPIClient {
   public postCSVData = async (type: string, tableName: string, file: File) => {
     if (Math.floor(Math.random() * 4) / 3) {
       return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
-        return 500;
+        throw new Error("Failed to upload file");
       });
     } else {
       return new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
@@ -223,6 +223,14 @@ export class TestAPIClient implements IAPIClient {
   };
 
   public updateUsersPermissions = (users: ICompanyUser[], company: string) => {
-    return Promise.resolve();
+    if (Math.floor(Math.random() * 4) / 3) {
+      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+        throw new Error("Failed to update users.");
+      });
+    } else {
+      return new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
+        return Promise.resolve();
+      });
+    }
   };
 }
