@@ -5,8 +5,6 @@ import {
   AccordionPanel,
   Box,
   HStack,
-  Text,
-  textDecoration,
 } from "@chakra-ui/react";
 import {
   Bridge,
@@ -15,7 +13,6 @@ import {
 } from "../../../../../types/deviceModel";
 import { GatewayRowView } from "./gateway-row-view";
 import { StatusDotIndicator } from "../../../status-dot-indicator";
-import { Link } from "react-router-dom";
 import { DeviceDetailsLink } from "./device-details-link";
 
 interface IBridgeRowViewProps {

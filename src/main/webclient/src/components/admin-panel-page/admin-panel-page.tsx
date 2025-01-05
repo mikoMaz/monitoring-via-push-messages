@@ -2,7 +2,6 @@ import {
   Alert,
   AlertDescription,
   AlertIcon,
-  AlertTitle,
   Avatar,
   Box,
   Button,
@@ -17,20 +16,16 @@ import {
   GridItem,
   Heading,
   HStack,
-  IconButton,
   Select,
   Table,
   TableContainer,
   Tbody,
   Td,
-  Text,
   Th,
   Thead,
-  Tooltip,
   Tr,
   VStack,
 } from "@chakra-ui/react";
-import { InfoOutlined, Send, Upload } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { UIProps } from "../../config/config";
 import { APIClient } from "../../api/api-client";

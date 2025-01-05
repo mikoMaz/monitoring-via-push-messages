@@ -6,7 +6,6 @@ import {
   AccordionPanel,
   Box,
   HStack,
-  Text,
 } from "@chakra-ui/react";
 import {
   Gateway,
@@ -15,7 +14,6 @@ import {
 } from "../../../../../types/deviceModel";
 import { SensorsTable } from "./sensors-table";
 import { StatusDotIndicator } from "../../../status-dot-indicator";
-import { Link } from "react-router-dom";
 import { DeviceDetailsLink } from "./device-details-link";
 
 interface IGatewayRowViewProps {

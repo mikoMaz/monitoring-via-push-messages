@@ -9,7 +9,6 @@ import {
   Heading,
   HStack,
   Input,
-  Stack,
   VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";

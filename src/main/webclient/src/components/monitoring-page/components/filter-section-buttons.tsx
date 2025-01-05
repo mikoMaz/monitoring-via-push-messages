@@ -1,11 +1,8 @@
 import {
-  FormControl,
-  FormLabel,
   HStack,
   Input,
   InputGroup,
   InputLeftElement,
-  Switch,
 } from "@chakra-ui/react";
 import { ButtonWithIcon } from "../../layout/button-with-icon";
 import FilterListIcon from "@mui/icons-material/FilterList";

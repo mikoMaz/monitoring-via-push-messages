@@ -1,4 +1,4 @@
-import { Box, Card, CardBody, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Grid, GridItem } from "@chakra-ui/react";
 import { DeviceModel } from "../../types/deviceModel";
 import { AllDevicesView } from "../layout/monitoring-tables/all-devices-view/all-devices-view";
 import { useEffect, useState } from "react";

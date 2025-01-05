@@ -5,11 +5,9 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
-  Button,
   Grid,
   GridItem,
   Progress,
-  useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
@@ -20,7 +18,7 @@ import {
 import { CustomAccordionButton } from "./components/custom-accordion-buttons";
 import { capitalizeFirstLetter } from "../../types/projectTypes";
 import { DeviceDetailsTable } from "./components/device-details-table";
-import { APIClient, IAPIClient } from "../../api/api-client";
+import { IAPIClient } from "../../api/api-client";
 
 export type monitoringDeviceType = "sensor" | "gateway" | "bridge" | "other";
 
