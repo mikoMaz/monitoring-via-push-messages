@@ -57,11 +57,8 @@ export const AdminPanelPage = ({
 
   useEffect(() => {
     if (companySelect) {
-      apiClient.getUsersFromCompany().then((allUsers) => {
-        const usersForSelectedCompany = allUsers.filter(
-          (user) => user.company === companySelect
-        );
-        setUsers(usersForSelectedCompany);
+      apiClient.getUsersFromCompany(companySelect).then((allUsers) => {
+        setUsers(allUsers);
       });
     }
   }, [companySelect]);
@@ -83,7 +80,7 @@ export const AdminPanelPage = ({
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      // await apiClient.saveUsers(users);
+      await apiClient.updateUsersPermissions(users, companySelect);
     } catch (error) {
       console.error("Error saving users:", error);
     } finally {
@@ -138,11 +135,7 @@ export const AdminPanelPage = ({
       bg={UIProps.colors.background}
       boxShadow="inner"
     >
-      <Grid
-        templateColumns="repeat(2, 1fr)"
-        gap={4}
-        paddingY={10}
-      >
+      <Grid templateColumns="repeat(2, 1fr)" gap={4} paddingY={10}>
         <GridItem colSpan={1}>
           {userInfo.userType === "ADMIN" ||
           userInfo.userType === "SUPER_ADMIN" ? (

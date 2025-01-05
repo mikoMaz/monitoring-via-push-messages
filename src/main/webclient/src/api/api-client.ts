@@ -38,12 +38,16 @@ export interface IAPIClient {
     email: string
   ) => Promise<AllDevicesUptimeJson>;
   getAllCompanies: () => Promise<String[]>;
-  getUsersFromCompany: () => Promise<ICompanyUser[]>;
+  getUsersFromCompany: (company: string) => Promise<ICompanyUser[]>;
   postCSVData: (type: string, tableName: string, file: File) => Promise<number>;
   getDataHistoryChart: (
     dateFrom: string,
-    dateTo: string,
+    dateTo: string
   ) => Promise<IHistoryChartData[]>;
+  updateUsersPermissions: (
+    users: ICompanyUser[],
+    company: string
+  ) => Promise<void>;
 }
 
 export class APIClient implements IAPIClient {
@@ -185,8 +189,8 @@ export class APIClient implements IAPIClient {
     return this.testApiClient.getAllCompanies();
   };
 
-  public getUsersFromCompany = () => {
-    return this.testApiClient.getUsersFromCompany();
+  public getUsersFromCompany = (company: string) => {
+    return this.testApiClient.getUsersFromCompany(company);
   };
 
   public postCSVData = async (type: string, tableName: string, file: File) => {
@@ -214,8 +218,12 @@ export class APIClient implements IAPIClient {
 
   public getDataHistoryChart = (
     dateFrom: string,
-    dateTo: string,
+    dateTo: string
   ): Promise<IHistoryChartData[]> => {
     return this.testApiClient.getDataHistoryChart(dateFrom, dateTo);
+  };
+
+  public updateUsersPermissions = (users: ICompanyUser[], company: string) => {
+    return this.testApiClient.updateUsersPermissions(users, company);
   };
 }
