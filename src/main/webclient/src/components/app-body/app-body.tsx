@@ -126,7 +126,7 @@ export const AppBody = () => {
 
   const updateModel = async (token: string, email: string) => {
     try {
-      const data = await apiClient.getUpdatedDeviceModel(token, email);
+      const data = await apiClient.getUpdatedDeviceModel(token, email, "1");
       setDeviceModel(data);
       return data;
     } catch (e: any) {
