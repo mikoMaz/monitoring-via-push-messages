@@ -158,8 +158,8 @@ export class TestAPIClient implements IAPIClient {
   };
 
   public getDataHistoryChart = (
-    dateFrom: Date,
-    dateTo: Date
+    dateFrom: string,
+    dateTo: string
   ): Promise<IHistoryChartData[]> => {
     const parseDate = (dateString: string): Date => {
       const [day, month, year] = dateString.split("-").map(Number);
@@ -173,8 +173,8 @@ export class TestAPIClient implements IAPIClient {
       return `${year}-${month}-${day}`;
     };
 
-    const startDate = formatDate(dateFrom);
-    const endDate = formatDate(dateTo);
+    const startDate = dateFrom.split("T")[0];
+    const endDate = dateTo.split("T")[0];
 
     return Promise.resolve([
       { timestamp: "01-12-2024", active: 90, inactive: 4, disabled: 6 },

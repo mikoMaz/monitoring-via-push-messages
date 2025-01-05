@@ -43,8 +43,8 @@ export interface IChartTemplateModel {
   percentFragmentation: number; //fragmentation of data into chunks by % points
   brushActive: boolean;
   deviceTypes: deviceType[];
-  dateFrom: Date;
-  dateTo: Date;
+  dateFrom: string;
+  dateTo: string;
 }
 
 export interface IChartTemplateModelDrawing extends IChartTemplateModel {
@@ -213,7 +213,7 @@ export const getEmptyPreset = () => {
     percentFragmentation: 0.5,
     brushActive: false,
     deviceTypes: [deviceType.sensor, deviceType.gateway, deviceType.bridge],
-    dateFrom: new Date(new Date().setDate(new Date().getDate() - 30)),
-    dateTo: new Date(),
+    dateFrom: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(),
+    dateTo: new Date().toISOString(),
   });
 };

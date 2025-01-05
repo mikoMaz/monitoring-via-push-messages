@@ -26,7 +26,10 @@ export const HistoryChart = ({
     const fetchChartData = async () => {
       setLoading(true);
       try {
-        const data = await apiClient.getDataHistoryChart(dateFrom, dateTo);
+        const data = await apiClient.getDataHistoryChart(
+          dateFrom,
+          dateTo
+        );
         setChartData(data);
       } catch (error) {
         console.error("Błąd podczas pobierania danych wykresu:", error);
