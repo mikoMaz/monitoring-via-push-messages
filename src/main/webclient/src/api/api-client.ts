@@ -101,6 +101,7 @@ export class APIClient implements IAPIClient {
   };
 
   public getUpdatedDeviceModel = async (accessToken: string, email: string) => {
+    //TODO dodać id do parametrów funkcji żeby nie było zawsze dla "1"...
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/jsonTree?id=1`;
     if (this.useTestData()) {
       return this.testApiClient.getUpdatedDeviceModel(accessToken, email);
