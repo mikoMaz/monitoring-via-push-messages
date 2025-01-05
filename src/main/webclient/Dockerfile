@@ -17,7 +17,6 @@ USER node
 WORKDIR /usr/src/app
 
 RUN chown node:node ./
-RUN echo $(ls -la)
 #USER node
 #RUN mkdir -p usr/src/app && chown node:node usr/src/app
 #RUN ls -la
@@ -38,11 +37,8 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     yarn install --production --frozen-lockfile
 
 # Run the application as a non-root user.
-RUN echo $(ls -la)
 # Copy the rest of the source files into the image.
 COPY --chown=node:node . /usr/src/app
-RUN echo $(ls -la)
-RUN echo $(whoami)
 # Expose the port that the application listens on.
 EXPOSE 3000
 
