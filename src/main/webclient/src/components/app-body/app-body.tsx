@@ -131,6 +131,7 @@ export const AppBody = () => {
       const token = await getAccessTokenSilently();
       // console.log("token: " + token);
       // console.log(jwtDecode(token));
+      //TODO czy zwraca email?
       const user = await apiClient.getUserInfo(token, email);
 
       setUserInfo(user);
