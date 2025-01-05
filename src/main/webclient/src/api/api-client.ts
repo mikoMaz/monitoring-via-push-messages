@@ -41,8 +41,8 @@ export interface IAPIClient {
   getUsersFromCompany: () => Promise<ICompanyUser[]>;
   postCSVData: (type: string, tableName: string, file: File) => Promise<number>;
   getDataHistoryChart: (
-    dateFrom: string,
-    dateTo: string,
+    dateFrom: Date,
+    dateTo: Date,
   ) => Promise<IHistoryChartData[]>;
 }
 
@@ -213,8 +213,8 @@ export class APIClient implements IAPIClient {
   };
 
   public getDataHistoryChart = (
-    dateFrom: string,
-    dateTo: string,
+    dateFrom: Date,
+    dateTo: Date,
   ): Promise<IHistoryChartData[]> => {
     return this.testApiClient.getDataHistoryChart(dateFrom, dateTo);
   };

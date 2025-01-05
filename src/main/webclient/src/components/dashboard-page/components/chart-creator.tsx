@@ -65,8 +65,9 @@ export const ChartCreator = ({ template, editFunction }: IChartCreator) => {
   const [isBrushActive, setIsBrushActive] = useState<boolean>(
     template.chartModel.brushActive
   );
-  const [startDate, setStartDate] = useState(new Date(new Date().setDate(new Date().getDate() - 30)));
-  const [endDate, setEndDate] = useState(new Date());
+
+  const [startDate, setStartDate] = useState(template.chartModel.dateFrom);
+  const [endDate, setEndDate] = useState(template.chartModel.dateTo);
 
   const handleSave = () => {
     const updatedTemplate = new ChartTemplate(templateName, selectedType, {

@@ -158,46 +158,62 @@ export class TestAPIClient implements IAPIClient {
   };
 
   public getDataHistoryChart = (
-    dateFrom: string,
-    dateTo: string
+    dateFrom: Date,
+    dateTo: Date
   ): Promise<IHistoryChartData[]> => {
+    const parseDate = (dateString: string): Date => {
+      const [day, month, year] = dateString.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    };
+
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
+    const startDate = formatDate(dateFrom);
+    const endDate = formatDate(dateTo);
+
     return Promise.resolve([
-      {
-        timestamp: "26-10-2024",
-        active: 94,
-        inactive: 1,
-        disabled: 5,
-      },
-      {
-        timestamp: "27-10-2024",
-        active: 83,
-        inactive: 5,
-        disabled: 12,
-      },
-      {
-        timestamp: "28-10-2024",
-        active: 90,
-        inactive: 1,
-        disabled: 9,
-      },
-      {
-        timestamp: "29-10-2024",
-        active: 80,
-        inactive: 5,
-        disabled: 15,
-      },
-      {
-        timestamp: "30-10-2024",
-        active: 70,
-        inactive: 11,
-        disabled: 19,
-      },
-      {
-        timestamp: "31-10-2024",
-        active: 85,
-        inactive: 5,
-        disabled: 10,
-      },
-    ]);
+      { timestamp: "01-12-2024", active: 90, inactive: 4, disabled: 6 },
+      { timestamp: "02-12-2024", active: 92, inactive: 3, disabled: 5 },
+      { timestamp: "03-12-2024", active: 85, inactive: 5, disabled: 10 },
+      { timestamp: "04-12-2024", active: 88, inactive: 6, disabled: 6 },
+      { timestamp: "05-12-2024", active: 93, inactive: 4, disabled: 3 },
+      { timestamp: "06-12-2024", active: 80, inactive: 7, disabled: 13 },
+      { timestamp: "07-12-2024", active: 85, inactive: 5, disabled: 10 },
+      { timestamp: "08-12-2024", active: 89, inactive: 3, disabled: 8 },
+      { timestamp: "09-12-2024", active: 91, inactive: 2, disabled: 7 },
+      { timestamp: "10-12-2024", active: 87, inactive: 6, disabled: 7 },
+      { timestamp: "11-12-2024", active: 84, inactive: 5, disabled: 11 },
+      { timestamp: "12-12-2024", active: 90, inactive: 4, disabled: 6 },
+      { timestamp: "13-12-2024", active: 82, inactive: 5, disabled: 13 },
+      { timestamp: "14-12-2024", active: 88, inactive: 3, disabled: 9 },
+      { timestamp: "15-12-2024", active: 94, inactive: 2, disabled: 4 },
+      { timestamp: "16-12-2024", active: 86, inactive: 7, disabled: 7 },
+      { timestamp: "17-12-2024", active: 89, inactive: 4, disabled: 7 },
+      { timestamp: "18-12-2024", active: 92, inactive: 3, disabled: 5 },
+      { timestamp: "19-12-2024", active: 81, inactive: 5, disabled: 14 },
+      { timestamp: "20-12-2024", active: 87, inactive: 4, disabled: 9 },
+      { timestamp: "21-12-2024", active: 90, inactive: 3, disabled: 7 },
+      { timestamp: "22-12-2024", active: 85, inactive: 6, disabled: 9 },
+      { timestamp: "23-12-2024", active: 82, inactive: 7, disabled: 11 },
+      { timestamp: "24-12-2024", active: 88, inactive: 4, disabled: 8 },
+      { timestamp: "25-12-2024", active: 86, inactive: 5, disabled: 9 },
+      { timestamp: "26-12-2024", active: 94, inactive: 1, disabled: 5 },
+      { timestamp: "27-12-2024", active: 83, inactive: 5, disabled: 12 },
+      { timestamp: "28-12-2024", active: 90, inactive: 1, disabled: 9 },
+      { timestamp: "29-12-2024", active: 80, inactive: 5, disabled: 15 },
+      { timestamp: "30-12-2024", active: 70, inactive: 11, disabled: 19 },
+      { timestamp: "31-12-2024", active: 85, inactive: 5, disabled: 10 },
+    ]).then((data) => {
+      const filteredData = data.filter((entry) => {
+        const entryDate = formatDate(parseDate(entry.timestamp));
+        return entryDate >= startDate && entryDate <= endDate;
+      });
+      return filteredData;
+    });
   };
 }

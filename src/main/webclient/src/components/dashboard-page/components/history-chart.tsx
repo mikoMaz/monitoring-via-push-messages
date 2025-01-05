@@ -13,15 +13,10 @@ import { APIClient } from "../../../api/api-client";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
 import { IChartTemplateModelDrawing } from "../../../types/chartTemplate";
 
-
-export const HistoryChart = ({ dateFrom, dateTo }: IChartTemplateModelDrawing) => {
-  const formatDate = (date: Date) => {
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
-
+export const HistoryChart = ({
+  dateFrom,
+  dateTo,
+}: IChartTemplateModelDrawing) => {
   const apiClient = new APIClient();
 
   const [chartData, setChartData] = useState<IHistoryChartData[]>([]);
@@ -31,10 +26,7 @@ export const HistoryChart = ({ dateFrom, dateTo }: IChartTemplateModelDrawing) =
     const fetchChartData = async () => {
       setLoading(true);
       try {
-        const data = await apiClient.getDataHistoryChart(
-          formatDate(dateFrom),
-          formatDate(dateTo)
-        );
+        const data = await apiClient.getDataHistoryChart(dateFrom, dateTo);
         setChartData(data);
       } catch (error) {
         console.error("Błąd podczas pobierania danych wykresu:", error);
@@ -42,7 +34,6 @@ export const HistoryChart = ({ dateFrom, dateTo }: IChartTemplateModelDrawing) =
         setLoading(false);
       }
     };
-
     fetchChartData();
   }, [dateFrom, dateTo]);
 
