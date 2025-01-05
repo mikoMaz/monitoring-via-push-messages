@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class DataHolderService {
@@ -104,7 +105,9 @@ public class DataHolderService {
     public List<String> getAllChildrenForGivenCompanyId(String companyId) {
         return getCompanyData().get(companyId);
     }
-
+    public Set<String> getAllCompanyIds(){
+        return externalData.getCompanyData().keySet();
+    }
 
     public void addCompanyIfNotExist(String key) {
         getCompanyData().putIfAbsent(key, new ArrayList<>());

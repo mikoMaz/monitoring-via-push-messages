@@ -1,27 +1,36 @@
 package com.example.monitoring.core.api.config;
 
+import com.example.monitoring.core.ApplicationProps;
+import com.example.monitoring.core.request.RequestSender;
+import com.example.monitoring.core.user.User;
+import com.example.monitoring.core.user.UserRepository;
+import com.google.gson.Gson;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class UserAuthorizationFilter extends OncePerRequestFilter {
-    private final UserDetailsService userDetailsService;
+
+    private final JwtService jwtService;
+
+    private final UserRepository userRepository;
+
+    private final RequestSender requestSender;
+
+    private final ApplicationProps applicationProps;
+
+    org.slf4j.Logger logger = LoggerFactory.getLogger(UserAuthorizationFilter.class);
 
     @Override
     protected void doFilterInternal(
@@ -30,58 +39,50 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String emailFromRequest = "test@test.pl";
+        String authHeader = request.getHeader("Authorization");
 
-        // TODO: uncomment when PR: getting email from request, dummy email above for testing
-//        final String emailFromRequest = request.getHeader("Email");
-//
-//        if (emailFromRequest == null) {
-//            // TODO send error status
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
-//
-//        System.out.println("email from request: " + emailFromRequest);  // TODO delete when PR
-
-
-        /*final String authHeader = request.getHeader("Authorization");
-
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-            System.out.println("Authorization header not found");
-            filterChain.doFilter(request, response);
-            return;
-        }*/
-
-
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (authentication != null && authentication.isAuthenticated()) {
-//            System.out.println("already authenticated");
-//        } else {
-//            System.out.println("not auth yet: it's bad behaviour I think");
-//        }
-
-        try {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(emailFromRequest);
-            System.out.println(userDetails.getUsername());
-            System.out.println(userDetails.getAuthorities());
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities()
-            );
-            authenticationToken.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-            );
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        } catch (UsernameNotFoundException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
-            filterChain.doFilter(request, response);
-            return;
-        } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
-            filterChain.doFilter(request, response);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            logger.error("Authorization header is missing or invalid");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header is missing");
             return;
         }
 
+        String token = authHeader.substring(7);
+
+        String subject = jwtService.extractUnsecuredToken(token).getSubject();
+
+        User user = userRepository.findByAuthTokenSubject(subject);
+
+        // user not found in db. Might log in for the first time
+        if (user == null) {
+            try {
+                // check if user with token is verified by Auth0
+                String userInfo = requestSender.executeGetWithAuthorization(applicationProps.getIssuerUri() + "userinfo", token);
+                Gson gson = new Gson();
+                Auth0Token tokenInJson = gson.fromJson(userInfo, Auth0Token.class);
+
+                String emailFromToken = tokenInJson.getEmail();
+
+                // find user in the database. Might not have subject assigned
+                Optional<User> userVerifiedByToken = userRepository.findByEmail(emailFromToken);
+
+                // oops! someone is trying to reach our api without permission
+                if (userVerifiedByToken.isEmpty()) {
+                    logger.error("User with email {} is trying to login without verification! User is not saved in the database", emailFromToken);
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User is not verified!");
+                    return;
+                }
+
+                // user logged for the first time yey! saving his unique subject to repository
+                userVerifiedByToken.ifPresent(usr -> usr.setAuthTokenSubject(subject));
+                userVerifiedByToken.ifPresent(userRepository::save);
+                logger.info("User with email {} is logged in for the first time", emailFromToken);
+            } catch (IOException | InterruptedException e) {
+                logger.error("Error while executing Auth0 request");
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while executing Auth0 request");
+                return;
+            }
+        }
         filterChain.doFilter(request, response);
     }
 }

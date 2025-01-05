@@ -1,63 +1,44 @@
 package com.example.monitoring.core.api;
 
-import lombok.RequiredArgsConstructor;
-import net.bytebuddy.implementation.bytecode.constant.IntegerConstant;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aspectj.weaver.tools.Trace;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import com.example.monitoring.core.bridge.BridgeData;
-import com.example.monitoring.core.bridge.BridgeService;
-import com.example.monitoring.core.external.DataHolderService;
-import com.example.monitoring.core.gateway.GatewayData;
-import com.example.monitoring.core.gateway.GatewayService;
-import com.example.monitoring.core.sensor.SensorDataSimplified;
-import com.example.monitoring.core.sensor.SensorDataSimplifiedService;
-import com.example.monitoring.core.status.DeviceStatus;
-import com.example.monitoring.core.status.DeviceStatusService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.example.monitoring.core.api.WebWritePreprocessor;
-import com.example.monitoring.core.api.auth.AuthenticationController;
-import com.example.monitoring.core.api.history.DeviceHistory;
-import com.example.monitoring.core.api.history.DeviceHistoryService;
-import com.google.gson.*;
+import org.springframework.stereotype.Service;
 
-@RestController
-@RequestMapping("/api/v1/user")
+import com.example.monitoring.core.api.abstraction.IDevicesModelService;
+import com.example.monitoring.core.api.auth.AuthenticationController;
+import com.example.monitoring.core.api.history.DeviceHistoryService;
+import com.example.monitoring.core.external.DataHolderService;
+import com.example.monitoring.core.status.DeviceStatusService;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
 @RequiredArgsConstructor
-public class WebWriteController {
+public class DevicesModelService implements IDevicesModelService {
 
     private final DeviceDataService deviceDataService;
     private final DeviceHistoryService historyService;
     private final DeviceStatusService statusService;
     private final DataHolderService dataHolderService;
-    private final WebWritePreprocessor proc;
+    private final JsonTreeConverter proc;
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
-    ObjectMapper objectMapper = new ObjectMapper();
-    ObjectReader reader = new ObjectMapper().readerFor(Map.class);
 
-    @GetMapping("/kluczdostepu")
-    public ResponseEntity<String> jsonTree(@RequestParam String id) {
+    @Override
+    public JsonObject getJsonTree(String id) {
         List<String> devicesList;
-        List<String> ToplevelDevices = new ArrayList<String>();
+        List<String> ToplevelDevices = new ArrayList<>();
         JsonObject root = new JsonObject();
         devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
         if (devicesList == null) {
-            return ResponseEntity.ok().body(root.toString());
+            return root;
         }
         for (int i = 0; i < devicesList.size(); i++) {
 
@@ -68,7 +49,7 @@ public class WebWriteController {
 
         }
 
-        ArrayList<JsonArray> list = new ArrayList<JsonArray>();
+        ArrayList<JsonArray> list = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             JsonArray devices = new JsonArray();
             list.add(devices);
@@ -88,7 +69,7 @@ public class WebWriteController {
                 logger.info(currentObject.toString());
                 List<String> MidList = dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
                 if (MidList == null) {
-                    MidList = new ArrayList<String>();
+                    MidList = new ArrayList<>();
                 }
                 JsonArray gatewayIdArray = new JsonArray();
                 for (String MidlevelId : MidList) {
@@ -106,11 +87,10 @@ public class WebWriteController {
                     for (String BottomlevelID : BottomList) {
                         sensorIdArray.add(new JsonPrimitive(BottomlevelID));
                     }
-
                     Integer MidlevelStatus = statusService.getCalculatedStatus(MidlevelId);
-                    Long MidlevelTimestamp = statusService.getDeviceStatus(MidlevelId).getLogged_at();
                     Integer MidlevelType = 1;
                     if (MidlevelStatus != null) {
+                        Long MidlevelTimestamp = statusService.getDeviceStatus(MidlevelId).getLogged_at();
 
                         subDevice = proc.convertToJsonTreeComponent(MidlevelId, MidlevelStatus, MidlevelTimestamp, MidlevelType);
                         subDevice.add("children", sensorIdArray);
@@ -137,11 +117,11 @@ public class WebWriteController {
             }
             root.add("devices" + String.valueOf(i), list.get(i));
         }
-        return ResponseEntity.ok().body(root.toString());
+        return root;
     }
 
-    @GetMapping("/historyTree")
-    public ResponseEntity<String> historyTree(@RequestParam String id) {
+    @Override
+    public JsonObject getHistoryTree(String id) {
         Map<String, JsonArray> deviceTypeMap = new HashMap<>();
         deviceTypeMap.put("upperLevel", new JsonArray());
         deviceTypeMap.put("middleLevel", new JsonArray());
@@ -149,7 +129,7 @@ public class WebWriteController {
 
         List<String> devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
         if (devicesList == null) {
-            return ResponseEntity.ok().body(new JsonObject().toString());
+            return new JsonObject();
         }
 
         List<String> toplevelDevices = new ArrayList<>();
@@ -189,30 +169,29 @@ public class WebWriteController {
 
         JsonObject root = new JsonObject();
         deviceTypeMap.forEach(root::add);
-
-        return ResponseEntity.ok().body(root.toString());
+        return root;
     }
 
-    @GetMapping("/history")
-    public ResponseEntity<String> singleDeviceHistory(@RequestParam String id, String device_id) {
+    @Override
+    public JsonObject getSingleDeviceHistory(String id, String device_id) {
         List<String> devicesList;
-        List<String> ToplevelDevices = new ArrayList<String>();
+        List<String> ToplevelDevices = new ArrayList<>();
         JsonObject root = new JsonObject();
         devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
         if (devicesList == null) {
-            return ResponseEntity.badRequest().body("");
+            return null;
         }
         Double status = null;
         if (devicesList.contains(device_id)) {
             status = historyService.uptimePercent(device_id);
         } else {
-            return ResponseEntity.badRequest().body("");
+            return null;
         }
         if (status == null) {
             status = 0D;
         }
         root.addProperty("uptime", status);
-        return ResponseEntity.ok().body(root.toString());
+        return root;
     }
 
 }
