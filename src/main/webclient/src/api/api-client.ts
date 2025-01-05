@@ -182,7 +182,7 @@ export class APIClient implements IAPIClient {
     secret: string,
     company: string
   ): Promise<boolean> => {
-    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/check-authentication?company=${company}`;
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/check-authentication`;
     if (this.useTestData()) {
       return this.testApiClient.validatePreviewSecret(secret, company);
     }
@@ -190,7 +190,8 @@ export class APIClient implements IAPIClient {
     return axios
       .get(apiUrl, {
         headers: {
-          xApiKey: `${secret}`
+          CompanySecret: `${secret}`,
+          Company: `${company}`
         },
       })
       .then((response) => {
