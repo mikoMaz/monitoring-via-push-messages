@@ -12,9 +12,9 @@ services:
   timescaledb2:
     image: timescale/timescaledb-ha:pg16
     ports:
-      - 5416:5432
+      - 5432:5432
     environment:
-      - POSTGRES_DB=timescaledb
+      - POSTGRES_DB=postgres
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
     healthcheck:
