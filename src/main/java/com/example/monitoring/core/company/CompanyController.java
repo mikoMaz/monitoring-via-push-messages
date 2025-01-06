@@ -3,6 +3,7 @@ package com.example.monitoring.core.company;
 import com.example.monitoring.core.user.UserDto;
 import com.example.monitoring.core.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,5 +30,11 @@ public class CompanyController {
     @GetMapping("/get-users-from-company")
     public List<UserDto> getUsersFromCompany(@RequestParam Long companyId) {
         return userService.getUsersByCompanyId(companyId);
+    }
+
+    @PutMapping("/update-company-users")
+    public ResponseEntity<Void> updateCompanyUsers(@RequestParam Long companyId, @RequestBody List<UserDto> users) {
+        companyService.updateUsersInCompany(companyId, users);
+        return ResponseEntity.ok().build();
     }
 }

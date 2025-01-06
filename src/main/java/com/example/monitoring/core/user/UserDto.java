@@ -13,5 +13,7 @@ public class UserDto {
 
     private String surname;
 
+    private Long companyId;
+
     private Role role;
 }

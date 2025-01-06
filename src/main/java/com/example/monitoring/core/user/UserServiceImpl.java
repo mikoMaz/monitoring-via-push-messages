@@ -16,8 +16,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getUsersByCompanyId(Long companyId) {
         return userRepository.findUsersByCompanyCompanyId(companyId).stream()
-                .map(user -> new UserDto(user.getId(), user.getName(), user.getSurname(), user.getRole()))
+                .map(user -> new UserDto(user.getId(), user.getName(), user.getSurname(), user.getCompany().getCompanyId(), user.getRole()))
                 .toList();
+    }
+
+    @Override
+    public void createUser(User user) {
+        userRepository.save(user);
     }
 
     @Override
