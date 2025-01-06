@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.example.monitoring.core.api.config.PreviewAuthenticationFilter.encryptionKey;
 
@@ -39,6 +40,19 @@ public class CompanyServiceImpl implements CompanyService {
         String encryptedKey = EncryptionUtil.encrypt(newCompanyKey, encryptionKey);
         company.setEncryptedKey(encryptedKey);
         companyRepository.save(company);
+    }
+
+    @Override
+    public void setCompanyKey(Long companyId, String newCompanyKey) throws Exception {
+        Optional<Company> company = companyRepository.findById(companyId);
+
+        if (company.isEmpty()) {
+            throw new IllegalArgumentException("Company not found");
+        }
+
+        String encryptedKey = EncryptionUtil.encrypt(newCompanyKey, encryptionKey);
+        company.get().setEncryptedKey(encryptedKey);
+        companyRepository.save(company.get());
     }
 
     @Override
