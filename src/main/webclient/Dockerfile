@@ -45,4 +45,4 @@ EXPOSE 3000
 # Run the application.
 
 
-CMD ./node_modules/.bin/react-scripts start
+CMD CI=false ./node_modules/.bin/react-scripts start
