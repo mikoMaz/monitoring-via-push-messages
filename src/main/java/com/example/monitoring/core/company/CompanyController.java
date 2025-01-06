@@ -20,15 +20,17 @@ public class CompanyController {
 
     private final UserService userService;
 
+    @PreAuthorize("@userServiceImpl.superAdmin")
     @PostMapping("/create")
     public ResponseEntity<Void> addNewCompany(@RequestParam String companyName) {
         companyService.createCompany(companyName);
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("@userServiceImpl.hasRightToTheCompany(#companyId)")
     @PostMapping("/change-company-password")
-    public void changeCompanyPassword(@RequestParam String company, @RequestParam String password) throws Exception {
-        companyService.setCompanyKey(company, password);
+    public void changeCompanyPassword(@RequestParam Long companyId, @RequestParam String password) throws Exception {
+        companyService.setCompanyKey(companyId, password);
     }
 
     @GetMapping("/get-companies")
