@@ -37,16 +37,19 @@ import {
 } from "../../types/IUserInfoResponse";
 import { useAuth0 } from "@auth0/auth0-react";
 import { FileSender } from "./components/file-sender";
+import { ICompanyDto } from "../../types/ICompanyDto";
 
 export const AdminPanelPage = ({
   apiClient,
   userInfo,
+  accessToken,
 }: {
   apiClient: APIClient;
   userInfo: IUserInfoResponse;
+  accessToken: string
 }) => {
-  const [companySelect, setCompanySelect] = useState<string>("");
-  const [companies, setCompanies] = useState<string[]>([]);
+  const [companySelect, setCompanySelect] = useState<number | null>(null); // Zmieniono typ na number | null
+  const [companies, setCompanies] = useState<ICompanyDto[]>([]); // Zmieniono typ na listę ICompanyDto
   const [users, setUsers] = useState<ICompanyUser[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
@@ -55,20 +58,22 @@ export const AdminPanelPage = ({
   const { user } = useAuth0();
 
   useEffect(() => {
-    apiClient.getAllCompanies().then((companies) => setCompanies(companies));
+    apiClient
+      .getAllCompanies(accessToken)
+      .then((companies: ICompanyDto[]) => setCompanies(companies));
   }, []);
 
   useEffect(() => {
-    if (companySelect) {
-      apiClient.getUsersFromCompany(companySelect).then((allUsers) => {
+    if (companySelect !== null) {
+      apiClient.getUsersFromCompany(accessToken, companySelect).then((allUsers) => {
         setUsers(allUsers);
       });
     }
   }, [companySelect]);
 
   const handleCompanyChange = (event: any) => {
-    const selectedCompany = event.target.value;
-    setCompanySelect(selectedCompany);
+    const selectedCompanyId = parseInt(event.target.value, 10);
+    setCompanySelect(selectedCompanyId);
   };
 
   const handleRoleChange = (userName: string, newRole: userType) => {
@@ -80,10 +85,14 @@ export const AdminPanelPage = ({
   };
 
   const handleSaveClick = async () => {
+    if (companySelect === null) {
+      console.error("Company is not selected.");
+      return; 
+    }
+  
     setIsLoading(true);
     try {
-      // await new Promise((resolve) => setTimeout(resolve, 2000));
-      await apiClient.updateUsersPermissions(users, companySelect);
+      await apiClient.updateUsersPermissions(accessToken, users, companySelect);
       setUploadSuccess(true);
     } catch (error) {
       console.error("Error saving users:", error);
@@ -93,7 +102,6 @@ export const AdminPanelPage = ({
       setAlertInfo(true);
     }
   };
-
   const UserRole = () => {
     const filteredRoles = userTypesArray.filter(
       (role) => role !== "EXTERNAL" && role !== "SUPER_ADMIN"
@@ -152,21 +160,25 @@ export const AdminPanelPage = ({
               <CardBody>
                 <Select
                   placeholder="Select company"
-                  value={companySelect}
+                  value={companySelect ?? ""}
                   onChange={handleCompanyChange}
                   bg="white"
                   focusBorderColor={UIProps.colors.primary}
                 >
-                  {companies.map((company, index) => (
-                    <option key={index} value={company}>
-                      {company}
+                  {companies.map((company) => (
+                    <option key={company.companyId} value={company.companyId}>
+                      {company.companyName}
                     </option>
                   ))}
                 </Select>
                 <Card marginTop={10}>{companySelect && <UserRole />}</Card>
               </CardBody>
               <CardFooter justifyContent="flex-end">
-                <HStack width="100%" justifyContent="flex-end" alignItems="stretch">
+                <HStack
+                  width="100%"
+                  justifyContent="flex-end"
+                  alignItems="stretch"
+                >
                   {alertInfo && (
                     <Alert
                       status={uploadSuccess ? "success" : "error"}

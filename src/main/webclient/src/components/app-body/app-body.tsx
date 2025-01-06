@@ -128,6 +128,7 @@ export const AppBody = () => {
           <AdminPanelPage
             apiClient={apiClient}
             userInfo={userInfo ?? getDeniedUserInfoResponse()}
+            accessToken={accessToken}
           />
         }
       />,
