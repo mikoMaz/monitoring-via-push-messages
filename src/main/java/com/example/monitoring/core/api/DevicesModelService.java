@@ -127,9 +127,12 @@ public class DevicesModelService implements IDevicesModelService {
         deviceTypeMap.put("middleLevel", new JsonArray());
         deviceTypeMap.put("bottomLevel", new JsonArray());
 
+        JsonObject root = new JsonObject();
+
         List<String> devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
         if (devicesList == null) {
-            return new JsonObject();
+            deviceTypeMap.forEach(root::add);
+            return root;
         }
 
         List<String> toplevelDevices = new ArrayList<>();
@@ -167,7 +170,6 @@ public class DevicesModelService implements IDevicesModelService {
             }
         }
 
-        JsonObject root = new JsonObject();
         deviceTypeMap.forEach(root::add);
         return root;
     }

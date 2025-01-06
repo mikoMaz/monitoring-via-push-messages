@@ -96,7 +96,7 @@ export const MonitoringDevicePage = ({
       id: string,
       email: string
     ) => {
-      var time = await apiClient.getDeviceUptime(1, id, accessToken, email);
+      var time = await apiClient.getDeviceUptime(type, id, accessToken);
       setActiveTime(time);
     };
 

@@ -93,7 +93,14 @@ public class SecurityConfiguration {
     @Order(3)
     public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                //                .cors(AbstractHttpConfigurer::disable)  // TODO custom configuration
+                //         .cors(cors -> cors.configurationSource(request -> {
+                //     CorsConfiguration config = new CorsConfiguration();
+                //     config.setAllowedOrigins(List.of("http://localhost:3000"));  // lub "*"
+                //     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                //     config.setAllowedHeaders(List.of("*"));
+                //     config.setAllowCredentials(true);
+                //     return config;
+                // }))
                 .csrf(AbstractHttpConfigurer::disable) // TODO
                 .authorizeHttpRequests(auth -> auth
                 // TODO: add roles to rest of the paths
