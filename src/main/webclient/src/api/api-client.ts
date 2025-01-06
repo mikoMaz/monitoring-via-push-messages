@@ -16,6 +16,8 @@ import config from "../config/config.json";
 import { TestAPIClient } from "./test-api-client";
 import { ICompanyUser } from "../types/ICompanyUser";
 import { IHistoryChartData } from "../types/IHistoryChartData";
+import { ICompanyDto } from "../types/ICompanyDto";
+import { access } from "fs";
 
 export interface IAPIClient {
   getUserInfo: (
@@ -25,7 +27,7 @@ export interface IAPIClient {
   getUpdatedDeviceModel: (
     accessToken: string,
     email: string,
-    id: string,
+    id: string
   ) => Promise<DeviceModel>;
   getDeviceUptime: (
     type: deviceType,
@@ -44,17 +46,27 @@ export interface IAPIClient {
     secret: string,
     id: string
   ) => Promise<AllDevicesUptimeJson>;
-  getAllCompanies: () => Promise<String[]>;
-  getUsersFromCompany: (company: string) => Promise<ICompanyUser[]>;
   postCSVData: (type: string, tableName: string, file: File) => Promise<number>;
   getDataHistoryChart: (
     dateFrom: string,
     dateTo: string
   ) => Promise<IHistoryChartData[]>;
+  postAddCompany: (accessToken: string, companyName: string) => Promise<number>;
+  postChangeCompanySecret: (
+    accessToken: string,
+    companyId: number,
+    newSecret: string
+  ) => Promise<number>;
+  getAllCompanies: (accessToken: string) => Promise<ICompanyDto[]>;
+  getUsersFromCompany: (
+    accessToken: string,
+    companyId: number
+  ) => Promise<ICompanyUser[]>;
   updateUsersPermissions: (
+    accessToken: string,
     users: ICompanyUser[],
-    company: string
-  ) => Promise<void>;
+    companyId: number
+  ) => Promise<number>;
 }
 
 export class APIClient implements IAPIClient {
@@ -114,7 +126,11 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getUpdatedDeviceModel = async (accessToken: string, email: string, id: string) => {
+  public getUpdatedDeviceModel = async (
+    accessToken: string,
+    email: string,
+    id: string
+  ) => {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/jsonTree?id=${id}`;
     if (this.useTestData()) {
       return this.testApiClient.getUpdatedDeviceModel(accessToken, email);
@@ -220,7 +236,7 @@ export class APIClient implements IAPIClient {
 
   public getPreviewDeviceModel = async (secret: string, id: string) => {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/preview/jsonTree?id=${id}`;
-    
+
     if (this.useTestData()) {
       return this.testApiClient.getPreviewDeviceModel(secret, id);
     }
@@ -243,7 +259,7 @@ export class APIClient implements IAPIClient {
   };
 
   public getPreviewDevicesHistory = async (secret: string, id: string) => {
-    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?id=${id};`;
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?id=${id}`;
     if (this.useTestData()) {
       return this.testApiClient.getPreviewDevicesHistory(secret, id);
     }
@@ -263,14 +279,6 @@ export class APIClient implements IAPIClient {
         console.error(error);
         return emptyAllDevicesUptimeJson;
       });
-  };
-
-  public getAllCompanies = () => {
-    return this.testApiClient.getAllCompanies();
-  };
-
-  public getUsersFromCompany = (company: string) => {
-    return this.testApiClient.getUsersFromCompany(company);
   };
 
   public postCSVData = async (type: string, tableName: string, file: File) => {
@@ -303,7 +311,129 @@ export class APIClient implements IAPIClient {
     return this.testApiClient.getDataHistoryChart(dateFrom, dateTo);
   };
 
-  public updateUsersPermissions = (users: ICompanyUser[], company: string) => {
-    return this.testApiClient.updateUsersPermissions(users, company);
+  public postAddCompany = (accessToken: string, companyName: string) => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/create`;
+    if (this.useTestData()) {
+      return this.testApiClient.postAddCompany(accessToken, companyName);
+    }
+    return axios
+      .post(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          companyName: `${companyName}`,
+        },
+      })
+      .then((response) => {
+        return response.status;
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        throw new Error("An error occurred while creating the company.");
+      });
+  };
+
+  public postChangeCompanySecret = (
+    accessToken: string,
+    companyId: number,
+    newSecret: string
+  ) => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/change-company-password`;
+    if (this.useTestData()) {
+      return this.testApiClient.postChangeCompanySecret(
+        accessToken,
+        companyId,
+        newSecret
+      );
+    }
+    return axios
+      .post(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          company: `${companyId}`,
+          password: `${newSecret}`,
+        },
+      })
+      .then((response) => {
+        return response.status;
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        throw new Error("An error occurred while creating the company.");
+      });
+  };
+
+  public getAllCompanies = (accessToken: string) => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/get-companies`;
+    if (this.useTestData()) {
+      return this.testApiClient.getAllCompanies(accessToken);
+    }
+    return axios
+      .get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        const data: ICompanyDto[] = response.data;
+        return data;
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        return [];
+      });
+  };
+
+  public getUsersFromCompany = (accessToken: string, companyId: number) => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/get-users-from-company`;
+    if (this.useTestData()) {
+      return this.testApiClient.getUsersFromCompany(accessToken, companyId);
+    }
+    return axios
+      .get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        const data: ICompanyUser[] = response.data;
+        return data;
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        return [];
+      });
+  };
+
+  public updateUsersPermissions = (
+    accessToken: string,
+    users: ICompanyUser[],
+    companyId: number
+  ) => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/update-company-users?companyId=${companyId}`;
+    if (this.useTestData()) {
+      return this.testApiClient.updateUsersPermissions(
+        accessToken,
+        users,
+        companyId
+      );
+    }
+    return axios
+      .put(apiUrl, users, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        return response.status;
+      })
+      .catch((error) => {
+        console.log("error");
+        console.error(error);
+        throw new Error("An error occurred while updating users permissions.");
+      });
   };
 }

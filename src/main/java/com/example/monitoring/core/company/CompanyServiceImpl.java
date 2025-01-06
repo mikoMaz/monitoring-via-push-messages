@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.example.monitoring.core.api.config.PreviewAuthenticationFilter.encryptionKey;
 
@@ -42,6 +43,19 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public void setCompanyKey(Long companyId, String newCompanyKey) throws Exception {
+        Optional<Company> company = companyRepository.findById(companyId);
+
+        if (company.isEmpty()) {
+            throw new IllegalArgumentException("Company not found");
+        }
+
+        String encryptedKey = EncryptionUtil.encrypt(newCompanyKey, encryptionKey);
+        company.get().setEncryptedKey(encryptedKey);
+        companyRepository.save(company.get());
+    }
+
+    @Override
     public List<CompanyDto> getCompanies() {
         UserDto userDto = userService.getUserDto();
         Role userRole = userDto.getRole();
@@ -63,10 +77,17 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void updateUsersInCompany(Long companyId, List<UserDto> usersChangesToUpdate) {
-        Role userRole = userService.getUserRole();
+        UserDto currentUser = userService.getUserDto();
+        Role currentUserRole = currentUser.getRole();
+
         usersChangesToUpdate.forEach(userToUpdate -> {
             try {
-                if (userToUpdate.getRole() == Role.SUPER_ADMIN && userRole != Role.SUPER_ADMIN && userService.getUserRoleById(userToUpdate.getId()) != Role.SUPER_ADMIN) {
+                // prevent changing own role
+                if (Objects.equals(currentUser.getId(), userToUpdate.getId())) {
+                    userToUpdate.setRole(currentUserRole);
+                }
+                // user to change is SUPER_ADMIN and current user (not SUPER_ADMIN) wants to OP the user
+                if (userToUpdate.getRole() == Role.SUPER_ADMIN && currentUserRole != Role.SUPER_ADMIN && userService.getUserRoleById(userToUpdate.getId()) != Role.SUPER_ADMIN) {
                     throw new IllegalArgumentException("User has not enough permissions");
                 }
                 userService.updateUserFromUserDto(userToUpdate);

@@ -12,10 +12,6 @@ import { IAPIClient } from "./api-client";
 import { IHistoryChartData } from "../types/IHistoryChartData";
 
 export class TestAPIClient implements IAPIClient {
-  public getAllCompanies = () => {
-    return Promise.resolve(["Company1", "Company2", "Company3", "Company4"]);
-  };
-
   public getUserInfo = (accessToken: string, email?: string) => {
     const user: IUserInfoResponse = {
       email: email ?? "test_email@test.com",
@@ -177,74 +173,135 @@ export class TestAPIClient implements IAPIClient {
     });
   };
 
-  public getUsersFromCompany = (company: string) => {
+  public postAddCompany = (accessToken: string, companyName: string) => {
+    if (Math.floor(Math.random() * 4) / 3) {
+      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+        return 409;
+      });
+    } else {
+      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+        return 200;
+      });
+    }
+  };
+
+  public postChangeCompanySecret = (
+    accessToken: string,
+    companyId: number,
+    newSecret: string
+  ) => {
+    if (Math.floor(Math.random() * 4) / 3) {
+      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+        return 500;
+      });
+    } else {
+      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+        return 200;
+      });
+    }
+  };
+
+  public getAllCompanies = (accessToken: string) => {
+    return Promise.resolve([
+      { companyId: 1, companyName: "Company1" },
+      { companyId: 2, companyName: "Company2" },
+      { companyId: 3, companyName: "Company3" },
+      { companyId: 4, companyName: "Company4" },
+    ]);
+  };
+
+  public getUsersFromCompany = (accessToken: string, companyId: number) => {
     const users: ICompanyUser[] = [
       {
-        company: "Company1",
-        name: "John Doe",
+        id: 1,
+        companyId: 1,
+        name: "John",
+        surname: "Doe",
         role: "ADMIN",
       },
       {
-        company: "Company1",
-        name: "Alice Johnson",
+        id: 2,
+        companyId: 1,
+        name: "Alice",
+        surname: "Johnson",
         role: "ADMIN",
       },
       {
-        company: "Company1",
-        name: "Bob Smith",
+        id: 3,
+        companyId: 1,
+        name: "Bob",
+        surname: "Smith",
         role: "READ_ONLY",
       },
       {
-        company: "Company2",
-        name: "Eve Adams",
+        id: 4,
+        companyId: 2,
+        name: "Eve",
+        surname: "Adams",
         role: "SUPER_ADMIN",
       },
       {
-        company: "Company2",
-        name: "Charlie Brown",
+        id: 5,
+        companyId: 2,
+        name: "Charlie",
+        surname: "Brown",
         role: "READ_ONLY",
       },
       {
-        company: "Company3",
-        name: "David Williams",
+        id: 6,
+        companyId: 3,
+        name: "David",
+        surname: "Williams",
         role: "ADMIN",
       },
       {
-        company: "Company3",
-        name: "Grace Lee",
+        id: 7,
+        companyId: 3,
+        name: "Grace",
+        surname: "Lee",
         role: "EXTERNAL",
       },
       {
-        company: "Company3",
-        name: "Stachu Jones",
+        id: 8,
+        companyId: 3,
+        name: "Stachu",
+        surname: "Jones",
         role: "READ_ONLY",
       },
       {
-        company: "Company4",
-        name: "James Harris",
+        id: 9,
+        companyId: 4,
+        name: "James",
+        surname: "Harris",
         role: "READ_ONLY",
       },
       {
-        company: "Company4",
-        name: "Nina Patel",
+        id: 10,
+        companyId: 4,
+        name: "Nina",
+        surname: "Patel",
         role: "SUPER_ADMIN",
       },
     ];
     return Promise.resolve(
       users.filter((user) => {
-        return user.company === company;
+        return user.companyId === companyId;
       })
     );
   };
 
-  public updateUsersPermissions = (users: ICompanyUser[], company: string) => {
+  public updateUsersPermissions = (
+    accessToken: string,
+    users: ICompanyUser[],
+    companyId: number
+  ) => {
     if (Math.floor(Math.random() * 4) / 3) {
       return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
-        throw new Error("Failed to update users.");
+        return 500;
       });
     } else {
-      return new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
-        return Promise.resolve();
+      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+        return 200;
       });
     }
   };

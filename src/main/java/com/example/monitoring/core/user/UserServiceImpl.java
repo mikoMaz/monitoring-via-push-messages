@@ -57,21 +57,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isSuperAdmin() {
+        return userRepository.findByAuthTokenSubject(getSubject()).getRole() == Role.SUPER_ADMIN;
+    }
+
+    @Override
     public UserDto getUserDto() {
         User user = userRepository.findByAuthTokenSubject(getSubject());
         return new UserDto(user.getId(), user.getName(), user.getSurname(), user.getCompany().getCompanyId(), user.getRole());
+    }
+
+    @Override
+    public boolean hasRightToTheCompany(Long companyId) {
+        User user = userRepository.findByAuthTokenSubject(getSubject());
+        return user.getCompany().getCompanyId().equals(companyId) &&
+                user.getRole() == Role.ADMIN ||
+                user.getRole() == Role.SUPER_ADMIN;
     }
 
     private String getSubject() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
         return jwt.getClaimAsString("sub");
-    }
-
-    public boolean hasRightToTheCompany(Long companyId) {
-        User user = userRepository.findByAuthTokenSubject(getSubject());
-        return user.getCompany().getCompanyId().equals(companyId) &&
-                user.getRole() == Role.ADMIN ||
-                user.getRole() == Role.SUPER_ADMIN;
     }
 }
