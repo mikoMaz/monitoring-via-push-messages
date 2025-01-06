@@ -2,6 +2,9 @@ package com.example.monitoring.core.user;
 
 import com.example.monitoring.core.user.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,5 +39,30 @@ public class UserServiceImpl implements UserService {
         userToUpdate.get().setSurname(user.getSurname());
         userToUpdate.get().setRole(user.getRole());
         userRepository.save(userToUpdate.get());
+    }
+
+    @Override
+    public Role getUserRole() {
+        User user = userRepository.findByAuthTokenSubject(getSubject());
+        return user.getRole();
+    }
+
+    @Override
+    public UserDto getUserDto() {
+        User user = userRepository.findByAuthTokenSubject(getSubject());
+        return new UserDto(user.getId(), user.getName(), user.getSurname(), user.getCompany().getCompanyId(), user.getRole());
+    }
+
+    private String getSubject() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        return jwt.getClaimAsString("sub");
+    }
+
+    public boolean hasRightToTheCompany(Long companyId) {
+        User user = userRepository.findByAuthTokenSubject(getSubject());
+        return user.getCompany().getCompanyId().equals(companyId) &&
+                user.getRole() == Role.ADMIN ||
+                user.getRole() == Role.SUPER_ADMIN;
     }
 }

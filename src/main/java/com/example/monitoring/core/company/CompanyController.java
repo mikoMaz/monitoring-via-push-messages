@@ -4,12 +4,15 @@ import com.example.monitoring.core.user.UserDto;
 import com.example.monitoring.core.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user/company")
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class CompanyController {
 
@@ -23,15 +26,17 @@ public class CompanyController {
     }
 
     @GetMapping("/get-companies")
-    public List<CompanyDto> getCompanies() {  // TODO: only SUPER-ADMIN should have an access to all companies
+    public List<CompanyDto> getCompanies() {
         return companyService.getCompanies();
     }
 
+    @PreAuthorize("@userServiceImpl.hasRightToTheCompany(#companyId)")
     @GetMapping("/get-users-from-company")
     public List<UserDto> getUsersFromCompany(@RequestParam Long companyId) {
         return userService.getUsersByCompanyId(companyId);
     }
 
+    @PreAuthorize("@userServiceImpl.hasRightToTheCompany(#companyId)")
     @PutMapping("/update-company-users")
     public ResponseEntity<Void> updateCompanyUsers(@RequestParam Long companyId, @RequestBody List<UserDto> users) {
         companyService.updateUsersInCompany(companyId, users);

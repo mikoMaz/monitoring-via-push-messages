@@ -1,5 +1,6 @@
 package com.example.monitoring.core.company;
 
+import com.example.monitoring.core.user.Role;
 import com.example.monitoring.core.user.UserDto;
 import com.example.monitoring.core.user.UserService;
 import com.example.monitoring.core.user.exceptions.UserNotFoundException;
@@ -7,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.example.monitoring.core.api.config.PreviewAuthenticationFilter.encryptionKey;
 
@@ -34,9 +36,22 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyDto> getCompanies() {
-        return companyRepository.findAll().stream()
-                .map(company -> new CompanyDto(company.getCompanyId(), company.getName()))
-                .toList();
+        UserDto userDto = userService.getUserDto();
+        Role userRole = userDto.getRole();
+
+        if (userRole == Role.SUPER_ADMIN) {
+            return companyRepository.findAll().stream()
+                    .map(company -> new CompanyDto(company.getCompanyId(), company.getName()))
+                    .toList();
+        } if (userRole == Role.ADMIN) {
+            return companyRepository.findAll().stream()
+                    .map(company -> new CompanyDto(company.getCompanyId(), company.getName()))
+                    .filter(company ->
+                            Objects.equals(userDto.getCompanyId(), company.getCompanyId())
+                    )
+                    .toList();
+        }
+        throw new IllegalArgumentException("User has not enough permissions");
     }
 
     @Override
