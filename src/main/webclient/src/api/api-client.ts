@@ -122,8 +122,7 @@ export class APIClient implements IAPIClient {
     return axios
       .get(apiURL, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Email: `${email}`,
+          Authorization: `Bearer ${accessToken}`
         },
       })
       .then((response) => {
@@ -150,8 +149,7 @@ export class APIClient implements IAPIClient {
     return axios
       .get(apiUrl, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Email: `${email}`,
+          Authorization: `Bearer ${accessToken}`
         },
       })
       .then((response) => {
@@ -177,8 +175,7 @@ export class APIClient implements IAPIClient {
     return axios
       .get(apiUrl, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Email: `${email}`,
+          Authorization: `Bearer ${accessToken}`
         },
       })
       .then((response) => {
