@@ -196,24 +196,24 @@ export const AppBody = () => {
   };
 
   const onComponentLoaded = async () => {
-    // //TODO why executed double
-    // if (email || user?.email) {
-    //   const userEmail = email ?? user?.email;
-    //   if (!email) {
-    //     setEmail(userEmail);
-    //   }
-    //   const token = await getAccessToken(userEmail);
-    //   if (token) {
-    //     await updateModel(token, userEmail)
-    //       .then((model) => checkInactiveDevices(model))
-    //       .catch((error: any) => {
-    //         console.error("Update model error: " + error);
-    //       });
-    //     await fetchUptimeValues(token, userEmail).catch((error: any) => {
-    //       console.error(error);
-    //     });
-    //   }
-    // }
+    //TODO why executed double
+    if (email || user?.email) {
+      const userEmail = email ?? user?.email;
+      if (!email) {
+        setEmail(userEmail);
+      }
+      const token = await getAccessToken(userEmail);
+      if (token) {
+        await updateModel(token, userEmail)
+          .then((model) => checkInactiveDevices(model))
+          .catch((error: any) => {
+            console.error("Update model error: " + error);
+          });
+        await fetchUptimeValues(token, userEmail).catch((error: any) => {
+          console.error(error);
+        });
+      }
+    }
   };
 
   useEffect(() => {
