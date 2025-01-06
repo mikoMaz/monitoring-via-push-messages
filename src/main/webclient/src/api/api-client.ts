@@ -69,6 +69,8 @@ export class APIClient implements IAPIClient {
     switch (host) {
       case config.appVersions.LOCAL.HOST:
         return config.appVersions.LOCAL.API_URL;
+      case config.appVersions.REMOTE.HOST:
+        return config.appVersions.REMOTE.API_URL;
       default:
         console.error("Hostname didn't match. Couldn't provide api adress");
         return "";
@@ -79,6 +81,9 @@ export class APIClient implements IAPIClient {
     const host = window.location.hostname;
     if (host === config.appVersions.LOCAL.HOST) {
       return config.appVersions.LOCAL.USE_TEST_DATA;
+    }
+    else if (host === config.appVersions.REMOTE.HOST) {
+      return config.appVersions.REMOTE.USE_TEST_DATA;
     }
     return false;
   };
