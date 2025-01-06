@@ -26,19 +26,16 @@ export interface IAPIClient {
   ) => Promise<IUserInfoResponse>;
   getUpdatedDeviceModel: (
     accessToken: string,
-    email: string,
     id: string
   ) => Promise<DeviceModel>;
   getDeviceUptime: (
     type: deviceType,
     id: string,
-    accessToken: string,
-    email: string
+    accessToken: string
   ) => Promise<number>;
   getAllDevicesHistory: (
     id: string,
-    accessToken: string,
-    email: string
+    accessToken: string
   ) => Promise<AllDevicesUptimeJson>;
   validatePreviewSecret: (secret: string, company: string) => Promise<boolean>;
   getPreviewDeviceModel: (secret: string, id: string) => Promise<DeviceModel>;
@@ -128,12 +125,11 @@ export class APIClient implements IAPIClient {
 
   public getUpdatedDeviceModel = async (
     accessToken: string,
-    email: string,
     id: string
   ) => {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/jsonTree?id=${id}`;
     if (this.useTestData()) {
-      return this.testApiClient.getUpdatedDeviceModel(accessToken, email);
+      return this.testApiClient.getUpdatedDeviceModel(accessToken, id);
     }
     return axios
       .get(apiURL, {
@@ -155,12 +151,11 @@ export class APIClient implements IAPIClient {
   public getDeviceUptime = async (
     type: deviceType,
     id: string,
-    accessToken: string,
-    email: string
+    accessToken: string
   ) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/history?id=${type}&device_id=${id}`;
     if (this.useTestData()) {
-      return this.testApiClient.getDeviceUptime(type, id, accessToken, email);
+      return this.testApiClient.getDeviceUptime(type, id, accessToken);
     }
     return axios
       .get(apiUrl, {
@@ -181,12 +176,11 @@ export class APIClient implements IAPIClient {
 
   public getAllDevicesHistory = async (
     id: string,
-    accessToken: string,
-    email: string
+    accessToken: string
   ): Promise<AllDevicesUptimeJson> => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historyTree?id=${id}`;
     if (this.useTestData()) {
-      return this.testApiClient.getAllDevicesHistory(id, accessToken, email);
+      return this.testApiClient.getAllDevicesHistory(id, accessToken);
     }
     return axios
       .get(apiUrl, {
@@ -312,15 +306,14 @@ export class APIClient implements IAPIClient {
   };
 
   public postAddCompany = (accessToken: string, companyName: string) => {
-    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/create`;
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/create?companyName=${companyName}`;
     if (this.useTestData()) {
       return this.testApiClient.postAddCompany(accessToken, companyName);
     }
     return axios
       .post(apiUrl, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-          companyName: `${companyName}`,
+          Authorization: `Bearer ${accessToken}`
         },
       })
       .then((response) => {
@@ -338,7 +331,7 @@ export class APIClient implements IAPIClient {
     companyId: number,
     newSecret: string
   ) => {
-    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/change-company-password`;
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/change-company-password?companyId=${companyId}&password=${newSecret}`;
     if (this.useTestData()) {
       return this.testApiClient.postChangeCompanySecret(
         accessToken,
@@ -349,9 +342,7 @@ export class APIClient implements IAPIClient {
     return axios
       .post(apiUrl, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-          company: `${companyId}`,
-          password: `${newSecret}`,
+          Authorization: `Bearer ${accessToken}`
         },
       })
       .then((response) => {
@@ -387,14 +378,14 @@ export class APIClient implements IAPIClient {
   };
 
   public getUsersFromCompany = (accessToken: string, companyId: number) => {
-    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/get-users-from-company`;
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/get-users-from-company?companyId=${companyId}`;
     if (this.useTestData()) {
       return this.testApiClient.getUsersFromCompany(accessToken, companyId);
     }
     return axios
       .get(apiUrl, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`
         },
       })
       .then((response) => {

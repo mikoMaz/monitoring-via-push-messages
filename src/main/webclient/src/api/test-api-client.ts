@@ -20,7 +20,7 @@ export class TestAPIClient implements IAPIClient {
     return Promise.resolve(user);
   };
 
-  public getUpdatedDeviceModel = (accessToken: string, email: string) => {
+  public getUpdatedDeviceModel = (accessToken: string, id: string) => {
     const model = new DeviceModel([
       new Bridge("bridge1", deviceStatus.active, new Date(), [
         new Gateway("gateway1", deviceStatus.active, new Date(), [
@@ -64,16 +64,14 @@ export class TestAPIClient implements IAPIClient {
   public getDeviceUptime = (
     type: deviceType,
     id: string,
-    accessToken: string,
-    email: string
+    accessToken: string
   ) => {
     return Promise.resolve(99.8);
   };
 
   public getAllDevicesHistory = (
     id: string,
-    accessToken: string,
-    email: string
+    accessToken: string
   ) => {
     const values = {
       upperLevel: [87.2, 89.7, 90.1],
@@ -98,7 +96,7 @@ export class TestAPIClient implements IAPIClient {
   };
 
   public getPreviewDevicesHistory = (secret: string, id: string) => {
-    return this.getAllDevicesHistory(id, secret, "");
+    return this.getAllDevicesHistory(id, secret);
   };
 
   public postCSVData = async (type: string, tableName: string, file: File) => {

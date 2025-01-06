@@ -160,7 +160,7 @@ export const AppBody = () => {
 
   const updateModel = async (token: string, email: string) => {
     try {
-      const data = await apiClient.getUpdatedDeviceModel(token, email, "1");
+      const data = await apiClient.getUpdatedDeviceModel(token, "1");
       setDeviceModel(data);
       return data;
     } catch (e: any) {
@@ -186,7 +186,7 @@ export const AppBody = () => {
 
   const fetchUptimeValues = async (token: string, email: string) => {
     try {
-      const data = await apiClient.getAllDevicesHistory("1", token, email);
+      const data = await apiClient.getAllDevicesHistory("1", token);
       setDevicesUptimeValues(data);
       return data;
     } catch (e: any) {
