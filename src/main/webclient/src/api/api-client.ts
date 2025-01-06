@@ -107,8 +107,12 @@ export class APIClient implements IAPIClient {
         },
       })
       .then((response) => {
-        const data: IUserInfoResponse = response.data;
-        return data;
+        if (response.data) {
+          const data: IUserInfoResponse = response.data;
+          return data;
+        } else {
+          throw new AxiosError("Data is null");
+        }
       })
       .catch((error: AxiosError) => {
         console.error(
@@ -138,11 +142,14 @@ export class APIClient implements IAPIClient {
         },
       })
       .then((response) => {
-        const data: DeviceTreeModelJson = response.data;
-        return createDeviceModelFromJson(data);
+        if (response.data) {
+          const data: DeviceTreeModelJson = response.data;
+          return createDeviceModelFromJson(data);
+        } else {
+          throw new AxiosError("Data is null");
+        }
       })
       .catch(function (error) {
-        console.log("error");
         console.error(error);
         return new DeviceModel();
       });
@@ -164,11 +171,14 @@ export class APIClient implements IAPIClient {
         },
       })
       .then((response) => {
-        const data: DeviceUptimeJson = response.data;
-        return data.uptime;
+        if (response.data) {
+          const data: DeviceUptimeJson = response.data;
+          return data.uptime;
+        } else {
+          throw new AxiosError("Data is null");
+        }
       })
       .catch(function (error) {
-        console.log("error");
         console.error(error);
         return 0;
       });
@@ -189,11 +199,14 @@ export class APIClient implements IAPIClient {
         },
       })
       .then((response) => {
-        const data: AllDevicesUptimeJson = response.data;
-        return data;
+        if (response.data) {
+          const data: AllDevicesUptimeJson = response.data;
+          return data;
+        } else {
+          throw new AxiosError("Data is null");
+        }
       })
       .catch(function (error) {
-        console.log("error");
         console.error(error);
         return emptyAllDevicesUptimeJson;
       });
@@ -246,7 +259,6 @@ export class APIClient implements IAPIClient {
         return createDeviceModelFromJson(data);
       })
       .catch(function (error) {
-        console.log("error");
         console.error(error);
         return new DeviceModel();
       });
@@ -269,7 +281,6 @@ export class APIClient implements IAPIClient {
         return data;
       })
       .catch(function (error) {
-        console.log("error");
         console.error(error);
         return emptyAllDevicesUptimeJson;
       });
@@ -320,7 +331,6 @@ export class APIClient implements IAPIClient {
         return response.status;
       })
       .catch(function (error) {
-        console.log("error");
         console.error(error);
         throw new Error("An error occurred while creating the company.");
       });
@@ -349,7 +359,6 @@ export class APIClient implements IAPIClient {
         return response.status;
       })
       .catch(function (error) {
-        console.log("error");
         console.error(error);
         throw new Error("An error occurred while creating the company.");
       });
@@ -371,7 +380,6 @@ export class APIClient implements IAPIClient {
         return data;
       })
       .catch(function (error) {
-        console.log("error");
         console.error(error);
         return [];
       });
@@ -393,7 +401,6 @@ export class APIClient implements IAPIClient {
         return data;
       })
       .catch(function (error) {
-        console.log("error");
         console.error(error);
         return [];
       });
@@ -422,7 +429,6 @@ export class APIClient implements IAPIClient {
         return response.status;
       })
       .catch((error) => {
-        console.log("error");
         console.error(error);
         throw new Error("An error occurred while updating users permissions.");
       });
