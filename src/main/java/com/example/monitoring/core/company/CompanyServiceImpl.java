@@ -63,10 +63,17 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void updateUsersInCompany(Long companyId, List<UserDto> usersChangesToUpdate) {
-        Role userRole = userService.getUserRole();
+        UserDto currentUser = userService.getUserDto();
+        Role currentUserRole = currentUser.getRole();
+
         usersChangesToUpdate.forEach(userToUpdate -> {
             try {
-                if (userToUpdate.getRole() == Role.SUPER_ADMIN && userRole != Role.SUPER_ADMIN && userService.getUserRoleById(userToUpdate.getId()) != Role.SUPER_ADMIN) {
+                // prevent changing own role
+                if (Objects.equals(currentUser.getId(), userToUpdate.getId())) {
+                    userToUpdate.setRole(currentUserRole);
+                }
+                // user to change is SUPER_ADMIN and current user (not SUPER_ADMIN) wants to OP the user
+                if (userToUpdate.getRole() == Role.SUPER_ADMIN && currentUserRole != Role.SUPER_ADMIN && userService.getUserRoleById(userToUpdate.getId()) != Role.SUPER_ADMIN) {
                     throw new IllegalArgumentException("User has not enough permissions");
                 }
                 userService.updateUserFromUserDto(userToUpdate);
