@@ -11,7 +11,7 @@ import {
 import { Box } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
 import { getDensityRecentChart } from "../util/density-devices-recent";
-import { IChartTemplateModel, IChartTemplateModelDrawing } from "../../../types/chartTemplate";
+import { IChartTemplateModelDrawing } from "../../../types/chartTemplate";
 
 interface CustomTooltipPayload {
   min: number;

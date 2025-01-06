@@ -77,6 +77,16 @@ export class Gateway implements IGateway {
     });
   }
 
+  public getChildDevicesCountMachingFilterPattern(pattern: string): number {
+    let count = 0;
+    this.sensors.forEach(sensor => {
+      if (sensor.id.includes(pattern)) {
+        count++;
+      }
+    });
+    return count;
+  }
+
   public getInactiveDevices(): IMonitoringDevice[] {
     return this.getInactiveSensors().map((s) => {
       return s.toIMonitoringDevice();
@@ -132,6 +142,18 @@ export class Bridge implements IBridge {
     return this.sensors.filter((s) => {
       return s.status === deviceStatus.disabled;
     });
+  }
+
+  public getChildDevicesCountMachingFilterPattern(pattern: string): number {
+    let count = 0;
+    this.gateways.forEach(gateway => {
+      const devices = gateway.getChildDevicesCountMachingFilterPattern(pattern);
+      count = count + devices;
+      if (gateway.id.includes(pattern)) {
+        count++;
+      }
+    });
+    return count;
   }
 
   public getInactiveDevices(): IMonitoringDevice[] {
@@ -214,6 +236,16 @@ export const emptyAllDevicesUptimeJson: AllDevicesUptimeJson = {
   upperLevel: [],
   middleLevel: [],
   bottomLevel: [],
+};
+
+export const returnDevicesArrayFromAllDevicesUptimeJson = (
+  devicesUptime: AllDevicesUptimeJson
+): number[] => {
+  return [
+    ...devicesUptime.upperLevel,
+    ...devicesUptime.middleLevel,
+    ...devicesUptime.bottomLevel,
+  ];
 };
 
 export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {

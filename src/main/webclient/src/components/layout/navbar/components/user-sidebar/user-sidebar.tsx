@@ -16,10 +16,12 @@ import {
   FormLabel,
   DrawerFooter,
   Heading,
+  HStack,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LocalStorageManager } from "../../../../../types/localStorageMenager";
+import { useNavigate } from "react-router-dom";
 
 interface IUserSidebar {
   alertsEnabled: boolean;
@@ -38,15 +40,15 @@ export const UserSidebar = ({
     window.location.reload();
   };
 
+  const navigate = useNavigate();
+
   return (
     <>
       <IconButton
         onClick={onOpen}
-        icon={<Avatar size="sm" />}
+        icon={<Avatar size="sm" name={user?.name ?? user?.nickname ?? user?.mail}/>}
         aria-label={"Profile"}
         colorScheme={UIProps.colors.accent}
-        paddingTop="10px"
-        paddingLeft="40px"
       />
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
@@ -88,7 +90,25 @@ export const UserSidebar = ({
             </Grid>
           </DrawerBody>
           <DrawerFooter>
-            <Button onClick={() => logout()}>Logout</Button>
+            <HStack>
+              <Button
+                colorScheme="green"
+                variant="ghost"
+                onClick={() => {
+                  navigate("/application/admin");
+                  onClose();
+                }}
+              >
+                Admin panel
+              </Button>
+              <Button
+                colorScheme="purple"
+                variant="ghost"
+                onClick={() => logout()}
+              >
+                Logout
+              </Button>
+            </HStack>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

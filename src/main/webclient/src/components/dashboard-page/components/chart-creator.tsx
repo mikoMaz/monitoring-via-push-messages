@@ -65,14 +65,17 @@ export const ChartCreator = ({ template, editFunction }: IChartCreator) => {
   const [isBrushActive, setIsBrushActive] = useState<boolean>(
     template.chartModel.brushActive
   );
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+
+  const [startDate, setStartDate] = useState<Date>(new Date(template.chartModel.dateFrom));
+  const [endDate, setEndDate] = useState<Date>(new Date(template.chartModel.dateTo));
 
   const handleSave = () => {
     const updatedTemplate = new ChartTemplate(templateName, selectedType, {
       percentFragmentation: parseFloat(percentFragmentationVariable),
       brushActive: isBrushActive,
       deviceTypes: getDeviceTypeArray(),
+      dateFrom: startDate.toISOString(),
+      dateTo: endDate.toISOString(),
     });
 
     updatedTemplate.id = template.id;
@@ -218,7 +221,7 @@ export const ChartCreator = ({ template, editFunction }: IChartCreator) => {
   };
 
   const drawDatePicker = () => {
-    if (selectedType !== chartType.EmptyPreset) {
+    if (selectedType === chartType.History) {
       return (
         <HStack>
           <Heading size="sm">From:</Heading>

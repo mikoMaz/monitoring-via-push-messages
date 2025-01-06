@@ -1,5 +1,9 @@
 import { Box, Center, Grid, GridItem, Text } from "@chakra-ui/react";
-import { AllDevicesUptimeJson, DeviceModel } from "../../types/deviceModel";
+import {
+  AllDevicesUptimeJson,
+  DeviceModel,
+  returnDevicesArrayFromAllDevicesUptimeJson,
+} from "../../types/deviceModel";
 import { UIProps } from "../../config/config";
 import { useState } from "react";
 import { ViewChartsTabs } from "./components/view-charts-tabs";
@@ -27,11 +31,8 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
   );
   const currentTime = new Date().toLocaleString();
 
-  const allHistoryValues = [
-    ...devicesUptime.upperLevel,
-    ...devicesUptime.middleLevel,
-    ...devicesUptime.bottomLevel,
-  ];
+  const allHistoryValues =
+    returnDevicesArrayFromAllDevicesUptimeJson(devicesUptime);
 
   const chartModel: IChartTemplateModel = getEmptyPreset().chartModel;
 
@@ -86,7 +87,11 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
         return (
           <>
             <Center>
-              <HistoryChart />
+              <HistoryChart
+                model={model}
+                devicesHistoryValues={allHistoryValues}
+                {...chartModel}
+              />
             </Center>
             <Text>Generated: {currentTime}</Text>
           </>

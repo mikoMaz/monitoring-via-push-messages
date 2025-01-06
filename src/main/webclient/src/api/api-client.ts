@@ -14,6 +14,8 @@ import {
 } from "../types/IUserInfoResponse";
 import config from "../config/config.json";
 import { TestAPIClient } from "./test-api-client";
+import { ICompanyUser } from "../types/ICompanyUser";
+import { IHistoryChartData } from "../types/IHistoryChartData";
 
 export interface IAPIClient {
   getUserInfo: (
@@ -22,7 +24,8 @@ export interface IAPIClient {
   ) => Promise<IUserInfoResponse>;
   getUpdatedDeviceModel: (
     accessToken: string,
-    email: string
+    email: string,
+    id: string,
   ) => Promise<DeviceModel>;
   getDeviceUptime: (
     type: deviceType,
@@ -35,6 +38,23 @@ export interface IAPIClient {
     accessToken: string,
     email: string
   ) => Promise<AllDevicesUptimeJson>;
+  validatePreviewSecret: (secret: string, company: string) => Promise<boolean>;
+  getPreviewDeviceModel: (secret: string, id: string) => Promise<DeviceModel>;
+  getPreviewDevicesHistory: (
+    secret: string,
+    id: string
+  ) => Promise<AllDevicesUptimeJson>;
+  getAllCompanies: () => Promise<String[]>;
+  getUsersFromCompany: (company: string) => Promise<ICompanyUser[]>;
+  postCSVData: (type: string, tableName: string, file: File) => Promise<number>;
+  getDataHistoryChart: (
+    dateFrom: string,
+    dateTo: string
+  ) => Promise<IHistoryChartData[]>;
+  updateUsersPermissions: (
+    users: ICompanyUser[],
+    company: string
+  ) => Promise<void>;
 }
 
 export class APIClient implements IAPIClient {
@@ -94,8 +114,8 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getUpdatedDeviceModel = async (accessToken: string, email: string) => {
-    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/kluczdostepu?id=1`;
+  public getUpdatedDeviceModel = async (accessToken: string, email: string, id: string) => {
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/jsonTree?id=${id}`;
     if (this.useTestData()) {
       return this.testApiClient.getUpdatedDeviceModel(accessToken, email);
     }
@@ -170,5 +190,123 @@ export class APIClient implements IAPIClient {
         console.error(error);
         return emptyAllDevicesUptimeJson;
       });
+  };
+
+  public validatePreviewSecret = async (
+    secret: string,
+    company: string
+  ): Promise<boolean> => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/check-authentication`;
+    if (this.useTestData()) {
+      return this.testApiClient.validatePreviewSecret(secret, company);
+    }
+
+    return axios
+      .get(apiUrl, {
+        headers: {
+          CompanySecret: `${secret}`,
+          Company: `${company}`,
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+      .catch((error) => {
+        console.error(error.message);
+        return false;
+      });
+  };
+
+  public getPreviewDeviceModel = async (secret: string, id: string) => {
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/preview/jsonTree?id=${id}`;
+    
+    if (this.useTestData()) {
+      return this.testApiClient.getPreviewDeviceModel(secret, id);
+    }
+    return axios
+      .get(apiURL, {
+        headers: {
+          CompanySecret: `${secret}`,
+          Company: `${id}`,
+        },
+      })
+      .then((response) => {
+        const data: DeviceTreeModelJson = response.data;
+        return createDeviceModelFromJson(data);
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        return new DeviceModel();
+      });
+  };
+
+  public getPreviewDevicesHistory = async (secret: string, id: string) => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?id=${id};`;
+    if (this.useTestData()) {
+      return this.testApiClient.getPreviewDevicesHistory(secret, id);
+    }
+    return axios
+      .get(apiUrl, {
+        headers: {
+          CompanySecret: `${secret}`,
+          Company: `${id}`,
+        },
+      })
+      .then((response) => {
+        const data: AllDevicesUptimeJson = response.data;
+        return data;
+      })
+      .catch(function (error) {
+        console.log("error");
+        console.error(error);
+        return emptyAllDevicesUptimeJson;
+      });
+  };
+
+  public getAllCompanies = () => {
+    return this.testApiClient.getAllCompanies();
+  };
+
+  public getUsersFromCompany = (company: string) => {
+    return this.testApiClient.getUsersFromCompany(company);
+  };
+
+  public postCSVData = async (type: string, tableName: string, file: File) => {
+    if (this.useTestData()) {
+      return this.testApiClient.postCSVData(type, tableName, file);
+    }
+
+    const formData = new FormData();
+    formData.append("type", type);
+    formData.append("tableName", tableName);
+    formData.append("file", file);
+
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/upload-csv`;
+
+    return axios
+      .post(apiURL, formData)
+      .then((response) => {
+        return response.status;
+      })
+      .catch((error) => {
+        console.error("Error uploading file:", error);
+        throw new Error("Failed to upload file");
+      });
+  };
+
+  public getDataHistoryChart = (
+    dateFrom: string,
+    dateTo: string
+  ): Promise<IHistoryChartData[]> => {
+    return this.testApiClient.getDataHistoryChart(dateFrom, dateTo);
+  };
+
+  public updateUsersPermissions = (users: ICompanyUser[], company: string) => {
+    return this.testApiClient.updateUsersPermissions(users, company);
   };
 }

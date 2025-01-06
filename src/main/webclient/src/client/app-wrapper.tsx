@@ -2,7 +2,6 @@ import { ReactNode } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { ChakraProvider, extendTheme, theme } from "@chakra-ui/react";
 import { UIProps } from "../config/config";
-import Auth0ProviderWithNavigation from "../auth/auth0-provider-with-navigation";
 
 export const AppWrapper = ({ children }: { children: ReactNode }) => {
   const ui = UIProps;

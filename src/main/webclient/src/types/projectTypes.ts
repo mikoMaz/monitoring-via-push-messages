@@ -13,7 +13,7 @@ export type ProjectColorsDictionary = {
 
 export interface IUIProps {
   colors: ProjectColorsDictionary;
-  heigth: {
+  height: {
     navbar: string;
     footer: string;
   };
@@ -26,7 +26,7 @@ export interface IAppProps {
   setAlertsEnabled: (value: boolean) => void;
 }
 
-export type FilteringHeigth = "0px" | "200px";
+export type FilteringHeight = "0px" | "100px";
 
 export const capitalizeFirstLetter = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
