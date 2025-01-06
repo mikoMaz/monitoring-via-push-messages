@@ -2,6 +2,8 @@ package com.example.monitoring.core.company;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.example.monitoring.core.api.config.PreviewAuthenticationFilter.encryptionKey;
 
 @Service
@@ -19,5 +21,12 @@ public class CompanyServiceImpl implements CompanyService {
         String encryptedKey = EncryptionUtil.encrypt(newCompanyKey, encryptionKey);
         company.setEncryptedKey(encryptedKey);
         companyRepository.save(company);
+    }
+
+    @Override
+    public List<String> getCompanies() {
+        return companyRepository.findAll().stream().map(
+                Company::getName
+        ).toList();
     }
 }
