@@ -2,9 +2,9 @@ spring:
   application:
     name: monitoring
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: admin
-    password: admin
+    url: jdbc:postgresql://host.docker.internal:5416/postgres
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
@@ -28,8 +28,8 @@ spring:
   mail:
     host: smtp-mail.outlook.com
     port: 587
-    username: ${mail.username}
-    password: ${mail.password}
+    username: test
+    password: test
     protocol: smtp
     properties.mail.smtp:
       auth: true
