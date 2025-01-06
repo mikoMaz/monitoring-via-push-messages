@@ -1,22 +1,33 @@
 package com.example.monitoring.core.company;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.monitoring.core.user.UserDto;
+import com.example.monitoring.core.user.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user/company")
+@RequiredArgsConstructor
 public class CompanyController {
 
     private final CompanyService companyService;
 
-    public CompanyController(CompanyService companyService) {
-        this.companyService = companyService;
-    }
+    private final UserService userService;
 
     @PostMapping("/change-company-password")
     public void changeCompanyPassword(@RequestParam String company, @RequestParam String password) throws Exception {
         companyService.setCompanyKey(company, password);
+    }
+
+    @GetMapping("/get-companies")
+    public List<CompanyDto> getCompanies() {  // TODO: only SUPER-ADMIN should have an access to all companies
+        return companyService.getCompanies();
+    }
+
+    @GetMapping("/get-users-from-company")
+    public List<UserDto> getUsersFromCompany(@RequestParam Long companyId) {
+        return userService.getUsersByCompanyId(companyId);
     }
 }

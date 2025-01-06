@@ -18,7 +18,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(
+        name = "users",
+        uniqueConstraints=@UniqueConstraint(columnNames={"email"})
+)
 public class User implements UserDetails {
 
     @Id
@@ -26,6 +29,10 @@ public class User implements UserDetails {
     private Long id;
 
     private String email;
+
+    private String name;
+
+    private String surname;
 
     @Enumerated(EnumType.STRING)
     private Role role;

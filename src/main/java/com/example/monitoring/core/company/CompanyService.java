@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface CompanyService {
     void setCompanyKey(String companyName, String companyKey) throws Exception;
-    List<String> getCompanies();
+    List<CompanyDto> getCompanies();
 }
