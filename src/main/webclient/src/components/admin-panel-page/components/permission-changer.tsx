@@ -20,6 +20,7 @@ import {
   Th,
   Thead,
   Tr,
+  IconButton,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
 import { useEffect, useState } from "react";
@@ -31,6 +32,7 @@ import {
 } from "../../../types/IUserInfoResponse";
 import { APIClient } from "../../../api/api-client";
 import { ICompanyUser } from "../../../types/ICompanyUser";
+import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 
 export const PermissionChanger = ({
   apiClient,
@@ -145,13 +147,13 @@ export const PermissionChanger = ({
       <CardHeader>
         <HStack justify="space-between" alignItems="center">
           <Heading size="md">Change roles</Heading>
-          <Button
-            variant="link"
-            colorScheme="green"
+          <IconButton
+            aria-label="(un)fold-card"
+            color={UIProps.colors.primary}
+            icon={cardFold ? <UnfoldLess /> : <UnfoldMore />}
             onClick={() => setCardFold(!cardFold)}
-          >
-            {cardFold ? "Fold" : "Unfold"}
-          </Button>
+            bg="whiteAlpha.50"
+          />
         </HStack>
       </CardHeader>
       {cardFold && (
@@ -203,9 +205,8 @@ export const PermissionChanger = ({
                   colorScheme="primary"
                   isLoading={isLoading}
                   onClick={handleSaveClick}
-                  size="md"
                 >
-                  Save
+                  Submit
                 </Button>
               )}
             </HStack>

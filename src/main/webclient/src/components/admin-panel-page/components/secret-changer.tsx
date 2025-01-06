@@ -11,6 +11,7 @@ import {
   CloseButton,
   Heading,
   HStack,
+  IconButton,
   Input,
   Select,
   VStack,
@@ -20,6 +21,7 @@ import { IUserInfoResponse } from "../../../types/IUserInfoResponse";
 import { UIProps } from "../../../config/config";
 import { useEffect, useState } from "react";
 import { ICompanyDto } from "../../../types/ICompanyDto";
+import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 
 export const SecretChanger = ({
   apiClient,
@@ -97,13 +99,13 @@ export const SecretChanger = ({
       <CardHeader>
         <HStack justify="space-between" alignItems="center">
           <Heading size="md">Change secret</Heading>
-          <Button
-            variant="link"
-            colorScheme="green"
+          <IconButton
+            aria-label="(un)fold-card"
+            color={UIProps.colors.primary}
+            icon={cardFold ? <UnfoldLess /> : <UnfoldMore />}
             onClick={() => setCardFold(!cardFold)}
-          >
-            {cardFold ? "Fold" : "Unfold"}
-          </Button>
+            bg="whiteAlpha.50"
+          />
         </HStack>
       </CardHeader>
       {cardFold && (

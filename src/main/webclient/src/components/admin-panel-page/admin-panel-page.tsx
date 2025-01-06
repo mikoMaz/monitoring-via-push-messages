@@ -9,6 +9,7 @@ import {
   GridItem,
   Heading,
   HStack,
+  IconButton,
   VStack,
 } from "@chakra-ui/react";
 import { UIProps } from "../../config/config";
@@ -20,6 +21,7 @@ import { PermissionChanger } from "./components/permission-changer";
 import { SecretChanger } from "./components/secret-changer";
 import { useState } from "react";
 import { NewCompanyCard } from "./components/new-company-card";
+import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 
 export const AdminPanelPage = ({
   apiClient,
@@ -104,18 +106,18 @@ export const AdminPanelPage = ({
                 <CardHeader>
                   <HStack justify="space-between" alignItems="center">
                     <Heading size="md">Upload files</Heading>
-                    <Button
-                      variant="link"
-                      colorScheme="green"
+                    <IconButton
+                      aria-label="(un)fold-card"
+                      color={UIProps.colors.primary}
+                      icon={cardFold ? <UnfoldLess /> : <UnfoldMore />}
                       onClick={() => setCardFold(!cardFold)}
-                    >
-                      {cardFold ? "Fold" : "Unfold"}
-                    </Button>
+                      bg="whiteAlpha.50"
+                    />
                   </HStack>
                 </CardHeader>
                 {cardFold && (
                   <>
-                    <CardBody paddingX="60px">
+                    <CardBody>
                       <VStack spacing={4} align="stretch">
                         {/* Devices */}
                         <FileSender
