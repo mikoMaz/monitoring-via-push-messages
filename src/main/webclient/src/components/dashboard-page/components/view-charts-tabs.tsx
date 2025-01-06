@@ -28,7 +28,6 @@ export const ViewChartsTabs = ({
       size="md"
       colorScheme="green"
       onChange={(index) => {
-        console.log("Selected Tab Index:", index);
         onSelectionChanged(index);
       }}
     >
