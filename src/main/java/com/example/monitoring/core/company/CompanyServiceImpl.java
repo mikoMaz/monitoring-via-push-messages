@@ -27,6 +27,13 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public void createCompany(String companyName) {
+        Company company = new Company();
+        company.setName(companyName);
+        companyRepository.save(company);
+    }
+
+    @Override
     public void setCompanyKey(String companyName, String newCompanyKey) throws Exception {
         Company company = companyRepository.findCompanyByName(companyName);
         String encryptedKey = EncryptionUtil.encrypt(newCompanyKey, encryptionKey);
@@ -56,11 +63,17 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void updateUsersInCompany(Long companyId, List<UserDto> usersChangesToUpdate) {
+        Role userRole = userService.getUserRole();
         usersChangesToUpdate.forEach(userToUpdate -> {
             try {
+                if (userToUpdate.getRole() == Role.SUPER_ADMIN && userRole != Role.SUPER_ADMIN && userService.getUserRoleById(userToUpdate.getId()) != Role.SUPER_ADMIN) {
+                    throw new IllegalArgumentException("User has not enough permissions");
+                }
                 userService.updateUserFromUserDto(userToUpdate);
             } catch (UserNotFoundException e) {
                 logger.error("User with id {} from {} company not found", userToUpdate.getId(), userToUpdate.getCompanyId());
+            } catch (IllegalArgumentException e) {
+                logger.error("Not enough permissions to change this role");
             }
         });
     }

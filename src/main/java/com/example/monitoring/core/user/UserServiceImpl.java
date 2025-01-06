@@ -29,6 +29,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Role getUserRoleById(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            return user.get().getRole();
+        }
+        throw new UserNotFoundException("User not found");
+    }
+
+    @Override
     public void updateUserFromUserDto(UserDto user) {
         Optional<User> userToUpdate = userRepository.findById(user.getId());
         if (userToUpdate.isEmpty()) {

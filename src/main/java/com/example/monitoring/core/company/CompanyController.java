@@ -20,6 +20,12 @@ public class CompanyController {
 
     private final UserService userService;
 
+    @PostMapping("/create")
+    public ResponseEntity<Void> addNewCompany(@RequestParam String companyName) {
+        companyService.createCompany(companyName);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/change-company-password")
     public void changeCompanyPassword(@RequestParam String company, @RequestParam String password) throws Exception {
         companyService.setCompanyKey(company, password);
