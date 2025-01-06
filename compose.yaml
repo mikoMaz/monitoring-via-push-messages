@@ -11,27 +11,32 @@
 services:
   timescaledb2:
     image: timescale/timescaledb-ha:pg16
+    container_name: timescaledb2
     ports:
       - 5432:5432
     environment:
       - POSTGRES_DB=postgres
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 20s
-  # backend:
-  #   depends_on:
-  #     timescaledb2:
-  #       condition: service_healthy
-  #   build:
-  #     context: .
-  #     dockerfile: ./docker/backend/Dockerfile
-  #   ports:
-  #     - 8081:8080
+      start_period: 30s
+    networks: 
+      - monitoring-network
+  backend:
+    depends_on:
+      timescaledb2:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    ports:
+      - 8081:8080
+    networks: 
+      - monitoring-network
   front_server:
     depends_on:
       timescaledb2:
@@ -46,7 +51,10 @@ services:
       - .:/app
     ports:
       - 3000:3000
-
+    networks: 
+      - monitoring-network
+networks:
+  monitoring-network:
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
