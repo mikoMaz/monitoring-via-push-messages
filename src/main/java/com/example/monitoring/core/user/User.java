@@ -1,5 +1,6 @@
 package com.example.monitoring.core.user;
 
+import com.example.monitoring.core.company.Company;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(
+        name = "users",
+        uniqueConstraints=@UniqueConstraint(columnNames={"email"})
+)
 public class User implements UserDetails {
 
     @Id
@@ -26,8 +30,16 @@ public class User implements UserDetails {
 
     private String email;
 
+    private String name;
+
+    private String surname;
+
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     private String authTokenSubject;
 

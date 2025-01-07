@@ -7,7 +7,7 @@
       "USE_TEST_DATA": false
     },
     "REMOTE": {
-      "APP_URL": "errwarn.projektstudencki.pl/application",
+      "APP_URL": "errwarn.projektstudencki.pl:80/application",
       "HOST": "errwarn.projektstudencki.pl",
       "API_URL": "errwarn.projektstudencki.pl:8081",
       "USE_TEST_DATA": false
