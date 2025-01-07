@@ -46,11 +46,14 @@ services:
       dockerfile: Dockerfile #./frontend/Dockerfile #
     user: 1000:1000
     environment:
-      NODE_ENV: production
+      - HTTPS=true
+      - SSL_CRT_FILE=./cert.pem
+      - SSL_KEY_FILE=./key.pem
+      # NODE_ENV: production
     volumes:
       - .:/app
     ports:
-      - 80:3000
+      - 443:3000
     networks: 
       - monitoring-network
 networks:

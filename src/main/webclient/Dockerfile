@@ -40,7 +40,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 # Copy the rest of the source files into the image.
 COPY --chown=node:node . /usr/src/app
 # Expose the port that the application listens on.
-EXPOSE 80
+EXPOSE 443
 
 # Run the application.
 
