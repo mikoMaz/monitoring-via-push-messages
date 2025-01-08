@@ -33,7 +33,7 @@
   },
   "scripts": {
     "start": "set PORT=3000 && react-scripts start",
-    "build": "react-scripts --max-old-space-size=512 build",
+    "build": "react-scripts --max-old-space-size=1024 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

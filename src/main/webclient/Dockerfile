@@ -1,48 +1,31 @@
 # syntax=docker/dockerfile:1
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
-
 ARG NODE_VERSION=23.4.0
 
-FROM node:${NODE_VERSION}-alpine
-
-# Use production node environment by default.
-
+FROM node:${NODE_VERSION}-alpine as build
 
 USER node 
 WORKDIR /usr/src/app
 
 RUN chown node:node ./
-#USER node
-#RUN mkdir -p usr/src/app && chown node:node usr/src/app
-#RUN ls -la
-#COPY --chown=node:node package.json .
-#COPY --chown=node:node yarn.lock .
-#RUN mkdir -p /cache
-#RUN yarn config set cache-folder /cache
 
-#&& chown -R node:node /usr/src/app.npm
+# Copy and install dependencies
+COPY package*.json .
+RUN yarn install --production --frozen-lockfile
 
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.yarn to speed up subsequent builds.
-# Leverage a bind mounts to package.json and yarn.lock to avoid having to copy them into
-# into this layer.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
-    --mount=type=cache,target=/root/.yarn \
-    yarn install --production --frozen-lockfile
+# Copy application files and build the React app
+COPY . .
+RUN yarn build
 
-# Run the application as a non-root user.
-# Copy the rest of the source files into the image.
-COPY --chown=node:node . /usr/src/app
-# Expose the port that the application listens on.
+# Stage 2: Setup the Nginx Server to serve the React Application
+FROM nginx:1.25.0-alpine as production
+
+# Copy the build output to Nginx html directory
+COPY --from=build /usr/src/app/build /usr/share/nginx/html
+
+# Copy custom Nginx configuration
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
 
-# Run the application.
-
-
-CMD CI=false ./node_modules/.bin/react-scripts start
+CMD ["nginx", "-g", "daemon off;"]
