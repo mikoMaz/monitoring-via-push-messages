@@ -31,16 +31,13 @@ services:
 
   front_server:
     depends_on:
-      timescaledb2:
-        condition: service_healthy
+      backend:
+        condition: service_started
     build:
       context: ./src/main/webclient
       dockerfile: Dockerfile
-    user: 1000:1000
     environment:
       NODE_ENV: production
-    volumes:
-      - ./src/main/webclient/build:/usr/share/nginx/html
     ports:
       - 80:80
     networks: 
