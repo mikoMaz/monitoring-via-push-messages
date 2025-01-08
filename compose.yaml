@@ -41,7 +41,7 @@ services:
       NODE_ENV: production
     volumes:
       - ./src/main/webclient/build:/usr/share/nginx/html
-      - ./nginx/ssl:/etc/nginx/ssl
+      # - ./nginx/ssl:/etc/nginx/ssl
     ports:
       - 443:443
     networks: 
