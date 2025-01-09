@@ -17,7 +17,6 @@ import { TestAPIClient } from "./test-api-client";
 import { ICompanyUser } from "../types/ICompanyUser";
 import { IHistoryChartData } from "../types/IHistoryChartData";
 import { ICompanyDto } from "../types/ICompanyDto";
-import { access } from "fs";
 
 export interface IAPIClient {
   getUserInfo: (
