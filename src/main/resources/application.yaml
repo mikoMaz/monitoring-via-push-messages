@@ -2,8 +2,8 @@ spring:
   application:
     name: monitoring
   datasource:
-    url: jdbc:postgresql://timescaledb2:5432/postgres
-    # url: jdbc:postgresql://host.docker.internal:5416/postgres
+    # url: jdbc:postgresql://timescaledb2:5432/postgres
+    url: jdbc:postgresql://host.docker.internal:5416/postgres
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
