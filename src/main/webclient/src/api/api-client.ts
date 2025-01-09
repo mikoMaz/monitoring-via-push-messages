@@ -127,11 +127,7 @@ export class APIClient implements IAPIClient {
   ) => {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/jsonTree?id=${id}`;
     if (usingTestData()) {
-      console.log("rbg4er");
       return this.testApiClient.getUpdatedDeviceModel(accessToken, id);
-    }
-    else {
-      console.log("etrr");
     }
     return axios
       .get(apiURL, {
