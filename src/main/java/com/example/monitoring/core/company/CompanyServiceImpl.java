@@ -76,6 +76,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public Company getCompanyByNameAndEncryptedKey(String companyName, String encryptedKey) {
+        return companyRepository.getCompanyByNameAndEncryptedKey(companyName, encryptedKey);
+    }
+
+    @Override
     public void updateUsersInCompany(Long companyId, List<UserDto> usersChangesToUpdate) {
         UserDto currentUser = userService.getUserDto();
         Role currentUserRole = currentUser.getRole();
