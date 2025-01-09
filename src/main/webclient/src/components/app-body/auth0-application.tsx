@@ -15,6 +15,6 @@ export const Auth0Application = () => {
   } else if (isAuthenticated) {
     return <AppBody />;
   } else {
-    return <></>;
+    return <>Auth0 routing error</>;
   }
 };

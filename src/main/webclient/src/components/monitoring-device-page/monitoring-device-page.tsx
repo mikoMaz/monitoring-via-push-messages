@@ -26,14 +26,12 @@ interface IMonitoringDevicePage {
   apiClient: IAPIClient;
   model: DeviceModel;
   accessToken: string;
-  email: string;
 }
 
 export const MonitoringDevicePage = ({
   apiClient,
   model,
-  accessToken,
-  email,
+  accessToken
 }: IMonitoringDevicePage) => {
   const [activeTime, setActiveTime] = useState<number>(0);
   const ui = UIProps;
@@ -93,8 +91,7 @@ export const MonitoringDevicePage = ({
   useEffect(() => {
     const fetchDeviceActiveTime = async (
       type: deviceType,
-      id: string,
-      email: string
+      id: string
     ) => {
       var time = await apiClient.getDeviceUptime(type, id, accessToken);
       setActiveTime(time);
@@ -103,11 +100,10 @@ export const MonitoringDevicePage = ({
     if (selectedDevice !== DeviceModel.getPlaceholderDevice()) {
       fetchDeviceActiveTime(
         selectedDevice.deviceType,
-        selectedDevice.id,
-        email
+        selectedDevice.id
       );
     }
-  }, [selectedDevice, apiClient, accessToken, email]);
+  }, [selectedDevice, apiClient, accessToken]);
 
   return (
     <Box

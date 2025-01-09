@@ -1,8 +1,17 @@
-import { Box, Center, Grid, GridItem, Heading, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Grid,
+  GridItem,
+  Heading,
+  VStack,
+  Text,
+} from "@chakra-ui/react";
 import { NavigationButtons } from "./components/navigation-buttons/navigation-buttons";
 import { UserSidebar } from "./components/user-sidebar/user-sidebar";
 import { Logo } from "./components/logo/logo";
 import { UIProps } from "../../../config/config";
+import { usingTestData } from "../../../util/useTestData";
 
 interface INavbar {
   alertsEnabled: boolean;
@@ -33,7 +42,13 @@ export const Navbar = ({ alertsEnabled, setAlertsEnabled }: INavbar) => {
           </Center>
         </GridItem>
         <GridItem colSpan={1}>
-          <div className="navbar-empty-space" />
+          <Center height="100%">
+            <Text fontSize="16px" color="red">
+              {usingTestData()
+                ? "Application is using test data. Connection to api was detached!"
+                : ""}
+            </Text>
+          </Center>
         </GridItem>
         <GridItem
           width="auto"
