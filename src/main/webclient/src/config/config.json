@@ -1,7 +1,7 @@
 {
   "appVersions": {
     "LOCAL": {
-      "APP_URL": "http://localhost:80/application",
+      "APP_URL": "https://localhost:443/application",
       "HOST": "localhost",
       "API_URL": "http://localhost:8081",
       "USE_TEST_DATA": false,
