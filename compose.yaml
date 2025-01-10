@@ -41,7 +41,7 @@ services:
       context: ./src/main/webclient
       dockerfile: Dockerfile
     volumes:
-    - /etc/letsencrypt:/etc/letsencrypt:ro \
+    - /etc/letsencrypt:/etc/letsencrypt:ro
     environment:
       NODE_ENV: production
     ports:
