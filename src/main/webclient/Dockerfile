@@ -26,9 +26,11 @@ RUN mkdir -p /var/cache/nginx/client_temp && \
 # Copy the build output to Nginx html directory
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
 
-# Copy custom Nginx configuration
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+ADD ./cert/errwarn.test.crt /etc/cert/errwarn.test.crt
+ADD ./cert/errwarn.test.key /etc/cert/errwarn.test.key
+ADD ./nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
