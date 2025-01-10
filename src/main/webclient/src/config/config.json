@@ -1,0 +1,24 @@
+{
+  "appVersions": {
+    "LOCAL": {
+      "APP_URL": "https://localhost:443/application",
+      "HOST": "localhost",
+      "API_URL": "http://localhost:8081",
+      "USE_TEST_DATA": false,
+      "EXPOSE_ACCESS_TOKEN": false
+    },
+    "REMOTE": {
+      "APP_URL": "https://errwarn.projektstudencki.pl:443/application",
+      "HOST": "errwarn.projektstudencki.pl",
+      "API_URL": "errwarn.projektstudencki.pl:8081",
+      "USE_TEST_DATA": false,
+      "EXPOSE_ACCESS_TOKEN": false
+    }
+  },
+  "auth0": {
+    "clientID": "g9keOoztaSkyWNDErDpBE6qkoMJTXEcA",
+    "domain": "dev-5neb7art3ltrcarr.us.auth0.com",
+    "audience": "https://dev-5neb7art3ltrcarr.us.auth0.com/api/v2/",
+    "scope": "read:users"
+  }
+}

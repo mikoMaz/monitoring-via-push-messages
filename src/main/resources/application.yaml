@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: monitoring
+  datasource:
+    # url: jdbc:postgresql://timescaledb2:5432/postgres
+    url: jdbc:postgresql://host.docker.internal:5416/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        show_sql: true
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    database: postgresql
+  profiles:
+    active: development
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-5neb7art3ltrcarr.us.auth0.com/
+          jwk-set-uri: https://dev-5neb7art3ltrcarr.us.auth0.com/.well-known/jwks.json
+          jws-algorithms: RS256
+  mail:
+    host: smtp-mail.outlook.com
+    port: 587
+    username: test
+    password: test
+    protocol: smtp
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
+      ssl.trust: smtp-mail.outlook.com
+      timeout: 5000
+
+logging:
+  level:
+    org.springframework.security: DEBUG
