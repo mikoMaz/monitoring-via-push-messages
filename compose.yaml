@@ -40,10 +40,12 @@ services:
     build:
       context: ./src/main/webclient
       dockerfile: Dockerfile
+    volumes:
+    - /etc/letsencrypt:/etc/letsencrypt:ro \
     environment:
       NODE_ENV: production
     ports:
-      - 80:80
+      - 443:3000 
     networks: 
       - monitoring-network
 
