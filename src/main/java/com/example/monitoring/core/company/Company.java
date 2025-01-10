@@ -23,6 +23,6 @@ public class Company {
 
     private String encryptedKey;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
 }

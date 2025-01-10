@@ -17,7 +17,7 @@ import { TestAPIClient } from "./test-api-client";
 import { ICompanyUser } from "../types/ICompanyUser";
 import { IHistoryChartData } from "../types/IHistoryChartData";
 import { ICompanyDto } from "../types/ICompanyDto";
-import { access } from "fs";
+import { usingTestData } from "../util/useTestData";
 
 export interface IAPIClient {
   getUserInfo: (
@@ -86,23 +86,12 @@ export class APIClient implements IAPIClient {
     }
   };
 
-  private useTestData = () => {
-    const host = window.location.hostname;
-    if (host === config.appVersions.LOCAL.HOST) {
-      return config.appVersions.LOCAL.USE_TEST_DATA;
-    }
-    else if (host === config.appVersions.REMOTE.HOST) {
-      return config.appVersions.REMOTE.USE_TEST_DATA;
-    }
-    return false;
-  };
-
   public getUserInfo = async (
     accessToken: string,
     email?: string
   ): Promise<IUserInfoResponse> => {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/userInfo`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.getUserInfo(accessToken, email);
     }
     return axios
@@ -137,7 +126,7 @@ export class APIClient implements IAPIClient {
     id: string
   ) => {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/jsonTree?id=${id}`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.getUpdatedDeviceModel(accessToken, id);
     }
     return axios
@@ -166,7 +155,7 @@ export class APIClient implements IAPIClient {
     accessToken: string
   ) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/history?id=${type}&device_id=${id}`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.getDeviceUptime(type, id, accessToken);
     }
     return axios
@@ -194,7 +183,7 @@ export class APIClient implements IAPIClient {
     accessToken: string
   ): Promise<AllDevicesUptimeJson> => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historyTree?id=${id}`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.getAllDevicesHistory(id, accessToken);
     }
     return axios
@@ -222,7 +211,7 @@ export class APIClient implements IAPIClient {
     company: string
   ): Promise<boolean> => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/check-authentication`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.validatePreviewSecret(secret, company);
     }
 
@@ -249,7 +238,7 @@ export class APIClient implements IAPIClient {
   public getPreviewDeviceModel = async (secret: string, id: string) => {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/preview/jsonTree?id=${id}`;
 
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.getPreviewDeviceModel(secret, id);
     }
     return axios
@@ -271,7 +260,7 @@ export class APIClient implements IAPIClient {
 
   public getPreviewDevicesHistory = async (secret: string, id: string) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?id=${id}`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.getPreviewDevicesHistory(secret, id);
     }
     return axios
@@ -292,7 +281,7 @@ export class APIClient implements IAPIClient {
   };
 
   public postCSVData = async (type: string, tableName: string, file: File) => {
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.postCSVData(type, tableName, file);
     }
 
@@ -323,7 +312,7 @@ export class APIClient implements IAPIClient {
 
   public postAddCompany = (accessToken: string, companyName: string) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/create?companyName=${companyName}`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.postAddCompany(accessToken, companyName);
     }
     return axios
@@ -347,7 +336,7 @@ export class APIClient implements IAPIClient {
     newSecret: string
   ) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/change-company-password?companyId=${companyId}&password=${newSecret}`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.postChangeCompanySecret(
         accessToken,
         companyId,
@@ -371,7 +360,7 @@ export class APIClient implements IAPIClient {
 
   public getAllCompanies = (accessToken: string) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/get-companies`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.getAllCompanies(accessToken);
     }
     return axios
@@ -392,7 +381,7 @@ export class APIClient implements IAPIClient {
 
   public getUsersFromCompany = (accessToken: string, companyId: number) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/get-users-from-company?companyId=${companyId}`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.getUsersFromCompany(accessToken, companyId);
     }
     return axios
@@ -417,7 +406,7 @@ export class APIClient implements IAPIClient {
     companyId: number
   ) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/update-company-users?companyId=${companyId}`;
-    if (this.useTestData()) {
+    if (usingTestData()) {
       return this.testApiClient.updateUsersPermissions(
         accessToken,
         users,

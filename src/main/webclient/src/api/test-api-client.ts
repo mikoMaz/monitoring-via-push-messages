@@ -88,7 +88,11 @@ export class TestAPIClient implements IAPIClient {
     secret: string,
     company: string
   ): Promise<boolean> => {
-    return Promise.resolve(true);
+    if (secret === "12345" && company==="test-company") {
+      return Promise.resolve(true);
+    } else {
+      return Promise.resolve(false);
+    }
   };
 
   public getPreviewDeviceModel = (secret: string, id: string) => {

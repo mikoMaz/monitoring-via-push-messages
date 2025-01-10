@@ -11,6 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.monitoring.core.company.Company;
 import com.example.monitoring.core.company.CompanyRepository;
+import com.example.monitoring.core.company.CompanyService;
 import com.example.monitoring.core.company.EncryptionUtil;
 
 import jakarta.servlet.FilterChain;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class PreviewAuthenticationFilter extends OncePerRequestFilter {
 
     private final CompanyRepository companyRepository;
+    private final CompanyService companyService;
 
     public static final String encryptionKey = "807d16901f1752a8bc2d0b1e77f1cb72";
 
@@ -48,8 +50,8 @@ public class PreviewAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
             String encryptedKey = EncryptionUtil.encrypt(apiKey, encryptionKey);
-            Company company = companyRepository.getCompanyByNameAndEncryptedKey(companyName, encryptedKey);
-
+            Company company = companyService.getCompanyByNameAndEncryptedKey(companyName, encryptedKey);
+            
             if (company == null) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Company not found or invalid Company Sectet");
                 return;

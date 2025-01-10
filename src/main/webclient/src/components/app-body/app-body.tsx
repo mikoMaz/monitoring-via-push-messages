@@ -27,6 +27,8 @@ import { getToastOptions } from "../layout/inactive-devices-alert-toast";
 import { LocalStorageManager } from "../../types/localStorageMenager";
 import { AdminPanelPage } from "../admin-panel-page/admin-panel-page";
 import { LoadingPage } from "../loading-page/loading-page";
+import { usingTestData } from "../../util/useTestData";
+import { diplayAccessToken } from "../../util/displayAccessToken";
 
 const refreshTime = 3; //minutes
 
@@ -36,7 +38,7 @@ export const AppBody = () => {
   const apiClient = new APIClient();
   const location = useLocation();
 
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>(getDeniedUserInfoResponse().email);
 
   useEffect(() => {
     if (user?.email) {
@@ -94,7 +96,6 @@ export const AppBody = () => {
           <MonitoringDevicePage
             apiClient={apiClient}
             accessToken={accessToken}
-            email={email}
             model={deviceModel}
           />
         }
@@ -142,19 +143,23 @@ export const AppBody = () => {
   };
 
   const getAccessToken = async (email?: string) => {
-    try {
-      const token = await getAccessTokenSilently();
-      // console.log("token: " + token);
-      // console.log(jwtDecode(token));
-      //TODO czy zwraca email?
-      const user = await apiClient.getUserInfo(token, email);
+    if (usingTestData()) {
+      return "token";
+    } else {
+      try {
+        const token = await getAccessTokenSilently();
+        diplayAccessToken(token);
+        //TODO czy zwraca email?
+        const user = await apiClient.getUserInfo(token, email);
 
-      setUserInfo(user);
-      setAccessToken(token);
-      return token;
-    } catch (e: any) {
-      console.error("getAccessToken error: " + e.message);
-      return undefined;
+        setUserInfo(user);
+        setAccessToken(token);
+        setEmail(user.email);
+        return token;
+      } catch (e: any) {
+        console.error("getAccessToken error: " + e.message);
+        return undefined;
+      }
     }
   };
 
@@ -197,23 +202,19 @@ export const AppBody = () => {
   };
 
   const onComponentLoaded = async () => {
-    //TODO why executed double
-    if (email || user?.email) {
-      const userEmail = email ?? user?.email;
-      if (!email) {
-        setEmail(userEmail);
-      }
-      const token = await getAccessToken(userEmail);
-      if (token) {
-        await updateModel(token, userEmail)
-          .then((model) => checkInactiveDevices(model))
-          .catch((error: any) => {
-            console.error("Update model error: " + error);
-          });
-        await fetchUptimeValues(token, userEmail).catch((error: any) => {
-          console.error(error);
+    const userEmail = user?.email ?? email;
+    const token = await getAccessToken();
+    if (token) {
+      await updateModel(token, userEmail)
+        .then((model) => {
+          checkInactiveDevices(model);
+        })
+        .catch((error: any) => {
+          console.error("Update model error: " + error);
         });
-      }
+      await fetchUptimeValues(token, userEmail).catch((error: any) => {
+        console.error(error);
+      });
     }
   };
 
@@ -226,7 +227,7 @@ export const AppBody = () => {
 
     //TODO czy email jest potrzebny? Czy aplikacja KIEDYKOLWIEK bedzie dzialala na localhost
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, accessToken, email]);
+  }, [user, accessToken]);
 
   useEffect(() => {
     if (userInfo && userInfo.userType === "EXTERNAL") {
@@ -252,7 +253,7 @@ export const AppBody = () => {
         <Navbar {...props} />
       </GridItem>
       <GridItem area={"main"}>
-        <Suspense fallback={<LoadingPage/>}>
+        <Suspense fallback={<LoadingPage />}>
           <Routes>{props.routes}</Routes>
         </Suspense>
       </GridItem>
