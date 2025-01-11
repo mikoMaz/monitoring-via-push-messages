@@ -105,6 +105,7 @@ export const FileSender = ({
           {title}:
         </Heading>
         {type === "device" || type === "hierarchy" ? (
+          //TODO change to VISABLE input
           <Editable
             value={editableTableName}
             onChange={(nextValue) => setEditableTableName(nextValue)}

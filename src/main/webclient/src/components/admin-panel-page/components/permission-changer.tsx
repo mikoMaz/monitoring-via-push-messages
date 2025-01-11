@@ -38,27 +38,25 @@ export const PermissionChanger = ({
   apiClient,
   userInfo,
   accessToken,
+  companies
 }: {
   apiClient: APIClient;
   userInfo: IUserInfoResponse;
   accessToken: string;
+  companies: ICompanyDto[];
 }) => {
   const [companySelect, setCompanySelect] = useState<number | null>(null);
   const [users, setUsers] = useState<ICompanyUser[]>([]);
-  const [companies, setCompanies] = useState<ICompanyDto[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   const [alertInfo, setAlertInfo] = useState<boolean>(false);
   const [cardFold, setCardFold] = useState<boolean>(true);
 
   useEffect(() => {
-    apiClient.getAllCompanies(accessToken).then((companies: ICompanyDto[]) => {
-      setCompanies(companies);
-      if (companies.length > 0) {
-        const firstCompany = companies[0];
-        setCompanySelect(firstCompany.companyId);
-      }
-    });
+    if (companies.length > 0) {
+      const firstCompany = companies[0];
+      setCompanySelect(firstCompany.companyId);
+    }
   }, []);
 
   useEffect(() => {
