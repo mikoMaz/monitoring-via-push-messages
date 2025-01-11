@@ -107,15 +107,19 @@ public class SecurityConfiguration {
                 // }))
                 .requiresChannel(channel ->
                         channel.anyRequest().requiresSecure())
-                .csrf(AbstractHttpConfigurer::disable) // TODO
-                .authorizeHttpRequests(auth -> auth
-                // TODO: add roles to rest of the paths
-                .requestMatchers("/api/v1/user/jsonTree").hasRole(Role.SUPER_ADMIN.name())
-                .requestMatchers("/api/v1/user/company/change-company-password").hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
-                .anyRequest().authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtAuthenticationConverter()))
+                        .csrf(AbstractHttpConfigurer::disable) // TODO
+                        .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/api/v1/user/upload-csv").hasRole(Role.SUPER_ADMIN.name())
+                            .requestMatchers("/api/v1/user/company/create").hasRole(Role.SUPER_ADMIN.name())
+                            .requestMatchers("/api/v1/user/company/get-companies").hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
+                            .requestMatchers("/api/v1/user/company/get-users-from-company").hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
+                            .requestMatchers("/api/v1/user/company/update-company-users").hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
+                            .requestMatchers("/api/v1/user/company/change-company-password").hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
+                            .anyRequest().authenticated()
+                        )
+                        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtAuthenticationConverter()))
                 ) // TODO audience check
                 .addFilterBefore(userAuthorizationFilter, SecurityContextPersistenceFilter.class);
         return http.build();

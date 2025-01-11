@@ -14,7 +14,7 @@ spring:
         format_sql: true
         show_sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     database: postgresql
   profiles:

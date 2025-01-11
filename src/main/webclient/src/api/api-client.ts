@@ -290,7 +290,7 @@ export class APIClient implements IAPIClient {
     formData.append("tableName", tableName);
     formData.append("file", file);
 
-    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/upload-csv`;
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/upload-csv`;
 
     return axios
       .post(apiURL, formData)
