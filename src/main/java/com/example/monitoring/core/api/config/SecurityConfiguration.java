@@ -62,6 +62,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain sensorSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/api/v1/sensor/**")
+                .requiresChannel(channel ->
+                        channel.anyRequest().requiresSecure())
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
@@ -80,6 +82,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain previewSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/api/v1/preview/**")
+                .requiresChannel(channel ->
+                        channel.anyRequest().requiresSecure())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                 .anyRequest().authenticated())
@@ -101,6 +105,8 @@ public class SecurityConfiguration {
                 //     config.setAllowCredentials(true);
                 //     return config;
                 // }))
+                .requiresChannel(channel ->
+                        channel.anyRequest().requiresSecure())
                 .csrf(AbstractHttpConfigurer::disable) // TODO
                 .authorizeHttpRequests(auth -> auth
                 // TODO: add roles to rest of the paths
