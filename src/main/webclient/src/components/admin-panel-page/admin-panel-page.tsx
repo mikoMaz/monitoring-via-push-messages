@@ -70,7 +70,9 @@ export const AdminPanelPage = ({
                 accessToken={accessToken}
                 companies={companies}
               />
-            ) : <></>}
+            ) : (
+              <></>
+            )}
             {/* Change company secret for preview  */}
             {userInfo.userType === "ADMIN" ||
             userInfo.userType === "SUPER_ADMIN" ? (
@@ -79,7 +81,9 @@ export const AdminPanelPage = ({
                 userInfo={userInfo}
                 accessToken={accessToken}
               />
-            ) : <></>}
+            ) : (
+              <></>
+            )}
             {/* Add new company  */}
             {userInfo.userType === "SUPER_ADMIN" ? (
               <NewCompanyCard
@@ -87,7 +91,9 @@ export const AdminPanelPage = ({
                 userInfo={userInfo}
                 accessToken={accessToken}
               />
-            ) : <></>}
+            ) : (
+              <></>
+            )}
           </VStack>
         </GridItem>
 
@@ -161,7 +167,9 @@ export const AdminPanelPage = ({
                   </>
                 )}
               </Card>
-            ) : <></>}
+            ) : (
+              <></>
+            )}
             {userInfo.userType === "SUPER_ADMIN" ? (
               <AddNewUserCard
                 apiClient={apiClient}
@@ -169,7 +177,9 @@ export const AdminPanelPage = ({
                 accessToken={accessToken}
                 companies={companies}
               />
-            ) : <></>}
+            ) : (
+              <></>
+            )}
           </VStack>
         </GridItem>
       </Grid>

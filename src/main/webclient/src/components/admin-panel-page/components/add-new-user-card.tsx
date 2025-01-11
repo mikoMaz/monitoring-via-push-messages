@@ -36,7 +36,7 @@ export const AddNewUserCard = ({
   companies: ICompanyDto[];
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [changeSuccess, setChangeSuccess] = useState<boolean>(false);
+  const [addingUserSuccess, setAddingUserSuccess] = useState<boolean>(false);
   const [alertInfo, setAlertInfo] = useState<boolean>(false);
   const [cardFold, setCardFold] = useState<boolean>(true);
   const [companySelect, setCompanySelect] = useState<number | null>(null);
@@ -49,29 +49,31 @@ export const AddNewUserCard = ({
     setCompanySelect(isNaN(selectedCompanyId) ? null : selectedCompanyId);
   };
 
+  const inputsValid = () => {
+    return name && surname && email;
+  };
+
   const handleSubmit = () => {
     if (companySelect) {
       setIsLoading(true);
-      apiClient
-        .addNewCompanyUser(accessToken, companySelect, name, surname, email)
-        .then((status) => {
-          if (status === 200) {
-            console.log("User created successfully:", status);
-            setChangeSuccess(true);
-          } else {
-            console.error("Something went wrong. Try again.");
-            setChangeSuccess(false);
-          }
-        })
-        .catch((error) => {
-          console.error("Error adding user:", error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-          setAlertInfo(true);
-        });
-    } else {
-      console.log("Please choose company.");
+      if (inputsValid()) {
+        apiClient
+          .addNewCompanyUser(accessToken, companySelect, name, surname, email)
+          .then((status) => {
+            if (status === 200) {
+              console.log("User created successfully:", status);
+              setAddingUserSuccess(true);
+            } else {
+              console.error("Something went wrong. Try again.");
+              setAddingUserSuccess(false);
+            }
+          })
+          .catch((error) => {
+            console.error("Error adding user:", error);
+          });
+      }
+      setAlertInfo(true);
+      setIsLoading(false);
     }
   };
 
@@ -106,27 +108,33 @@ export const AddNewUserCard = ({
                   </option>
                 ))}
               </Select>
-              <Input
-                placeholder="Name"
-                value={name}
-                onChange={(event) => {
-                  setName(event.target.value);
-                }}
-              />
-              <Input
-                placeholder="Surname"
-                value={surname}
-                onChange={(event) => {
-                  setSurname(event.target.value);
-                }}
-              />
-              <Input
-                placeholder="Email"
-                value={email}
-                onChange={(event) => {
-                  setEmail(event.target.value);
-                }}
-              />
+              {companySelect ? (
+                <VStack spacing={2}>
+                  <Input
+                    placeholder="Name"
+                    value={name}
+                    onChange={(event) => {
+                      setName(event.target.value);
+                    }}
+                  />
+                  <Input
+                    placeholder="Surname"
+                    value={surname}
+                    onChange={(event) => {
+                      setSurname(event.target.value);
+                    }}
+                  />
+                  <Input
+                    placeholder="Email"
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                    }}
+                  />
+                </VStack>
+              ) : (
+                <></>
+              )}
               {companySelect && (
                 <Button
                   colorScheme="primary"
@@ -140,8 +148,14 @@ export const AddNewUserCard = ({
           </CardBody>
           {alertInfo && (
             <CardFooter>
-              {/* <Alert
-                status={changeSuccess ? "success" : "error"}
+              <Alert
+                status={
+                  inputsValid()
+                    ? addingUserSuccess
+                      ? "success"
+                      : "error"
+                    : "error"
+                }
                 variant="top-accent"
                 display="flex"
                 justifyContent="space-between"
@@ -150,17 +164,19 @@ export const AddNewUserCard = ({
               >
                 <AlertIcon />
                 <AlertDescription>
-                  {changeSuccess
-                    ? `User added successfully.`
-                    : `There was a problem with adding new user "${name} ${surname}". Try again.`}
+                  {inputsValid()
+                    ? addingUserSuccess
+                      ? `User added successfully.`
+                      : `There was a problem with adding new user "${name} ${surname}". Try again.`
+                    : "Inputs cannot be empty"}
                 </AlertDescription>
                 <CloseButton
                   onClick={() => {
                     setAlertInfo(false);
-                    setChangeSuccess(false);
+                    setAddingUserSuccess(false);
                   }}
                 />
-              </Alert> */}
+              </Alert>
             </CardFooter>
           )}
         </>
