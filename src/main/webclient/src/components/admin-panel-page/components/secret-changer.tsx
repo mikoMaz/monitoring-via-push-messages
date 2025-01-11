@@ -63,10 +63,6 @@ export const SecretChanger = ({
     }
   };
 
-  const handleSecretChange = (event: any) => {
-    setNewSecret(event.target.value);
-  };
-
   const handleSubmit = () => {
     if (companySelect && newSecret) {
       setIsLoading(true);
@@ -130,7 +126,7 @@ export const SecretChanger = ({
                   <Input
                     placeholder="New secret"
                     value={newSecret}
-                    onChange={handleSecretChange}
+                    onChange={(event) => setNewSecret(event.target.value)}
                     focusBorderColor={UIProps.colors.primary}
                     bg="white"
                   />
@@ -159,7 +155,7 @@ export const SecretChanger = ({
                 <AlertDescription>
                   {changeSuccess
                     ? `Successful change for "${companyName}".`
-                    : `There was a problem with changing the secret for "${companyName}". Try again.`}
+                    : `There was a problem with changing the secret for "${companyName}"`}
                 </AlertDescription>
                 <CloseButton
                   onClick={() => {
