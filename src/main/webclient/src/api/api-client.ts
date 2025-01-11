@@ -330,7 +330,7 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public postChangeCompanySecret = (
+  public postChangeCompanySecret = async (
     accessToken: string,
     companyId: number,
     newSecret: string
@@ -400,7 +400,7 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public updateUsersPermissions = (
+  public updateUsersPermissions = async (
     accessToken: string,
     users: ICompanyUser[],
     companyId: number
