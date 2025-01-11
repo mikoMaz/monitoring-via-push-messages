@@ -34,6 +34,8 @@ import { APIClient } from "../../../api/api-client";
 import { ICompanyUser } from "../../../types/ICompanyUser";
 import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 
+const DEFAULT_COMPANIES_LABEL = "Select company";
+
 export const PermissionChanger = ({
   apiClient,
   userInfo,
@@ -71,7 +73,7 @@ export const PermissionChanger = ({
 
   const handleCompanyChange = (event: any) => {
     const selectedCompanyId = parseInt(event.target.value, 10);
-    setCompanySelect(selectedCompanyId);
+    setCompanySelect(isNaN(selectedCompanyId) ? null : selectedCompanyId);
   };
 
   const handleRoleChange = (userName: string, newRole: userType) => {
@@ -113,6 +115,10 @@ export const PermissionChanger = ({
         user.role !== "EXTERNAL" &&
         (isSuperAdmin || user.role !== "SUPER_ADMIN")
     );
+
+    if (companySelect === null) {
+      return <></>;
+    }
 
     return (
       <TableContainer>
@@ -167,8 +173,8 @@ export const PermissionChanger = ({
         <>
           <CardBody>
             <Select
-              placeholder="Select company"
-              value={companySelect ?? ""}
+              placeholder={DEFAULT_COMPANIES_LABEL}
+              value={companySelect ?? undefined}
               onChange={handleCompanyChange}
               bg="white"
               focusBorderColor={UIProps.colors.primary}
@@ -179,7 +185,11 @@ export const PermissionChanger = ({
                 </option>
               ))}
             </Select>
-            <Card marginTop={10}>{companySelect && <UserRole />}</Card>
+            {companySelect ? (
+              <Card marginTop={10}>{<UserRole />}</Card>
+            ) : (
+              <></>
+            )}
           </CardBody>
           <CardFooter justifyContent="flex-end">
             <HStack width="100%" justifyContent="flex-end" alignItems="stretch">

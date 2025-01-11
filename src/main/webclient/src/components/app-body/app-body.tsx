@@ -167,9 +167,14 @@ export const AppBody = () => {
     }
   };
 
-  const updateModel = async (token: string, email: string) => {
+  const updateModel = async (token: string) => {
     try {
-      const data = await apiClient.getUpdatedDeviceModel(token, "1");
+      const companies = await apiClient.getAllCompanies(token);
+      const id = companies[0] ? companies[0].companyId : undefined;
+      if (!id) {
+        throw new Error("User doesn't have acces to companies");
+      }
+      const data = await apiClient.getUpdatedDeviceModel(token, id.toString());
       setDeviceModel(data);
       return data;
     } catch (e: any) {
@@ -193,7 +198,7 @@ export const AppBody = () => {
     }
   };
 
-  const fetchUptimeValues = async (token: string, email: string) => {
+  const fetchUptimeValues = async (token: string) => {
     try {
       const data = await apiClient.getAllDevicesHistory("1", token);
       setDevicesUptimeValues(data);
@@ -209,14 +214,14 @@ export const AppBody = () => {
     const userEmail = user?.email ?? email;
     const token = await getAccessToken();
     if (token) {
-      await updateModel(token, userEmail)
+      await updateModel(token)
         .then((model) => {
           checkInactiveDevices(model);
         })
         .catch((error: any) => {
           console.error("Update model error: " + error);
         });
-      await fetchUptimeValues(token, userEmail).catch((error: any) => {
+      await fetchUptimeValues(token).catch((error: any) => {
         console.error(error);
       });
     }
