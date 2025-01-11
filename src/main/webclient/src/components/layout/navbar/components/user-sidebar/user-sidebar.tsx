@@ -46,7 +46,9 @@ export const UserSidebar = ({
     <>
       <IconButton
         onClick={onOpen}
-        icon={<Avatar size="sm" name={user?.name ?? user?.nickname ?? user?.mail}/>}
+        icon={
+          <Avatar size="sm" name={user?.name ?? user?.nickname ?? user?.mail} />
+        }
         aria-label={"Profile"}
         colorScheme={UIProps.colors.accent}
       />
@@ -104,7 +106,9 @@ export const UserSidebar = ({
               <Button
                 colorScheme="purple"
                 variant="ghost"
-                onClick={() => logout()}
+                onClick={() =>
+                  logout({ logoutParams: { returnTo: window.location.origin } })
+                }
               >
                 Logout
               </Button>
