@@ -50,10 +50,10 @@ export const AddNewUserCard = ({
   };
 
   const handleSubmit = () => {
-    if (companySelect === null) {
+    if (companySelect) {
       setIsLoading(true);
       apiClient
-        .addNewCompanyUser(accessToken, newCompanyName)
+        .addNewCompanyUser(accessToken, companySelect, name, surname, email)
         .then((status) => {
           if (status === 200) {
             console.log("Company created successfully:", status);

@@ -432,7 +432,43 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public addNewCompanyUser = (accessToken: string, companyId: number, userName: string, userSurname: string, email: string) => {
-    return this.testApiClient.addNewCompanyUser(accessToken, companyId, userName, userSurname, email);
+  public addNewCompanyUser = (
+    accessToken: string,
+    companyId: number,
+    userName: string,
+    userSurname: string,
+    email: string
+  ) => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/create`;
+    if (usingTestData()) {
+      return this.testApiClient.addNewCompanyUser(
+        accessToken,
+        companyId,
+        userName,
+        userSurname,
+        email
+      );
+    }
+
+    const body = JSON.stringify({
+      companyId: companyId,
+      name: userName,
+      surname: userSurname,
+      email: email,
+    });
+
+    return axios
+      .post(apiUrl, body, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        return response.status;
+      })
+      .catch((error) => {
+        console.error(error);
+        throw new Error("An error occurred while updating users permissions.");
+      });
   };
 }

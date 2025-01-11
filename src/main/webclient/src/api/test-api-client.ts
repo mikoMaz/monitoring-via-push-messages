@@ -69,10 +69,7 @@ export class TestAPIClient implements IAPIClient {
     return Promise.resolve(99.8);
   };
 
-  public getAllDevicesHistory = (
-    id: string,
-    accessToken: string
-  ) => {
+  public getAllDevicesHistory = (id: string, accessToken: string) => {
     const values = {
       upperLevel: [87.2, 89.7, 90.1],
       middleLevel: [90.4, 90.8, 91.3, 93.4, 96.3, 96.6, 96.6],
@@ -88,7 +85,7 @@ export class TestAPIClient implements IAPIClient {
     secret: string,
     company: string
   ): Promise<boolean> => {
-    if (secret === "12345" && company==="test-company") {
+    if (secret === "12345" && company === "test-company") {
       return Promise.resolve(true);
     } else {
       return Promise.resolve(false);
@@ -296,6 +293,24 @@ export class TestAPIClient implements IAPIClient {
     accessToken: string,
     users: ICompanyUser[],
     companyId: number
+  ) => {
+    if (Math.floor(Math.random() * 4) / 3) {
+      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+        return 500;
+      });
+    } else {
+      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+        return 200;
+      });
+    }
+  };
+
+  public addNewCompanyUser = (
+    accessToken: string,
+    companyId: number,
+    userName: string,
+    userSurname: string,
+    email: string
   ) => {
     if (Math.floor(Math.random() * 4) / 3) {
       return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
