@@ -22,6 +22,7 @@ import { SecretChanger } from "./components/secret-changer";
 import { useState } from "react";
 import { NewCompanyCard } from "./components/new-company-card";
 import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
+import { AddNewUserCard } from "./components/add-new-user-card";
 
 export const AdminPanelPage = ({
   apiClient,
@@ -144,6 +145,9 @@ export const AdminPanelPage = ({
                   </>
                 )}
               </Card>
+            ) : null}
+            {userInfo.userType === "SUPER_ADMIN" ? (
+              <AddNewUserCard apiClient={apiClient} userInfo={userInfo} accessToken={accessToken} />
             ) : null}
           </VStack>
         </GridItem>
