@@ -155,7 +155,7 @@ export const SecretChanger = ({
                 <AlertDescription>
                   {changeSuccess
                     ? `Successful change for "${companyName}".`
-                    : `There was a problem with changing the secret for "${companyName}". Try again.`}
+                    : `There was a problem with changing the secret for "${companyName}"`}
                 </AlertDescription>
                 <CloseButton
                   onClick={() => {

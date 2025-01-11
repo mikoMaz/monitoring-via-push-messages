@@ -14,6 +14,7 @@ import {
   Editable,
   EditableInput,
   EditablePreview,
+  Input,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
 import { InfoOutlined, Send, Upload } from "@mui/icons-material";
@@ -36,8 +37,11 @@ export const FileSender = ({
   const [file, setFile] = useState<File>();
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   const [alertInfoExpanded, setAlertInfoExpanded] = useState<boolean>(false);
-  const [editableTableName, setEditableTableName] =
-    useState<string>("Table Name");
+  const [inputTableName, setInputTableName] = useState<string>("Table Name");
+
+  const isValid = () => {
+    return inputTableName !== "";
+  };
 
   const handleSendClick = async (
     type: string,
@@ -51,24 +55,29 @@ export const FileSender = ({
 
     setIsLoading(true);
     if (type === "device" || "hierarchy") {
-      await apiClient
-        .postCSVData(type, tableName, file)
-        .then((response) => {
-          if (response === 200) {
-            setFileName("No file detected");
-            setEditableTableName("Table Name")
-            setUploadSuccess(true);
-            setFile(undefined);
-          }
-        })
-        .catch((error) => {
-          setUploadSuccess(false);
-          console.error("Error uploading file:", error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-          setAlertInfoExpanded(true);
-        });
+      if (isValid()) {
+        await apiClient
+          .postCSVData(type, tableName, file)
+          .then((response) => {
+            if (response === 200) {
+              setFileName("No file detected");
+              setInputTableName("Table Name");
+              setUploadSuccess(true);
+              setFile(undefined);
+            }
+          })
+          .catch((error) => {
+            setUploadSuccess(false);
+            console.error("Error uploading file:", error);
+          })
+          .finally(() => {
+            setIsLoading(false);
+            setAlertInfoExpanded(true);
+          });
+      } else {
+        setIsLoading(false);
+        setAlertInfoExpanded(true);
+      }
     } else {
       await new Promise((resolve) => setTimeout(resolve, 2000))
         .then(() => {
@@ -105,20 +114,15 @@ export const FileSender = ({
           {title}:
         </Heading>
         {type === "device" || type === "hierarchy" ? (
-          //TODO change to VISABLE input
-          <Editable
-            value={editableTableName}
-            onChange={(nextValue) => setEditableTableName(nextValue)}
-            onBlur={() => {
-              if (!editableTableName.trim()) {
-                setEditableTableName("Table Name");
-              }
+          <Input
+            value={inputTableName}
+            onChange={(e) => {
+              setInputTableName(e.target.value);
+              setAlertInfoExpanded(false);
             }}
-            defaultValue="Table Name"
-          >
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
+            placeholder="Table Name"
+            width="200px"
+          />
         ) : null}
         <Text w="200px">{fileName}</Text>
         <Tooltip label="Upload" aria-label="Upload tooltip">
@@ -143,14 +147,14 @@ export const FileSender = ({
             aria-label="Send"
             isLoading={isLoading}
             onClick={() =>
-              handleSendClick(type ?? "", editableTableName ?? "", file)
+              handleSendClick(type ?? "", inputTableName ?? "", file)
             }
           />
         </Tooltip>
       </HStack>
       {alertInfoExpanded && (
         <Alert
-          status={uploadSuccess ? "success" : "error"}
+          status={isValid() ? (uploadSuccess ? "success" : "error") : "error"}
           variant="left-accent"
           display="flex"
           justifyContent="space-between"
@@ -162,9 +166,11 @@ export const FileSender = ({
             <Box ml={2}>
               <AlertTitle>{uploadSuccess ? "Success!" : "Error!"}</AlertTitle>
               <AlertDescription>
-                {uploadSuccess
-                  ? "Your file has been sended."
-                  : "There was problem with sending your file. Try again."}
+                {isValid()
+                  ? uploadSuccess
+                    ? "Your file has been sended."
+                    : "There was problem with sending your file."
+                  : "Table Name cannot be empty."}
               </AlertDescription>
             </Box>
           </Box>

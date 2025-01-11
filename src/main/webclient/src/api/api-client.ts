@@ -307,14 +307,14 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getDataHistoryChart = (
+  public getDataHistoryChart = async (
     dateFrom: string,
     dateTo: string
   ): Promise<IHistoryChartData[]> => {
     return this.testApiClient.getDataHistoryChart(dateFrom, dateTo);
   };
 
-  public postAddCompany = (accessToken: string, companyName: string) => {
+  public postAddCompany = async (accessToken: string, companyName: string) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/create?companyName=${companyName}`;
     if (usingTestData()) {
       return this.testApiClient.postAddCompany(accessToken, companyName);
@@ -334,7 +334,7 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public postChangeCompanySecret = (
+  public postChangeCompanySecret = async (
     accessToken: string,
     companyId: number,
     newSecret: string
@@ -362,7 +362,7 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getAllCompanies = (accessToken: string) => {
+  public getAllCompanies = async (accessToken: string) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/get-companies`;
     if (usingTestData()) {
       return this.testApiClient.getAllCompanies(accessToken);
@@ -383,7 +383,10 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getUsersFromCompany = (accessToken: string, companyId: number) => {
+  public getUsersFromCompany = async (
+    accessToken: string,
+    companyId: number
+  ) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/get-users-from-company?companyId=${companyId}`;
     if (usingTestData()) {
       return this.testApiClient.getUsersFromCompany(accessToken, companyId);
@@ -404,7 +407,7 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public updateUsersPermissions = (
+  public updateUsersPermissions = async (
     accessToken: string,
     users: ICompanyUser[],
     companyId: number
@@ -432,7 +435,7 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public addNewCompanyUser = (
+  public addNewCompanyUser = async (
     accessToken: string,
     companyId: number,
     userName: string,

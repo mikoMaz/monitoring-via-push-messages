@@ -53,28 +53,78 @@ export const AddNewUserCard = ({
     return name && surname && email;
   };
 
-  const handleSubmit = () => {
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSubmit = async () => {
+    if (!inputsValid()) {
+      setAlertInfo(true);
+      setAddingUserSuccess(false);
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setAlertInfo(true);
+      setAddingUserSuccess(false);
+      console.error("Invalid email format.");
+      return;
+    }
+
     if (companySelect) {
       setIsLoading(true);
-      if (inputsValid()) {
-        apiClient
-          .addNewCompanyUser(accessToken, companySelect, name, surname, email)
-          .then((status) => {
-            if (status === 200) {
-              console.log("User created successfully:", status);
-              setAddingUserSuccess(true);
-            } else {
-              console.error("Something went wrong. Try again.");
-              setAddingUserSuccess(false);
-            }
-          })
-          .catch((error) => {
-            console.error("Error adding user:", error);
-          });
+      try {
+        const status = await apiClient.addNewCompanyUser(
+          accessToken,
+          companySelect,
+          name,
+          surname,
+          email
+        );
+        if (status === 200) {
+          setAddingUserSuccess(true);
+          setName("");
+          setSurname("");
+          setEmail("");
+        } else {
+          setAddingUserSuccess(false);
+        }
+      } catch (error) {
+        console.error("Error adding user:", error);
+        setAddingUserSuccess(false);
+      } finally {
+        setIsLoading(false);
+        setAlertInfo(true);
       }
-      setAlertInfo(true);
-      setIsLoading(false);
     }
+  };
+
+  const InputSection = (
+    placeholder: string,
+    value: string,
+    setValue: (val: string) => void,
+    validate?: (val: string) => boolean
+  ) => {
+    const isInvalid = validate ? !validate(value) : false;
+
+    return (
+      <HStack align="center" spacing={4} width="100%">
+        <Heading size="sm" width={90}>{`${placeholder}:`}</Heading>
+        <Input
+          placeholder={placeholder}
+          value={value}
+          onChange={(event) => {
+            setValue(event.target.value);
+            setAlertInfo(false);
+          }}
+          width="100%"
+          bg="white"
+          focusBorderColor={isInvalid ? "red" : UIProps.colors.primary}
+          borderColor={isInvalid ? "red" : undefined}
+        />
+      </HStack>
+    );
   };
 
   return (
@@ -94,7 +144,7 @@ export const AddNewUserCard = ({
       {cardFold && (
         <>
           <CardBody>
-            <VStack spacing={2}>
+            <VStack spacing={8} justifyContent="flex-end">
               <Select
                 placeholder={DEFAULT_COMPANIES_LABEL}
                 value={companySelect ?? undefined}
@@ -109,31 +159,45 @@ export const AddNewUserCard = ({
                 ))}
               </Select>
               {companySelect ? (
-                <VStack spacing={2}>
-                  <Input
-                    placeholder="Name"
-                    value={name}
-                    onChange={(event) => {
-                      setName(event.target.value);
-                    }}
-                  />
-                  <Input
-                    placeholder="Surname"
-                    value={surname}
-                    onChange={(event) => {
-                      setSurname(event.target.value);
-                    }}
-                  />
-                  <Input
-                    placeholder="Email"
-                    value={email}
-                    onChange={(event) => {
-                      setEmail(event.target.value);
-                    }}
-                  />
+                <VStack spacing={2} width="100%">
+                  {InputSection("Name", name, setName)}
+                  {InputSection("Surname", surname, setSurname)}
+                  {InputSection("Email", email, setEmail, validateEmail)}
                 </VStack>
               ) : (
                 <></>
+              )}
+            </VStack>
+          </CardBody>
+          <CardFooter justifyContent="flex-end">
+            <HStack width="100%" justifyContent="flex-end" alignItems="stretch">
+              {alertInfo && (
+                <Alert
+                  status={addingUserSuccess ? "success" : "error"}
+                  variant="top-accent"
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  width="100%"
+                  paddingY={1}
+                >
+                  <AlertIcon />
+                  <AlertDescription>
+                    {addingUserSuccess
+                      ? `User added successfully.`
+                      : !inputsValid()
+                      ? "All fields are required."
+                      : !validateEmail(email)
+                      ? "Invalid email format."
+                      : `There was a problem with adding user "${name} ${surname}".`}
+                  </AlertDescription>
+                  <CloseButton
+                    onClick={() => {
+                      setAlertInfo(false);
+                      setAddingUserSuccess(false);
+                    }}
+                  />
+                </Alert>
               )}
               {companySelect && (
                 <Button
@@ -144,41 +208,8 @@ export const AddNewUserCard = ({
                   Submit
                 </Button>
               )}
-            </VStack>
-          </CardBody>
-          {alertInfo && (
-            <CardFooter>
-              <Alert
-                status={
-                  inputsValid()
-                    ? addingUserSuccess
-                      ? "success"
-                      : "error"
-                    : "error"
-                }
-                variant="top-accent"
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
-              >
-                <AlertIcon />
-                <AlertDescription>
-                  {inputsValid()
-                    ? addingUserSuccess
-                      ? `User added successfully.`
-                      : `There was a problem with adding new user "${name} ${surname}". Try again.`
-                    : "Inputs cannot be empty"}
-                </AlertDescription>
-                <CloseButton
-                  onClick={() => {
-                    setAlertInfo(false);
-                    setAddingUserSuccess(false);
-                  }}
-                />
-              </Alert>
-            </CardFooter>
-          )}
+            </HStack>
+          </CardFooter>
         </>
       )}
     </Card>

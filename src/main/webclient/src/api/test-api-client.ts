@@ -313,11 +313,11 @@ export class TestAPIClient implements IAPIClient {
     email: string
   ) => {
     if (Math.floor(Math.random() * 4) / 3) {
-      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+      return new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
         return 500;
       });
     } else {
-      return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+      return new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
         return 200;
       });
     }

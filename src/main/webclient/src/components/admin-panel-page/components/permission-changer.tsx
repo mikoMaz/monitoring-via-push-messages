@@ -207,7 +207,7 @@ export const PermissionChanger = ({
                   <AlertDescription>
                     {uploadSuccess
                       ? "Update successful."
-                      : "There was problem with updating permissions. Try again."}
+                      : "There was problem with updating permissions."}
                   </AlertDescription>
                   <CloseButton
                     onClick={() => {
