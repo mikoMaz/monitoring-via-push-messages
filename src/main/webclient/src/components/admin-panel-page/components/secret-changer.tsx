@@ -63,10 +63,6 @@ export const SecretChanger = ({
     }
   };
 
-  const handleSecretChange = (event: any) => {
-    setNewSecret(event.target.value);
-  };
-
   const handleSubmit = () => {
     if (companySelect && newSecret) {
       setIsLoading(true);
@@ -130,7 +126,7 @@ export const SecretChanger = ({
                   <Input
                     placeholder="New secret"
                     value={newSecret}
-                    onChange={handleSecretChange}
+                    onChange={(event) => setNewSecret(event.target.value)}
                     focusBorderColor={UIProps.colors.primary}
                     bg="white"
                   />

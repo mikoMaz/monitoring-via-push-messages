@@ -84,7 +84,7 @@ export const PermissionChanger = ({
     );
   };
 
-  const handleSaveClick = async () => {
+  const handleSubmit = async () => {
     if (companySelect === null) {
       console.error("Company is not selected.");
       return;
@@ -221,7 +221,7 @@ export const PermissionChanger = ({
                 <Button
                   colorScheme="primary"
                   isLoading={isLoading}
-                  onClick={handleSaveClick}
+                  onClick={handleSubmit}
                 >
                   Submit
                 </Button>

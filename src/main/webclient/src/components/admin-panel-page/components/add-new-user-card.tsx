@@ -13,6 +13,7 @@ import {
   IconButton,
   Input,
   Select,
+  VStack,
 } from "@chakra-ui/react";
 import { APIClient } from "../../../api/api-client";
 import { IUserInfoResponse } from "../../../types/IUserInfoResponse";
@@ -20,6 +21,8 @@ import { UIProps } from "../../../config/config";
 import { useState } from "react";
 import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 import { ICompanyDto } from "../../../types/ICompanyDto";
+
+const DEFAULT_COMPANIES_LABEL = "Select company";
 
 export const AddNewUserCard = ({
   apiClient,
@@ -37,37 +40,40 @@ export const AddNewUserCard = ({
   const [alertInfo, setAlertInfo] = useState<boolean>(false);
   const [cardFold, setCardFold] = useState<boolean>(true);
   const [companySelect, setCompanySelect] = useState<number | null>(null);
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
 
   const handleCompanyChange = (event: any) => {
     const selectedCompanyId = parseInt(event.target.value, 10);
-    setCompanySelect(selectedCompanyId);
+    setCompanySelect(isNaN(selectedCompanyId) ? null : selectedCompanyId);
   };
 
-  //   const handleSubmit = () => {
-  //     if () {
-  //       setIsLoading(true);
-  //       apiClient
-  //         .postAddCompany(accessToken, newCompanyName)
-  //         .then((status) => {
-  //           if (status === 200) {
-  //             console.log("Company created successfully:", status);
-  //             setChangeSuccess(true);
-  //           } else {
-  //             console.error("Something went wrong. Try again.");
-  //             setChangeSuccess(false);
-  //           }
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error adding company:", error);
-  //         })
-  //         .finally(() => {
-  //           setIsLoading(false);
-  //           setAlertInfo(true);
-  //         });
-  //     } else {
-  //       console.log("Please provide a new secret.");
-  //     }
-  //   };
+  const handleSubmit = () => {
+    if (companySelect === null) {
+      setIsLoading(true);
+      apiClient
+        .addNewCompanyUser(accessToken, newCompanyName)
+        .then((status) => {
+          if (status === 200) {
+            console.log("Company created successfully:", status);
+            setChangeSuccess(true);
+          } else {
+            console.error("Something went wrong. Try again.");
+            setChangeSuccess(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Error adding company:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setAlertInfo(true);
+        });
+    } else {
+      console.log("Please provide a new secret.");
+    }
+  };
 
   return (
     <Card variant="filled" bg="whiteAlpha.600">
@@ -86,10 +92,10 @@ export const AddNewUserCard = ({
       {cardFold && (
         <>
           <CardBody>
-            <HStack spacing={2}>
+            <VStack spacing={2}>
               <Select
-                placeholder="Select company"
-                value={companySelect ?? ""}
+                placeholder={DEFAULT_COMPANIES_LABEL}
+                value={companySelect ?? undefined}
                 onChange={handleCompanyChange}
                 bg="white"
                 focusBorderColor={UIProps.colors.primary}
@@ -100,7 +106,37 @@ export const AddNewUserCard = ({
                   </option>
                 ))}
               </Select>
-            </HStack>
+              <Input
+                placeholder="Name"
+                value={name}
+                onChange={(event) => {
+                  setName(event.target.value);
+                }}
+              />
+              <Input
+                placeholder="Surname"
+                value={surname}
+                onChange={(event) => {
+                  setSurname(event.target.value);
+                }}
+              />
+              <Input
+                placeholder="Email"
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                }}
+              />
+              {companySelect && (
+                <Button
+                  colorScheme="primary"
+                  isLoading={isLoading}
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </Button>
+              )}
+            </VStack>
           </CardBody>
           {alertInfo && (
             <CardFooter>
