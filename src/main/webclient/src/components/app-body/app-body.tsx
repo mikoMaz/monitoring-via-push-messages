@@ -155,8 +155,7 @@ export const AppBody = () => {
         diplayAccessToken(token);
         //TODO czy zwraca email?
         const user = await apiClient.getUserInfo(token, email);
-        console.log(user);
-
+        
         setUserInfo(user);
         setAccessToken(token);
         setEmail(user.email);
