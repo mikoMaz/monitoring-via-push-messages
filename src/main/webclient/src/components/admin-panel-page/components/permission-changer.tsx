@@ -129,8 +129,8 @@ export const PermissionChanger = ({
           </Thead>
           <Tbody>
             {filteredUsers.map((user) => (
-              <Tr key={user.name}>
-                <Td>{user.name}</Td>
+              <Tr key={user.id}>
+                <Td>{`${user.name} ${user.surname}`}</Td>
                 {filteredRoles.map((role) => (
                   <Td key={role}>
                     <CheckboxGroup value={[user.role]}>
