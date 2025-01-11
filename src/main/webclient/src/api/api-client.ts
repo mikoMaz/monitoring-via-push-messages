@@ -468,7 +468,7 @@ export class APIClient implements IAPIClient {
       })
       .catch((error) => {
         console.error(error);
-        throw new Error("An error occurred while updating users permissions.");
+        throw new Error("An error occurred while adding new user.");
       });
   };
 }

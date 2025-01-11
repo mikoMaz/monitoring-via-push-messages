@@ -56,7 +56,7 @@ export const AddNewUserCard = ({
         .addNewCompanyUser(accessToken, companySelect, name, surname, email)
         .then((status) => {
           if (status === 200) {
-            console.log("Company created successfully:", status);
+            console.log("User created successfully:", status);
             setChangeSuccess(true);
           } else {
             console.error("Something went wrong. Try again.");
@@ -64,14 +64,14 @@ export const AddNewUserCard = ({
           }
         })
         .catch((error) => {
-          console.error("Error adding company:", error);
+          console.error("Error adding user:", error);
         })
         .finally(() => {
           setIsLoading(false);
           setAlertInfo(true);
         });
     } else {
-      console.log("Please provide a new secret.");
+      console.log("Please choose company.");
     }
   };
 
@@ -151,8 +151,8 @@ export const AddNewUserCard = ({
                 <AlertIcon />
                 <AlertDescription>
                   {changeSuccess
-                    ? `Successful adding new company.`
-                    : `There was a problem with adding new company "${newCompanyName}". Try again.`}
+                    ? `User added successfully.`
+                    : `There was a problem with adding new user "${name} ${surname}". Try again.`}
                 </AlertDescription>
                 <CloseButton
                   onClick={() => {
