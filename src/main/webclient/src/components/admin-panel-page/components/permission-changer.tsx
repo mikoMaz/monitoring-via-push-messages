@@ -102,9 +102,18 @@ export const PermissionChanger = ({
       setAlertInfo(true);
     }
   };
+
   const UserRole = () => {
+    const isSuperAdmin = userInfo.userType === "SUPER_ADMIN";
+
     const filteredRoles = userTypesArray.filter(
-      (role) => role !== "EXTERNAL" && role !== "SUPER_ADMIN"
+      (role) => role !== "EXTERNAL" && (isSuperAdmin || role !== "SUPER_ADMIN")
+    );
+
+    const filteredUsers = users.filter(
+      (user) =>
+        user.role !== "EXTERNAL" &&
+        (isSuperAdmin || user.role !== "SUPER_ADMIN")
     );
 
     return (
@@ -119,7 +128,7 @@ export const PermissionChanger = ({
             </Tr>
           </Thead>
           <Tbody>
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <Tr key={user.name}>
                 <Td>{user.name}</Td>
                 {filteredRoles.map((role) => (

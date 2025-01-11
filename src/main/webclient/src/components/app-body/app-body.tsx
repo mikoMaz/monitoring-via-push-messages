@@ -144,6 +144,10 @@ export const AppBody = () => {
 
   const getAccessToken = async (email?: string) => {
     if (usingTestData()) {
+      const user = await apiClient.getUserInfo("accessToken", email);
+      setUserInfo(user);
+      setAccessToken("token");
+      setEmail(user.email);
       return "token";
     } else {
       try {
@@ -151,7 +155,7 @@ export const AppBody = () => {
         diplayAccessToken(token);
         //TODO czy zwraca email?
         const user = await apiClient.getUserInfo(token, email);
-
+        
         setUserInfo(user);
         setAccessToken(token);
         setEmail(user.email);
