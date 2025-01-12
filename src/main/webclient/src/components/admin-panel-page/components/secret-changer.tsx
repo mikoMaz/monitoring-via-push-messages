@@ -26,14 +26,15 @@ export const SecretChanger = ({
   apiClient,
   userInfo,
   accessToken,
+  companies,
 }: {
   apiClient: APIClient;
   userInfo: IUserInfoResponse;
   accessToken: string;
+  companies: ICompanyDto[];
 }) => {
   const [companySelect, setCompanySelect] = useState<number | null>(null);
   const [companyName, setCompanyName] = useState<string>("");
-  const [companies, setCompanies] = useState<ICompanyDto[]>([]);
   const [newSecret, setNewSecret] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [changeSuccess, setChangeSuccess] = useState<boolean>(false);
@@ -41,15 +42,12 @@ export const SecretChanger = ({
   const [cardFold, setCardFold] = useState<boolean>(true);
 
   useEffect(() => {
-    apiClient.getAllCompanies(accessToken).then((companies: ICompanyDto[]) => {
-      setCompanies(companies);
-      if (companies.length > 0) {
-        const firstCompany = companies[0];
-        setCompanySelect(firstCompany.companyId);
-        setCompanyName(firstCompany.companyName);
-      }
-    });
-  }, []);
+    if (companies.length > 0) {
+      const firstCompany = companies[0];
+      setCompanySelect(firstCompany.companyId);
+      setCompanyName(firstCompany.companyName);
+    }
+  }, [companies]);
 
   const handleCompanyChange = (event: any) => {
     const selectedCompanyId = parseInt(event.target.value, 10);

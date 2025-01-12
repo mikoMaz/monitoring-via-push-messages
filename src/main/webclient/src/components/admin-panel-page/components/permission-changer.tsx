@@ -59,7 +59,7 @@ export const PermissionChanger = ({
       const firstCompany = companies[0];
       setCompanySelect(firstCompany.companyId);
     }
-  }, []);
+  }, [companies]);
 
   useEffect(() => {
     if (companySelect !== null) {

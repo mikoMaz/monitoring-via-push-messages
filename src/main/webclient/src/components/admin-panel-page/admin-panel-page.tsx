@@ -84,6 +84,7 @@ export const AdminPanelPage = ({
                 apiClient={apiClient}
                 userInfo={userInfo}
                 accessToken={accessToken}
+                companies={companies}
               />
             ) : (
               <></>
@@ -160,6 +161,7 @@ export const AdminPanelPage = ({
                 userInfo={userInfo}
                 accessToken={accessToken}
                 companies={companies}
+                refreshCompanies={refreshCompaniesList}
               />
             ) : (
               <></>
