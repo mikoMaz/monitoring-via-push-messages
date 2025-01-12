@@ -478,6 +478,7 @@ export class APIClient implements IAPIClient {
       .post(apiUrl, body, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
       })
       .then((response) => {

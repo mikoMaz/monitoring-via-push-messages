@@ -312,6 +312,13 @@ export class TestAPIClient implements IAPIClient {
     userSurname: string,
     email: string
   ) => {
+    const body = JSON.stringify({
+      companyId: companyId,
+      name: userName,
+      surname: userSurname,
+      email: email,
+    });
+    console.log(body);
     if (Math.floor(Math.random() * 4) / 3) {
       return new Promise((resolve) => setTimeout(resolve, 2000)).then(() => {
         return 500;
