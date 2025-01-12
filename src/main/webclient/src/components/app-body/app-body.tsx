@@ -155,7 +155,7 @@ export const AppBody = () => {
         diplayAccessToken(token);
         //TODO czy zwraca email?
         const user = await apiClient.getUserInfo(token, email);
-        
+
         setUserInfo(user);
         setAccessToken(token);
         setEmail(user.email);
@@ -211,7 +211,6 @@ export const AppBody = () => {
   };
 
   const onComponentLoaded = async () => {
-    const userEmail = user?.email ?? email;
     const token = await getAccessToken();
     if (token) {
       await updateModel(token)
@@ -258,7 +257,10 @@ export const AppBody = () => {
       background="background"
     >
       <GridItem area={"header"}>
-        <Navbar {...props} />
+        <Navbar
+          {...props}
+          userInfo={userInfo ?? getDeniedUserInfoResponse(email)}
+        />
       </GridItem>
       <GridItem area={"main"}>
         <Suspense fallback={<LoadingPage />}>
