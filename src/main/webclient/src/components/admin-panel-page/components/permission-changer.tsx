@@ -34,31 +34,31 @@ import { APIClient } from "../../../api/api-client";
 import { ICompanyUser } from "../../../types/ICompanyUser";
 import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 
+const DEFAULT_COMPANIES_LABEL = "Select company";
+
 export const PermissionChanger = ({
   apiClient,
   userInfo,
   accessToken,
+  companies
 }: {
   apiClient: APIClient;
   userInfo: IUserInfoResponse;
   accessToken: string;
+  companies: ICompanyDto[];
 }) => {
   const [companySelect, setCompanySelect] = useState<number | null>(null);
   const [users, setUsers] = useState<ICompanyUser[]>([]);
-  const [companies, setCompanies] = useState<ICompanyDto[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   const [alertInfo, setAlertInfo] = useState<boolean>(false);
   const [cardFold, setCardFold] = useState<boolean>(true);
 
   useEffect(() => {
-    apiClient.getAllCompanies(accessToken).then((companies: ICompanyDto[]) => {
-      setCompanies(companies);
-      if (companies.length > 0) {
-        const firstCompany = companies[0];
-        setCompanySelect(firstCompany.companyId);
-      }
-    });
+    if (companies.length > 0) {
+      const firstCompany = companies[0];
+      setCompanySelect(firstCompany.companyId);
+    }
   }, []);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ export const PermissionChanger = ({
 
   const handleCompanyChange = (event: any) => {
     const selectedCompanyId = parseInt(event.target.value, 10);
-    setCompanySelect(selectedCompanyId);
+    setCompanySelect(isNaN(selectedCompanyId) ? null : selectedCompanyId);
   };
 
   const handleRoleChange = (userName: string, newRole: userType) => {
@@ -84,7 +84,7 @@ export const PermissionChanger = ({
     );
   };
 
-  const handleSaveClick = async () => {
+  const handleSubmit = async () => {
     if (companySelect === null) {
       console.error("Company is not selected.");
       return;
@@ -116,6 +116,10 @@ export const PermissionChanger = ({
         (isSuperAdmin || user.role !== "SUPER_ADMIN")
     );
 
+    if (companySelect === null) {
+      return <></>;
+    }
+
     return (
       <TableContainer>
         <Table variant="simple" width="full">
@@ -129,8 +133,8 @@ export const PermissionChanger = ({
           </Thead>
           <Tbody>
             {filteredUsers.map((user) => (
-              <Tr key={user.name}>
-                <Td>{user.name}</Td>
+              <Tr key={user.id}>
+                <Td>{`${user.name} ${user.surname}`}</Td>
                 {filteredRoles.map((role) => (
                   <Td key={role}>
                     <CheckboxGroup value={[user.role]}>
@@ -169,8 +173,8 @@ export const PermissionChanger = ({
         <>
           <CardBody>
             <Select
-              placeholder="Select company"
-              value={companySelect ?? ""}
+              placeholder={DEFAULT_COMPANIES_LABEL}
+              value={companySelect ?? undefined}
               onChange={handleCompanyChange}
               bg="white"
               focusBorderColor={UIProps.colors.primary}
@@ -181,7 +185,11 @@ export const PermissionChanger = ({
                 </option>
               ))}
             </Select>
-            <Card marginTop={10}>{companySelect && <UserRole />}</Card>
+            {companySelect ? (
+              <Card marginTop={10}>{<UserRole />}</Card>
+            ) : (
+              <></>
+            )}
           </CardBody>
           <CardFooter justifyContent="flex-end">
             <HStack width="100%" justifyContent="flex-end" alignItems="stretch">
@@ -199,7 +207,7 @@ export const PermissionChanger = ({
                   <AlertDescription>
                     {uploadSuccess
                       ? "Update successful."
-                      : "There was problem with updating permissions. Try again."}
+                      : "There was problem with updating permissions."}
                   </AlertDescription>
                   <CloseButton
                     onClick={() => {
@@ -213,7 +221,7 @@ export const PermissionChanger = ({
                 <Button
                   colorScheme="primary"
                   isLoading={isLoading}
-                  onClick={handleSaveClick}
+                  onClick={handleSubmit}
                 >
                   Submit
                 </Button>

@@ -19,9 +19,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { FileSender } from "./components/file-sender";
 import { PermissionChanger } from "./components/permission-changer";
 import { SecretChanger } from "./components/secret-changer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NewCompanyCard } from "./components/new-company-card";
 import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
+import { AddNewUserCard } from "./components/add-new-user-card";
+import { ICompanyDto } from "../../types/ICompanyDto";
+import { error } from "console";
 
 export const AdminPanelPage = ({
   apiClient,
@@ -32,8 +35,21 @@ export const AdminPanelPage = ({
   userInfo: IUserInfoResponse;
   accessToken: string;
 }) => {
+  const [companies, setCompanies] = useState<ICompanyDto[]>([]);
   const { user } = useAuth0();
   const [cardFold, setCardFold] = useState<boolean>(true);
+
+  useEffect(() => {
+    apiClient
+      .getAllCompanies(accessToken)
+      .then((companiesList) => {
+        setCompanies(companiesList);
+      })
+      .catch((error) => {
+        console.error("Companies fetching failed " + error.message);
+        setCompanies([]);
+      });
+  }, [accessToken, apiClient]);
 
   return (
     <Box
@@ -52,8 +68,11 @@ export const AdminPanelPage = ({
                 apiClient={apiClient}
                 userInfo={userInfo}
                 accessToken={accessToken}
+                companies={companies}
               />
-            ) : null}
+            ) : (
+              <></>
+            )}
             {/* Change company secret for preview  */}
             {userInfo.userType === "ADMIN" ||
             userInfo.userType === "SUPER_ADMIN" ? (
@@ -62,7 +81,9 @@ export const AdminPanelPage = ({
                 userInfo={userInfo}
                 accessToken={accessToken}
               />
-            ) : null}
+            ) : (
+              <></>
+            )}
             {/* Add new company  */}
             {userInfo.userType === "SUPER_ADMIN" ? (
               <NewCompanyCard
@@ -70,7 +91,9 @@ export const AdminPanelPage = ({
                 userInfo={userInfo}
                 accessToken={accessToken}
               />
-            ) : null}
+            ) : (
+              <></>
+            )}
           </VStack>
         </GridItem>
 
@@ -144,7 +167,19 @@ export const AdminPanelPage = ({
                   </>
                 )}
               </Card>
-            ) : null}
+            ) : (
+              <></>
+            )}
+            {userInfo.userType === "SUPER_ADMIN" ? (
+              <AddNewUserCard
+                apiClient={apiClient}
+                userInfo={userInfo}
+                accessToken={accessToken}
+                companies={companies}
+              />
+            ) : (
+              <></>
+            )}
           </VStack>
         </GridItem>
       </Grid>
