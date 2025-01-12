@@ -12,13 +12,15 @@ import { UserSidebar } from "./components/user-sidebar/user-sidebar";
 import { Logo } from "./components/logo/logo";
 import { UIProps } from "../../../config/config";
 import { usingTestData } from "../../../util/useTestData";
+import { IUserInfoResponse } from "../../../types/IUserInfoResponse";
 
 interface INavbar {
   alertsEnabled: boolean;
   setAlertsEnabled: (value: boolean) => void;
+  userInfo: IUserInfoResponse;
 }
 
-export const Navbar = ({ alertsEnabled, setAlertsEnabled }: INavbar) => {
+export const Navbar = ({ alertsEnabled, setAlertsEnabled, userInfo }: INavbar) => {
   const ui = UIProps;
   return (
     <Box>
@@ -70,6 +72,7 @@ export const Navbar = ({ alertsEnabled, setAlertsEnabled }: INavbar) => {
             <UserSidebar
               alertsEnabled={alertsEnabled}
               setAlertsEnabled={setAlertsEnabled}
+              userInfo={userInfo}
             />
           </Center>
         </GridItem>

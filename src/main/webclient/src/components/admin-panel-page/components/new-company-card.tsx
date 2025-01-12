@@ -23,10 +23,12 @@ export const NewCompanyCard = ({
   apiClient,
   userInfo,
   accessToken,
+  refreshCompanies
 }: {
   apiClient: APIClient;
   userInfo: IUserInfoResponse;
   accessToken: string;
+  refreshCompanies: () => Promise<void>;
 }) => {
   const [newCompanyName, setNewCompanyName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -38,10 +40,10 @@ export const NewCompanyCard = ({
     setNewCompanyName(event.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (newCompanyName) {
       setIsLoading(true);
-      apiClient
+      await apiClient
         .postAddCompany(accessToken, newCompanyName)
         .then((status) => {
           if (status === 200) {
@@ -51,6 +53,12 @@ export const NewCompanyCard = ({
           } else {
             console.error("Something went wrong. Try again.");
             setChangeSuccess(false);
+          }
+          return status;
+        })
+        .then(status => {
+          if (status === 200) {
+            refreshCompanies();
           }
         })
         .catch((error) => {

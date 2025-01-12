@@ -22,15 +22,18 @@ import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LocalStorageManager } from "../../../../../types/localStorageMenager";
 import { useNavigate } from "react-router-dom";
+import { IUserInfoResponse } from "../../../../../types/IUserInfoResponse";
 
 interface IUserSidebar {
   alertsEnabled: boolean;
   setAlertsEnabled: (value: boolean) => void;
+  userInfo: IUserInfoResponse;
 }
 
 export const UserSidebar = ({
   alertsEnabled,
   setAlertsEnabled,
+  userInfo,
 }: IUserSidebar) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { logout, user } = useAuth0();
@@ -93,16 +96,21 @@ export const UserSidebar = ({
           </DrawerBody>
           <DrawerFooter>
             <HStack>
-              <Button
-                colorScheme="green"
-                variant="ghost"
-                onClick={() => {
-                  navigate("/application/admin");
-                  onClose();
-                }}
-              >
-                Admin panel
-              </Button>
+              {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
+                <Button
+                  colorScheme="green"
+                  variant="ghost"
+                  onClick={() => {
+                    navigate("/application/admin");
+                    onClose();
+                  }}
+                >
+                  Admin panel
+                </Button>
+              ) : (
+                <></>
+              )}
+
               <Button
                 colorScheme="purple"
                 variant="ghost"

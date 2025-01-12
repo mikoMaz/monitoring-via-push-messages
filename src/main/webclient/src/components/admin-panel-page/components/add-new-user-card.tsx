@@ -29,11 +29,13 @@ export const AddNewUserCard = ({
   userInfo,
   accessToken,
   companies,
+  refreshCompanies,
 }: {
   apiClient: APIClient;
   userInfo: IUserInfoResponse;
   accessToken: string;
   companies: ICompanyDto[];
+  refreshCompanies: () => Promise<void>;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [addingUserSuccess, setAddingUserSuccess] = useState<boolean>(false);
@@ -74,29 +76,32 @@ export const AddNewUserCard = ({
 
     if (companySelect) {
       setIsLoading(true);
-      try {
-        const status = await apiClient.addNewCompanyUser(
-          accessToken,
-          companySelect,
-          name,
-          surname,
-          email
-        );
-        if (status === 200) {
-          setAddingUserSuccess(true);
-          setName("");
-          setSurname("");
-          setEmail("");
-        } else {
+      await apiClient
+        .addNewCompanyUser(accessToken, companySelect, name, surname, email)
+        .then((status) => {
+          if (status === 200) {
+            setAddingUserSuccess(true);
+            setName("");
+            setSurname("");
+            setEmail("");
+          } else {
+            setAddingUserSuccess(false);
+          }
+          return status;
+        })
+        .then((status) => {
+          if (status === 200) {
+            refreshCompanies();
+          }
+        })
+        .catch((error) => {
+          console.error("Error adding user:", error);
           setAddingUserSuccess(false);
-        }
-      } catch (error) {
-        console.error("Error adding user:", error);
-        setAddingUserSuccess(false);
-      } finally {
-        setIsLoading(false);
-        setAlertInfo(true);
-      }
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setAlertInfo(true);
+        });
     }
   };
 

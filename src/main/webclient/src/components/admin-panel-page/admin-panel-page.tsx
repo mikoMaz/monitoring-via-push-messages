@@ -23,6 +23,7 @@ import { NewCompanyCard } from "./components/new-company-card";
 import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 import { AddNewUserCard } from "./components/add-new-user-card";
 import { ICompanyDto } from "../../types/ICompanyDto";
+import { UserSection } from "./components/user-section";
 
 export const AdminPanelPage = ({
   apiClient,
@@ -37,8 +38,8 @@ export const AdminPanelPage = ({
   const { user } = useAuth0();
   const [cardFold, setCardFold] = useState<boolean>(true);
 
-  useEffect(() => {
-    apiClient
+  const refreshCompaniesList = async () => {
+    await apiClient
       .getAllCompanies(accessToken)
       .then((companiesList) => {
         setCompanies(companiesList);
@@ -47,6 +48,11 @@ export const AdminPanelPage = ({
         console.error("Companies fetching failed " + error.message);
         setCompanies([]);
       });
+  };
+
+  useEffect(() => {
+    refreshCompaniesList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken, apiClient]);
 
   return (
@@ -60,8 +66,7 @@ export const AdminPanelPage = ({
         <GridItem colSpan={1}>
           <VStack align="stretch" spacing={4}>
             {/* Role changer  */}
-            {userInfo.userType === "ADMIN" ||
-            userInfo.userType === "SUPER_ADMIN" ? (
+            {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
               <PermissionChanger
                 apiClient={apiClient}
                 userInfo={userInfo}
@@ -72,12 +77,12 @@ export const AdminPanelPage = ({
               <></>
             )}
             {/* Change company secret for preview  */}
-            {userInfo.userType === "ADMIN" ||
-            userInfo.userType === "SUPER_ADMIN" ? (
+            {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
               <SecretChanger
                 apiClient={apiClient}
                 userInfo={userInfo}
                 accessToken={accessToken}
+                companies={companies}
               />
             ) : (
               <></>
@@ -88,6 +93,7 @@ export const AdminPanelPage = ({
                 apiClient={apiClient}
                 userInfo={userInfo}
                 accessToken={accessToken}
+                refreshCompanies={refreshCompaniesList}
               />
             ) : (
               <></>
@@ -97,31 +103,7 @@ export const AdminPanelPage = ({
 
         <GridItem colSpan={1}>
           <VStack align="stretch" spacing={4}>
-            <Card variant="filled" bg="whiteAlpha.600" align="center">
-              <CardHeader paddingBottom={-1}>
-                <Avatar
-                  name={user?.name ?? user?.nickname ?? user?.mail}
-                  size="xl"
-                />
-              </CardHeader>
-              <CardBody
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Heading padding={1} size="lg">
-                  {user?.name ?? "You"}
-                </Heading>
-                {/* <Heading padding={1} size="md">{user?.nickname ?? "No nickname"}</Heading> */}
-                <Heading padding={1} size="sm">
-                  {user?.email ?? "No email"}
-                </Heading>
-                <Heading paddingTop={5} size="sm">
-                  {userInfo.userType}
-                </Heading>
-              </CardBody>
-            </Card>
+            <UserSection user={user} userInfo={userInfo} />
             {userInfo.userType === "SUPER_ADMIN" ? (
               <Card variant="filled" bg="whiteAlpha.600">
                 <CardHeader>
@@ -177,6 +159,7 @@ export const AdminPanelPage = ({
                 userInfo={userInfo}
                 accessToken={accessToken}
                 companies={companies}
+                refreshCompanies={refreshCompaniesList}
               />
             ) : (
               <></>

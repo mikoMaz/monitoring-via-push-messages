@@ -155,7 +155,7 @@ export const AppBody = () => {
         diplayAccessToken(token);
         //TODO czy zwraca email?
         const user = await apiClient.getUserInfo(token, email);
-        
+
         setUserInfo(user);
         setAccessToken(token);
         setEmail(user.email);
@@ -211,7 +211,6 @@ export const AppBody = () => {
   };
 
   const onComponentLoaded = async () => {
-    const userEmail = user?.email ?? email;
     const token = await getAccessToken();
     if (token) {
       await updateModel(token)
@@ -234,7 +233,6 @@ export const AppBody = () => {
     });
     setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
 
-    //TODO czy email jest potrzebny? Czy aplikacja KIEDYKOLWIEK bedzie dzialala na localhost
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, accessToken]);
 
@@ -244,7 +242,7 @@ export const AppBody = () => {
     } else if (
       userInfo &&
       location.pathname === "/application/admin" &&
-      (userInfo.userType === "EXTERNAL" || userInfo.userType === "READ_ONLY")
+      (["EXTERNAL", "READ_ONLY"].includes(userInfo.userType))
     ) {
       navigate("/application/permission-required", { replace: true });
     }
@@ -259,7 +257,10 @@ export const AppBody = () => {
       background="background"
     >
       <GridItem area={"header"}>
-        <Navbar {...props} />
+        <Navbar
+          {...props}
+          userInfo={userInfo ?? getDeniedUserInfoResponse(email)}
+        />
       </GridItem>
       <GridItem area={"main"}>
         <Suspense fallback={<LoadingPage />}>
