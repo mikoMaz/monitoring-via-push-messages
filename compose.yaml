@@ -16,7 +16,8 @@ services:
       start_period: 30s
     networks: 
       - monitoring-network
-
+    volumes:
+      - pgdata:/home/postgres/pgdata/data
   backend:
     depends_on:
       timescaledb2:
@@ -49,3 +50,6 @@ services:
 
 networks:
   monitoring-network:
+volumes:
+ pgdata:
+ 
