@@ -29,7 +29,7 @@ import com.example.monitoring.core.sensor.SensorDataSimplifiedService;
 
 
 @RestController
-@RequestMapping("/api/v1/sensor/auth")
+@RequestMapping("/api/v1/user/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
     @Autowired
