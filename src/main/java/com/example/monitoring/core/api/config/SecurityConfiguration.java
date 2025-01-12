@@ -59,16 +59,16 @@ public class SecurityConfiguration {
         @Order(1)
         public SecurityFilterChain sensorSecurityFilterChain(HttpSecurity http) throws Exception {
                 http
-                                .securityMatcher("/api/v1/sensor/**")
-                                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
-                                .cors(AbstractHttpConfigurer::disable)
-                                .csrf(AbstractHttpConfigurer::disable)
-                                .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/api/v1/sensor/**").permitAll() // TODO delete in prod
-                                                .anyRequest().authenticated())
-                                .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .addFilterBefore(authenticationFilter, SecurityContextPersistenceFilter.class);
+                        .securityMatcher("/api/v1/sensor/**")
+                        .requiresChannel(channel -> channel.anyRequest().requiresSecure())
+                        .cors(AbstractHttpConfigurer::disable)
+                        .csrf(AbstractHttpConfigurer::disable)
+                        .authorizeHttpRequests(auth -> auth
+                                        .requestMatchers("/api/v1/sensor/**").permitAll() // TODO delete in prod
+                                        .anyRequest().authenticated())
+                        .sessionManagement(session -> session
+                                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .addFilterBefore(authenticationFilter, SecurityContextPersistenceFilter.class);
                 return http.build();
 
         }
@@ -77,14 +77,14 @@ public class SecurityConfiguration {
         @Order(2)
         public SecurityFilterChain previewSecurityFilterChain(HttpSecurity http) throws Exception {
                 http
-                                .securityMatcher("/api/v1/preview/**")
-                                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
-                                .csrf(AbstractHttpConfigurer::disable)
-                                .authorizeHttpRequests(auth -> auth
-                                                .anyRequest().authenticated())
-                                .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .addFilterBefore(previewAuthenticationFilter, SecurityContextPersistenceFilter.class);
+                        .securityMatcher("/api/v1/preview/**")
+                        .requiresChannel(channel -> channel.anyRequest().requiresSecure())
+                        .csrf(AbstractHttpConfigurer::disable)
+                        .authorizeHttpRequests(auth -> auth
+                                        .anyRequest().authenticated())
+                        .sessionManagement(session -> session
+                                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .addFilterBefore(previewAuthenticationFilter, SecurityContextPersistenceFilter.class);
                 return http.build();
 
         }
@@ -93,29 +93,29 @@ public class SecurityConfiguration {
         @Order(3)
         public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
                 http
-                                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
-                                .csrf(AbstractHttpConfigurer::disable) // TODO
-                                .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/api/v1/user/upload-csv")
-                                                .hasRole(Role.SUPER_ADMIN.name())
-                                                .requestMatchers("/api/v1/user/company/create")
-                                                .hasRole(Role.SUPER_ADMIN.name())
-                                                .requestMatchers("/api/v1/user/company/get-companies")
-                                                .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
-                                                .requestMatchers("/api/v1/user/company/get-users-from-company")
-                                                .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
-                                                .requestMatchers("/api/v1/user/company/update-company-users")
-                                                .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
-                                                .requestMatchers("/api/v1/user/company/change-company-password")
-                                                .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
-                                                .anyRequest().authenticated())
-                                .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .oauth2ResourceServer(oauth2 -> oauth2
-                                                .jwt(jwt -> jwt.jwtAuthenticationConverter(
-                                                                customJwtAuthenticationConverter()))) // TODO audience
-                                                                                                      // check
-                                .addFilterBefore(userAuthorizationFilter, SecurityContextPersistenceFilter.class);
+                        .requiresChannel(channel -> channel.anyRequest().requiresSecure())
+                        .csrf(AbstractHttpConfigurer::disable) // TODO
+                        .authorizeHttpRequests(auth -> auth
+                                        .requestMatchers("/api/v1/user/upload-csv")
+                                        .hasRole(Role.SUPER_ADMIN.name())
+                                        .requestMatchers("/api/v1/user/company/create")
+                                        .hasRole(Role.SUPER_ADMIN.name())
+                                        .requestMatchers("/api/v1/user/company/get-companies")
+                                        .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
+                                        .requestMatchers("/api/v1/user/company/get-users-from-company")
+                                        .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
+                                        .requestMatchers("/api/v1/user/company/update-company-users")
+                                        .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
+                                        .requestMatchers("/api/v1/user/company/change-company-password")
+                                        .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
+                                        .anyRequest().authenticated())
+                        .sessionManagement(session -> session
+                                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .oauth2ResourceServer(oauth2 -> oauth2
+                                        .jwt(jwt -> jwt.jwtAuthenticationConverter(
+                                                        customJwtAuthenticationConverter()))) // TODO audience
+                                                                                              // check
+                        .addFilterBefore(userAuthorizationFilter, SecurityContextPersistenceFilter.class);
                 return http.build();
         }
 
