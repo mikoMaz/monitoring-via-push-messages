@@ -234,7 +234,6 @@ export const AppBody = () => {
     });
     setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
 
-    //TODO czy email jest potrzebny? Czy aplikacja KIEDYKOLWIEK bedzie dzialala na localhost
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, accessToken]);
 
