@@ -34,26 +34,26 @@ public class SecurityConfiguration {
         private final UserAuthorizationFilter userAuthorizationFilter;
         private final UserRepository userRepository;
 
-        @Bean
-        public FilterRegistrationBean registration(JwtAuthenticationFilter filter) {
-                FilterRegistrationBean registration = new FilterRegistrationBean(filter);
-                registration.setEnabled(false);
-                return registration;
-        }
+    @Bean
+    public FilterRegistrationBean registration(JwtAuthenticationFilter filter) {
+        FilterRegistrationBean registration = new FilterRegistrationBean(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
 
-        @Bean
-        public FilterRegistrationBean registrationPreview(PreviewAuthenticationFilter filter) {
-                FilterRegistrationBean registration = new FilterRegistrationBean(filter);
-                registration.setEnabled(false);
-                return registration;
-        }
+    @Bean
+    public FilterRegistrationBean registrationPreview(PreviewAuthenticationFilter filter) {
+        FilterRegistrationBean registration = new FilterRegistrationBean(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
 
-        @Bean
-        public FilterRegistrationBean registrations(UserAuthorizationFilter filter) {
-                FilterRegistrationBean registration = new FilterRegistrationBean(filter);
-                registration.setEnabled(false);
-                return registration;
-        }
+    @Bean
+    public FilterRegistrationBean registrations(UserAuthorizationFilter filter) {
+        FilterRegistrationBean registration = new FilterRegistrationBean(filter);
+        registration.setEnabled(false);
+        return registration;
+    }
 
         @Bean
         @Order(1)
