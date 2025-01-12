@@ -64,6 +64,13 @@ export interface IAPIClient {
     users: ICompanyUser[],
     companyId: number
   ) => Promise<number>;
+  addNewCompanyUser: (
+    accessToken: string,
+    companyId: number,
+    userName: string,
+    userSurname: string,
+    email: string
+  ) => Promise<number>;
 }
 
 export class APIClient implements IAPIClient {
@@ -121,10 +128,7 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getUpdatedDeviceModel = async (
-    accessToken: string,
-    id: string
-  ) => {
+  public getUpdatedDeviceModel = async (accessToken: string, id: string) => {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/jsonTree?id=${id}`;
     if (usingTestData()) {
       return this.testApiClient.getUpdatedDeviceModel(accessToken, id);
@@ -132,7 +136,7 @@ export class APIClient implements IAPIClient {
     return axios
       .get(apiURL, {
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((response) => {
@@ -161,7 +165,7 @@ export class APIClient implements IAPIClient {
     return axios
       .get(apiUrl, {
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((response) => {
@@ -189,7 +193,7 @@ export class APIClient implements IAPIClient {
     return axios
       .get(apiUrl, {
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((response) => {
@@ -303,14 +307,14 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getDataHistoryChart = (
+  public getDataHistoryChart = async (
     dateFrom: string,
     dateTo: string
   ): Promise<IHistoryChartData[]> => {
     return this.testApiClient.getDataHistoryChart(dateFrom, dateTo);
   };
 
-  public postAddCompany = (accessToken: string, companyName: string) => {
+  public postAddCompany = async (accessToken: string, companyName: string) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/create?companyName=${companyName}`;
     if (usingTestData()) {
       return this.testApiClient.postAddCompany(accessToken, companyName);
@@ -318,7 +322,7 @@ export class APIClient implements IAPIClient {
     return axios
       .post(apiUrl, {}, {
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((response) => {
@@ -346,7 +350,7 @@ export class APIClient implements IAPIClient {
     return axios
       .post(apiUrl, {}, {
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((response) => {
@@ -358,7 +362,7 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getAllCompanies = (accessToken: string) => {
+  public getAllCompanies = async (accessToken: string) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/get-companies`;
     if (usingTestData()) {
       return this.testApiClient.getAllCompanies(accessToken);
@@ -379,7 +383,10 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getUsersFromCompany = (accessToken: string, companyId: number) => {
+  public getUsersFromCompany = async (
+    accessToken: string,
+    companyId: number
+  ) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/company/get-users-from-company?companyId=${companyId}`;
     if (usingTestData()) {
       return this.testApiClient.getUsersFromCompany(accessToken, companyId);
@@ -387,7 +394,7 @@ export class APIClient implements IAPIClient {
     return axios
       .get(apiUrl, {
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((response) => {
@@ -425,6 +432,46 @@ export class APIClient implements IAPIClient {
       .catch((error) => {
         console.error(error);
         throw new Error("An error occurred while updating users permissions.");
+      });
+  };
+
+  public addNewCompanyUser = async (
+    accessToken: string,
+    companyId: number,
+    userName: string,
+    userSurname: string,
+    email: string
+  ) => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/create`;
+    if (usingTestData()) {
+      return this.testApiClient.addNewCompanyUser(
+        accessToken,
+        companyId,
+        userName,
+        userSurname,
+        email
+      );
+    }
+
+    const body = JSON.stringify({
+      companyId: companyId,
+      name: userName,
+      surname: userSurname,
+      email: email,
+    });
+
+    return axios
+      .post(apiUrl, body, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        return response.status;
+      })
+      .catch((error) => {
+        console.error(error);
+        throw new Error("An error occurred while adding new user.");
       });
   };
 }

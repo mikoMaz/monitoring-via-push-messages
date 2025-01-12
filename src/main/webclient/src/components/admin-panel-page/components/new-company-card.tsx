@@ -117,7 +117,7 @@ export const NewCompanyCard = ({
                 <AlertDescription>
                   {changeSuccess
                     ? `Successful adding new company.`
-                    : `There was a problem with adding new company "${newCompanyName}". Try again.`}
+                    : `There was a problem with adding new company "${newCompanyName}".`}
                 </AlertDescription>
                 <CloseButton
                   onClick={() => {
