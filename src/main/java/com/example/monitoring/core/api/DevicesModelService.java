@@ -64,7 +64,8 @@ public class DevicesModelService implements IDevicesModelService {
                 Long ToplevelTimestamp = statusService.getDeviceStatus(ToplevelID).getLogged_at();
                 Integer ToplevelType = 2;
 
-                currentObject = proc.convertToJsonTreeComponent(ToplevelID, ToplevelStatus, ToplevelTimestamp, ToplevelType);
+                currentObject = proc.convertToJsonTreeComponent(ToplevelID, ToplevelStatus, ToplevelTimestamp,
+                        ToplevelType);
                 logger.info(currentObject.toString());
                 List<String> MidList = dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
                 if (MidList == null) {
@@ -91,7 +92,8 @@ public class DevicesModelService implements IDevicesModelService {
                     if (MidlevelStatus != null) {
                         Long MidlevelTimestamp = statusService.getDeviceStatus(MidlevelId).getLogged_at();
 
-                        subDevice = proc.convertToJsonTreeComponent(MidlevelId, MidlevelStatus, MidlevelTimestamp, MidlevelType);
+                        subDevice = proc.convertToJsonTreeComponent(MidlevelId, MidlevelStatus, MidlevelTimestamp,
+                                MidlevelType);
                         subDevice.add("children", sensorIdArray);
                         list.get(1).add(subDevice);
 
@@ -101,7 +103,8 @@ public class DevicesModelService implements IDevicesModelService {
                             if (BottomlevelStatus != null) {
                                 Long BottomlevelTimestamp = statusService.getDeviceStatus(BottomlevelID).getLogged_at();
                                 Integer BottomlevelType = 0;
-                                subDevice = proc.convertToJsonTreeComponent(BottomlevelID, BottomlevelStatus, BottomlevelTimestamp, BottomlevelType);
+                                subDevice = proc.convertToJsonTreeComponent(BottomlevelID, BottomlevelStatus,
+                                        BottomlevelTimestamp, BottomlevelType);
                                 list.get(2).add(subDevice);
                             }
 

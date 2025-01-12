@@ -1,6 +1,5 @@
 package com.example.monitoring.core.alert;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class AlertData {
     private Integer duration; // how many times
 
     @ColumnDefault("0")
-    private Integer delay;  // in seconds; notify after standard time + delay > downtime
+    private Integer delay; // in seconds; notify after standard time + delay > downtime
 
     @ColumnDefault("false") // FIXME: doesnt work :/
     @JsonProperty("ignore")
@@ -40,30 +39,26 @@ public class AlertData {
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(
-    name = "alert_ignore_device", 
-    joinColumns = @JoinColumn(name = "alert_id"), 
-    inverseJoinColumns = @JoinColumn(name = "device_id"))
+    @JoinTable(name = "alert_ignore_device", joinColumns = @JoinColumn(name = "alert_id"), inverseJoinColumns = @JoinColumn(name = "device_id"))
     private List<DeviceStatus> ignoredDevicesList;
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(
-    name = "alert_observe_device", 
-    joinColumns = @JoinColumn(name = "alert_id"), 
-    inverseJoinColumns = @JoinColumn(name = "device_id"))
+    @JoinTable(name = "alert_observe_device", joinColumns = @JoinColumn(name = "alert_id"), inverseJoinColumns = @JoinColumn(name = "device_id"))
 
     private List<DeviceStatus> observedDevicesList;
 
-    public List<DeviceStatus>getObservedDevicesList(){
-        if (this.ignoredDevicesList!=null)
-        return this.ignoredDevicesList;
-        else return new ArrayList<DeviceStatus>();
+    public List<DeviceStatus> getObservedDevicesList() {
+        if (this.ignoredDevicesList != null)
+            return this.ignoredDevicesList;
+        else
+            return new ArrayList<DeviceStatus>();
     }
 
-    public List<DeviceStatus>getIgnoredDevicesList(){
-        if (this.observedDevicesList!=null)
-        return observedDevicesList;
-        else return new ArrayList<DeviceStatus>();
+    public List<DeviceStatus> getIgnoredDevicesList() {
+        if (this.observedDevicesList != null)
+            return observedDevicesList;
+        else
+            return new ArrayList<DeviceStatus>();
     }
 }

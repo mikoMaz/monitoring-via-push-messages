@@ -24,114 +24,110 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 
-public class SendAlert  {
-private static final org.slf4j.Logger log = LoggerFactory.getLogger(SendAlert.class);
-private final DeviceDataService deviceDataService;
-private final DeviceHistoryService historyService;
-private final DeviceStatusService statusService;
-private final DataHolderService dataHolderService;
-private final AlertService alertService;
-private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-private static Map<String,List<ActiveAlert>>  activeAlertsList = new HashMap();
-private Integer counter=0;
+public class SendAlert {
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(SendAlert.class);
+    private final DeviceDataService deviceDataService;
+    private final DeviceHistoryService historyService;
+    private final DeviceStatusService statusService;
+    private final DataHolderService dataHolderService;
+    private final AlertService alertService;
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+    private static Map<String, List<ActiveAlert>> activeAlertsList = new HashMap();
+    private Integer counter = 0;
 
-void removeInactiveAlert(Integer alertKey,String deviceId){
-    
-    for(int i=this.activeAlertsList.get(deviceId).size()-1;i>0;i--)
-    {
-        if(alertKey==this.activeAlertsList.get(deviceId).get(i).getKey())
-        this.activeAlertsList.get(deviceId).remove(i);
-    }
-}
+    void removeInactiveAlert(Integer alertKey, String deviceId) {
 
-@Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
-public void checkDevicesInEveryCompany() {
-
-    Set<String> companyIds=dataHolderService.getAllCompanyIds();
-    if(companyIds!=null)
-    for (String id : companyIds) {
-         //get devices that dont work
-        List<String> deviceIds = statusService.getOfflineDevices(id).stream()
-                     .map(DeviceStatus::getId)
-                     .collect(Collectors.toList());
-        for(String deviceId: deviceIds)
-        {
-            //get alerts connected to that devices
-            List<String> parentIdList=dataHolderService.getParentForGivenDeviceId(deviceId);
-            if (parentIdList!=null){
-                String parentId=parentIdList.getFirst();
-                if(statusService.getCalculatedStatus(parentId)==null||statusService.getCalculatedStatus(parentId)==0 ) // if parent is inactive dont make alert for its children
-                    break;
-            }
-            ArrayList<AlertData>alertDataList=alertService.getAlertsForDevice(deviceId);
-            List<ActiveAlert> currentAlerts= this.activeAlertsList.get(deviceId);
-            if(currentAlerts==null)
-                currentAlerts=new ArrayList<ActiveAlert>();
-            if(this.activeAlertsList.containsKey("1"))
-            log.info("active alerts size {}",this.activeAlertsList.get("1").size());
-            log.info("size {}",currentAlerts.size());
-            log.info("counter {}",this.counter);
-            this.counter+=1;
-            for(AlertData ad:alertDataList)
-            {
-                if(ad.getIgnore()==false)
-                {
-                    boolean doesExist=false;
-                    for(ActiveAlert value :currentAlerts)
-                    {
-                        if(value.getId()==ad.getId())
-                        doesExist=true;
-                        log.info("valueId :{}",value.getId());
-                        break;
-                    }
-                    if(!doesExist)
-                    {
-                        log.info("adding new Active alert YAY!");
-                        currentAlerts.add(new ActiveAlert(ad,deviceId,this));
-                        if(this.activeAlertsList.putIfAbsent(deviceId, currentAlerts)!=null)
-                        this.activeAlertsList.replace(deviceId, currentAlerts);
-                    }
-                    
-                }
-            }
+        for (int i = this.activeAlertsList.get(deviceId).size() - 1; i > 0; i--) {
+            if (alertKey == this.activeAlertsList.get(deviceId).get(i).getKey())
+                this.activeAlertsList.get(deviceId).remove(i);
         }
-        
     }
-}
 
-public void stopAlert(String alertId){
-    List<ActiveAlert> listOfAlertsToShutDown = new ArrayList();
-    log.info("active alerts length:{}",activeAlertsList.size());
-    log.info("{}",activeAlertsList.values().stream().flatMap(List<ActiveAlert>::stream).collect(Collectors.toList()).getFirst().getId());
-    listOfAlertsToShutDown=this.activeAlertsList.values().stream()
-        .flatMap(List<ActiveAlert>::stream)
-        .filter(alert->alert.getId()==Long.parseLong(alertId)) 
-        .collect(Collectors.toList());
-    log.info("Trying to shut {} alert(s)",listOfAlertsToShutDown.size());
-    for (ActiveAlert alert:listOfAlertsToShutDown)
-    {
-        alert.shutDown();
-    } 
-}
-public List<List<String>> IdsOfDevicesNotWorking(String companyId){
+    @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
+    public void checkDevicesInEveryCompany() {
+
+        Set<String> companyIds = dataHolderService.getAllCompanyIds();
+        if (companyIds != null)
+            for (String id : companyIds) {
+                // get devices that dont work
+                List<String> deviceIds = statusService.getOfflineDevices(id).stream()
+                        .map(DeviceStatus::getId)
+                        .collect(Collectors.toList());
+                for (String deviceId : deviceIds) {
+                    // get alerts connected to that devices
+                    List<String> parentIdList = dataHolderService.getParentForGivenDeviceId(deviceId);
+                    if (parentIdList != null) {
+                        String parentId = parentIdList.getFirst();
+                        if (statusService.getCalculatedStatus(parentId) == null
+                                || statusService.getCalculatedStatus(parentId) == 0) // if parent is inactive dont make
+                                                                                     // alert for its children
+                            break;
+                    }
+                    ArrayList<AlertData> alertDataList = alertService.getAlertsForDevice(deviceId);
+                    List<ActiveAlert> currentAlerts = this.activeAlertsList.get(deviceId);
+                    if (currentAlerts == null)
+                        currentAlerts = new ArrayList<ActiveAlert>();
+                    if (this.activeAlertsList.containsKey("1"))
+                        log.info("active alerts size {}", this.activeAlertsList.get("1").size());
+                    log.info("size {}", currentAlerts.size());
+                    log.info("counter {}", this.counter);
+                    this.counter += 1;
+                    for (AlertData ad : alertDataList) {
+                        if (ad.getIgnore() == false) {
+                            boolean doesExist = false;
+                            for (ActiveAlert value : currentAlerts) {
+                                if (value.getId() == ad.getId())
+                                    doesExist = true;
+                                log.info("valueId :{}", value.getId());
+                                break;
+                            }
+                            if (!doesExist) {
+                                log.info("adding new Active alert YAY!");
+                                currentAlerts.add(new ActiveAlert(ad, deviceId, this));
+                                if (this.activeAlertsList.putIfAbsent(deviceId, currentAlerts) != null)
+                                    this.activeAlertsList.replace(deviceId, currentAlerts);
+                            }
+
+                        }
+                    }
+                }
+
+            }
+    }
+
+    public void stopAlert(String alertId) {
+        List<ActiveAlert> listOfAlertsToShutDown = new ArrayList();
+        log.info("active alerts length:{}", activeAlertsList.size());
+        log.info("{}", activeAlertsList.values().stream().flatMap(List<ActiveAlert>::stream)
+                .collect(Collectors.toList()).getFirst().getId());
+        listOfAlertsToShutDown = this.activeAlertsList.values().stream()
+                .flatMap(List<ActiveAlert>::stream)
+                .filter(alert -> alert.getId() == Long.parseLong(alertId))
+                .collect(Collectors.toList());
+        log.info("Trying to shut {} alert(s)", listOfAlertsToShutDown.size());
+        for (ActiveAlert alert : listOfAlertsToShutDown) {
+            alert.shutDown();
+        }
+    }
+
+    public List<List<String>> IdsOfDevicesNotWorking(String companyId) {
         List<String> devicesList;
         devicesList = dataHolderService.getAllChildrenForGivenCompanyId(companyId);
-        List<String> notWorkingDevicesList=new ArrayList<String>();
-        if(devicesList!=null)
-        for(int i=0;i<devicesList.size();i++)
-        {
-            if(statusService.getCalculatedStatus(devicesList.get(i))==null||statusService.getCalculatedStatus(devicesList.get(i))==0)
-            {
-                notWorkingDevicesList.add(devicesList.get(i));
+        List<String> notWorkingDevicesList = new ArrayList<String>();
+        if (devicesList != null)
+            for (int i = 0; i < devicesList.size(); i++) {
+                if (statusService.getCalculatedStatus(devicesList.get(i)) == null
+                        || statusService.getCalculatedStatus(devicesList.get(i)) == 0) {
+                    notWorkingDevicesList.add(devicesList.get(i));
+                }
             }
-        }
 
         else
-        devicesList = notWorkingDevicesList;
+            devicesList = notWorkingDevicesList;
         List<List<String>> finalList = new ArrayList<List<String>>();
         finalList.add(notWorkingDevicesList);
         finalList.add(devicesList);
         return finalList;
-        
+
     }
 }

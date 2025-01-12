@@ -1,13 +1,15 @@
 package com.example.monitoring.core.api;
 
-import com.example.monitoring.core.external.fieldmapping.FieldMapDataService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.example.monitoring.core.external.fieldmapping.FieldMapDataService;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +19,7 @@ public class DeviceDataServiceImpl implements DeviceDataService {
 
     @Override
     public DeviceData buildObject(Map<String, Object> payload, String deviceType) {
-        Map<String,String> fetchedData = fieldMapDataService.getAllFieldsForGivenDeviceType(deviceType);
+        Map<String, String> fetchedData = fieldMapDataService.getAllFieldsForGivenDeviceType(deviceType);
         Map<String, String> map = new HashMap<>();
         List<List<String>> other = new ArrayList<>();
 
@@ -29,10 +31,10 @@ public class DeviceDataServiceImpl implements DeviceDataService {
             }
         });
 
-
         return DeviceData.builder()
                 .deviceId(map.getOrDefault("device_id", null))
-                .timestamp(map.get("timestamp") == null ? System.currentTimeMillis() / 1000 : Long.parseLong(map.get("timestamp")))
+                .timestamp(map.get("timestamp") == null ? System.currentTimeMillis() / 1000
+                        : Long.parseLong(map.get("timestamp")))
                 .companyId(map.getOrDefault("company_id", null))
                 .region(map.getOrDefault("region", null))
                 .other(other.toString())

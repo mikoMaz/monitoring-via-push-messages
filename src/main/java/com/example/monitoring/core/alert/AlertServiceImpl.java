@@ -46,118 +46,117 @@ public class AlertServiceImpl implements AlertService {
         return alertData;
     }
 
-    public void addNewAlert(String payload){
-        JsonObject payloadJson=JsonParser.parseString(payload).getAsJsonObject();
-        JsonObject detailsJson=payloadJson.getAsJsonObject("details");
-        JsonArray ignoredDevices=payloadJson.getAsJsonArray("ignored_devices");
-        JsonArray observedDevices=payloadJson.getAsJsonArray("observed_devices");
-        log.info("{}",detailsJson.toString());
-        log.info("{}",ignoredDevices.toString());
-        log.info("{}",observedDevices.toString());
-        AlertData alertObject=this.buildObject(detailsJson.toString());
-        List<DeviceStatus>ignoredDevicesStatus = new ArrayList<>();
-        for (JsonElement deviceId : ignoredDevices){
-            String id=deviceId.getAsString();
+    public void addNewAlert(String payload) {
+        JsonObject payloadJson = JsonParser.parseString(payload).getAsJsonObject();
+        JsonObject detailsJson = payloadJson.getAsJsonObject("details");
+        JsonArray ignoredDevices = payloadJson.getAsJsonArray("ignored_devices");
+        JsonArray observedDevices = payloadJson.getAsJsonArray("observed_devices");
+        log.info("{}", detailsJson.toString());
+        log.info("{}", ignoredDevices.toString());
+        log.info("{}", observedDevices.toString());
+        AlertData alertObject = this.buildObject(detailsJson.toString());
+        List<DeviceStatus> ignoredDevicesStatus = new ArrayList<>();
+        for (JsonElement deviceId : ignoredDevices) {
+            String id = deviceId.getAsString();
             ignoredDevicesStatus.add(statusService.getDeviceStatus(id));
         }
-        List<DeviceStatus>observedDevicesStatus = new ArrayList<>();
-        for (JsonElement deviceId : observedDevices){
-            String id=deviceId.getAsString();
-            DeviceStatus ds =statusService.getDeviceStatus(id);
+        List<DeviceStatus> observedDevicesStatus = new ArrayList<>();
+        for (JsonElement deviceId : observedDevices) {
+            String id = deviceId.getAsString();
+            DeviceStatus ds = statusService.getDeviceStatus(id);
             observedDevicesStatus.add(ds);
         }
-        
+
         alertObject.setIgnoredDevicesList(ignoredDevicesStatus);
         alertObject.setObservedDevicesList(observedDevicesStatus);
 
         this.saveToDatabase(alertObject);
-        for (DeviceStatus deviceStatus : ignoredDevicesStatus){
-            List<AlertData> adList =deviceStatus.getIgnoringAlert();
+        for (DeviceStatus deviceStatus : ignoredDevicesStatus) {
+            List<AlertData> adList = deviceStatus.getIgnoringAlert();
             adList.add(alertObject);
             deviceStatus.setIgnoringAlert(adList);
             statusService.saveToDatabase(deviceStatus);
         }
         this.saveToDatabase(alertObject);
-        for (DeviceStatus deviceStatus : observedDevicesStatus){
-            List<AlertData> adList =deviceStatus.getObservingAlert();
+        for (DeviceStatus deviceStatus : observedDevicesStatus) {
+            List<AlertData> adList = deviceStatus.getObservingAlert();
             adList.add(alertObject);
             deviceStatus.setObservingAlert(adList);
             statusService.saveToDatabase(deviceStatus);
         }
     }
-    public ArrayList<AlertData> getAlertsForCompany(String companyId)
-    {
+
+    public ArrayList<AlertData> getAlertsForCompany(String companyId) {
         return alertRepository.findAllByCompanyId(companyId);
     }
-    public ArrayList<AlertData> getAlertsForDevice(String deviceId)
-    {
+
+    public ArrayList<AlertData> getAlertsForDevice(String deviceId) {
         return alertRepository.findAllObservingDevice(deviceId);
     }
-    public void getDevicesThatGiveAlert(String companyId){
-        Set<String> companyIds=dataHolderService.getAllCompanyIds();
-        if(companyIds!=null)
+
+    public void getDevicesThatGiveAlert(String companyId) {
+        Set<String> companyIds = dataHolderService.getAllCompanyIds();
+        if (companyIds != null)
             for (String id : companyIds) {
-                log.info("Company id: {}",id);
+                log.info("Company id: {}", id);
                 List<AlertData> alerts = this.getAlertsForCompany(id);
-                if(alerts!=null)
+                if (alerts != null)
                     for (AlertData alert : alerts) {
-                        log.info("Alert id: {}",alert.getId() );
-                        if(!alert.getIgnore())
-                        {
-                            List<DeviceStatus>observedList=alert.getObservedDevicesList();
-                            List<String>observedListIds = new ArrayList<String>();
-                            for(DeviceStatus status:observedList){
+                        log.info("Alert id: {}", alert.getId());
+                        if (!alert.getIgnore()) {
+                            List<DeviceStatus> observedList = alert.getObservedDevicesList();
+                            List<String> observedListIds = new ArrayList<String>();
+                            for (DeviceStatus status : observedList) {
                                 observedListIds.add(status.getId());
                             }
-                            List<DeviceStatus>ignoredList=alert.getIgnoredDevicesList();
-                            List<String>ignoredListIds = new ArrayList<String>();
-                            for(DeviceStatus status:ignoredList){
+                            List<DeviceStatus> ignoredList = alert.getIgnoredDevicesList();
+                            List<String> ignoredListIds = new ArrayList<String>();
+                            for (DeviceStatus status : ignoredList) {
                                 ignoredListIds.add(status.getId());
                             }
 
-                            log.info("I am checking those devices : {}",observedListIds);
-                            log.info("And ignore those: {}",ignoredListIds);
-                            for(DeviceStatus ignoredDevice : ignoredList)
-                            {
-                                if(observedList.contains(ignoredDevice))
-                                {
-                                    log.info("I dont want to check this device: {}",ignoredDevice.getId());
+                            log.info("I am checking those devices : {}", observedListIds);
+                            log.info("And ignore those: {}", ignoredListIds);
+                            for (DeviceStatus ignoredDevice : ignoredList) {
+                                if (observedList.contains(ignoredDevice)) {
+                                    log.info("I dont want to check this device: {}", ignoredDevice.getId());
                                     observedList.remove(ignoredDevice);
 
                                 }
                             }
                             observedListIds = new ArrayList<String>();
-                            for(DeviceStatus status:observedList){
+                            for (DeviceStatus status : observedList) {
                                 observedListIds.add(status.getId());
                             }
-                            log.info("Finally I am checking those : {}",observedListIds);
+                            log.info("Finally I am checking those : {}", observedListIds);
 
-                            for (int i=0;i<observedList.size();i++)
-                            {
-                                if(statusService.getCalculatedStatus(observedList.get(i))==0)
-                                {
-                                    log.info("this device doesnt work : {}",observedList.get(i).getId());
-                                }
-                                else log.info("this device does work : {}",observedList.get(i).getId());
+                            for (int i = 0; i < observedList.size(); i++) {
+                                if (statusService.getCalculatedStatus(observedList.get(i)) == 0) {
+                                    log.info("this device doesnt work : {}", observedList.get(i).getId());
+                                } else
+                                    log.info("this device does work : {}", observedList.get(i).getId());
                             }
                         }
                     }
-        }
-    }   
-    public void saveToDatabase(AlertData alertData){
-        alertRepository.save(alertData);
-       }
-    public void saveToDatabase(String objectJson){
-    AlertData alertData=buildObject(objectJson);
-    alertRepository.save(alertData);
+            }
     }
-    public void deleteById(String id)
-    {
+
+    public void saveToDatabase(AlertData alertData) {
+        alertRepository.save(alertData);
+    }
+
+    public void saveToDatabase(String objectJson) {
+        AlertData alertData = buildObject(objectJson);
+        alertRepository.save(alertData);
+    }
+
+    public void deleteById(String id) {
         alertRepository.deleteById(id);
     }
-    public  void setAlertIgnoreState(String alertId,boolean stateValue){
+
+    public void setAlertIgnoreState(String alertId, boolean stateValue) {
         AlertData alert = alertRepository.findById(alertId).orElse(null);
-        if (alert!=null)
+        if (alert != null)
             alert.setIgnore(stateValue);
     }
 }

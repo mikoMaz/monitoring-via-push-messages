@@ -1,33 +1,34 @@
 package com.example.monitoring.core.external;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class DataHolderService {
     @Autowired
     DataHolder externalData;
 
-    public void reset1(){
+    public void reset1() {
         externalData.getDeviceData().clear();
-
 
         externalData.getCompanyData().clear();
     }
-    public void reset2(){
+
+    public void reset2() {
         Map<String, List<String>> mapka = externalData.getDeviceParent();
         mapka.clear();
         externalData.setDeviceParent(mapka);
-        mapka=externalData.getDeviceChildren();
+        mapka = externalData.getDeviceChildren();
         mapka.clear();
         externalData.setDeviceChildren(mapka);
 
     }
+
     /* device */
     private Map<String, List<String>> getDeviceData() {
         return externalData.getDeviceData();
@@ -38,7 +39,7 @@ public class DataHolderService {
     }
 
     // public void addParentIdToDeviceData(String key, String parentId) {
-    //     getDeviceData().put(key, List.of(parentId, getDeviceData().get(key).get(1)));
+    // getDeviceData().put(key, List.of(parentId, getDeviceData().get(key).get(1)));
     // }
 
     public void addCompanyIdToDeviceData(String key, String companyId) {
@@ -51,20 +52,23 @@ public class DataHolderService {
         }
         return null;
     }
+
     /* device parent */
     public Map<String, List<String>> getDeviceParentData() {
         return externalData.getDeviceParent();
     }
+
     public void addDeviceChildIfNotExists(String key) {
         getDeviceParentData().putIfAbsent(key, new ArrayList<>());
     }
 
     public void addParentIdToDeviceParentData(String key, String parentId) {
-        if (getDeviceParentData().containsKey(key)&& !getDeviceParentData().get(key).contains(parentId)) {
+        if (getDeviceParentData().containsKey(key) && !getDeviceParentData().get(key).contains(parentId)) {
             getDeviceParentData().get(key).add(parentId);
         }
 
     }
+
     public List<String> getParentForGivenDeviceId(String deviceId) {
         return getDeviceParentData().get(deviceId);
     }
@@ -94,15 +98,16 @@ public class DataHolderService {
         return getDeviceChildrenData().get(deviceId);
     }
 
-
     /* company */
     private Map<String, List<String>> getCompanyData() {
         return externalData.getCompanyData();
     }
+
     public List<String> getAllChildrenForGivenCompanyId(String companyId) {
         return getCompanyData().get(companyId);
     }
-    public Set<String> getAllCompanyIds(){
+
+    public Set<String> getAllCompanyIds() {
         return externalData.getCompanyData().keySet();
     }
 

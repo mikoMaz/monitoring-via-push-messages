@@ -38,8 +38,7 @@ public class PreviewAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         try {
             String companyName = request.getHeader(COMPANY_HEADER);
@@ -51,7 +50,7 @@ public class PreviewAuthenticationFilter extends OncePerRequestFilter {
             }
             String encryptedKey = EncryptionUtil.encrypt(apiKey, encryptionKey);
             Company company = companyService.getCompanyByNameAndEncryptedKey(companyName, encryptedKey);
-            
+
             if (company == null) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Company not found or invalid Company Sectet");
                 return;

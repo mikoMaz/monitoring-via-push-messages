@@ -1,7 +1,6 @@
 
 package com.example.monitoring.core.api.history;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

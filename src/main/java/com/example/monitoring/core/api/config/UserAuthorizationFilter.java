@@ -36,8 +36,7 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
 
@@ -57,7 +56,8 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
         if (user == null) {
             try {
                 // check if user with token is verified by Auth0
-                String userInfo = requestSender.executeGetWithAuthorization(applicationProps.getIssuerUri() + "userinfo", token);
+                String userInfo = requestSender
+                        .executeGetWithAuthorization(applicationProps.getIssuerUri() + "userinfo", token);
                 Gson gson = new Gson();
                 Auth0Token tokenInJson = gson.fromJson(userInfo, Auth0Token.class);
 
@@ -68,7 +68,9 @@ public class UserAuthorizationFilter extends OncePerRequestFilter {
 
                 // oops! someone is trying to reach our api without permission
                 if (userVerifiedByToken.isEmpty()) {
-                    logger.error("User with email {} is trying to login without verification! User is not saved in the database", emailFromToken);
+                    logger.error(
+                            "User with email {} is trying to login without verification! User is not saved in the database",
+                            emailFromToken);
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User is not verified!");
                     return;
                 }

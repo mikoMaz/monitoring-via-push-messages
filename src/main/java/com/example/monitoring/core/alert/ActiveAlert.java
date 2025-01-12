@@ -22,25 +22,24 @@ public class ActiveAlert {
     private String emailAdress; // TODO: if null then its default to company mail adress
     private Integer frequency; // as notification per X seconds
     private Integer duration; // how many times
-    private Integer delay;  // in seconds; notify after standard time + delay > downtime
+    private Integer delay; // in seconds; notify after standard time + delay > downtime
     private boolean active;
     private String deviceId;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private static final AtomicInteger keyGenerator = new AtomicInteger();
-    org.slf4j.Logger  logger =LoggerFactory.getLogger(ActiveAlert.class);
-    
-    public ActiveAlert( AlertData alertData, String deviceId,SendAlert parent)
-    {
-        emailAdress=alertData.getEmailAdress();
-        frequency=alertData.getFrequency();
-        duration=alertData.getDuration(); 
-        delay=alertData.getDelay();
-        id=alertData.getId();
-        this.active=true;
-        this.deviceId=deviceId;
-        this.parent=parent;
-        this.key=keyGenerator.getAndIncrement();
+    org.slf4j.Logger logger = LoggerFactory.getLogger(ActiveAlert.class);
+
+    public ActiveAlert(AlertData alertData, String deviceId, SendAlert parent) {
+        emailAdress = alertData.getEmailAdress();
+        frequency = alertData.getFrequency();
+        duration = alertData.getDuration();
+        delay = alertData.getDelay();
+        id = alertData.getId();
+        this.active = true;
+        this.deviceId = deviceId;
+        this.parent = parent;
+        this.key = keyGenerator.getAndIncrement();
         init();
     }
 
@@ -49,28 +48,27 @@ public class ActiveAlert {
 
         scheduler.scheduleAtFixedRate(this::sendMail, delay, frequency, TimeUnit.SECONDS);
     }
-    
-    public void sendMail(){
-        if(this.duration<=0)
-        {
+
+    public void sendMail() {
+        if (this.duration <= 0) {
             shutDown();
         }
-      
-        logger.info(MessageFormat.format("device {0} doesn't work",this.deviceId));
-        logger.info(MessageFormat.format("duration left : {0}",this.duration));
-        logger.info(MessageFormat.format("key : {0}",this.key));
 
-        this.duration-=1;
+        logger.info(MessageFormat.format("device {0} doesn't work", this.deviceId));
+        logger.info(MessageFormat.format("duration left : {0}", this.duration));
+        logger.info(MessageFormat.format("key : {0}", this.key));
+
+        this.duration -= 1;
     }
-    public void shutDown(){
+
+    public void shutDown() {
         scheduler.shutdown();
-        this.active=false;
-        this.parent.removeInactiveAlert(this.getKey(),this.getDeviceId());
+        this.active = false;
+        this.parent.removeInactiveAlert(this.getKey(), this.getDeviceId());
         logger.info("I have been stopped externally");
     }
 
-    public boolean compareId(ActiveAlert secondAlert)
-    {
+    public boolean compareId(ActiveAlert secondAlert) {
         return this.getId() == secondAlert.getId();
     }
 }

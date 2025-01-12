@@ -1,13 +1,15 @@
 package com.example.monitoring.core.api.auth;
 
-import com.example.monitoring.core.api.payload.Payload;
-import com.example.monitoring.core.api.payload.Role;
-import com.example.monitoring.core.api.config.JwtService;
-import com.example.monitoring.core.api.payload.PayloadRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+
+import com.example.monitoring.core.api.config.JwtService;
+import com.example.monitoring.core.api.payload.Payload;
+import com.example.monitoring.core.api.payload.PayloadRepository;
+import com.example.monitoring.core.api.payload.Role;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -22,9 +24,9 @@ public class AuthenticationService {
                 .deviceId(request.getDeviceId())
                 .deviceType(request.getDeviceType())
                 .role(Role.DEVICE)
-//                .password(passwordEncoder.encode(request.getPassword()))
+                // .password(passwordEncoder.encode(request.getPassword()))
                 .build();
-//        repository.save(device);
+        // repository.save(device);
         var jwtToken = jwtService.generateToken(device);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -35,11 +37,9 @@ public class AuthenticationService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getDeviceId(),
-                        request.getDeviceType()
-                )
-        );
+                        request.getDeviceType()));
         var device = repository.findByDeviceId(request.getDeviceId())
-                .orElseThrow();  // TODO: handle exception
+                .orElseThrow(); // TODO: handle exception
         var jwtToken = jwtService.generateToken(device);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
