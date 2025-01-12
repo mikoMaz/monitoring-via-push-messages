@@ -11,9 +11,6 @@ import {
   AlertDescription,
   AlertTitle,
   CloseButton,
-  Editable,
-  EditableInput,
-  EditablePreview,
   Input,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";

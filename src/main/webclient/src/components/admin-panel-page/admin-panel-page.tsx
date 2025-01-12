@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   Card,
   CardBody,
   CardHeader,
@@ -24,7 +23,6 @@ import { NewCompanyCard } from "./components/new-company-card";
 import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 import { AddNewUserCard } from "./components/add-new-user-card";
 import { ICompanyDto } from "../../types/ICompanyDto";
-import { error } from "console";
 
 export const AdminPanelPage = ({
   apiClient,
