@@ -146,6 +146,7 @@ export const AdminPanelPage = ({
                           label="Devices"
                           type="device"
                           apiClient={apiClient}
+                          accessToken={accessToken}
                         />
                         {/* Hierarchy */}
                         <FileSender
@@ -153,12 +154,14 @@ export const AdminPanelPage = ({
                           label="Set hierarchy tree for devices in the company"
                           type="hierarchy"
                           apiClient={apiClient}
+                          accessToken={accessToken}
                         />
                         {/* Alerts */}
                         <FileSender
                           title="Alerts"
                           label="Create new alert for devices"
                           apiClient={apiClient}
+                          accessToken={accessToken}
                         />
                       </VStack>
                     </CardBody>{" "}

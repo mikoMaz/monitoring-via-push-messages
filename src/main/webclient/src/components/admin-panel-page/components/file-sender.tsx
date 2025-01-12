@@ -23,11 +23,13 @@ export const FileSender = ({
   label,
   type,
   apiClient,
+  accessToken
 }: {
   title: string;
   label: string;
   type?: string;
   apiClient: APIClient;
+  accessToken: string;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>("No file detected");
@@ -54,7 +56,7 @@ export const FileSender = ({
     if (type === "device" || "hierarchy") {
       if (isValid()) {
         await apiClient
-          .postCSVData(type, tableName, file)
+          .postCSVData(accessToken, type, tableName, file)
           .then((response) => {
             if (response === 200) {
               setFileName("No file detected");
