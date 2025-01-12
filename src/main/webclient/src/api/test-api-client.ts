@@ -100,7 +100,7 @@ export class TestAPIClient implements IAPIClient {
     return this.getAllDevicesHistory(id, secret);
   };
 
-  public postCSVData = async (type: string, tableName: string, file: File) => {
+  public postCSVData = async (accessToken: string, type: string, tableName: string, file: File) => {
     if (Math.floor(Math.random() * 4) / 3) {
       return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
         throw new Error("Failed to upload file");

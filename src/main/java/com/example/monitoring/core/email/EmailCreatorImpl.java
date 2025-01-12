@@ -1,12 +1,12 @@
 package com.example.monitoring.core.email;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class EmailCreatorImpl implements EmailCreator {
@@ -46,7 +46,8 @@ public class EmailCreatorImpl implements EmailCreator {
 
         if (emailBody == null) {
             logger.error("Email body not found!");
-            throw new NullPointerException("No email body found for the given context. Please add missing email body for this context.");
+            throw new NullPointerException(
+                    "No email body found for the given context. Please add missing email body for this context.");
         }
 
         return emailBody;
@@ -64,7 +65,8 @@ public class EmailCreatorImpl implements EmailCreator {
         if (numberOfMultiValueFields != 0) {
             for (int i = 0; i < numberOfMultiValueFields; i++) {
                 for (String fieldName : fieldsMap) {
-                    emailBody = emailBody.replaceFirst("/BEGIN/" + field + "\\[]/END/", "<p style=\"line-height: 140%;\">" + fieldName + "</p>\n" + "/BEGIN/" + field + "[]/END/");
+                    emailBody = emailBody.replaceFirst("/BEGIN/" + field + "\\[]/END/",
+                            "<p style=\"line-height: 140%;\">" + fieldName + "</p>\n" + "/BEGIN/" + field + "[]/END/");
                 }
                 emailBody = emailBody.replaceFirst("/BEGIN/" + field + "\\[]/END/", "");
             }

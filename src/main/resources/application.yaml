@@ -41,3 +41,9 @@ spring:
 logging:
   level:
     org.springframework.security: DEBUG
+
+server:
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: a24Ep8#@!68jaFv
+    key-store-type: pkcs12

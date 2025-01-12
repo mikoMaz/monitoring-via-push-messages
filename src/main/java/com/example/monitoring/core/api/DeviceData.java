@@ -1,4 +1,5 @@
 package com.example.monitoring.core.api;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

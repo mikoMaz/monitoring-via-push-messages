@@ -1,14 +1,14 @@
 package com.example.monitoring.core.email;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/user/email")
@@ -31,7 +31,8 @@ public class EmailController {
         map.put(ContextFields.Fields.USER_ID, List.of("id_1"));
         map.put(ContextFields.Fields.DEVICE_ID, List.of("id_6", "id_7", "id_8"));
         // IMPORTANT: you can't pass context field not associated with EmailContext
-        // NOTE: if fields are not given then it will leave /BEGIN/<field>/END/ as a plain text in mail. DELETE FIELD FROM CONTEXT IF YOU CAN'T PROVIDE THE DATA!
+        // NOTE: if fields are not given then it will leave /BEGIN/<field>/END/ as a
+        // plain text in mail. DELETE FIELD FROM CONTEXT IF YOU CAN'T PROVIDE THE DATA!
         String body = emailCreator.createEmail(EmailContext.TEST, map);
 
         Email emailObj = new Email();

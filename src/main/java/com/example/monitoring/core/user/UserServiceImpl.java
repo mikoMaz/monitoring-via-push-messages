@@ -27,7 +27,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getUsersByCompanyId(Long companyId) {
         return userRepository.findUsersByCompanyCompanyId(companyId).stream()
-                .map(user -> new UserDto(user.getId(), user.getName(), user.getSurname(), user.getCompany().getCompanyId(), user.getRole()))
+                .map(user -> new UserDto(user.getId(), user.getName(), user.getSurname(),
+                        user.getCompany().getCompanyId(), user.getRole()))
                 .toList();
     }
 
@@ -82,7 +83,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserDto() {
         User user = userRepository.findByAuthTokenSubject(getSubject());
-        return new UserDto(user.getId(), user.getName(), user.getSurname(), user.getCompany().getCompanyId(), user.getRole());
+        return new UserDto(user.getId(), user.getName(), user.getSurname(), user.getCompany().getCompanyId(),
+                user.getRole());
     }
 
     @Override
@@ -99,7 +101,7 @@ public class UserServiceImpl implements UserService {
         return jwt.getClaimAsString("sub");
     }
 
-    private void validateUserDtoBasic (UserDtoBasic userDtoBasic) {
+    private void validateUserDtoBasic(UserDtoBasic userDtoBasic) {
         if (userDtoBasic == null) {
             throw new UserCredentialsValidationException("UserDtoBasic is null");
         }

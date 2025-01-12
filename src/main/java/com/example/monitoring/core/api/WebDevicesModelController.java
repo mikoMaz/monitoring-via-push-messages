@@ -38,5 +38,4 @@ public class WebDevicesModelController {
         }
         return ResponseEntity.ok().body(singleDeviceHistory.toString());
     }
-
 }

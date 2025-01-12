@@ -1,17 +1,17 @@
 package com.example.monitoring.core.company;
 
-import com.example.monitoring.core.user.Role;
-import com.example.monitoring.core.user.UserDto;
-import com.example.monitoring.core.user.UserService;
-import com.example.monitoring.core.user.exceptions.UserNotFoundException;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import static com.example.monitoring.core.api.config.PreviewAuthenticationFilter.encryptionKey;
+import com.example.monitoring.core.user.Role;
+import com.example.monitoring.core.user.UserDto;
+import com.example.monitoring.core.user.UserService;
+import com.example.monitoring.core.user.exceptions.UserNotFoundException;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -64,12 +64,11 @@ public class CompanyServiceImpl implements CompanyService {
             return companyRepository.findAll().stream()
                     .map(company -> new CompanyDto(company.getCompanyId(), company.getName()))
                     .toList();
-        } if (userRole == Role.ADMIN) {
+        }
+        if (userRole == Role.ADMIN) {
             return companyRepository.findAll().stream()
                     .map(company -> new CompanyDto(company.getCompanyId(), company.getName()))
-                    .filter(company ->
-                            Objects.equals(userDto.getCompanyId(), company.getCompanyId())
-                    )
+                    .filter(company -> Objects.equals(userDto.getCompanyId(), company.getCompanyId()))
                     .toList();
         }
         throw new IllegalArgumentException("User has not enough permissions");
@@ -91,13 +90,16 @@ public class CompanyServiceImpl implements CompanyService {
                 if (Objects.equals(currentUser.getId(), userToUpdate.getId())) {
                     userToUpdate.setRole(currentUserRole);
                 }
-                // user to change is SUPER_ADMIN and current user (not SUPER_ADMIN) wants to OP the user
-                if (userToUpdate.getRole() == Role.SUPER_ADMIN && currentUserRole != Role.SUPER_ADMIN && userService.getUserRoleById(userToUpdate.getId()) != Role.SUPER_ADMIN) {
+                // user to change is SUPER_ADMIN and current user (not SUPER_ADMIN) wants to OP
+                // the user
+                if (userToUpdate.getRole() == Role.SUPER_ADMIN && currentUserRole != Role.SUPER_ADMIN
+                        && userService.getUserRoleById(userToUpdate.getId()) != Role.SUPER_ADMIN) {
                     throw new IllegalArgumentException("User has not enough permissions");
                 }
                 userService.updateUserFromUserDto(userToUpdate);
             } catch (UserNotFoundException e) {
-                logger.error("User with id {} from {} company not found", userToUpdate.getId(), userToUpdate.getCompanyId());
+                logger.error("User with id {} from {} company not found", userToUpdate.getId(),
+                        userToUpdate.getCompanyId());
             } catch (IllegalArgumentException e) {
                 logger.error("Not enough permissions to change this role");
             }
