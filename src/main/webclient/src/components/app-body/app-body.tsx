@@ -242,7 +242,7 @@ export const AppBody = () => {
     } else if (
       userInfo &&
       location.pathname === "/application/admin" &&
-      (userInfo.userType === "EXTERNAL" || userInfo.userType === "READ_ONLY")
+      (["EXTERNAL", "READ_ONLY"].includes(userInfo.userType))
     ) {
       navigate("/application/permission-required", { replace: true });
     }

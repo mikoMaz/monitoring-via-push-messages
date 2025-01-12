@@ -66,8 +66,7 @@ export const AdminPanelPage = ({
         <GridItem colSpan={1}>
           <VStack align="stretch" spacing={4}>
             {/* Role changer  */}
-            {userInfo.userType === "ADMIN" ||
-            userInfo.userType === "SUPER_ADMIN" ? (
+            {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
               <PermissionChanger
                 apiClient={apiClient}
                 userInfo={userInfo}
@@ -78,8 +77,7 @@ export const AdminPanelPage = ({
               <></>
             )}
             {/* Change company secret for preview  */}
-            {userInfo.userType === "ADMIN" ||
-            userInfo.userType === "SUPER_ADMIN" ? (
+            {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
               <SecretChanger
                 apiClient={apiClient}
                 userInfo={userInfo}
