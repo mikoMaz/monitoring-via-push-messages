@@ -13,7 +13,8 @@ import lombok.RequiredArgsConstructor;
 public class DeviceHistoryServiceImpl implements DeviceHistoryService {
     private final DeviceHistoryRepository repository;
     private final DeviceStatusRepository  statusRepository;
-    org.slf4j.Logger  logger =LoggerFactory.getLogger(AuthenticationController.class);
+    org.slf4j.Logger  logger =LoggerFactory.getLogger(DeviceHistoryServiceImpl.class);
+
     public void save(DeviceHistory record){
 
     repository.save(record);

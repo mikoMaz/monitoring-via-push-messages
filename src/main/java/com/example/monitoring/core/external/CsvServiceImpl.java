@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class CsvServiceImpl implements CsvService {
@@ -48,8 +49,6 @@ public class CsvServiceImpl implements CsvService {
         csvInList.removeFirst();
         csvInList.forEach(
                 listRow -> {
-                    //
-                    //
                     // tabelka1
                     dataHolderService.addDeviceIfNotExist(listRow.getFirst());
                     dataHolderService.addCompanyIdToDeviceData(listRow.getFirst(), listRow.getLast());

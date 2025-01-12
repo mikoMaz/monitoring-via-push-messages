@@ -33,7 +33,6 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter authenticationFilter;
     private final PreviewAuthenticationFilter previewAuthenticationFilter;
     private final UserAuthorizationFilter userAuthorizationFilter;
-    private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
 
     @Bean
@@ -68,8 +67,6 @@ public class SecurityConfiguration {
                 .requestMatchers("/api/v1/sensor/**").permitAll() // TODO delete in prod
                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //                .authenticationProvider(authenticationProvider)
-                //                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
                 .addFilterBefore(authenticationFilter, SecurityContextPersistenceFilter.class);
         return http.build();
 
@@ -93,17 +90,8 @@ public class SecurityConfiguration {
     @Order(3)
     public SecurityFilterChain userSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                //         .cors(cors -> cors.configurationSource(request -> {
-                //     CorsConfiguration config = new CorsConfiguration();
-                //     config.setAllowedOrigins(List.of("http://localhost:3000"));  // lub "*"
-                //     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                //     config.setAllowedHeaders(List.of("*"));
-                //     config.setAllowCredentials(true);
-                //     return config;
-                // }))
                 .csrf(AbstractHttpConfigurer::disable) // TODO
                 .authorizeHttpRequests(auth -> auth
-                // TODO: add roles to rest of the paths
                 .requestMatchers("/api/v1/user/jsonTree").hasRole(Role.SUPER_ADMIN.name())
                 .requestMatchers("/api/v1/user/company/change-company-password").hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
                 .anyRequest().authenticated())

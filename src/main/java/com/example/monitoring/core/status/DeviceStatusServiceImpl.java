@@ -1,16 +1,13 @@
 package com.example.monitoring.core.status;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.example.monitoring.core.external.DataHolderService;
 
-
 import lombok.RequiredArgsConstructor;
-import lombok.val;
+
 @Service
 @RequiredArgsConstructor
 public class DeviceStatusServiceImpl implements DeviceStatusService {

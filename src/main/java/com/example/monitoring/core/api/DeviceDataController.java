@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-import org.aspectj.weaver.tools.Trace;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.monitoring.core.status.DeviceStatusService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.example.monitoring.core.api.auth.AuthenticationController;
 import com.example.monitoring.core.api.auth.AuthenticationService;
 import com.example.monitoring.core.api.history.DeviceHistory;
 import com.example.monitoring.core.api.history.DeviceHistoryService;
@@ -27,10 +25,6 @@ public class DeviceDataController {
     private final DeviceDataService deviceDataService;
     private final DeviceHistoryService historyService;
     org.slf4j.Logger  logger =LoggerFactory.getLogger(DeviceDataController.class);
-    ObjectMapper objectMapper = new ObjectMapper();
-    ObjectReader reader = new ObjectMapper().readerFor(Map.class);
-    Long unixTime;
-
 
     @PostMapping("/sensor/send-data")
     public ResponseEntity<String>hello(
@@ -38,7 +32,6 @@ public class DeviceDataController {
             @RequestHeader("Authorization") String authHeader
     ) {
         String token = authenticationService.extractToken(authHeader);
-//        String deviceId = authenticationService.extractDeviceId(token);
         String deviceType = authenticationService.extractDeviceType(token);
         DeviceData pal = deviceDataService.buildObject(payloadJson, deviceType);
         deviceDataService.saveToDatabase(pal);
@@ -68,7 +61,6 @@ public class DeviceDataController {
         @RequestHeader("Authorization") String authHeader
 ) {
     String token = authenticationService.extractToken(authHeader);
-//        String deviceId = authenticationService.extractDeviceId(token);
     String deviceType = authenticationService.extractDeviceType(token);
     DeviceData pal = deviceDataService.buildObject(payloadJson, deviceType);
     deviceDataService.saveToDatabase(pal);

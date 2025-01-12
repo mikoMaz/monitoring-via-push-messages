@@ -1,32 +1,17 @@
 package com.example.monitoring.core.alert;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Comment;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
-import com.example.monitoring.core.status.DeviceStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.annotation.PostConstruct;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.example.monitoring.core.alert.AlertData;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -65,14 +50,6 @@ public class ActiveAlert {
         scheduler.scheduleAtFixedRate(this::sendMail, delay, frequency, TimeUnit.SECONDS);
     }
     
-    // @PostConstruct
-    // public void startTask() {
-    //     logger.info("startedTask");
-
-    //     scheduler.scheduleAtFixedRate(this::sendMail, delay, frequency, TimeUnit.SECONDS);
-    // }
-
-    
     public void sendMail(){
         if(this.duration<=0)
         {
@@ -94,9 +71,6 @@ public class ActiveAlert {
 
     public boolean compareId(ActiveAlert secondAlert)
     {
-        if(this.getId()==secondAlert.getId())
-        return true;
-        else
-        return false;
+        return this.getId() == secondAlert.getId();
     }
 }

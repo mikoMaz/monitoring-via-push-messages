@@ -2,37 +2,25 @@ package com.example.monitoring.core.alert;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import javax.swing.UIDefaults.ActiveValue;
-
-import org.apache.logging.slf4j.SLF4JLogger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.example.monitoring.core.api.DeviceDataService;
-import com.example.monitoring.core.api.auth.AuthenticationService;
 import com.example.monitoring.core.api.history.DeviceHistoryService;
 import com.example.monitoring.core.external.DataHolderService;
 import com.example.monitoring.core.status.DeviceStatus;
 import com.example.monitoring.core.status.DeviceStatusService;
-import com.example.monitoring.core.status.DeviceStatusServiceImpl;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.dynamic.TypeResolutionStrategy.Active;
+
 @Component
 @RequiredArgsConstructor
 
@@ -46,21 +34,7 @@ private final AlertService alertService;
 private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 private static Map<String,List<ActiveAlert>>  activeAlertsList = new HashMap();
 private Integer counter=0;
-// @Scheduled(fixedRate = 60, timeUnit = TimeUnit.SECONDS)
-// public void checkDevicesInEveryCompany() {
-//     Set<String> companyIds=dataHolderService.getAllCompanyIds();
-//     for (String id : companyIds) {
-        
-//         List<String> notWorkingDevicesList=IdsOfDevicesNotWorking(id).get(0);
-//         List<String> DevicesList=IdsOfDevicesNotWorking(id).get(1);
-//         log.info("Company id: {}",id);
-//         log.info("Devices that dont work count {}",notWorkingDevicesList.size());
-//         log.info("Full device count {}", DevicesList.size());
-//     }
-    
-    
 
-// }
 void removeInactiveAlert(Integer alertKey,String deviceId){
     
     for(int i=this.activeAlertsList.get(deviceId).size()-1;i>0;i--)
@@ -69,20 +43,9 @@ void removeInactiveAlert(Integer alertKey,String deviceId){
         this.activeAlertsList.get(deviceId).remove(i);
     }
 }
-//@Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
-public void checkDevicesInEveryCompany2() {
-    Set<String> companyIds=dataHolderService.getAllCompanyIds();
-    if(companyIds!=null)
-    for (String id : companyIds) {
-        log.info("Company id: {}",id);
-        alertService.getDevicesThatGiveAlert(id);
-        }
 
-
-    }
-    
 @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
-public void checkDevicesInEveryCompany3() {
+public void checkDevicesInEveryCompany() {
 
     Set<String> companyIds=dataHolderService.getAllCompanyIds();
     if(companyIds!=null)
@@ -134,13 +97,7 @@ public void checkDevicesInEveryCompany3() {
         }
         
     }
-
-
 }
-
-    
-
-
 
 public void stopAlert(String alertId){
     List<ActiveAlert> listOfAlertsToShutDown = new ArrayList();
@@ -150,22 +107,11 @@ public void stopAlert(String alertId){
         .flatMap(List<ActiveAlert>::stream)
         .filter(alert->alert.getId()==Long.parseLong(alertId)) 
         .collect(Collectors.toList());
-    // for(int i=listOfAlertsToShutDown.size()-1;i>=0;i--)
-    // {
-    //     log.info("comparing getId with Long.getLong(alertId)");
-    //     log.info("getId(){}",listOfAlertsToShutDown.get(i).getId());
-    //     log.info("getLong{}",Long.getLong(alertId));
-    //     log.info("alertId",alertId);
-    //     if(listOfAlertsToShutDown.get(i).getId()!=Long.parseLong(alertId))
-    //     listOfAlertsToShutDown.remove(i);
-    // }
     log.info("Trying to shut {} alert(s)",listOfAlertsToShutDown.size());
     for (ActiveAlert alert:listOfAlertsToShutDown)
     {
         alert.shutDown();
     } 
-   // .map(ActiveAlert::getId)
-    //.collect(Collectors.toList());
 }
 public List<List<String>> IdsOfDevicesNotWorking(String companyId){
         List<String> devicesList;

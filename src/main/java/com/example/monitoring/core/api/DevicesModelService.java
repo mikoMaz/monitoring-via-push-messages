@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DevicesModelService implements IDevicesModelService {
 
-    private final DeviceDataService deviceDataService;
     private final DeviceHistoryService historyService;
     private final DeviceStatusService statusService;
     private final DataHolderService dataHolderService;
@@ -55,8 +54,8 @@ public class DevicesModelService implements IDevicesModelService {
             list.add(devices);
 
         }
-        JsonObject currentObject = new JsonObject();
-        JsonObject subDevice = new JsonObject();
+        JsonObject currentObject;
+        JsonObject subDevice;
         for (int i = 0; i < ToplevelDevices.size(); i++) {
             String ToplevelID = ToplevelDevices.get(i);
             Integer ToplevelStatus = statusService.getCalculatedStatus(ToplevelID);
