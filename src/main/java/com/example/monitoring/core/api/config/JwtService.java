@@ -1,20 +1,21 @@
 package com.example.monitoring.core.api.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.crypto.SecretKey;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+
 @Service
 public class JwtService {
-    //private static final String SECRET_KEY = "22c60e4bc7d8d0b3c411c4a7e8e9171ee8b9be6e04ded2c484182778211d192a";
     private static final String SECRET_KEY = "eyJhbGciOiJIUzI1NiJ9eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcxNTEwNDIwNCwiaWF0IjoxNzE1MTA0MjA0fQsnPWyH323VKPwvvVUeL2KhqI7kS81dKlcJtm7UlFwI";
 
     public String extractDeviceId(String token) {
@@ -55,10 +56,10 @@ public class JwtService {
         return Jwts
                 .builder()
                 .claims() // TODO check if it's okay
-                    .subject(userDetails.getUsername())
-                    .add("deviceType", userDetails.getPassword())
-                    .add(claims)
-                    .and()
+                .subject(userDetails.getUsername())
+                .add("deviceType", userDetails.getPassword())
+                .add(claims)
+                .and()
                 .signWith(getSigningKey())
                 .compact();
     }
@@ -67,14 +68,6 @@ public class JwtService {
         String deviceId = extractDeviceId(token);
         return deviceId.equals(userDetails.getUsername()); // && !isTokenExpired(token);
     }
-
-    /*private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    private Date extractExpiration(String token) {
-        return extractClaims(token, Claims::getExpiration);
-    }*/
 
     private Claims extractClaims(String token) {
         return Jwts

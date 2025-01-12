@@ -22,7 +22,6 @@ public class Payload implements UserDetails {
     @Id
     @GeneratedValue
     private Integer id;
-//    private Integer readingTime;
     private String deviceId;
     private String deviceType;
     @Enumerated(EnumType.STRING)

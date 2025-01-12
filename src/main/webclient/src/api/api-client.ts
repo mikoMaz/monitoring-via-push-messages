@@ -43,7 +43,12 @@ export interface IAPIClient {
     secret: string,
     id: string
   ) => Promise<AllDevicesUptimeJson>;
-  postCSVData: (type: string, tableName: string, file: File) => Promise<number>;
+  postCSVData: (
+    accessToken: string,
+    type: string,
+    tableName: string,
+    file: File
+  ) => Promise<number>;
   getDataHistoryChart: (
     dateFrom: string,
     dateTo: string
@@ -284,9 +289,14 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public postCSVData = async (type: string, tableName: string, file: File) => {
+  public postCSVData = async (
+    accessToken: string,
+    type: string,
+    tableName: string,
+    file: File
+  ) => {
     if (usingTestData()) {
-      return this.testApiClient.postCSVData(type, tableName, file);
+      return this.testApiClient.postCSVData(accessToken, type, tableName, file);
     }
 
     const formData = new FormData();
@@ -297,7 +307,11 @@ export class APIClient implements IAPIClient {
     const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/upload-csv`;
 
     return axios
-      .post(apiURL, formData)
+      .post(apiURL, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
       .then((response) => {
         return response.status;
       })

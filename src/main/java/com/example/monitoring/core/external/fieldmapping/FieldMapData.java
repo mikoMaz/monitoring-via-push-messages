@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "device_payload_fields")
 public class FieldMapData {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String keyName;
     private String tableKeyName;

@@ -1,13 +1,5 @@
 package com.example.monitoring.core.external;
 
-import lombok.RequiredArgsConstructor;
-
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.monitoring.core.api.auth.AuthenticationController;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,11 +7,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.monitoring.core.api.auth.AuthenticationController;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
 public class CsvServiceImpl implements CsvService {
     private final DataHolderService dataHolderService;
-    org.slf4j.Logger  logger =LoggerFactory.getLogger(AuthenticationController.class);
+    org.slf4j.Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Override
     public List<List<String>> readCsv(MultipartFile file) {
@@ -48,16 +49,13 @@ public class CsvServiceImpl implements CsvService {
         csvInList.removeFirst();
         csvInList.forEach(
                 listRow -> {
-                    //
-                    //
                     // tabelka1
                     dataHolderService.addDeviceIfNotExist(listRow.getFirst());
                     dataHolderService.addCompanyIdToDeviceData(listRow.getFirst(), listRow.getLast());
-                    //git tabelka4
+                    // git tabelka4
                     dataHolderService.addCompanyIfNotExist(listRow.getLast());
                     dataHolderService.addDeviceIdToCompanyData(listRow.getLast(), listRow.getFirst());
-                }
-        );
+                });
         return true;
     }
 
@@ -77,16 +75,15 @@ public class CsvServiceImpl implements CsvService {
         csvInList.removeFirst();
         csvInList.forEach(
                 listRow -> {
-                    //tabelka2
+                    // tabelka2
                     dataHolderService.addDeviceChildIfNotExists(listRow.getFirst());
                     dataHolderService.addParentIdToDeviceParentData(listRow.getFirst(), listRow.getLast());
 
-                    //tabelka3
+                    // tabelka3
                     dataHolderService.addDeviceParentIfNotExists(listRow.getLast());
 
-                    dataHolderService.addChildForGivenParentId(listRow.getLast(),listRow.getFirst());
-                }
-        );
+                    dataHolderService.addChildForGivenParentId(listRow.getLast(), listRow.getFirst());
+                });
         return true;
     }
 }

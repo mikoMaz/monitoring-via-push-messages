@@ -1,8 +1,5 @@
 package com.example.monitoring.core.api.config;
 
-import com.example.monitoring.core.api.payload.PayloadRepository;
-import com.example.monitoring.core.user.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +13,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.example.monitoring.core.api.payload.PayloadRepository;
+import com.example.monitoring.core.user.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -38,23 +40,28 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AuthenticationProvider deviceAuthenticationProvider(@Qualifier("deviceDetailsService") UserDetailsService deviceDetailsService) {
+    public AuthenticationProvider deviceAuthenticationProvider(
+            @Qualifier("deviceDetailsService") UserDetailsService deviceDetailsService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(deviceDetailsService);  // which deviceDetailsService to use for fetching information about usr
+        provider.setUserDetailsService(deviceDetailsService); // which deviceDetailsService to use for fetching
+                                                              // information about usr
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
-//    @Bean
-//    public AuthenticationProvider userEmailAuthenticationProvider(@Qualifier("userDetailsService") UserDetailsService userDetailsService) {
-//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-//        provider.setUserDetailsService(userDetailsService);
-//        provider.setPasswordEncoder(passwordEncoder());
-//        return provider;
-//    }
+    // @Bean
+    // public AuthenticationProvider
+    // userEmailAuthenticationProvider(@Qualifier("userDetailsService")
+    // UserDetailsService userDetailsService) {
+    // DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+    // provider.setUserDetailsService(userDetailsService);
+    // provider.setPasswordEncoder(passwordEncoder());
+    // return provider;
+    // }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 

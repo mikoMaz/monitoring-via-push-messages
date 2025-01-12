@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   Card,
   CardBody,
   CardHeader,
@@ -24,7 +23,6 @@ import { NewCompanyCard } from "./components/new-company-card";
 import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 import { AddNewUserCard } from "./components/add-new-user-card";
 import { ICompanyDto } from "../../types/ICompanyDto";
-import { error } from "console";
 
 export const AdminPanelPage = ({
   apiClient,
@@ -148,6 +146,7 @@ export const AdminPanelPage = ({
                           label="Devices"
                           type="device"
                           apiClient={apiClient}
+                          accessToken={accessToken}
                         />
                         {/* Hierarchy */}
                         <FileSender
@@ -155,12 +154,14 @@ export const AdminPanelPage = ({
                           label="Set hierarchy tree for devices in the company"
                           type="hierarchy"
                           apiClient={apiClient}
+                          accessToken={accessToken}
                         />
                         {/* Alerts */}
                         <FileSender
                           title="Alerts"
                           label="Create new alert for devices"
                           apiClient={apiClient}
+                          accessToken={accessToken}
                         />
                       </VStack>
                     </CardBody>{" "}

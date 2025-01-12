@@ -2,7 +2,6 @@ import {
   Alert,
   AlertDescription,
   AlertIcon,
-  AlertTitle,
   Button,
   Card,
   CardBody,
@@ -13,14 +12,11 @@ import {
   HStack,
   IconButton,
   Input,
-  Select,
-  VStack,
 } from "@chakra-ui/react";
 import { APIClient } from "../../../api/api-client";
 import { IUserInfoResponse } from "../../../types/IUserInfoResponse";
 import { UIProps } from "../../../config/config";
-import { useEffect, useState } from "react";
-import { ICompanyDto } from "../../../types/ICompanyDto";
+import { useState } from "react";
 import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 
 export const NewCompanyCard = ({
