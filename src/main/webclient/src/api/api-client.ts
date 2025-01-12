@@ -304,7 +304,7 @@ export class APIClient implements IAPIClient {
     formData.append("tableName", tableName);
     formData.append("file", file);
 
-    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/upload-csv`;
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/user/upload-csv`;
 
     return axios
       .post(apiURL, formData, {
@@ -334,7 +334,7 @@ export class APIClient implements IAPIClient {
       return this.testApiClient.postAddCompany(accessToken, companyName);
     }
     return axios
-      .post(apiUrl, {
+      .post(apiUrl, {}, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -362,7 +362,7 @@ export class APIClient implements IAPIClient {
       );
     }
     return axios
-      .post(apiUrl, {
+      .post(apiUrl, {}, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
