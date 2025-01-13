@@ -26,7 +26,7 @@ export const BridgeRowView = ({
   bridge,
   inactiveOnly,
   deviceIdFilter,
-  isSorted
+  isSorted,
 }: IBridgeRowViewProps) => {
   const filteredGateways = bridge.gateways.filter(
     (gateway) =>
