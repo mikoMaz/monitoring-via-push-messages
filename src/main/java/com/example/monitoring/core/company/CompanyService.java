@@ -16,4 +16,5 @@ public interface CompanyService {
     void updateUsersInCompany(Long companyId, List<UserDto> users);
 
     Company getCompanyByNameAndEncryptedKey(String companyName, String encryptedKey);
+    Company findCompanyByName(String companyName);
 }

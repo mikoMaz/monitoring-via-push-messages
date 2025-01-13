@@ -177,17 +177,17 @@ public class DevicesModelService implements IDevicesModelService {
     }
 
     @Override
-    public JsonObject getSingleDeviceHistory(String id, String device_id) {
+    public JsonObject getSingleDeviceHistory(String companyId, String deviceId) {
         List<String> devicesList;
         List<String> ToplevelDevices = new ArrayList<>();
         JsonObject root = new JsonObject();
-        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(companyId);
         if (devicesList == null) {
             return null;
         }
         Double status = null;
-        if (devicesList.contains(device_id)) {
-            status = historyService.uptimePercent(device_id);
+        if (devicesList.contains(deviceId)) {
+            status = historyService.uptimePercent(deviceId);
         } else {
             return null;
         }

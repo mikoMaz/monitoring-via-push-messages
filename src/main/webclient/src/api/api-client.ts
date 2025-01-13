@@ -29,7 +29,7 @@ export interface IAPIClient {
     id: string
   ) => Promise<DeviceModel>;
   getDeviceUptime: (
-    type: deviceType,
+    companyId: string,
     id: string,
     accessToken: string
   ) => Promise<number>;
@@ -38,10 +38,10 @@ export interface IAPIClient {
     accessToken: string
   ) => Promise<AllDevicesUptimeJson>;
   validatePreviewSecret: (secret: string, company: string) => Promise<boolean>;
-  getPreviewDeviceModel: (secret: string, id: string) => Promise<DeviceModel>;
+  getPreviewDeviceModel: (secret: string, name: string) => Promise<DeviceModel>;
   getPreviewDevicesHistory: (
     secret: string,
-    id: string
+    name: string
   ) => Promise<AllDevicesUptimeJson>;
   postCSVData: (
     accessToken: string,
@@ -159,13 +159,13 @@ export class APIClient implements IAPIClient {
   };
 
   public getDeviceUptime = async (
-    type: deviceType,
-    id: string,
+    companyId: string,
+    deviceId: string,
     accessToken: string
   ) => {
-    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/history?id=${type}&device_id=${id}`;
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceid=${deviceId}`;
     if (usingTestData()) {
-      return this.testApiClient.getDeviceUptime(type, id, accessToken);
+      return this.testApiClient.getDeviceUptime(companyId, deviceId, accessToken);
     }
     return axios
       .get(apiUrl, {
@@ -244,17 +244,17 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getPreviewDeviceModel = async (secret: string, id: string) => {
-    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/preview/jsonTree?id=${id}`;
+  public getPreviewDeviceModel = async (secret: string, name: string) => {
+    const apiURL = `${this.getAppVerionApiUrl()}/api/v1/preview/jsonTree?companyName=${name}`;
 
     if (usingTestData()) {
-      return this.testApiClient.getPreviewDeviceModel(secret, id);
+      return this.testApiClient.getPreviewDeviceModel(secret, name);
     }
     return axios
       .get(apiURL, {
         headers: {
           CompanySecret: `${secret}`,
-          Company: `${id}`,
+          Company: `${name}`,
         },
       })
       .then((response) => {
@@ -267,16 +267,16 @@ export class APIClient implements IAPIClient {
       });
   };
 
-  public getPreviewDevicesHistory = async (secret: string, id: string) => {
-    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?id=${id}`;
+  public getPreviewDevicesHistory = async (secret: string, name: string) => {
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?companyName=${name}`;
     if (usingTestData()) {
-      return this.testApiClient.getPreviewDevicesHistory(secret, id);
+      return this.testApiClient.getPreviewDevicesHistory(secret, name);
     }
     return axios
       .get(apiUrl, {
         headers: {
           CompanySecret: `${secret}`,
-          Company: `${id}`,
+          Company: `${name}`,
         },
       })
       .then((response) => {

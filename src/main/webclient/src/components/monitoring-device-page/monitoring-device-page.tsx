@@ -26,14 +26,16 @@ interface IMonitoringDevicePage {
   apiClient: IAPIClient;
   model: DeviceModel;
   accessToken: string;
+  companyId: number | undefined;
 }
 
 export const MonitoringDevicePage = ({
   apiClient,
   model,
-  accessToken
+  accessToken,
+  companyId,
 }: IMonitoringDevicePage) => {
-  const [activeTime, setActiveTime] = useState<number>(0);
+  const [activeTime, setActiveTime] = useState<number | undefined>();
   const ui = UIProps;
   const { device } = useParams();
   const [selectedDevice, setSelectedDevice] = useState<IMonitoringDevice>(
@@ -90,20 +92,29 @@ export const MonitoringDevicePage = ({
 
   useEffect(() => {
     const fetchDeviceActiveTime = async (
-      type: deviceType,
-      id: string
+      deviceId: string,
+      companyId: number | undefined
     ) => {
-      var time = await apiClient.getDeviceUptime(type, id, accessToken);
-      setActiveTime(time);
+      try {
+        if (!companyId) {
+          throw new Error("CompanyId is missing");
+        }
+        var time = await apiClient.getDeviceUptime(
+          companyId.toString(),
+          deviceId,
+          accessToken
+        );
+        setActiveTime(time);
+      } catch (e: any) {
+        console.log("Couldn't fetch device history value " + e.message);
+        setActiveTime(undefined);
+      }
     };
 
     if (selectedDevice !== DeviceModel.getPlaceholderDevice()) {
-      fetchDeviceActiveTime(
-        selectedDevice.deviceType,
-        selectedDevice.id
-      );
+      fetchDeviceActiveTime(selectedDevice.id, companyId);
     }
-  }, [selectedDevice, apiClient, accessToken]);
+  }, [selectedDevice, apiClient, accessToken, companyId]);
 
   return (
     <Box
