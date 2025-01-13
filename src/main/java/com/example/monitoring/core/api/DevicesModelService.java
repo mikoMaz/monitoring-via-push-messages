@@ -37,6 +37,7 @@ public class DevicesModelService implements IDevicesModelService {
         JsonObject root = new JsonObject();
         devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
         if (devicesList == null) {
+            logger.info("devicesList is null");
             return root;
         }
         for (int i = 0; i < devicesList.size(); i++) {
