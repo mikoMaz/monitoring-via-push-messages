@@ -2,6 +2,7 @@ package com.example.monitoring.core.external;
 
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class CsvController {
     private final CsvService csvService;
     private final DataHolderService dataHolderService;
+    org.slf4j.Logger logger = LoggerFactory.getLogger(CsvController.class);
 
     @PostMapping("/upload-csv")
     public ResponseEntity<String> csvUpload(
@@ -31,7 +33,8 @@ public class CsvController {
         }
 
         List<List<String>> csv = csvService.readCsv(file);
-
+        logger.info("csv read:");
+        logger.info(csv.toString());
         if (type.equals("device")) {
             if (!csvService.csvToDeviceObjectFromDevice(csv)) {
                 ResponseEntity.badRequest().body("CSV has a number of columns other than 2");

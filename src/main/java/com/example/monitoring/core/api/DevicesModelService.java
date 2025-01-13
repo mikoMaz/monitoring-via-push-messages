@@ -28,7 +28,7 @@ public class DevicesModelService implements IDevicesModelService {
     private final DataHolderService dataHolderService;
     private final JsonTreeConverter proc;
 
-    org.slf4j.Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    org.slf4j.Logger logger = LoggerFactory.getLogger(DevicesModelService.class);
 
     @Override
     public JsonObject getJsonTree(String id) {

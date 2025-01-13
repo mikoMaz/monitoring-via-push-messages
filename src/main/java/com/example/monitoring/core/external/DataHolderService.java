@@ -5,13 +5,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.example.monitoring.core.api.DevicesModelService;
 
 @Service
 public class DataHolderService {
     @Autowired
     DataHolder externalData;
+    org.slf4j.Logger logger = LoggerFactory.getLogger(DataHolderService.class);
 
     public void reset1() {
         externalData.getDeviceData().clear();
@@ -104,6 +108,7 @@ public class DataHolderService {
     }
 
     public List<String> getAllChildrenForGivenCompanyId(String companyId) {
+        logger.info(getCompanyData().toString());
         return getCompanyData().get(companyId);
     }
 
