@@ -80,6 +80,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public Company findCompanyByName(String companyName) {
+        return companyRepository.findCompanyByName(companyName);
+    }
+
+    @Override
     public void updateUsersInCompany(Long companyId, List<UserDto> usersChangesToUpdate) {
         UserDto currentUser = userService.getUserDto();
         Role currentUserRole = currentUser.getRole();
