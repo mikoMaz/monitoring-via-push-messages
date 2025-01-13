@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.monitoring.core.api.abstraction.IDevicesModelService;
 import com.example.monitoring.core.company.CompanyService;
-import com.example.monitoring.core.external.DataHolderService;
 import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
@@ -22,14 +21,15 @@ public class PreviewWebDevicesModelController {
     private final CompanyService companyService;
 
     @GetMapping("/jsonTree")
-    public ResponseEntity<String> jsonTree(@RequestParam String id) {
-        id=companyService.findCompanyByName(id).getCompanyId().toString();
+    public ResponseEntity<String> jsonTree(@RequestParam String companyName) {
+        String id = companyService.findCompanyByName(companyName).getCompanyId().toString();
         JsonObject jsonTree = devicesModelService.getJsonTree(id);
         return ResponseEntity.ok().body(jsonTree.toString());
     }
 
     @GetMapping("/historyTree")
-    public ResponseEntity<String> historyTree(@RequestParam String id) {
+    public ResponseEntity<String> historyTree(@RequestParam String companyName) {
+        String id = companyService.findCompanyByName(companyName).getCompanyId().toString();
         JsonObject historyTree = devicesModelService.getHistoryTree(id);
         return ResponseEntity.ok().body(historyTree.toString());
     }

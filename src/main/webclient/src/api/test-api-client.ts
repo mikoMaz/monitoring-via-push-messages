@@ -92,12 +92,12 @@ export class TestAPIClient implements IAPIClient {
     }
   };
 
-  public getPreviewDeviceModel = (secret: string, id: string) => {
-    return this.getUpdatedDeviceModel(secret, id);
+  public getPreviewDeviceModel = (secret: string, name: string) => {
+    return this.getUpdatedDeviceModel(secret, name);
   };
 
-  public getPreviewDevicesHistory = (secret: string, id: string) => {
-    return this.getAllDevicesHistory(id, secret);
+  public getPreviewDevicesHistory = (secret: string, name: string) => {
+    return this.getAllDevicesHistory(name, secret);
   };
 
   public postCSVData = async (accessToken: string, type: string, tableName: string, file: File) => {
