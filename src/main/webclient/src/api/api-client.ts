@@ -29,7 +29,7 @@ export interface IAPIClient {
     id: string
   ) => Promise<DeviceModel>;
   getDeviceUptime: (
-    type: deviceType,
+    companyId: string,
     id: string,
     accessToken: string
   ) => Promise<number>;
@@ -159,13 +159,13 @@ export class APIClient implements IAPIClient {
   };
 
   public getDeviceUptime = async (
-    type: deviceType,
-    id: string,
+    companyId: string,
+    deviceId: string,
     accessToken: string
   ) => {
-    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/history?id=${type}&device_id=${id}`;
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceid=${deviceId}`;
     if (usingTestData()) {
-      return this.testApiClient.getDeviceUptime(type, id, accessToken);
+      return this.testApiClient.getDeviceUptime(companyId, deviceId, accessToken);
     }
     return axios
       .get(apiUrl, {

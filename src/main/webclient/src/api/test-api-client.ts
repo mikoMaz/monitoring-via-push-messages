@@ -62,7 +62,7 @@ export class TestAPIClient implements IAPIClient {
   };
 
   public getDeviceUptime = (
-    type: deviceType,
+    companyId: string,
     id: string,
     accessToken: string
   ) => {

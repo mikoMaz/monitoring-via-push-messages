@@ -58,6 +58,8 @@ export const AppBody = () => {
   const [devicesUptimeValues, setDevicesUptimeValues] =
     useState<AllDevicesUptimeJson>(emptyAllDevicesUptimeJson);
 
+    const [companyId, setCompanyId] = useState<number | undefined>();
+
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);
 
@@ -97,6 +99,7 @@ export const AppBody = () => {
             apiClient={apiClient}
             accessToken={accessToken}
             model={deviceModel}
+            companyId={companyId}
           />
         }
       />,
@@ -152,7 +155,6 @@ export const AppBody = () => {
       try {
         const token = await getAccessTokenSilently();
         diplayAccessToken(token);
-        //TODO czy zwraca email?
         const user = await apiClient.getUserInfo(token, email);
 
         setUserInfo(user);
@@ -166,14 +168,26 @@ export const AppBody = () => {
     }
   };
 
-  const updateModel = async (token: string) => {
+  const getCompanyId = async (token: string): Promise<number | undefined> => {
     try {
       const companies = await apiClient.getAllCompanies(token);
       const id = companies[0] ? companies[0].companyId : undefined;
       if (!id) {
         throw new Error("User doesn't have acces to companies");
       }
-      const data = await apiClient.getUpdatedDeviceModel(token, id.toString());
+      return id;
+    } catch (e: any) {
+      console.error("Getting company information failed: " + e.message);
+      return undefined;
+    }
+  };
+
+  const updateModel = async (token: string, companyId: number) => {
+    try {
+      const data = await apiClient.getUpdatedDeviceModel(
+        token,
+        companyId.toString()
+      );
       setDeviceModel(data);
       return data;
     } catch (e: any) {
@@ -197,31 +211,41 @@ export const AppBody = () => {
     }
   };
 
-  const fetchUptimeValues = async (token: string) => {
+  const fetchUptimeValues = async (
+    token: string,
+    companyId: number
+  ): Promise<AllDevicesUptimeJson> => {
     try {
-      const data = await apiClient.getAllDevicesHistory("1", token);
+      const data = await apiClient.getAllDevicesHistory(
+        companyId.toString(),
+        token
+      );
       setDevicesUptimeValues(data);
       return data;
     } catch (e: any) {
       console.error("fetchUptimeValues error: " + e.message);
       setDevicesUptimeValues(emptyAllDevicesUptimeJson);
-      return [];
+      return emptyAllDevicesUptimeJson;
     }
   };
 
   const onComponentLoaded = async () => {
     const token = await getAccessToken();
     if (token) {
-      await updateModel(token)
-        .then((model) => {
-          checkInactiveDevices(model);
-        })
-        .catch((error: any) => {
-          console.error("Update model error: " + error);
+      const compId = await getCompanyId(token);
+      if (compId) {
+        setCompanyId(compId)
+        await updateModel(token, compId)
+          .then((model) => {
+            checkInactiveDevices(model);
+          })
+          .catch((error: any) => {
+            console.error("Update model error: " + error);
+          });
+        await fetchUptimeValues(token, compId).catch((error: any) => {
+          console.error(error);
         });
-      await fetchUptimeValues(token).catch((error: any) => {
-        console.error(error);
-      });
+      }
     }
   };
 
@@ -241,7 +265,7 @@ export const AppBody = () => {
     } else if (
       userInfo &&
       location.pathname === "/application/admin" &&
-      (["EXTERNAL", "READ_ONLY"].includes(userInfo.userType))
+      ["EXTERNAL", "READ_ONLY"].includes(userInfo.userType)
     ) {
       navigate("/application/permission-required", { replace: true });
     }
