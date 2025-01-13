@@ -31,8 +31,8 @@ public class WebDevicesModelController {
     }
 
     @GetMapping("/historySingleDevice")
-    public ResponseEntity<String> singleDeviceHistory(@RequestParam String id, String device_id) {
-        JsonObject singleDeviceHistory = devicesModelService.getSingleDeviceHistory(id, device_id);
+    public ResponseEntity<String> singleDeviceHistory(@RequestParam String companyId, String device_id) {
+        JsonObject singleDeviceHistory = devicesModelService.getSingleDeviceHistory(companyId, device_id);
         if (singleDeviceHistory == null) {
             return ResponseEntity.badRequest().body("");
         }
