@@ -41,6 +41,12 @@ export const MonitoringPage = ({
 
   const [deviceIdFilter, setDeviceIdFilter] = useState<string>("");
 
+  const [isSorted, setIsSorted] = useState<boolean>(false);
+
+  const sortDevicesById = () => {
+    setIsSorted((prev) => !prev); 
+  };
+
   const setFilteringSectionEnabled = () => {
     switch (filteringHeight) {
       case "0px":
@@ -98,6 +104,7 @@ export const MonitoringPage = ({
             model={model.getSensorsArray()}
             inactiveOnly={inactiveSwitchEnabled}
             deviceIdFilter={deviceIdFilter}
+            isSorted={isSorted}
           />
         );
       case viewOption.gateways:
@@ -106,6 +113,7 @@ export const MonitoringPage = ({
             model={model.getGatewaysArray()}
             inactiveOnly={inactiveSwitchEnabled}
             deviceIdFilter={deviceIdFilter}
+            isSorted={isSorted}
           />
         );
       case viewOption.bridges:
@@ -114,6 +122,7 @@ export const MonitoringPage = ({
             model={model.getBridgesArray()}
             inactiveOnly={inactiveSwitchEnabled}
             deviceIdFilter={deviceIdFilter}
+            isSorted={isSorted}
           />
         );
     }
@@ -173,6 +182,7 @@ export const MonitoringPage = ({
                 setFilterEnabled={setFilteringSectionEnabled}
                 deviceIdFilter={deviceIdFilter}
                 setDeviceIdFilter={setDeviceIdFilter}
+                sortDevicesById={sortDevicesById}
               />
             </GridItem>
           </Grid>
