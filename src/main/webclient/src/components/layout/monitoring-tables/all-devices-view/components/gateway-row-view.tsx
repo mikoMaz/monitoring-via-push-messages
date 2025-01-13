@@ -71,6 +71,7 @@ export const GatewayRowView = ({
               sensors={sensorsToDisplay}
               inactiveOnly={inactiveOnly}
               deviceIdFilter={deviceIdFilter}
+              isSorted={isSorted}
             />
           </AccordionPanel>
         </AccordionItem>
@@ -88,6 +89,7 @@ export const GatewayRowView = ({
               sensors={sensorsToDisplay}
               inactiveOnly={inactiveOnly}
               deviceIdFilter={deviceIdFilter}
+              isSorted={isSorted}
             />
           </AccordionPanel>
         </AccordionItem>
