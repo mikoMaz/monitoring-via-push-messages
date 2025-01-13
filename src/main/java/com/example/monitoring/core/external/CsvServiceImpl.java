@@ -39,15 +39,21 @@ public class CsvServiceImpl implements CsvService {
 
     @Override
     public boolean csvToDeviceObjectFromDevice(List<List<String>> csvInList) {
-        
+        logger.info("inside csvToDeviceObjectFromDevice");
+
         if (csvInList == null || csvInList.isEmpty()) {
             return false;
         }
+        logger.info("Inlinst is not null nor empty");
+
         if (csvInList.getFirst().size() != 2) {
             return false;
         }
+        logger.info("got 2 columns");
+
         dataHolderService.reset1();
         csvInList.removeFirst();
+        
         csvInList.forEach(
                 listRow -> {
                     // tabelka1
@@ -58,12 +64,15 @@ public class CsvServiceImpl implements CsvService {
                     dataHolderService.addDeviceIdToCompanyData(listRow.getLast(), listRow.getFirst());
                     logger.info(dataHolderService.getAllChildrenForGivenCompanyId(null).toString());
                 });
+        logger.info("after foreach, final getCompanyData()");
+        logger.info(dataHolderService.getCompanyData().toString());
+        logger.info("final getDeviceData()");
+        logger.info(dataHolderService.getDeviceData().toString());
         return true;
     }
 
     @Override
     public boolean csvToDeviceObjectFromHierarchy(List<List<String>> csvInList) {
-        
         if (csvInList == null || csvInList.isEmpty()) {
             return false;
         }
@@ -87,6 +96,10 @@ public class CsvServiceImpl implements CsvService {
 
                     dataHolderService.addChildForGivenParentId(listRow.getLast(), listRow.getFirst());
                 });
+                logger.info("final getDeviceChildrenData");
+                logger.info(dataHolderService.getDeviceChildrenData().toString());
+                logger.info("getDeviceParentData");
+                logger.info(dataHolderService.getDeviceParentData().toString());
         return true;
     }
 }

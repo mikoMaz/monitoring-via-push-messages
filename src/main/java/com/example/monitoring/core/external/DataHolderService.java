@@ -34,7 +34,7 @@ public class DataHolderService {
     }
 
     /* device */
-    private Map<String, List<String>> getDeviceData() {
+    public Map<String, List<String>> getDeviceData() {
         return externalData.getDeviceData();
     }
 
@@ -103,7 +103,7 @@ public class DataHolderService {
     }
 
     /* company */
-    private Map<String, List<String>> getCompanyData() {
+    public Map<String, List<String>> getCompanyData() {
         return externalData.getCompanyData();
     }
 
