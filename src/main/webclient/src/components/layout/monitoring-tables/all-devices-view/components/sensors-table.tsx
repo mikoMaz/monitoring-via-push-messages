@@ -12,11 +12,13 @@ import {
 } from "@chakra-ui/react";
 import { deviceStatus, Sensor } from "../../../../../types/deviceModel";
 import { DeviceRowView } from "../../single-device-view/components/device-row-view";
+import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 
 interface ISensorsTableProps {
   sensors: Sensor[];
   inactiveOnly: boolean;
   deviceIdFilter: string;
+  isSorted: boolean;
 }
 
 const NoData = () => {
@@ -31,11 +33,18 @@ const NoData = () => {
   );
 };
 
-const SensorsTableHead = () => {
+const SensorsTableHead = ({ isSorted }: { isSorted: boolean }) => {
   return (
     <Thead>
       <Tr>
-        <Th>Device ID</Th>
+        <Th display="flex" alignItems="center">
+          Device ID
+          {isSorted ? (
+            <ArrowDropUp fontSize="small" style={{ marginLeft: "8px" }} />
+          ) : (
+            <ArrowDropDown fontSize="small" style={{ marginLeft: "8px" }} />
+          )}
+        </Th>
         <Th>Last Ping</Th>
         <Th>Status</Th>
       </Tr>
@@ -47,6 +56,7 @@ export const SensorsTable = ({
   sensors,
   inactiveOnly,
   deviceIdFilter,
+  isSorted,
 }: ISensorsTableProps) => {
   const inactiveSensors = sensors.filter(
     (s) => s.status !== deviceStatus.active
@@ -56,7 +66,7 @@ export const SensorsTable = ({
       return (
         <TableContainer borderRadius="lg">
           <Table variant="simple" bg="white">
-            <SensorsTableHead />
+            <SensorsTableHead isSorted={isSorted} />
             <Tbody>
               <>
                 {inactiveSensors.map((sensor) => {
@@ -75,7 +85,7 @@ export const SensorsTable = ({
       return (
         <TableContainer borderRadius="lg">
           <Table variant="simple" bg="white">
-            <SensorsTableHead />
+            <SensorsTableHead isSorted={isSorted} />
             <Tbody>
               <>
                 {sensors.map((sensor) => {

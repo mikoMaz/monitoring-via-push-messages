@@ -1,9 +1,4 @@
-import {
-  HStack,
-  Input,
-  InputGroup,
-  InputLeftElement,
-} from "@chakra-ui/react";
+import { HStack, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { ButtonWithIcon } from "../../layout/button-with-icon";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
@@ -14,12 +9,14 @@ interface IFilterSectionButtonsProps {
   setFilterEnabled: () => void;
   setDeviceIdFilter: (val: string) => void;
   deviceIdFilter: string;
+  sortDevicesById: () => void
 }
 
 export const FilterSectionButtons = ({
   setFilterEnabled,
   setDeviceIdFilter,
   deviceIdFilter,
+  sortDevicesById,
 }: IFilterSectionButtonsProps) => {
   const ui = UIProps;
 
@@ -28,7 +25,7 @@ export const FilterSectionButtons = ({
       <ButtonWithIcon
         text="Sort"
         icon={<FilterListIcon />}
-        onClick={() => {}}
+        onClick={sortDevicesById}
         props={{ fontSize: "14px", size: "md" }}
       />
       <ButtonWithIcon

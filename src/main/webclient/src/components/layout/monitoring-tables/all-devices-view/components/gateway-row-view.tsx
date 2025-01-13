@@ -20,15 +20,21 @@ interface IGatewayRowViewProps {
   gateway: Gateway;
   inactiveOnly: boolean;
   deviceIdFilter: string;
+  isSorted: boolean;
 }
 
 export const GatewayRowView = ({
   gateway,
   inactiveOnly,
   deviceIdFilter,
+  isSorted,
 }: IGatewayRowViewProps) => {
   const filteredSensors = gateway.sensors.filter((sensor) =>
     sensor.id.includes(deviceIdFilter)
+  );
+
+  const sortedSensors = [...filteredSensors].sort((a, b) =>
+    isSorted ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id)
   );
 
   const GatewayButton = () => {
@@ -46,8 +52,8 @@ export const GatewayRowView = ({
   };
 
   const sensorsToDisplay = inactiveOnly
-    ? filteredSensors.filter((sensor) => sensor.status !== deviceStatus.active)
-    : filteredSensors;
+    ? sortedSensors.filter((sensor) => sensor.status !== deviceStatus.active)
+    : sortedSensors;
 
   if (
     inactiveOnly &&
@@ -65,6 +71,7 @@ export const GatewayRowView = ({
               sensors={sensorsToDisplay}
               inactiveOnly={inactiveOnly}
               deviceIdFilter={deviceIdFilter}
+              isSorted={isSorted}
             />
           </AccordionPanel>
         </AccordionItem>
@@ -82,6 +89,7 @@ export const GatewayRowView = ({
               sensors={sensorsToDisplay}
               inactiveOnly={inactiveOnly}
               deviceIdFilter={deviceIdFilter}
+              isSorted={isSorted}
             />
           </AccordionPanel>
         </AccordionItem>
