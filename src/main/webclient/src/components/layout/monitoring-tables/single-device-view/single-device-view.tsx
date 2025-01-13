@@ -46,6 +46,7 @@ export const SingleDeviceView = ({
   const sortedDevices = [...filteredDevices].sort((a, b) =>
     isSorted ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id)
   );
+  
   return (
     <TableContainer borderRadius="lg">
       <Table variant="simple" bg="white" size="sm">

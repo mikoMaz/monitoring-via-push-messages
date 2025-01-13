@@ -19,17 +19,23 @@ interface IBridgeRowViewProps {
   bridge: Bridge;
   inactiveOnly: boolean;
   deviceIdFilter: string;
+  isSorted: boolean;
 }
 
 export const BridgeRowView = ({
   bridge,
   inactiveOnly,
   deviceIdFilter,
+  isSorted
 }: IBridgeRowViewProps) => {
   const filteredGateways = bridge.gateways.filter(
     (gateway) =>
       gateway.id.includes(deviceIdFilter) ||
       gateway.getChildDevicesCountMachingFilterPattern(deviceIdFilter) > 0
+  );
+
+  const sortedGateways = [...filteredGateways].sort((a, b) =>
+    isSorted ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id)
   );
 
   const BridgeButton = () => {
@@ -58,11 +64,12 @@ export const BridgeRowView = ({
           <BridgeButton />
         </AccordionButton>
         <AccordionPanel>
-          {filteredGateways.map((gateway) => (
+          {sortedGateways.map((gateway) => (
             <GatewayRowView
               gateway={gateway}
               inactiveOnly={inactiveOnly}
               deviceIdFilter={deviceIdFilter}
+              isSorted={isSorted}
             />
           ))}
         </AccordionPanel>
@@ -75,11 +82,12 @@ export const BridgeRowView = ({
           <BridgeButton />
         </AccordionButton>
         <AccordionPanel>
-          {filteredGateways.map((gateway) => (
+          {sortedGateways.map((gateway) => (
             <GatewayRowView
               gateway={gateway}
               inactiveOnly={inactiveOnly}
               deviceIdFilter={deviceIdFilter}
+              isSorted={isSorted}
             />
           ))}
         </AccordionPanel>

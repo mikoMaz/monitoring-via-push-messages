@@ -44,7 +44,7 @@ export const MonitoringPage = ({
   const [isSorted, setIsSorted] = useState<boolean>(false);
 
   const sortDevicesById = () => {
-    setIsSorted((prev) => !prev); 
+    setIsSorted((prev) => !prev);
   };
 
   const setFilteringSectionEnabled = () => {
@@ -96,6 +96,7 @@ export const MonitoringPage = ({
             model={model}
             inactiveOnly={inactiveSwitchEnabled}
             deviceIdFilter={deviceIdFilter}
+            isSorted={isSorted}
           />
         );
       case viewOption.sensors:
