@@ -14,19 +14,19 @@ export const DeviceRowView = (device: IMonitoringDevice) => {
     switch (device.deviceType) {
       case deviceType.sensor:
         navigate({
-          pathname: "/monitoring/sensor",
+          pathname: "sensor",
           search: new URLSearchParams(`id=${device.id}`).toString(),
         });
         break;
       case deviceType.gateway:
         navigate({
-          pathname: "/monitoring/gateway",
+          pathname: "gateway",
           search: new URLSearchParams(`id=${device.id}`).toString(),
         });
         break;
       case deviceType.bridge:
         navigate({
-          pathname: "/monitoring/bridge",
+          pathname: "bridge",
           search: new URLSearchParams(`id=${device.id}`).toString(),
         });
         break;
