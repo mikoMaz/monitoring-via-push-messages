@@ -63,7 +63,6 @@ public class CsvServiceImpl implements CsvService {
                     // git tabelka4
                     dataHolderService.addCompanyIfNotExist(listRow.getLast());
                     dataHolderService.addDeviceIdToCompanyData(listRow.getLast(), listRow.getFirst());
-                    logger.info(dataHolderService.getAllChildrenForGivenCompanyId(null).toString());
                 });
         logger.info("after foreach, final getCompanyData()");
         logger.info(dataHolderService.getCompanyData().toString());
