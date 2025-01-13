@@ -8,5 +8,5 @@ public interface IDevicesModelService {
 
     JsonObject getHistoryTree(String id);
 
-    JsonObject getSingleDeviceHistory(String id, String device_id);
+    JsonObject getSingleDeviceHistory(String companyId, String deviceId);
 }
