@@ -70,7 +70,7 @@ public class CompanyServiceImpl implements CompanyService {
                     .map(company -> new CompanyDto(company.getCompanyId(), company.getName()))
                     .toList();
         }
-        if (userRole == Role.ADMIN) {
+        if (userRole == Role.ADMIN || userRole == Role.READ_ONLY) {
             return companyRepository.findAll().stream()
                     .map(company -> new CompanyDto(company.getCompanyId(), company.getName()))
                     .filter(company -> Objects.equals(userDto.getCompanyId(), company.getCompanyId()))
