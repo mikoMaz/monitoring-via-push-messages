@@ -45,7 +45,8 @@ public class CsvServiceImpl implements CsvService {
             return false;
         }
         logger.info("Inlinst is not null nor empty");
-
+        logger.info(csvInList.getFirst().toString());
+        logger.info(Integer.toString(csvInList.getFirst().size()));
         if (csvInList.getFirst().size() != 2) {
             return false;
         }
