@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CsvServiceImpl implements CsvService {
     private final DataHolderService dataHolderService;
-    org.slf4j.Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    org.slf4j.Logger logger = LoggerFactory.getLogger(CsvServiceImpl.class);
 
     @Override
     public List<List<String>> readCsv(MultipartFile file) {
@@ -39,6 +39,7 @@ public class CsvServiceImpl implements CsvService {
 
     @Override
     public boolean csvToDeviceObjectFromDevice(List<List<String>> csvInList) {
+        
         if (csvInList == null || csvInList.isEmpty()) {
             return false;
         }
@@ -55,12 +56,14 @@ public class CsvServiceImpl implements CsvService {
                     // git tabelka4
                     dataHolderService.addCompanyIfNotExist(listRow.getLast());
                     dataHolderService.addDeviceIdToCompanyData(listRow.getLast(), listRow.getFirst());
+                    logger.info(dataHolderService.getAllChildrenForGivenCompanyId(null).toString());
                 });
         return true;
     }
 
     @Override
     public boolean csvToDeviceObjectFromHierarchy(List<List<String>> csvInList) {
+        
         if (csvInList == null || csvInList.isEmpty()) {
             return false;
         }
