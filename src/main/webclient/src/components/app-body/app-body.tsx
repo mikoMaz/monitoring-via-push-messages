@@ -233,7 +233,7 @@ export const AppBody = () => {
     setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, accessToken]);
+  }, [user]);
 
   useEffect(() => {
     if (userInfo && userInfo.userType === "EXTERNAL") {
