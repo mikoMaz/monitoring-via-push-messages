@@ -1,5 +1,6 @@
 import { Box, Center, Grid, GridItem, Heading } from "@chakra-ui/react";
 import { UIProps } from "../../config/config";
+import { UserInstructions } from "./user-instructions-pl";
 
 export const AboutPage = () => {
   return (
@@ -10,16 +11,7 @@ export const AboutPage = () => {
       boxShadow="inner"
     >
       <Center paddingTop={25} >
-        <Grid templateRows="repeat(2, 1fr)" gap={20}>
-          <GridItem>
-            <Heading size="lg">
-              Right now, we don't have information on this page.
-            </Heading>
-            <Heading size="md">
-              Check here later.
-            </Heading>
-          </GridItem>
-        </Grid>
+        <UserInstructions />
       </Center>
     </Box>
   );

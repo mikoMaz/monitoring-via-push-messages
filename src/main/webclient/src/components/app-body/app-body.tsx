@@ -121,7 +121,6 @@ export const AppBody = () => {
           />
         }
       />,
-      // TODO: weryfikacja, czy osoba która wchodzi ma uprawnienia
       <Route
         key="admin-panel-page"
         path="/admin"

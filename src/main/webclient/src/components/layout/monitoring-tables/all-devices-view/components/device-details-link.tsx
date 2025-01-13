@@ -11,13 +11,13 @@ export const DeviceDetailsLink = ({ type, id }: IDeviceDetailsLink) => {
   switch (type) {
     case deviceType.bridge:
       return (
-        <ChakraLink as={ReactRouterLink} to={`/monitoring/bridge?id=${id}`}>
+        <ChakraLink as={ReactRouterLink} to={`bridge?id=${id}`}>
           Bridge {id}
         </ChakraLink>
       );
     case deviceType.gateway:
       return (
-        <ChakraLink as={ReactRouterLink} to={`/monitoring/gateway?id=${id}`}>
+        <ChakraLink as={ReactRouterLink} to={`gateway?id=${id}`}>
           Gateway {id}
         </ChakraLink>
       );
