@@ -26,6 +26,11 @@ public class CompanyServiceImpl implements CompanyService {
         this.companyRepository = companyRepository;
         this.userService = userService;
     }
+    @Override
+    public Company findCompanyByName(String companyName)   
+{
+    return companyRepository.findCompanyByName(companyName);
+}
 
     @Override
     public void createCompany(String companyName) {
