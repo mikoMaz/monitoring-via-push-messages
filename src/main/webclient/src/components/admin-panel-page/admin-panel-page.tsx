@@ -133,7 +133,7 @@ export const AdminPanelPage = ({
                         {/* Devices */}
                         <FileSender
                           title="Devices"
-                          label="Devices"
+                          label="Set which company has which devices"
                           type="device"
                           apiClient={apiClient}
                           accessToken={accessToken}
