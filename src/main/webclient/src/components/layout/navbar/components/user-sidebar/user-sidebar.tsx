@@ -46,7 +46,7 @@ export const UserSidebar = ({
   userInfo,
   companies,
   setDefaultCompany,
-  defaultCompany
+  defaultCompany,
 }: IUserSidebar) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { logout, user } = useAuth0();
@@ -91,14 +91,12 @@ export const UserSidebar = ({
                     alertsEnabled={alertsEnabled}
                     setAlertsEnabled={setAlertsEnabled}
                   />
-                  <Divider borderColor={"grey"} />
                   <SelectDefaultCompany
                     userInfo={userInfo}
                     companies={companies}
                     setDefaultCompany={setDefaultCompany}
                     defaultCompany={defaultCompany}
                   />
-                  <Divider borderColor={"grey"} />
                   <Button
                     colorScheme="red"
                     onClick={handleClearLocalStorage}
