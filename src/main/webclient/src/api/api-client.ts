@@ -163,7 +163,7 @@ export class APIClient implements IAPIClient {
     deviceId: string,
     accessToken: string
   ) => {
-    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceid=${deviceId}`;
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceId=${deviceId}`;
     if (usingTestData()) {
       return this.testApiClient.getDeviceUptime(companyId, deviceId, accessToken);
     }
