@@ -29,6 +29,7 @@ import { ICompanyDto } from "../../../../../types/ICompanyDto";
 import { APIClient } from "../../../../../api/api-client";
 import { SelectDefaultCompany } from "./components/select-default-company-dropdown";
 import { SetDisplayAlerts } from "./components/set-display-alerts";
+import { getMailNickname } from "../../../../../types/projectTypes";
 
 interface IUserSidebar {
   alertsEnabled: boolean;
@@ -72,7 +73,7 @@ export const UserSidebar = ({
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <>{userInfo?.email.split("@")[0] ?? user?.nickname}</>
+            <>{userInfo?.email ? getMailNickname(userInfo?.email) : user?.nickname}</>
           </DrawerHeader>
           <DrawerBody>
             <Grid templateRows="2fr auto auto">

@@ -1,6 +1,7 @@
 import { User } from "@auth0/auth0-react";
 import { Card, CardHeader, Avatar, CardBody, Heading } from "@chakra-ui/react";
 import { IUserInfoResponse } from "../../../types/IUserInfoResponse";
+import { getMailNickname } from '../../../types/projectTypes';
 
 export const UserSection = ({
   user,
@@ -21,7 +22,7 @@ export const UserSection = ({
         alignItems="center"
       >
         <Heading padding={1} size="lg">
-          {user?.name ?? "You"}
+          {getMailNickname(userInfo.email) ?? user?.name ?? "You"}
         </Heading>
         {/* <Heading padding={1} size="md">{user?.nickname ?? "No nickname"}</Heading> */}
         <Heading padding={1} size="sm">
