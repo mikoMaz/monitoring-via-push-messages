@@ -41,13 +41,13 @@ export const Navbar = ({
         height={ui.height.navbar}
       >
         <GridItem>
-          <VStack spacing={4} align="center" height="100%" width="auto">
+          <VStack align="center" height="100%" width="auto" paddingStart={4}>
             <Logo />
           </VStack>
         </GridItem>
         <GridItem width="auto">
           <Center height="100%">
-            <Heading color="black" size="lg" paddingX={10}>
+            <Heading color="black" size="lg" paddingX={6}>
               ErrWarn
             </Heading>
           </Center>
