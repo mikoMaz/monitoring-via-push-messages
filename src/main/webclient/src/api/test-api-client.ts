@@ -20,7 +20,7 @@ export class TestAPIClient implements IAPIClient {
   };
 
   public getUpdatedDeviceModel = (accessToken: string, id: string) => {
-    const model = new DeviceModel([
+    const model1 = new DeviceModel([
       new Bridge("bridge1", deviceStatus.active, new Date(), [
         new Gateway("gateway1", deviceStatus.active, new Date(), [
           new Sensor("sensor1", deviceStatus.active, new Date()),
@@ -57,7 +57,58 @@ export class TestAPIClient implements IAPIClient {
         ]),
       ]),
     ]);
-    return Promise.resolve(model);
+    const model2 = new DeviceModel([
+      new Bridge("b6", deviceStatus.active, new Date(), [
+        new Gateway("g125", deviceStatus.active, new Date(), [
+          new Sensor("s166", deviceStatus.active, new Date()),
+          new Sensor("s342", deviceStatus.disabled, new Date()),
+          new Sensor("s23", deviceStatus.active, new Date()),
+          new Sensor("s27", deviceStatus.disabled, new Date()),
+        ]),
+        new Gateway("g65", deviceStatus.disabled, new Date(), []),
+      ]),
+      new Bridge("b23", deviceStatus.disabled, new Date(), [
+        new Gateway("g23", deviceStatus.disabled, new Date(), [
+          new Sensor("s12", deviceStatus.disabled, new Date()),
+          new Sensor("s56", deviceStatus.disabled, new Date()),
+        ]),
+      ]),
+    ]);
+    const model3 = new DeviceModel(
+      [
+        new Bridge("b87", deviceStatus.disabled, new Date(), [
+          new Gateway("g645", deviceStatus.disabled, new Date(), [
+            new Sensor("s231", deviceStatus.disabled, new Date()),
+            new Sensor("s854", deviceStatus.disabled, new Date()),
+          ]),
+        ]),
+      ],
+      [
+        new Gateway("g75", deviceStatus.active, new Date(), [
+          new Sensor("s34", deviceStatus.active, new Date()),
+          new Sensor("s74", deviceStatus.disabled, new Date()),
+          new Sensor("s5", deviceStatus.active, new Date()),
+        ]),
+      ]
+    );
+    const model4 = new DeviceModel(
+      [
+        new Bridge("b23", deviceStatus.disabled, new Date(), [], [
+          new Sensor("s12", deviceStatus.disabled, new Date()),
+          new Sensor("s5", deviceStatus.disabled, new Date()),
+        ]),
+      ],
+    );
+
+    if (id === "1") {
+      return Promise.resolve(model1);
+    } else if (id === "2") {
+      return Promise.resolve(model2);
+    } else if (id === "3") {
+      return Promise.resolve(model3);
+    } else {
+      return Promise.resolve(model4);
+    }
   };
 
   public getDeviceUptime = (
@@ -99,7 +150,12 @@ export class TestAPIClient implements IAPIClient {
     return this.getAllDevicesHistory(name, secret);
   };
 
-  public postCSVData = async (accessToken: string, type: string, tableName: string, file: File) => {
+  public postCSVData = async (
+    accessToken: string,
+    type: string,
+    tableName: string,
+    file: File
+  ) => {
     if (Math.floor(Math.random() * 4) / 3) {
       return new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
         throw new Error("Failed to upload file");
