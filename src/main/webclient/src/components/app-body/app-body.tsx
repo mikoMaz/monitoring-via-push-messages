@@ -41,12 +41,6 @@ export const AppBody = () => {
 
   const [email, setEmail] = useState<string>(getDeniedUserInfoResponse().email);
 
-  useEffect(() => {
-    if (user?.email) {
-      setEmail(user?.email);
-    }
-  }, [user]);
-
   const [accessToken, setAccessToken] = useState<string>("");
 
   const [userInfo, setUserInfo] = useState<IUserInfoResponse>();
@@ -256,7 +250,7 @@ export const AppBody = () => {
     if (alertsEnabledRef.current) {
       const inactiveDevices: IMonitoringDevice[] =
         model.getInactiveDevicesArray();
-      if (inactiveDevices.length && isAuthenticated) {
+      if (inactiveDevices.length) {
         toast(
           getToastOptions(inactiveDevices.length, () => {
             setInactiveSwitchEnabled(true);
