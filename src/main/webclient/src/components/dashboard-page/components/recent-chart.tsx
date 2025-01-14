@@ -53,7 +53,7 @@ const CustomTooltip = ({
     );
   }
 
-  return null;
+  return <></>;
 };
 
 export const RecentChart = ({

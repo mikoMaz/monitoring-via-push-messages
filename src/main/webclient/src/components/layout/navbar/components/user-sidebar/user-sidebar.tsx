@@ -28,6 +28,8 @@ import { IUserInfoResponse } from "../../../../../types/IUserInfoResponse";
 import { useEffect, useState } from "react";
 import { ICompanyDto } from "../../../../../types/ICompanyDto";
 import { APIClient } from "../../../../../api/api-client";
+import { SelectDefaultCompany } from "./components/select-default-company-dropdown";
+import { SetDisplayAlerts } from "./components/set-display-alerts";
 
 interface IUserSidebar {
   alertsEnabled: boolean;
@@ -36,8 +38,6 @@ interface IUserSidebar {
   apiClient: APIClient;
   accessToken: string;
 }
-
-const DEFAULT_COMPANIES_LABEL = "Select company";
 
 export const UserSidebar = ({
   alertsEnabled,
@@ -55,7 +55,6 @@ export const UserSidebar = ({
   };
 
   const [companies, setCompanies] = useState<ICompanyDto[]>([]);
-  const [companySelect, setCompanySelect] = useState<number | null>(null);
 
   const refreshCompaniesList = async () => {
     await apiClient
@@ -74,11 +73,6 @@ export const UserSidebar = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken, apiClient]);
 
-  const handleCompanyChange = (event: any) => {
-    const selectedCompanyId = parseInt(event.target.value, 10);
-    setCompanySelect(isNaN(selectedCompanyId) ? null : selectedCompanyId);
-  };
-
   const navigate = useNavigate();
 
   return (
@@ -96,30 +90,26 @@ export const UserSidebar = ({
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <>{userInfo?.email.split("@")[0] ?? user?.nickname }</>
+            <>{userInfo?.email.split("@")[0] ?? user?.nickname}</>
           </DrawerHeader>
           <DrawerBody>
             <Grid templateRows="2fr auto auto auto">
-              <GridItem mb={8}>
-                <FormControl display="flex" alignItems="center">
-                  <FormLabel htmlFor="alerts-switch" mb="0">
-                    Alerts
-                  </FormLabel>
-                  <Switch
-                    id="alerts-switch"
-                    colorScheme="primary"
-                    isChecked={alertsEnabled}
-                    onChange={(e) => {
-                      setAlertsEnabled(!alertsEnabled);
-                    }}
-                  />
-                </FormControl>
-              </GridItem>
               <GridItem mb={4}>
                 <Heading size="md">Settings</Heading>
               </GridItem>
+              <GridItem mb={8}>
+                <SetDisplayAlerts
+                  alertsEnabled={alertsEnabled}
+                  setAlertsEnabled={setAlertsEnabled}
+                />
+              </GridItem>
               <GridItem>
                 <VStack spacing={4} alignItems="flex-start">
+                  <SelectDefaultCompany
+                    userInfo={userInfo}
+                    companies={companies}
+                    setDefaultCompany={(comp?: ICompanyDto) => {}}
+                  />
                   <Button
                     colorScheme="red"
                     onClick={handleClearLocalStorage}
@@ -127,36 +117,6 @@ export const UserSidebar = ({
                   >
                     Clear Local Storage
                   </Button>
-                  {["SUPER_ADMIN"].includes(userInfo.userType) ? (
-                    <Select
-                      placeholder={DEFAULT_COMPANIES_LABEL}
-                      value={companySelect ?? undefined}
-                      onChange={handleCompanyChange}
-                      bg="transparent"
-                      border="none"
-                      _hover={{
-                        bg: "green.50",
-                      }}
-                      _focus={{
-                        boxShadow: "none",
-                        bg: "green.50",
-                      }}
-                      _active={{
-                        bg: "green.50",
-                      }}
-                    >
-                      {companies.map((company) => (
-                        <option
-                          key={company.companyId}
-                          value={company.companyId}
-                        >
-                          {company.companyName}
-                        </option>
-                      ))}
-                    </Select>
-                  ) : (
-                    <></>
-                  )}
                 </VStack>
               </GridItem>
             </Grid>
