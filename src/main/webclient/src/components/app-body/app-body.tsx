@@ -63,6 +63,12 @@ export const AppBody = () => {
     ICompanyDto | undefined
   >();
 
+  const defaultCompanyRef = useRef<ICompanyDto | undefined>(defaultCompany);
+
+  useEffect(() => {
+    defaultCompanyRef.current = defaultCompany;
+  }, [defaultCompany])
+
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);
 
@@ -204,8 +210,8 @@ export const AppBody = () => {
     companies: ICompanyDto[]
   ): Promise<ICompanyDto | undefined> => {
     try {
-      const firtsCompany = defaultCompany
-        ? defaultCompany
+      const firtsCompany = defaultCompanyRef.current
+        ? defaultCompanyRef.current
         : companies[0]
         ? companies[0]
         : undefined;
