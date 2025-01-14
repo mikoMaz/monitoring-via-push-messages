@@ -14,21 +14,24 @@ import { UIProps } from "../../../config/config";
 import { usingTestData } from "../../../util/useTestData";
 import { IUserInfoResponse } from "../../../types/IUserInfoResponse";
 import { APIClient } from "../../../api/api-client";
+import { ICompanyDto } from "../../../types/ICompanyDto";
 
 interface INavbar {
   alertsEnabled: boolean;
   setAlertsEnabled: (value: boolean) => void;
   userInfo: IUserInfoResponse;
-  apiClient: APIClient;
-  accessToken: string;
+  companies: ICompanyDto[];
+  setDefaultCompany: (com: ICompanyDto | undefined) => void;
+  defaultCompany: ICompanyDto | undefined;
 }
 
 export const Navbar = ({
   alertsEnabled,
   setAlertsEnabled,
   userInfo,
-  apiClient,
-  accessToken,
+  companies,
+  setDefaultCompany,
+  defaultCompany
 }: INavbar) => {
   const ui = UIProps;
   return (
@@ -82,8 +85,9 @@ export const Navbar = ({
               alertsEnabled={alertsEnabled}
               setAlertsEnabled={setAlertsEnabled}
               userInfo={userInfo}
-              apiClient={apiClient}
-              accessToken={accessToken}
+              companies={companies}
+              setDefaultCompany={setDefaultCompany}
+              defaultCompany={defaultCompany}
             />
           </Center>
         </GridItem>

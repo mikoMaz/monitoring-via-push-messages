@@ -19,6 +19,7 @@ import { CustomAccordionButton } from "./components/custom-accordion-buttons";
 import { capitalizeFirstLetter } from "../../types/projectTypes";
 import { DeviceDetailsTable } from "./components/device-details-table";
 import { IAPIClient } from "../../api/api-client";
+import { ICompanyDto } from "../../types/ICompanyDto";
 
 export type monitoringDeviceType = "sensor" | "gateway" | "bridge" | "other";
 
@@ -26,7 +27,7 @@ interface IMonitoringDevicePage {
   apiClient: IAPIClient;
   model: DeviceModel;
   accessToken: string;
-  companyId: number | undefined;
+  companyId: ICompanyDto | undefined;
 }
 
 export const MonitoringDevicePage = ({
@@ -93,14 +94,14 @@ export const MonitoringDevicePage = ({
   useEffect(() => {
     const fetchDeviceActiveTime = async (
       deviceId: string,
-      companyId: number | undefined
+      companyId: ICompanyDto | undefined
     ) => {
       try {
         if (!companyId) {
           throw new Error("CompanyId is missing");
         }
         var time = await apiClient.getDeviceUptime(
-          companyId.toString(),
+          companyId.companyId.toString(),
           deviceId,
           accessToken
         );
