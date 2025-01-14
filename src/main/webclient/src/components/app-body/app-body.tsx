@@ -149,6 +149,8 @@ export const AppBody = () => {
             apiClient={apiClient}
             userInfo={userInfo ?? getDeniedUserInfoResponse()}
             accessToken={accessToken}
+            companies={companies}
+            refreshCompaniesList={refreshCompaniesList}
           />
         }
       />,
