@@ -5,6 +5,7 @@ import {
   AccordionPanel,
   Box,
   HStack,
+  Stack,
 } from "@chakra-ui/react";
 import {
   Bridge,
@@ -14,6 +15,7 @@ import {
 import { GatewayRowView } from "./gateway-row-view";
 import { StatusDotIndicator } from "../../../status-dot-indicator";
 import { DeviceDetailsLink } from "./device-details-link";
+import { SensorsTable } from "./sensors-table";
 
 interface IBridgeRowViewProps {
   bridge: Bridge;
@@ -38,6 +40,14 @@ export const BridgeRowView = ({
     isSorted ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id)
   );
 
+  const filteredSensors = bridge.sensors.filter((gateway) =>
+    gateway.id.includes(deviceIdFilter)
+  );
+
+  const sortedSensors = [...filteredSensors].sort((a, b) =>
+    isSorted ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id)
+  );
+
   const BridgeButton = () => {
     return (
       <>
@@ -54,9 +64,9 @@ export const BridgeRowView = ({
 
   if (
     inactiveOnly &&
-    (bridge.status !== deviceStatus.active ||
-      bridge.containAnyInactiveGateway() ||
-      bridge.containAnyInactiveSensors())
+    (bridge.status !== deviceStatus.active &&
+      (bridge.containAnyInactiveGateway() ||
+      bridge.containAnyInactiveSensors()))
   ) {
     return (
       <AccordionItem key={bridge.id}>
@@ -64,14 +74,26 @@ export const BridgeRowView = ({
           <BridgeButton />
         </AccordionButton>
         <AccordionPanel>
-          {sortedGateways.map((gateway) => (
-            <GatewayRowView
-              gateway={gateway}
-              inactiveOnly={inactiveOnly}
-              deviceIdFilter={deviceIdFilter}
-              isSorted={isSorted}
-            />
-          ))}
+          <Stack>
+            {sortedGateways.map((gateway) => (
+              <GatewayRowView
+                gateway={gateway}
+                inactiveOnly={inactiveOnly}
+                deviceIdFilter={deviceIdFilter}
+                isSorted={isSorted}
+              />
+            ))}
+            {sortedSensors.length ? (
+              <SensorsTable
+                sensors={sortedSensors}
+                inactiveOnly={inactiveOnly}
+                deviceIdFilter={deviceIdFilter}
+                isSorted={isSorted}
+              />
+            ) : (
+              <></>
+            )}
+          </Stack>
         </AccordionPanel>
       </AccordionItem>
     );
@@ -82,14 +104,26 @@ export const BridgeRowView = ({
           <BridgeButton />
         </AccordionButton>
         <AccordionPanel>
-          {sortedGateways.map((gateway) => (
-            <GatewayRowView
-              gateway={gateway}
-              inactiveOnly={inactiveOnly}
-              deviceIdFilter={deviceIdFilter}
-              isSorted={isSorted}
-            />
-          ))}
+        <Stack>
+            {sortedGateways.map((gateway) => (
+              <GatewayRowView
+                gateway={gateway}
+                inactiveOnly={inactiveOnly}
+                deviceIdFilter={deviceIdFilter}
+                isSorted={isSorted}
+              />
+            ))}
+            {sortedSensors.length ? (
+              <SensorsTable
+                sensors={sortedSensors}
+                inactiveOnly={inactiveOnly}
+                deviceIdFilter={deviceIdFilter}
+                isSorted={isSorted}
+              />
+            ) : (
+              <></>
+            )}
+          </Stack>
         </AccordionPanel>
       </AccordionItem>
     );
