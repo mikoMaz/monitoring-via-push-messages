@@ -23,7 +23,7 @@ import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 import { AddNewUserCard } from "./components/add-new-user-card";
 import { ICompanyDto } from "../../types/ICompanyDto";
 import { UserSection } from "./components/user-section";
-import { DownloadJsonCard } from "./components/download-json-card";
+import { DownloadFileCard } from "./components/download-json-card";
 
 export const AdminPanelPage = ({
   apiClient,
@@ -104,6 +104,14 @@ export const AdminPanelPage = ({
         <GridItem colSpan={1}>
           <VStack align="stretch" spacing={4}>
             <UserSection user={user} userInfo={userInfo} />
+            {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
+              <DownloadFileCard
+                companies={companies}
+                refreshCompanies={refreshCompaniesList}
+              />
+            ) : (
+              <></>
+            )}
             {userInfo.userType === "SUPER_ADMIN" ? (
               <Card variant="filled" bg="whiteAlpha.600">
                 <CardHeader>
@@ -158,14 +166,6 @@ export const AdminPanelPage = ({
                 apiClient={apiClient}
                 userInfo={userInfo}
                 accessToken={accessToken}
-                companies={companies}
-                refreshCompanies={refreshCompaniesList}
-              />
-            ) : (
-              <></>
-            )}
-            {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
-              <DownloadJsonCard
                 companies={companies}
                 refreshCompanies={refreshCompaniesList}
               />

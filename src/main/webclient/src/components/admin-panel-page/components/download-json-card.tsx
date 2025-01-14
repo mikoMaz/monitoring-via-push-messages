@@ -1,23 +1,14 @@
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
   Button,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
-  CloseButton,
   Heading,
   HStack,
   IconButton,
-  Input,
-  Select,
   Tooltip,
   VStack,
 } from "@chakra-ui/react";
-import { APIClient } from "../../../api/api-client";
-import { IUserInfoResponse } from "../../../types/IUserInfoResponse";
 import { UIProps } from "../../../config/config";
 import { useState } from "react";
 import {
@@ -29,7 +20,7 @@ import {
 import { ICompanyDto } from "../../../types/ICompanyDto";
 import saveAs from "file-saver";
 
-export const DownloadJsonCard = ({
+export const DownloadFileCard = ({
   companies,
   refreshCompanies,
 }: {
@@ -53,7 +44,7 @@ export const DownloadJsonCard = ({
     <Card variant="filled" bg="whiteAlpha.600">
       <CardHeader>
         <HStack justify="space-between" alignItems="center">
-          <Heading size="md">Download JSON</Heading>
+          <Heading size="md">Download files</Heading>
           <IconButton
             aria-label="(un)fold-card"
             color={UIProps.colors.primary}
