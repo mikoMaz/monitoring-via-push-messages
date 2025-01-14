@@ -29,31 +29,17 @@ export const AdminPanelPage = ({
   apiClient,
   userInfo,
   accessToken,
+  companies,
+  refreshCompaniesList
 }: {
   apiClient: APIClient;
   userInfo: IUserInfoResponse;
   accessToken: string;
+  companies: ICompanyDto[];
+  refreshCompaniesList: () => Promise<void>;
 }) => {
-  const [companies, setCompanies] = useState<ICompanyDto[]>([]);
   const { user } = useAuth0();
   const [cardFold, setCardFold] = useState<boolean>(true);
-
-  const refreshCompaniesList = async () => {
-    await apiClient
-      .getAllCompanies(accessToken)
-      .then((companiesList) => {
-        setCompanies(companiesList);
-      })
-      .catch((error) => {
-        console.error("Companies fetching failed " + error.message);
-        setCompanies([]);
-      });
-  };
-
-  useEffect(() => {
-    refreshCompaniesList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken, apiClient]);
 
   return (
     <Box
@@ -107,7 +93,6 @@ export const AdminPanelPage = ({
             {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
               <DownloadFileCard
                 companies={companies}
-                refreshCompanies={refreshCompaniesList}
               />
             ) : (
               <></>

@@ -29,6 +29,7 @@ import { AdminPanelPage } from "../admin-panel-page/admin-panel-page";
 import { LoadingPage } from "../loading-page/loading-page";
 import { usingTestData } from "../../util/useTestData";
 import { diplayAccessToken } from "../../util/displayAccessToken";
+import { ICompanyDto } from "../../types/ICompanyDto";
 
 const refreshTime = 3; //minutes
 
@@ -58,7 +59,15 @@ export const AppBody = () => {
   const [devicesUptimeValues, setDevicesUptimeValues] =
     useState<AllDevicesUptimeJson>(emptyAllDevicesUptimeJson);
 
-    const [companyId, setCompanyId] = useState<number | undefined>();
+  const [defaultCompany, setDefaultCompany] = useState<
+    ICompanyDto | undefined
+  >();
+
+  const defaultCompanyRef = useRef<ICompanyDto | undefined>(defaultCompany);
+
+  useEffect(() => {
+    defaultCompanyRef.current = defaultCompany;
+  }, [defaultCompany])
 
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);
@@ -66,6 +75,20 @@ export const AppBody = () => {
   const [deviceAlertsEnabled, setDeviceAlertsEnabled] = useState<boolean>(
     LocalStorageManager.getDeviceAlertsEnabledValue()
   );
+
+  const [companies, setCompanies] = useState<ICompanyDto[]>([]);
+
+  const refreshCompaniesList = async () => {
+    await apiClient
+      .getAllCompanies(accessToken)
+      .then((companiesList) => {
+        setCompanies(companiesList);
+      })
+      .catch((error) => {
+        console.error("Companies fetching failed " + error.message);
+        setCompanies([]);
+      });
+  };
 
   const alertsEnabledRef = useRef<boolean>(false);
 
@@ -99,7 +122,7 @@ export const AppBody = () => {
             apiClient={apiClient}
             accessToken={accessToken}
             model={deviceModel}
-            companyId={companyId}
+            companyId={defaultCompany}
           />
         }
       />,
@@ -132,6 +155,8 @@ export const AppBody = () => {
             apiClient={apiClient}
             userInfo={userInfo ?? getDeniedUserInfoResponse()}
             accessToken={accessToken}
+            companies={companies}
+            refreshCompaniesList={refreshCompaniesList}
           />
         }
       />,
@@ -168,14 +193,32 @@ export const AppBody = () => {
     }
   };
 
-  const getCompanyId = async (token: string): Promise<number | undefined> => {
+  const getReadCompanies = async (token: string): Promise<ICompanyDto[]> => {
+    return await apiClient
+      .getAllCompanies(token)
+      .then((coms) => {
+        setCompanies(coms);
+        return coms;
+      })
+      .catch((error) => {
+        console.error("Getting companis list failed: " + error.message);
+        return [];
+      });
+  };
+
+  const getDefaultCompany = async (
+    companies: ICompanyDto[]
+  ): Promise<ICompanyDto | undefined> => {
     try {
-      const companies = await apiClient.getAllCompanies(token);
-      const id = companies[0] ? companies[0].companyId : undefined;
-      if (!id) {
+      const firtsCompany = defaultCompanyRef.current
+        ? defaultCompanyRef.current
+        : companies[0]
+        ? companies[0]
+        : undefined;
+      if (!firtsCompany) {
         throw new Error("User doesn't have acces to companies");
       }
-      return id;
+      return firtsCompany;
     } catch (e: any) {
       console.error("Getting company information failed: " + e.message);
       return undefined;
@@ -232,19 +275,22 @@ export const AppBody = () => {
   const onComponentLoaded = async () => {
     const token = await getAccessToken();
     if (token) {
-      const compId = await getCompanyId(token);
-      if (compId) {
-        setCompanyId(compId)
-        await updateModel(token, compId)
+      const companiesList = await getReadCompanies(token);
+      const company = await getDefaultCompany(companiesList);
+      if (company) {
+        setDefaultCompany(company);
+        await updateModel(token, company.companyId)
           .then((model) => {
             checkInactiveDevices(model);
           })
           .catch((error: any) => {
             console.error("Update model error: " + error);
           });
-        await fetchUptimeValues(token, compId).catch((error: any) => {
-          console.error(error);
-        });
+        await fetchUptimeValues(token, company.companyId).catch(
+          (error: any) => {
+            console.error(error);
+          }
+        );
       }
     }
   };
@@ -257,7 +303,7 @@ export const AppBody = () => {
     setInterval(onComponentLoaded, 1000 * 60 * refreshTime);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [defaultCompany]);
 
   useEffect(() => {
     if (userInfo && userInfo.userType === "EXTERNAL") {
@@ -283,8 +329,11 @@ export const AppBody = () => {
         <Navbar
           {...props}
           userInfo={userInfo ?? getDeniedUserInfoResponse(email)}
-          apiClient={apiClient}
-          accessToken={accessToken}
+          companies={companies}
+          setDefaultCompany={(company: ICompanyDto | undefined) => {
+            setDefaultCompany(company);
+          }}
+          defaultCompany={defaultCompany}
         />
       </GridItem>
       <GridItem area={"main"}>

@@ -1,16 +1,18 @@
 import { Select, VStack, Text, Card } from "@chakra-ui/react";
 import { IUserInfoResponse } from "../../../../../../types/IUserInfoResponse";
 import { ICompanyDto } from "../../../../../../types/ICompanyDto";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const SelectDefaultCompany = ({
   userInfo,
   companies,
   setDefaultCompany,
+  defaultCompany,
 }: {
   userInfo: IUserInfoResponse;
   companies: ICompanyDto[];
   setDefaultCompany: (company?: ICompanyDto) => void;
+  defaultCompany: ICompanyDto | undefined;
 }) => {
   const placeholder = "Select company";
   const [companySelect, setCompanySelect] = useState<string>();
@@ -20,15 +22,22 @@ export const SelectDefaultCompany = ({
     setCompanySelect(chosenCompany);
     if (chosenCompany && chosenCompany !== placeholder) {
       setDefaultCompany(
-        companies.find((comp) => comp.companyName === chosenCompany)
+        companies.find((comp) => {
+          return comp.companyId.toString() === chosenCompany;
+        })
       );
     }
   };
 
+  useEffect(() => {
+    if (defaultCompany) {
+      setCompanySelect(defaultCompany.companyId.toString());
+    }
+  }, [defaultCompany]);
+
   return ["SUPER_ADMIN"].includes(userInfo.userType) && companies.length ? (
     <VStack spacing={4} paddingY={4}>
-      <Text>
-        Select the default company</Text>
+      <Text>Select the default company</Text>
       <Select
         placeholder={placeholder}
         value={companySelect}

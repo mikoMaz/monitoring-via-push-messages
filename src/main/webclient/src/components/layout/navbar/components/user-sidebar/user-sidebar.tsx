@@ -34,16 +34,18 @@ interface IUserSidebar {
   alertsEnabled: boolean;
   setAlertsEnabled: (value: boolean) => void;
   userInfo: IUserInfoResponse;
-  apiClient: APIClient;
-  accessToken: string;
+  companies: ICompanyDto[];
+  setDefaultCompany: (company: ICompanyDto | undefined) => void;
+  defaultCompany: ICompanyDto | undefined;
 }
 
 export const UserSidebar = ({
   alertsEnabled,
   setAlertsEnabled,
   userInfo,
-  apiClient,
-  accessToken,
+  companies,
+  setDefaultCompany,
+  defaultCompany
 }: IUserSidebar) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { logout, user } = useAuth0();
@@ -52,25 +54,6 @@ export const UserSidebar = ({
     LocalStorageManager.clearLocalStorage();
     window.location.reload();
   };
-
-  const [companies, setCompanies] = useState<ICompanyDto[]>([]);
-
-  const refreshCompaniesList = async () => {
-    await apiClient
-      .getAllCompanies(accessToken)
-      .then((companiesList) => {
-        setCompanies(companiesList);
-      })
-      .catch((error) => {
-        console.error("Companies fetching failed " + error.message);
-        setCompanies([]);
-      });
-  };
-
-  useEffect(() => {
-    refreshCompaniesList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken, apiClient]);
 
   const navigate = useNavigate();
 
@@ -111,9 +94,10 @@ export const UserSidebar = ({
                   <SelectDefaultCompany
                     userInfo={userInfo}
                     companies={companies}
-                    setDefaultCompany={(comp?: ICompanyDto) => {}}
+                    setDefaultCompany={setDefaultCompany}
+                    defaultCompany={defaultCompany}
                   />
-                  <Divider borderColor={"grey"}/>
+                  <Divider borderColor={"grey"} />
                   <Button
                     colorScheme="red"
                     onClick={handleClearLocalStorage}

@@ -22,10 +22,8 @@ import saveAs from "file-saver";
 
 export const DownloadFileCard = ({
   companies,
-  refreshCompanies,
 }: {
   companies: ICompanyDto[];
-  refreshCompanies: () => Promise<void>;
 }) => {
   const [cardFold, setCardFold] = useState<boolean>(true);
 
