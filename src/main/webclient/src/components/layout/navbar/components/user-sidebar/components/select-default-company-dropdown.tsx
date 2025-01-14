@@ -1,4 +1,4 @@
-import { Select, VStack, Text, Card } from "@chakra-ui/react";
+import { Select, VStack, Text, Card, Divider } from "@chakra-ui/react";
 import { IUserInfoResponse } from "../../../../../../types/IUserInfoResponse";
 import { ICompanyDto } from "../../../../../../types/ICompanyDto";
 import { useEffect, useState } from "react";
@@ -36,7 +36,13 @@ export const SelectDefaultCompany = ({
   }, [defaultCompany]);
 
   return ["SUPER_ADMIN"].includes(userInfo.userType) && companies.length ? (
-    <VStack spacing={4} paddingY={4}>
+    <VStack
+      width="100%"
+      spacing={4}
+      paddingTop={1}
+      paddingBottom={1}
+      alignItems="flex-start"
+    >
       <Text>Select the default company</Text>
       <Select
         placeholder={placeholder}
@@ -61,6 +67,7 @@ export const SelectDefaultCompany = ({
           </option>
         ))}
       </Select>
+      <Divider borderColor={"grey"} />
     </VStack>
   ) : (
     <></>
