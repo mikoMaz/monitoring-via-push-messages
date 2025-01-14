@@ -110,7 +110,15 @@ export const DashboardPage = ({
           </>
         );
       case viewOption.custom:
-        return <CustomChartsTab model={model} devicesUptime={devicesUptime} />;
+        return (
+          <CustomChartsTab
+            model={model}
+            devicesUptime={devicesUptime}
+            apiClient={apiClient}
+            accessToken={accessToken}
+            companyId={companyId}
+          />
+        );
     }
   };
 

@@ -17,6 +17,7 @@ import { ChartCreator } from "../components/dashboard-page/components/chart-crea
 import { FileSaver } from "./fileSaver";
 import { Delete } from "@mui/icons-material";
 import { HistoryChart } from "../components/dashboard-page/components/history-chart";
+import { APIClient } from "../api/api-client";
 
 export enum chartType {
   EmptyPreset,
@@ -86,7 +87,13 @@ export class ChartTemplate implements IChartTemplate {
     return <>Data model is not present</>;
   }
 
-  public drawChart(model: IDeviceModel, uptimeValues: number[]) {
+  public drawChart(
+    model: IDeviceModel,
+    uptimeValues: number[],
+    apiClient: APIClient,
+    accessToken: string,
+    companyId: number | undefined
+  ) {
     switch (this.type) {
       case chartType.Current:
         return (
@@ -107,6 +114,9 @@ export class ChartTemplate implements IChartTemplate {
       case chartType.History:
         return (
           <HistoryChart
+            apiClient={apiClient}
+            accessToken={accessToken}
+            companyId={companyId}
             model={model}
             devicesHistoryValues={uptimeValues}
             {...this.chartModel}
@@ -133,6 +143,9 @@ interface IChartTabPanel {
   deleteFunction: () => void;
   model: IDeviceModel;
   uptimeValues: number[];
+  apiClient: APIClient;
+  accessToken: string;
+  companyId: number | undefined;
 }
 
 export const ChartTabPanel = ({
@@ -141,6 +154,9 @@ export const ChartTabPanel = ({
   deleteFunction,
   model,
   uptimeValues,
+  apiClient,
+  accessToken,
+  companyId,
 }: IChartTabPanel) => {
   const [isEditing, setIsEditing] = useState(false);
   const currentTime = new Date().toLocaleString();
@@ -162,7 +178,7 @@ export const ChartTabPanel = ({
           ) : (
             <Center>
               {template.chartModel.percentFragmentation > 0.001 ? (
-                template.drawChart(model, uptimeValues)
+                template.drawChart(model, uptimeValues, apiClient, accessToken, companyId)
               ) : (
                 <p>
                   We can't show you the chart, if you put "0" or nothing into
@@ -213,7 +229,9 @@ export const getEmptyPreset = () => {
     percentFragmentation: 0.5,
     brushActive: false,
     deviceTypes: [deviceType.sensor, deviceType.gateway, deviceType.bridge],
-    dateFrom: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString(),
+    dateFrom: new Date(
+      new Date().setDate(new Date().getDate() - 30)
+    ).toISOString(),
     dateTo: new Date().toISOString(),
   });
 };
