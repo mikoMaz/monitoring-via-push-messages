@@ -25,7 +25,7 @@ export const UserSection = ({
         </Heading>
         {/* <Heading padding={1} size="md">{user?.nickname ?? "No nickname"}</Heading> */}
         <Heading padding={1} size="sm">
-          {user?.email ?? "No email"}
+          {user?.email ?? userInfo?.email ?? "No email"}
         </Heading>
         <Heading paddingTop={5} size="sm">
           {userInfo.userType}
