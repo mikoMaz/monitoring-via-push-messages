@@ -3,7 +3,6 @@ import {
   Bridge,
   DeviceModel,
   deviceStatus,
-  deviceType,
   Gateway,
   Sensor,
 } from "../types/deviceModel";
@@ -14,7 +13,7 @@ import { IHistoryChartData } from "../types/IHistoryChartData";
 export class TestAPIClient implements IAPIClient {
   public getUserInfo = (accessToken: string, email?: string) => {
     const user: IUserInfoResponse = {
-      email: email ?? "test_email@test.com",
+      email: email ?? "errwarn_readonly_user@test.com",
       userType: "SUPER_ADMIN",
     };
     return Promise.resolve(user);

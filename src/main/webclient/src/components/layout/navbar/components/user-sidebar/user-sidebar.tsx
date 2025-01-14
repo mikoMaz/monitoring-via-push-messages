@@ -96,7 +96,7 @@ export const UserSidebar = ({
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <>{user?.mail ?? user?.nickname ?? user?.name}</>
+            <>{userInfo?.email.split("@")[0] ?? user?.nickname }</>
           </DrawerHeader>
           <DrawerBody>
             <Grid templateRows="2fr auto auto auto">
@@ -127,7 +127,7 @@ export const UserSidebar = ({
                   >
                     Clear Local Storage
                   </Button>
-                  {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
+                  {["SUPER_ADMIN"].includes(userInfo.userType) ? (
                     <Select
                       placeholder={DEFAULT_COMPANIES_LABEL}
                       value={companySelect ?? undefined}
