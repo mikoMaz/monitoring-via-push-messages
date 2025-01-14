@@ -26,7 +26,7 @@ interface IPreviewChartsContainer {
 
 const ChartContainerWrapper = ({ chart }: { chart: JSX.Element }) => {
   return (
-    <Card variant="filled" bg="whiteAlpha.500" align="center" marginX="20px">
+    <Card variant="filled" bg="whiteAlpha.500" align="center" marginX={20}>
       <CardBody>
         <Center>{chart}</Center>
       </CardBody>
@@ -42,7 +42,7 @@ const ContextCard = ({
   deviceModel: DeviceModel;
 }) => {
   return (
-    <Card variant="filled" bg="whiteAlpha.500" align="center" marginX="20px">
+    <Card variant="filled" bg="whiteAlpha.500" align="center" marginX={20}>
       <CardHeader>
         <Heading>{context}</Heading>
       </CardHeader>
@@ -100,7 +100,7 @@ export const PreviewChartsContainer = ({
   if (secret) {
     return (
       <Center>
-        <VStack align="stretch" spacing={2}>
+        <VStack align="stretch" spacing={4}>
           <ContextCard context={context} deviceModel={deviceModel} />
           <ChartContainerWrapper
             chart={
