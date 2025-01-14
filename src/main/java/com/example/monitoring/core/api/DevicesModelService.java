@@ -197,5 +197,16 @@ public class DevicesModelService implements IDevicesModelService {
         root.addProperty("uptime", status);
         return root;
     }
+    public JsonObject getStatsByPeriod(String companyId,Long StartTimeStamp,Long StopTimeStamp,
+    String mode){ // hours,days,weeks,months(31 days)
+        JsonObject root = new JsonObject();
+    final Map<String, Long> modes = Map.of(
+    "hours", 3600l,
+    "days", 86400l,
+    "weeks",604800l,
+    "months",18748800l);
+    double historyService.uptimePercentByPeriod(companyId,StartTimeStamp,StopTimeStamp,modes.get(mode));
 
+        return root;
+    }
 }
