@@ -11,11 +11,10 @@ import {
   AlertDescription,
   AlertTitle,
   CloseButton,
-  Input,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
 import { InfoOutlined, Send, Upload } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APIClient } from "../../../api/api-client";
 
 export const FileSender = ({
@@ -23,11 +22,11 @@ export const FileSender = ({
   label,
   type,
   apiClient,
-  accessToken
+  accessToken,
 }: {
   title: string;
   label: string;
-  type?: string;
+  type: string;
   apiClient: APIClient;
   accessToken: string;
 }) => {
@@ -36,11 +35,18 @@ export const FileSender = ({
   const [file, setFile] = useState<File>();
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
   const [alertInfoExpanded, setAlertInfoExpanded] = useState<boolean>(false);
-  const [inputTableName, setInputTableName] = useState<string>("Table Name");
+  const [fileAlert, setFileAlert] = useState<boolean>(false);
+  const [tableName, setTableName] = useState<string>("Table Name");
 
-  const isValid = () => {
-    return inputTableName !== "";
-  };
+  useEffect(() => {
+    if (type === "device") {
+      setTableName("device-table");
+    } else if (type === "hierarchy") {
+      setTableName("hierarchy-table");
+    } else if (type === "alert") {
+      setTableName("alert-table");
+    }
+  }, [type]);
 
   const handleSendClick = async (
     type: string,
@@ -48,39 +54,33 @@ export const FileSender = ({
     file?: File
   ) => {
     if (!file) {
-      alert("Please select a file first.");
+      setFileAlert(true);
       return;
     }
 
     setIsLoading(true);
+
     if (type === "device" || "hierarchy") {
-      if (isValid()) {
-        await apiClient
-          .postCSVData(accessToken, type, tableName, file)
-          .then((response) => {
-            if (response === 200) {
-              setFileName("No file detected");
-              setInputTableName("Table Name");
-              setUploadSuccess(true);
-              setFile(undefined);
-            }
-          })
-          .catch((error) => {
-            setUploadSuccess(false);
-            console.error("Error uploading file:", error);
-          })
-          .finally(() => {
-            setIsLoading(false);
-            setAlertInfoExpanded(true);
-          });
-      } else {
-        setIsLoading(false);
-        setAlertInfoExpanded(true);
-      }
+      await apiClient
+        .postCSVData(accessToken, type, tableName, file)
+        .then((response) => {
+          if (response === 200) {
+            setFileName("No file detected");
+            setUploadSuccess(true);
+            setFile(undefined);
+          }
+        })
+        .catch((error) => {
+          setUploadSuccess(false);
+          console.error("Error uploading file:", error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setAlertInfoExpanded(true);
+        });
     } else {
       await new Promise((resolve) => setTimeout(resolve, 2000))
         .then(() => {
-          // setUploadSuccess(true);
           console.log("then ", uploadSuccess);
           setFileName("No file detected");
           setFile(undefined);
@@ -100,6 +100,7 @@ export const FileSender = ({
     if (selectedFile) {
       setFile(selectedFile);
       setFileName(selectedFile.name);
+      setFileAlert(false);
     }
   };
 
@@ -112,17 +113,6 @@ export const FileSender = ({
         <Heading size="sm" w="100px">
           {title}:
         </Heading>
-        {type === "device" || type === "hierarchy" ? (
-          <Input
-            value={inputTableName}
-            onChange={(e) => {
-              setInputTableName(e.target.value);
-              setAlertInfoExpanded(false);
-            }}
-            placeholder="Table Name"
-            width="200px"
-          />
-        ) : null}
         <Text w="200px">{fileName}</Text>
         <Tooltip label="Upload" aria-label="Upload tooltip">
           <IconButton
@@ -145,15 +135,34 @@ export const FileSender = ({
             colorScheme="primary"
             aria-label="Send"
             isLoading={isLoading}
-            onClick={() =>
-              handleSendClick(type ?? "", inputTableName ?? "", file)
-            }
+            onClick={() => handleSendClick(type, tableName, file)}
           />
         </Tooltip>
       </HStack>
+      {fileAlert && (
+        <Alert
+          status="warning"
+          variant="left-accent"
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          marginY={4}
+        >
+          <Box display="flex" alignItems="center">
+            <AlertIcon />
+            <Box ml={2}>
+              <AlertTitle>Warning!</AlertTitle>
+              <AlertDescription>
+                Please select a file before sending.
+              </AlertDescription>
+            </Box>
+          </Box>
+          <CloseButton onClick={() => setFileAlert(false)} />
+        </Alert>
+      )}
       {alertInfoExpanded && (
         <Alert
-          status={isValid() ? (uploadSuccess ? "success" : "error") : "error"}
+          status={uploadSuccess ? "success" : "error"}
           variant="left-accent"
           display="flex"
           justifyContent="space-between"
@@ -165,11 +174,9 @@ export const FileSender = ({
             <Box ml={2}>
               <AlertTitle>{uploadSuccess ? "Success!" : "Error!"}</AlertTitle>
               <AlertDescription>
-                {isValid()
-                  ? uploadSuccess
-                    ? "Your file has been sended."
-                    : "There was problem with sending your file."
-                  : "Table Name cannot be empty."}
+                {uploadSuccess
+                  ? "Your file has been sended."
+                  : "There was problem with sending your file."}
               </AlertDescription>
             </Box>
           </Box>

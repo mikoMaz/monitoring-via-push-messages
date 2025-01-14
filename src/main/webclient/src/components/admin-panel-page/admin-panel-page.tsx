@@ -150,6 +150,7 @@ export const AdminPanelPage = ({
                         <FileSender
                           title="Alerts"
                           label="Create new alert for devices"
+                          type="alert"
                           apiClient={apiClient}
                           accessToken={accessToken}
                         />
