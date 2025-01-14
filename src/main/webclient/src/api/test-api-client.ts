@@ -168,6 +168,8 @@ export class TestAPIClient implements IAPIClient {
   };
 
   public getDataHistoryChart = (
+    accessToken: string,
+    companyId: number,
     dateFrom: string,
     dateTo: string
   ): Promise<IHistoryChartData[]> => {

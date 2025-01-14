@@ -67,7 +67,7 @@ export const AppBody = () => {
 
   useEffect(() => {
     defaultCompanyRef.current = defaultCompany;
-  }, [defaultCompany])
+  }, [defaultCompany]);
 
   const [inactiveSwitchEnabled, setInactiveSwitchEnabled] =
     useState<boolean>(false);
@@ -131,6 +131,9 @@ export const AppBody = () => {
         path="/dashboard"
         element={
           <DashboardPage
+            apiClient={apiClient}
+            accessToken={accessToken}
+            companyId={defaultCompany?.companyId}
             model={deviceModel}
             devicesUptime={devicesUptimeValues ?? []}
           />

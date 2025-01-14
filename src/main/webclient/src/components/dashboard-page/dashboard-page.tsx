@@ -12,6 +12,7 @@ import { CurrentChart } from "./components/current-chart";
 import { CustomChartsTab } from "./components/custom-charts-tab";
 import { getEmptyPreset, IChartTemplateModel } from "../../types/chartTemplate";
 import { HistoryChart } from "./components/history-chart";
+import { APIClient } from "../../api/api-client";
 
 enum viewOption {
   current,
@@ -21,11 +22,20 @@ enum viewOption {
 }
 
 interface IDashboardPage {
+  apiClient: APIClient;
+  accessToken: string;
+  companyId: number | undefined;
   model: DeviceModel;
   devicesUptime: AllDevicesUptimeJson;
 }
 
-export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
+export const DashboardPage = ({
+  apiClient,
+  accessToken,
+  companyId,
+  model,
+  devicesUptime,
+}: IDashboardPage) => {
   const [selectedViewOption, setSelectedViewOption] = useState<viewOption>(
     viewOption.current
   );
@@ -88,6 +98,9 @@ export const DashboardPage = ({ model, devicesUptime }: IDashboardPage) => {
           <>
             <Center>
               <HistoryChart
+                apiClient={apiClient}
+                accessToken={accessToken}
+                companyId={companyId}
                 model={model}
                 devicesHistoryValues={allHistoryValues}
                 {...chartModel}

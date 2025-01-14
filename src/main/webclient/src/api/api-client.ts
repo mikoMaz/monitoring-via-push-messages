@@ -50,6 +50,8 @@ export interface IAPIClient {
     file: File
   ) => Promise<number>;
   getDataHistoryChart: (
+    accessToken: string,
+    companyId: number,
     dateFrom: string,
     dateTo: string
   ) => Promise<IHistoryChartData[]>;
@@ -322,10 +324,12 @@ export class APIClient implements IAPIClient {
   };
 
   public getDataHistoryChart = async (
+    accessToken: string,
+    companyId: number,
     dateFrom: string,
     dateTo: string
   ): Promise<IHistoryChartData[]> => {
-    return this.testApiClient.getDataHistoryChart(dateFrom, dateTo);
+    return this.testApiClient.getDataHistoryChart(accessToken, companyId, dateFrom, dateTo);
   };
 
   public postAddCompany = async (accessToken: string, companyName: string) => {
