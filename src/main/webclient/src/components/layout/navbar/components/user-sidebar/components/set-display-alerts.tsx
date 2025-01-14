@@ -1,4 +1,4 @@
-import { Card, FormControl, FormLabel, Switch } from "@chakra-ui/react";
+import { HStack, Switch, Text } from "@chakra-ui/react";
 
 export const SetDisplayAlerts = ({
   alertsEnabled,
@@ -8,20 +8,21 @@ export const SetDisplayAlerts = ({
   setAlertsEnabled: (value: boolean) => void;
 }) => {
   return (
-    <Card padding={2}>
-      <FormControl display="flex" alignItems="center">
-        <FormLabel htmlFor="alerts-switch" mb="0">
-          Application alerts enabled
-        </FormLabel>
-        <Switch
-          id="alerts-switch"
-          colorScheme="primary"
-          isChecked={alertsEnabled}
-          onChange={(e) => {
-            setAlertsEnabled(!alertsEnabled);
-          }}
-        />
-      </FormControl>
-    </Card>
+    <HStack
+      spacing={8}
+      alignItems="center"
+      justifyContent="flex-start"
+      paddingBottom={4}
+    >
+      <Text>Application alerts enabled</Text>
+      <Switch
+        id="alerts-switch"
+        colorScheme="primary"
+        isChecked={alertsEnabled}
+        onChange={(e) => {
+          setAlertsEnabled(!alertsEnabled);
+        }}
+      />
+    </HStack>
   );
 };

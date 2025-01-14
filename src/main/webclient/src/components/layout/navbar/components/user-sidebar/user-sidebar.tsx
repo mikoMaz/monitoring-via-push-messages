@@ -10,15 +10,14 @@ import {
   DrawerHeader,
   GridItem,
   Grid,
-  Switch,
   Button,
-  FormControl,
-  FormLabel,
   DrawerFooter,
   Heading,
   HStack,
-  Select,
   VStack,
+  Divider,
+  AbsoluteCenter,
+  Box,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -93,23 +92,28 @@ export const UserSidebar = ({
             <>{userInfo?.email.split("@")[0] ?? user?.nickname}</>
           </DrawerHeader>
           <DrawerBody>
-            <Grid templateRows="2fr auto auto auto">
-              <GridItem mb={4}>
-                <Heading size="md">Settings</Heading>
-              </GridItem>
+            <Grid templateRows="2fr auto auto">
               <GridItem mb={8}>
-                <SetDisplayAlerts
-                  alertsEnabled={alertsEnabled}
-                  setAlertsEnabled={setAlertsEnabled}
-                />
+                <Box position="relative" paddingY={4}>
+                  <Divider borderColor={"grey"} />
+                  <AbsoluteCenter bg="white" px="4">
+                    <Heading size="md">Settings</Heading>
+                  </AbsoluteCenter>
+                </Box>
               </GridItem>
               <GridItem>
                 <VStack spacing={4} alignItems="flex-start">
+                  <SetDisplayAlerts
+                    alertsEnabled={alertsEnabled}
+                    setAlertsEnabled={setAlertsEnabled}
+                  />
+                  <Divider borderColor={"grey"} />
                   <SelectDefaultCompany
                     userInfo={userInfo}
                     companies={companies}
                     setDefaultCompany={(comp?: ICompanyDto) => {}}
                   />
+                  <Divider borderColor={"grey"}/>
                   <Button
                     colorScheme="red"
                     onClick={handleClearLocalStorage}

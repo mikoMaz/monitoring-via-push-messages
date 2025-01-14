@@ -26,34 +26,33 @@ export const SelectDefaultCompany = ({
   };
 
   return ["SUPER_ADMIN"].includes(userInfo.userType) && companies.length ? (
-    <Card padding={2}>
-      <VStack>
-        <Text>Select the default company</Text>
-        <Select
-          placeholder={placeholder}
-          value={companySelect}
-          onChange={handleCompanyChange}
-          bg="transparent"
-          border="none"
-          _hover={{
-            bg: "green.50",
-          }}
-          _focus={{
-            boxShadow: "none",
-            bg: "green.50",
-          }}
-          _active={{
-            bg: "green.50",
-          }}
-        >
-          {companies.map((company) => (
-            <option key={company.companyId} value={company.companyId}>
-              {company.companyName}
-            </option>
-          ))}
-        </Select>
-      </VStack>
-    </Card>
+    <VStack spacing={4} paddingY={4}>
+      <Text>
+        Select the default company</Text>
+      <Select
+        placeholder={placeholder}
+        value={companySelect}
+        onChange={handleCompanyChange}
+        bg="transparent"
+        border="none"
+        _hover={{
+          bg: "green.50",
+        }}
+        _focus={{
+          boxShadow: "none",
+          bg: "green.50",
+        }}
+        _active={{
+          bg: "green.50",
+        }}
+      >
+        {companies.map((company) => (
+          <option key={company.companyId} value={company.companyId}>
+            {company.companyName}
+          </option>
+        ))}
+      </Select>
+    </VStack>
   ) : (
     <></>
   );
