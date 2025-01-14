@@ -15,6 +15,7 @@ import { usingTestData } from "../../../util/useTestData";
 import { IUserInfoResponse } from "../../../types/IUserInfoResponse";
 import { APIClient } from "../../../api/api-client";
 import { ICompanyDto } from "../../../types/ICompanyDto";
+import { useNavigate } from "react-router-dom";
 
 interface INavbar {
   alertsEnabled: boolean;
@@ -31,9 +32,10 @@ export const Navbar = ({
   userInfo,
   companies,
   setDefaultCompany,
-  defaultCompany
+  defaultCompany,
 }: INavbar) => {
   const ui = UIProps;
+  const navigate = useNavigate();
   return (
     <Box>
       <Grid
@@ -50,7 +52,13 @@ export const Navbar = ({
         </GridItem>
         <GridItem width="auto">
           <Center height="100%">
-            <Heading color="black" size="lg" paddingX={6}>
+            <Heading
+              color="black"
+              size="lg"
+              paddingX={6}
+              onClick={() => navigate("/")}
+              style={{ cursor: "pointer" }}
+            >
               ErrWarn
             </Heading>
           </Center>
