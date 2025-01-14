@@ -57,7 +57,7 @@ export const GatewayRowView = ({
 
   if (
     inactiveOnly &&
-    (gateway.status !== deviceStatus.active ||
+    (gateway.status !== deviceStatus.active &&
       gateway.containAnyInactiveSensors())
   ) {
     return (

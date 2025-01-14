@@ -29,18 +29,25 @@ import { Download, InfoOutlined, Upload } from "@mui/icons-material";
 import { ChartCreator } from "./chart-creator";
 import { UIProps } from "../../../config/config";
 import { returnDeviceTypesArray } from "../../../types/deviceModel";
-import {
-  FileSaver,
-  chartTemplateJsonObject,
-} from "../../../types/fileSaver";
+import { FileSaver, chartTemplateJsonObject } from "../../../types/fileSaver";
 import { LocalStorageManager } from "../../../types/localStorageMenager";
+import { APIClient } from "../../../api/api-client";
 
 interface ICustomChartsTab {
   model: DeviceModel;
   devicesUptime: AllDevicesUptimeJson;
+  apiClient: APIClient;
+  accessToken: string;
+  companyId: number | undefined;
 }
 
-export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
+export const CustomChartsTab = ({
+  model,
+  devicesUptime,
+  apiClient,
+  accessToken,
+  companyId,
+}: ICustomChartsTab) => {
   const allHistoryValues = [
     ...devicesUptime.upperLevel,
     ...devicesUptime.middleLevel,
@@ -69,8 +76,7 @@ export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
   const [selectedTemplateIndex, setSelectedTemplateIndex] = useState<number>(0);
 
   const [chartPresets, setChartPresets] = useState<ChartTemplate[]>(() => {
-    const presets =
-      LocalStorageManager.loadPresetsFromLocalStorage();
+    const presets = LocalStorageManager.loadPresetsFromLocalStorage();
     if (presets.length > 0) {
       return presets;
     }
@@ -89,9 +95,7 @@ export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
       } else {
         updatedPresets.push(newPreset);
       }
-      LocalStorageManager.savePresetsToLocalStorage(
-        updatedPresets
-      );
+      LocalStorageManager.savePresetsToLocalStorage(updatedPresets);
       return updatedPresets;
     });
   };
@@ -143,9 +147,7 @@ export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
               FileSaver.parseJsonToChartTemplates(importedPresets);
             setChartPresets((prevPresets) => {
               const allPresets = [...prevPresets, ...parsedPresets];
-              LocalStorageManager.savePresetsToLocalStorage(
-                allPresets
-              );
+              LocalStorageManager.savePresetsToLocalStorage(allPresets);
               console.log("Imported presets:", importedPresets);
               return allPresets;
             });
@@ -163,9 +165,7 @@ export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
       const updatedPresets = chartPresets.filter((preset) => preset.id !== id);
       setChartPresets(updatedPresets);
       if (updatedPresets.length > 0) {
-        LocalStorageManager.savePresetsToLocalStorage(
-          updatedPresets
-        );
+        LocalStorageManager.savePresetsToLocalStorage(updatedPresets);
       } else {
         LocalStorageManager.clearLocalStorageEntry("chartPresets");
       }
@@ -204,6 +204,9 @@ export const CustomChartsTab = ({ model, devicesUptime }: ICustomChartsTab) => {
                 uptimeValues={returnDeviceUptimesByDeviceType(
                   preset.chartModel.deviceTypes
                 )}
+                apiClient={apiClient}
+                accessToken={accessToken}
+                companyId={companyId}
               />
             );
           } else {

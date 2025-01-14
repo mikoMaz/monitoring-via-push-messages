@@ -20,7 +20,7 @@ export const NavigationButtons = () => {
         return i;
       }
     }
-    return undefined;
+    return 4;
   };
 
   const updateSelectedTab = () => {

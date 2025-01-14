@@ -41,14 +41,14 @@ export const AddNewUserCard = ({
   const [addingUserSuccess, setAddingUserSuccess] = useState<boolean>(false);
   const [alertInfo, setAlertInfo] = useState<boolean>(false);
   const [cardFold, setCardFold] = useState<boolean>(true);
-  const [companySelect, setCompanySelect] = useState<number | null>(null);
+  const [companySelect, setCompanySelect] = useState<number | undefined>(undefined);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
 
   const handleCompanyChange = (event: any) => {
     const selectedCompanyId = parseInt(event.target.value, 10);
-    setCompanySelect(isNaN(selectedCompanyId) ? null : selectedCompanyId);
+    setCompanySelect(isNaN(selectedCompanyId) ? undefined : selectedCompanyId);
   };
 
   const inputsValid = () => {

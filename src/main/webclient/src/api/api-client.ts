@@ -50,6 +50,8 @@ export interface IAPIClient {
     file: File
   ) => Promise<number>;
   getDataHistoryChart: (
+    accessToken: string,
+    companyId: number,
     dateFrom: string,
     dateTo: string
   ) => Promise<IHistoryChartData[]>;
@@ -163,7 +165,7 @@ export class APIClient implements IAPIClient {
     deviceId: string,
     accessToken: string
   ) => {
-    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceid=${deviceId}`;
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceId=${deviceId}`;
     if (usingTestData()) {
       return this.testApiClient.getDeviceUptime(companyId, deviceId, accessToken);
     }
@@ -322,10 +324,12 @@ export class APIClient implements IAPIClient {
   };
 
   public getDataHistoryChart = async (
+    accessToken: string,
+    companyId: number,
     dateFrom: string,
     dateTo: string
   ): Promise<IHistoryChartData[]> => {
-    return this.testApiClient.getDataHistoryChart(dateFrom, dateTo);
+    return this.testApiClient.getDataHistoryChart(accessToken, companyId, dateFrom, dateTo);
   };
 
   public postAddCompany = async (accessToken: string, companyName: string) => {

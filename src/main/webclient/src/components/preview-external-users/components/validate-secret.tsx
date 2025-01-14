@@ -31,6 +31,12 @@ export const ValidateSecret = ({
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
   const handleChange = (event: any) => setInputValue(event.target.value);
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      validateSecret(inputValue);
+    }
+  };
+
   const validateSecret = async (secret: string) => {
     setButtonLoading(true);
     setErrorModalActive(false);
@@ -46,16 +52,17 @@ export const ValidateSecret = ({
 
   return (
     <Center marginTop="100px">
-      <VStack>
+      <VStack spacing={8}>
         <Heading size="md">To access {context} provide the secret</Heading>
-        <HStack>
+        <HStack spacing={4} width="100%">
           <Input
-            pr="4.5rem"
             type="password"
             placeholder="Enter secret"
             value={inputValue}
             onChange={handleChange}
-            size="lg"
+            onKeyDown={handleKeyDown}
+            size="md"
+            focusBorderColor={UIProps.colors.primary}
           />
           <Button
             isLoading={buttonLoading}
@@ -64,6 +71,7 @@ export const ValidateSecret = ({
             color="white"
             bg={UIProps.colors.primary}
             spinnerPlacement="end"
+            size="md"
           >
             Validate
           </Button>
