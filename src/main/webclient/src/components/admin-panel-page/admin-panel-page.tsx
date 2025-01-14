@@ -89,7 +89,7 @@ export const AdminPanelPage = ({
 
         <GridItem colSpan={1}>
           <VStack align="stretch" spacing={4}>
-            <UserSection user={user} userInfo={userInfo} />
+            <UserSection user={user} userInfo={userInfo} isLandingPage={false} companyName={""}/>
             {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
               <DownloadFileCard
                 companies={companies}

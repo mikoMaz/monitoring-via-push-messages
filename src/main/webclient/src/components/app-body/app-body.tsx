@@ -140,7 +140,17 @@ export const AppBody = () => {
         }
       />,
       <Route key="about" path="/about" element={<AboutPage />} />,
-      <Route key="landing-page" path="/" element={<LandingPage />} />,
+      <Route
+        key="landing-page"
+        path="/"
+        element={
+          <LandingPage
+            user={user}
+            userInfo={userInfo ?? getDeniedUserInfoResponse(email)}
+            companyName={defaultCompany?.companyName}
+          />
+        }
+      />,
       <Route
         key="user-rejected"
         path="/permission-required"
