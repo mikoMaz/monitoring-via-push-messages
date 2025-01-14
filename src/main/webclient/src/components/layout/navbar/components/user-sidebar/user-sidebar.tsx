@@ -17,23 +17,34 @@ import {
   DrawerFooter,
   Heading,
   HStack,
+  Select,
+  VStack,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LocalStorageManager } from "../../../../../types/localStorageMenager";
 import { useNavigate } from "react-router-dom";
 import { IUserInfoResponse } from "../../../../../types/IUserInfoResponse";
+import { useEffect, useState } from "react";
+import { ICompanyDto } from "../../../../../types/ICompanyDto";
+import { APIClient } from "../../../../../api/api-client";
 
 interface IUserSidebar {
   alertsEnabled: boolean;
   setAlertsEnabled: (value: boolean) => void;
   userInfo: IUserInfoResponse;
+  apiClient: APIClient;
+  accessToken: string;
 }
+
+const DEFAULT_COMPANIES_LABEL = "Select company";
 
 export const UserSidebar = ({
   alertsEnabled,
   setAlertsEnabled,
   userInfo,
+  apiClient,
+  accessToken,
 }: IUserSidebar) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { logout, user } = useAuth0();
@@ -41,6 +52,31 @@ export const UserSidebar = ({
   const handleClearLocalStorage = () => {
     LocalStorageManager.clearLocalStorage();
     window.location.reload();
+  };
+
+  const [companies, setCompanies] = useState<ICompanyDto[]>([]);
+  const [companySelect, setCompanySelect] = useState<number | null>(null);
+
+  const refreshCompaniesList = async () => {
+    await apiClient
+      .getAllCompanies(accessToken)
+      .then((companiesList) => {
+        setCompanies(companiesList);
+      })
+      .catch((error) => {
+        console.error("Companies fetching failed " + error.message);
+        setCompanies([]);
+      });
+  };
+
+  useEffect(() => {
+    refreshCompaniesList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken, apiClient]);
+
+  const handleCompanyChange = (event: any) => {
+    const selectedCompanyId = parseInt(event.target.value, 10);
+    setCompanySelect(isNaN(selectedCompanyId) ? null : selectedCompanyId);
   };
 
   const navigate = useNavigate();
@@ -62,7 +98,6 @@ export const UserSidebar = ({
           <DrawerHeader>
             <>{user?.mail ?? user?.nickname ?? user?.name}</>
           </DrawerHeader>
-
           <DrawerBody>
             <Grid templateRows="2fr auto auto auto">
               <GridItem mb={8}>
@@ -84,13 +119,45 @@ export const UserSidebar = ({
                 <Heading size="md">Settings</Heading>
               </GridItem>
               <GridItem>
-                <Button
-                  colorScheme="red"
-                  onClick={handleClearLocalStorage}
-                  variant="ghost"
-                >
-                  Clear Local Storage
-                </Button>
+                <VStack spacing={4} alignItems="flex-start">
+                  <Button
+                    colorScheme="red"
+                    onClick={handleClearLocalStorage}
+                    variant="ghost"
+                  >
+                    Clear Local Storage
+                  </Button>
+                  {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
+                    <Select
+                      placeholder={DEFAULT_COMPANIES_LABEL}
+                      value={companySelect ?? undefined}
+                      onChange={handleCompanyChange}
+                      bg="transparent"
+                      border="none"
+                      _hover={{
+                        bg: "green.50",
+                      }}
+                      _focus={{
+                        boxShadow: "none",
+                        bg: "green.50",
+                      }}
+                      _active={{
+                        bg: "green.50",
+                      }}
+                    >
+                      {companies.map((company) => (
+                        <option
+                          key={company.companyId}
+                          value={company.companyId}
+                        >
+                          {company.companyName}
+                        </option>
+                      ))}
+                    </Select>
+                  ) : (
+                    <></>
+                  )}
+                </VStack>
               </GridItem>
             </Grid>
           </DrawerBody>

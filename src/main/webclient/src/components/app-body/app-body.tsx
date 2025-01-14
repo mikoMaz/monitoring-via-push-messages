@@ -283,6 +283,8 @@ export const AppBody = () => {
         <Navbar
           {...props}
           userInfo={userInfo ?? getDeniedUserInfoResponse(email)}
+          apiClient={apiClient}
+          accessToken={accessToken}
         />
       </GridItem>
       <GridItem area={"main"}>

@@ -13,14 +13,23 @@ import { Logo } from "./components/logo/logo";
 import { UIProps } from "../../../config/config";
 import { usingTestData } from "../../../util/useTestData";
 import { IUserInfoResponse } from "../../../types/IUserInfoResponse";
+import { APIClient } from "../../../api/api-client";
 
 interface INavbar {
   alertsEnabled: boolean;
   setAlertsEnabled: (value: boolean) => void;
   userInfo: IUserInfoResponse;
+  apiClient: APIClient;
+  accessToken: string;
 }
 
-export const Navbar = ({ alertsEnabled, setAlertsEnabled, userInfo }: INavbar) => {
+export const Navbar = ({
+  alertsEnabled,
+  setAlertsEnabled,
+  userInfo,
+  apiClient,
+  accessToken,
+}: INavbar) => {
   const ui = UIProps;
   return (
     <Box>
@@ -73,6 +82,8 @@ export const Navbar = ({ alertsEnabled, setAlertsEnabled, userInfo }: INavbar) =
               alertsEnabled={alertsEnabled}
               setAlertsEnabled={setAlertsEnabled}
               userInfo={userInfo}
+              apiClient={apiClient}
+              accessToken={accessToken}
             />
           </Center>
         </GridItem>
