@@ -100,8 +100,6 @@ public class SecurityConfiguration {
                                         .hasRole(Role.SUPER_ADMIN.name())
                                         .requestMatchers("/api/v1/user/company/create")
                                         .hasRole(Role.SUPER_ADMIN.name())
-                                        .requestMatchers("/api/v1/user/company/get-companies")
-                                        .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
                                         .requestMatchers("/api/v1/user/company/get-users-from-company")
                                         .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
                                         .requestMatchers("/api/v1/user/company/update-company-users")

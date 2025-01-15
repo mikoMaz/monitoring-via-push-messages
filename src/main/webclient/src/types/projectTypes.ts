@@ -31,3 +31,14 @@ export type FilteringHeight = "0px" | "100px";
 export const capitalizeFirstLetter = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+export const getMailNickname = (mail: string): string => {
+  try {
+    return mail.split("@")[0];
+  } catch (error: any) {
+    console.error(
+      "Email splitting error. Email: " + mail + "Error: " + error.message
+    );
+    return mail;
+  }
+};

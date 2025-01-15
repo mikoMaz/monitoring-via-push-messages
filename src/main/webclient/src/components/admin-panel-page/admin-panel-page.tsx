@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Card,
   CardBody,
@@ -24,36 +23,23 @@ import { UnfoldLess, UnfoldMore } from "@mui/icons-material";
 import { AddNewUserCard } from "./components/add-new-user-card";
 import { ICompanyDto } from "../../types/ICompanyDto";
 import { UserSection } from "./components/user-section";
+import { DownloadFileCard } from "./components/download-json-card";
 
 export const AdminPanelPage = ({
   apiClient,
   userInfo,
   accessToken,
+  companies,
+  refreshCompaniesList
 }: {
   apiClient: APIClient;
   userInfo: IUserInfoResponse;
   accessToken: string;
+  companies: ICompanyDto[];
+  refreshCompaniesList: () => Promise<void>;
 }) => {
-  const [companies, setCompanies] = useState<ICompanyDto[]>([]);
   const { user } = useAuth0();
   const [cardFold, setCardFold] = useState<boolean>(true);
-
-  const refreshCompaniesList = async () => {
-    await apiClient
-      .getAllCompanies(accessToken)
-      .then((companiesList) => {
-        setCompanies(companiesList);
-      })
-      .catch((error) => {
-        console.error("Companies fetching failed " + error.message);
-        setCompanies([]);
-      });
-  };
-
-  useEffect(() => {
-    refreshCompaniesList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken, apiClient]);
 
   return (
     <Box
@@ -103,7 +89,14 @@ export const AdminPanelPage = ({
 
         <GridItem colSpan={1}>
           <VStack align="stretch" spacing={4}>
-            <UserSection user={user} userInfo={userInfo} />
+            <UserSection user={user} userInfo={userInfo} isLandingPage={false} companyName={""}/>
+            {["ADMIN", "SUPER_ADMIN"].includes(userInfo.userType) ? (
+              <DownloadFileCard
+                companies={companies}
+              />
+            ) : (
+              <></>
+            )}
             {userInfo.userType === "SUPER_ADMIN" ? (
               <Card variant="filled" bg="whiteAlpha.600">
                 <CardHeader>
@@ -125,7 +118,7 @@ export const AdminPanelPage = ({
                         {/* Devices */}
                         <FileSender
                           title="Devices"
-                          label="Devices"
+                          label="Set which company has which devices"
                           type="device"
                           apiClient={apiClient}
                           accessToken={accessToken}
@@ -142,6 +135,7 @@ export const AdminPanelPage = ({
                         <FileSender
                           title="Alerts"
                           label="Create new alert for devices"
+                          type="alert"
                           apiClient={apiClient}
                           accessToken={accessToken}
                         />

@@ -38,8 +38,8 @@ public class WebDevicesModelController {
 
 
     @GetMapping("/historySingleDevice")
-    public ResponseEntity<String> singleDeviceHistory(@RequestParam String companyId, String device_id) {
-        JsonObject singleDeviceHistory = devicesModelService.getSingleDeviceHistory(companyId, device_id);
+    public ResponseEntity<String> singleDeviceHistory(@RequestParam String companyId, String deviceId) {
+        JsonObject singleDeviceHistory = devicesModelService.getSingleDeviceHistory(companyId, deviceId);
         if (singleDeviceHistory == null) {
             return ResponseEntity.badRequest().body("");
         }

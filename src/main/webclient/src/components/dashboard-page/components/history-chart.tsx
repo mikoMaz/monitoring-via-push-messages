@@ -13,12 +13,19 @@ import { APIClient } from "../../../api/api-client";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
 import { IChartTemplateModelDrawing } from "../../../types/chartTemplate";
 
+interface IHistoryChart extends IChartTemplateModelDrawing {
+  apiClient: APIClient;
+  accessToken: string;
+  companyId: number | undefined;
+}
+
 export const HistoryChart = ({
+  apiClient,
+  accessToken,
+  companyId,
   dateFrom,
   dateTo,
-}: IChartTemplateModelDrawing) => {
-  const apiClient = new APIClient();
-
+}: IHistoryChart) => {
   const [chartData, setChartData] = useState<IHistoryChartData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -26,19 +33,25 @@ export const HistoryChart = ({
     const fetchChartData = async () => {
       setLoading(true);
       try {
+        if (companyId === undefined) {
+          throw new Error("CompanyId is undefined.")
+        }
         const data = await apiClient.getDataHistoryChart(
+          accessToken,
+          companyId,
           dateFrom,
           dateTo
         );
         setChartData(data);
       } catch (error) {
         console.error("Błąd podczas pobierania danych wykresu:", error);
+        setChartData([]);
       } finally {
         setLoading(false);
       }
     };
     fetchChartData();
-  }, [dateFrom, dateTo]);
+  }, [dateFrom, dateTo, companyId, apiClient, accessToken]);
 
   if (loading) {
     return <Box>Ładowanie danych...</Box>;

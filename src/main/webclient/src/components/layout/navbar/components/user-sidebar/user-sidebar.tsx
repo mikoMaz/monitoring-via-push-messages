@@ -10,30 +10,43 @@ import {
   DrawerHeader,
   GridItem,
   Grid,
-  Switch,
   Button,
-  FormControl,
-  FormLabel,
   DrawerFooter,
   Heading,
   HStack,
+  VStack,
+  Divider,
+  AbsoluteCenter,
+  Box,
 } from "@chakra-ui/react";
 import { UIProps } from "../../../../../config/config";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LocalStorageManager } from "../../../../../types/localStorageMenager";
 import { useNavigate } from "react-router-dom";
 import { IUserInfoResponse } from "../../../../../types/IUserInfoResponse";
+import { useEffect, useState } from "react";
+import { ICompanyDto } from "../../../../../types/ICompanyDto";
+import { APIClient } from "../../../../../api/api-client";
+import { SelectDefaultCompany } from "./components/select-default-company-dropdown";
+import { SetDisplayAlerts } from "./components/set-display-alerts";
+import { getMailNickname } from "../../../../../types/projectTypes";
 
 interface IUserSidebar {
   alertsEnabled: boolean;
   setAlertsEnabled: (value: boolean) => void;
   userInfo: IUserInfoResponse;
+  companies: ICompanyDto[];
+  setDefaultCompany: (company: ICompanyDto | undefined) => void;
+  defaultCompany: ICompanyDto | undefined;
 }
 
 export const UserSidebar = ({
   alertsEnabled,
   setAlertsEnabled,
   userInfo,
+  companies,
+  setDefaultCompany,
+  defaultCompany,
 }: IUserSidebar) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { logout, user } = useAuth0();
@@ -50,7 +63,7 @@ export const UserSidebar = ({
       <IconButton
         onClick={onOpen}
         icon={
-          <Avatar size="sm" name={user?.name ?? user?.nickname ?? user?.mail} />
+          <Avatar size="sm" name={user?.name ?? user?.nickname ?? userInfo?.email} />
         }
         aria-label={"Profile"}
         colorScheme={UIProps.colors.accent}
@@ -60,37 +73,38 @@ export const UserSidebar = ({
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <>{user?.mail ?? user?.nickname ?? user?.name}</>
+            <>{userInfo?.email ? getMailNickname(userInfo?.email) : user?.nickname}</>
           </DrawerHeader>
-
           <DrawerBody>
-            <Grid templateRows="2fr auto auto auto">
+            <Grid templateRows="2fr auto auto">
               <GridItem mb={8}>
-                <FormControl display="flex" alignItems="center">
-                  <FormLabel htmlFor="alerts-switch" mb="0">
-                    Alerts
-                  </FormLabel>
-                  <Switch
-                    id="alerts-switch"
-                    colorScheme="primary"
-                    isChecked={alertsEnabled}
-                    onChange={(e) => {
-                      setAlertsEnabled(!alertsEnabled);
-                    }}
-                  />
-                </FormControl>
-              </GridItem>
-              <GridItem mb={4}>
-                <Heading size="md">Settings</Heading>
+                <Box position="relative" paddingY={4}>
+                  <Divider borderColor={"grey"} />
+                  <AbsoluteCenter bg="white" px="4">
+                    <Heading size="md">Settings</Heading>
+                  </AbsoluteCenter>
+                </Box>
               </GridItem>
               <GridItem>
-                <Button
-                  colorScheme="red"
-                  onClick={handleClearLocalStorage}
-                  variant="ghost"
-                >
-                  Clear Local Storage
-                </Button>
+                <VStack spacing={4} alignItems="flex-start">
+                  <SetDisplayAlerts
+                    alertsEnabled={alertsEnabled}
+                    setAlertsEnabled={setAlertsEnabled}
+                  />
+                  <SelectDefaultCompany
+                    userInfo={userInfo}
+                    companies={companies}
+                    setDefaultCompany={setDefaultCompany}
+                    defaultCompany={defaultCompany}
+                  />
+                  <Button
+                    colorScheme="red"
+                    onClick={handleClearLocalStorage}
+                    variant="ghost"
+                  >
+                    Clear Local Storage
+                  </Button>
+                </VStack>
               </GridItem>
             </Grid>
           </DrawerBody>
