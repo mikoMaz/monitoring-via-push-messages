@@ -30,7 +30,7 @@ public class WebDevicesModelController {
         JsonObject historyTree = devicesModelService.getHistoryTree(companyId);
         return ResponseEntity.ok().body(historyTree.toString());
     }
-    @GetMapping("/newHistoryTree")
+    @GetMapping("/chartHistory")
     public ResponseEntity<String> newHistoryTree(@RequestParam String companyId,Long startTimeStamp,Long stopTimeStamp,String period){
         JsonArray historyTree = devicesModelService.getStatsByPeriod(companyId,startTimeStamp,stopTimeStamp,period);
         return ResponseEntity.ok().body(historyTree.toString());
