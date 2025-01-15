@@ -33,12 +33,11 @@ public class DevicesModelService implements IDevicesModelService {
     org.slf4j.Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Override
-    public JsonObject getJsonTree(String id) {
+    public JsonObject getJsonTree(Long companyId) {
         List<String> devicesList;
         List<String> ToplevelDevices = new ArrayList<>();
         JsonObject root = new JsonObject();
-//        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
-        devicesList = deviceService.getAllChildrenForGivenCompanyId(Long.parseLong(id));
+        devicesList = deviceService.getAllChildrenForGivenCompanyId(companyId);
         if (devicesList == null) {
             return root;
         }
@@ -70,8 +69,6 @@ public class DevicesModelService implements IDevicesModelService {
                 currentObject = proc.convertToJsonTreeComponent(ToplevelID, ToplevelStatus, ToplevelTimestamp,
                         ToplevelType);
                 logger.info(currentObject.toString());
-//                deviceService.get(Long.parseLong(ToplevelID));
-//                List<String> MidList = dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
                 List<String> MidList = deviceService.getAllChildrenForParentId(ToplevelID);
                 if (MidList == null) {
                     MidList = new ArrayList<>();
@@ -84,7 +81,6 @@ public class DevicesModelService implements IDevicesModelService {
                 list.get(0).add(currentObject);
                 for (int j = 0; j < MidList.size(); j++) {
                     String MidlevelId = MidList.get(j);
-//                    List<String> BottomList = dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
                     List<String> BottomList = deviceService.getAllChildrenForParentId(MidlevelId);
                     if (BottomList == null) {
                         continue;
@@ -129,7 +125,7 @@ public class DevicesModelService implements IDevicesModelService {
     }
 
     @Override
-    public JsonObject getHistoryTree(String id) {
+    public JsonObject getHistoryTree(Long companyId) {
         Map<String, JsonArray> deviceTypeMap = new HashMap<>();
         deviceTypeMap.put("upperLevel", new JsonArray());
         deviceTypeMap.put("middleLevel", new JsonArray());
@@ -137,8 +133,8 @@ public class DevicesModelService implements IDevicesModelService {
 
         JsonObject root = new JsonObject();
 
-//        List<String> devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
-        List<String> devicesList = deviceService.getAllChildrenForGivenCompanyId(Long.parseLong(id));
+        List<String> devicesList = deviceService.getAllChildrenForGivenCompanyId(companyId);
+
         if (devicesList == null) {
             deviceTypeMap.forEach(root::add);
             return root;
@@ -157,7 +153,6 @@ public class DevicesModelService implements IDevicesModelService {
             if (topLevelStatus != null) {
                 deviceTypeMap.get("upperLevel").add(new JsonPrimitive(topLevelStatus));
 
-//                List<String> midList = dataHolderService.getAllChildrenForGivenDeviceId(topLevelDeviceId);
                 List<String> midList = deviceService.getAllChildrenForParentId(topLevelDeviceId);
                 if (midList != null) {
                     for (String midLevelId : midList) {
@@ -165,7 +160,6 @@ public class DevicesModelService implements IDevicesModelService {
                         if (midLevelStatus != null) {
                             deviceTypeMap.get("middleLevel").add(new JsonPrimitive(midLevelStatus));
 
-//                            List<String> bottomList = dataHolderService.getAllChildrenForGivenDeviceId(midLevelId);
                             List<String> bottomList = deviceService.getAllChildrenForParentId(midLevelId);
                             if (bottomList != null) {
                                 for (String bottomLevelId : bottomList) {
@@ -186,12 +180,13 @@ public class DevicesModelService implements IDevicesModelService {
     }
 
     @Override
-    public JsonObject getSingleDeviceHistory(String companyId, String deviceId) {
+    public JsonObject getSingleDeviceHistory(Long companyId, String deviceId) {
         List<String> devicesList;
         List<String> ToplevelDevices = new ArrayList<>();
         JsonObject root = new JsonObject();
-//        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(companyId);
-        devicesList = deviceService.getAllChildrenForGivenCompanyId(Long.parseLong(companyId));
+
+        devicesList = deviceService.getAllChildrenForGivenCompanyId(companyId);
+
         if (devicesList == null) {
             return null;
         }

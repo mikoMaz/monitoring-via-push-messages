@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.example.monitoring.core.company.CompanyDto;
 import com.example.monitoring.core.company.CompanyService;
 import com.example.monitoring.core.device.DeviceService;
 import org.slf4j.LoggerFactory;
@@ -50,23 +51,20 @@ public class SendAlert {
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
     public void checkDevicesInEveryCompany() {
 
-//        Set<String> companyIds = dataHolderService.getAllCompanyIds();
-        Set<String> companyIds = companyService.getCompanies().stream().map(companyDto ->
-                companyDto.getCompanyId().toString()
+        Set<Long> companyIds = companyService.getCompanies().stream().map(
+                CompanyDto::getCompanyId
         ).collect(Collectors.toSet());
 
         if (companyIds != null)
-            for (String id : companyIds) {
+            for (Long id : companyIds) {
                 // get devices that dont work
                 List<String> deviceIds = statusService.getOfflineDevices(id).stream()
                         .map(DeviceStatus::getId)
-                        .collect(Collectors.toList());
+                        .toList();
                 for (String deviceId : deviceIds) {
                     // get alerts connected to that devices
-//                    List<String> parentIdList = dataHolderService.getParentForGivenDeviceId(deviceId);
                     String parentId = deviceService.getParentIdFromDevice(deviceId);
                     if (parentId != null) {
-//                        String parentId = parentIdList.getFirst();
                         if (statusService.getCalculatedStatus(parentId) == null
                                 || statusService.getCalculatedStatus(parentId) == 0) // if parent is inactive dont make
                                                                                      // alert for its children
@@ -119,10 +117,9 @@ public class SendAlert {
         }
     }
 
-    public List<List<String>> IdsOfDevicesNotWorking(String companyId) {
+    public List<List<String>> IdsOfDevicesNotWorking(Long companyId) {
         List<String> devicesList;
-//        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(companyId);
-        devicesList = deviceService.getAllChildrenForGivenCompanyId(Long.parseLong(companyId));
+        devicesList = deviceService.getAllChildrenForGivenCompanyId(companyId);
         List<String> notWorkingDevicesList = new ArrayList<String>();
         if (devicesList != null)
             for (int i = 0; i < devicesList.size(); i++) {

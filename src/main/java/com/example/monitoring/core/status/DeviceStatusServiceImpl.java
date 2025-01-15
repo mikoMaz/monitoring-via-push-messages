@@ -68,9 +68,8 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
                 return repository.getObjectById(Id);
         }
 
-        public List<DeviceStatus> getOfflineDevices(String id) {
-//                List<String> devicesToCheckIds = dataHolderService.getAllChildrenForGivenCompanyId(id);
-                List<String> devicesToCheckIds = deviceService.getAllChildrenForGivenCompanyId(Long.parseLong(id));
+        public List<DeviceStatus> getOfflineDevices(Long id) {
+                List<String> devicesToCheckIds = deviceService.getAllChildrenForGivenCompanyId(id);
                 Long unixTime = System.currentTimeMillis() / 1000L;
 
                 // TODO: make treshold a global variable

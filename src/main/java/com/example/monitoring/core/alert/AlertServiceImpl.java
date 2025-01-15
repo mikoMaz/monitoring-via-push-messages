@@ -3,7 +3,10 @@ package com.example.monitoring.core.alert;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.example.monitoring.core.company.CompanyDto;
+import com.example.monitoring.core.company.CompanyService;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class AlertServiceImpl implements AlertService {
     private final AlertRepository alertRepository;
     private final DeviceStatusService statusService;
+    private final CompanyService companyService;
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(AlertServiceImpl.class);
-    private final DataHolderService dataHolderService;
 
     @Override
     public AlertData buildObject(String objectJson) {
@@ -86,7 +89,7 @@ public class AlertServiceImpl implements AlertService {
         }
     }
 
-    public ArrayList<AlertData> getAlertsForCompany(String companyId) {
+    public ArrayList<AlertData> getAlertsForCompany(Long companyId) {
         return alertRepository.findAllByCompanyId(companyId);
     }
 
@@ -94,10 +97,13 @@ public class AlertServiceImpl implements AlertService {
         return alertRepository.findAllObservingDevice(deviceId);
     }
 
-    public void getDevicesThatGiveAlert(String companyId) {
-        Set<String> companyIds = dataHolderService.getAllCompanyIds();
-        if (companyIds != null)
-            for (String id : companyIds) {
+    public void getDevicesThatGiveAlert(Long companyId) {
+        Set<Long> companyIds = companyService.getCompanies().stream().map(
+                CompanyDto::getCompanyId
+        ).collect(Collectors.toSet());
+
+        if (!companyIds.isEmpty())
+            for (Long id : companyIds) {
                 log.info("Company id: {}", id);
                 List<AlertData> alerts = this.getAlertsForCompany(id);
                 if (alerts != null)
