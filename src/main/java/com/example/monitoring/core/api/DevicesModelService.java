@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aspectj.internal.lang.annotation.ajcDeclareAnnotation;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import com.example.monitoring.core.api.history.DeviceHistoryService;
 import com.example.monitoring.core.external.DataHolderService;
 import com.example.monitoring.core.status.DeviceStatusService;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -197,16 +199,51 @@ public class DevicesModelService implements IDevicesModelService {
         root.addProperty("uptime", status);
         return root;
     }
-    public JsonObject getStatsByPeriod(String companyId,Long StartTimeStamp,Long StopTimeStamp,
-    String mode){ // hours,days,weeks,months(31 days)
-        JsonObject root = new JsonObject();
-    final Map<String, Long> modes = Map.of(
-    "hours", 3600l,
-    "days", 86400l,
-    "weeks",604800l,
-    "months",18748800l);
-    double historyService.uptimePercentByPeriod(companyId,StartTimeStamp,StopTimeStamp,modes.get(mode));
 
+    @Override
+    public JsonArray getStatsByPeriod(String companyId,Long StartTimeStamp,Long StopTimeStamp,
+    String mode){ // hours,days,weeks,months(31 days)
+        JsonArray root = new JsonArray();
+        final Map<String, Long> modes = Map.of(
+        "hour", 3600L,
+        "day", 86400L,
+        "week",604800L,
+        "month",18748800L,
+        "year",6843312000L);
+        List<String>deviceIds=dataHolderService.getAllChildrenForGivenCompanyId(companyId);
+        Map<String,List<Double>> companyUptimes = historyService.uptimePercentByPeriod(deviceIds,StartTimeStamp,StopTimeStamp,modes.get(mode)); //list is length of ceil of periods in range 
+        JsonObject periodSorted=new JsonObject();
+        //key is just and integer that means period number
+        int active;
+        int inactive;
+        int undefined;
+        for (int i=0;i<companyUptimes.keySet().size();i++)
+        {   active=0;inactive=0;undefined=0;
+            periodSorted=new JsonObject();      
+            for (Double value :companyUptimes.get(i) ) {
+                //deviceUptimesJson.add(value);
+                if(value<1d)
+                {
+                    inactive+=1;
+                }
+                else if(value<0d){
+                    undefined+=1;
+                }
+                else
+                {
+                    active+=1;
+                }
+
+
+            }
+            periodSorted.addProperty("active", active);
+            periodSorted.addProperty("inactive",inactive);
+            periodSorted.addProperty("disabled",undefined);
+            periodSorted.addProperty("timestamp", String.valueOf(i));
+            root.add(periodSorted);
+        }
+
+        
         return root;
     }
 }

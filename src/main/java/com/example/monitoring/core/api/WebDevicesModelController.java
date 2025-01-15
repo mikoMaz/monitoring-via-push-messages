@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.monitoring.core.api.abstraction.IDevicesModelService;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
@@ -19,16 +20,22 @@ public class WebDevicesModelController {
     private final IDevicesModelService devicesModelService;
 
     @GetMapping("/jsonTree")
-    public ResponseEntity<String> jsonTree(@RequestParam String id) {
-        JsonObject jsonTree = devicesModelService.getJsonTree(id);
+    public ResponseEntity<String> jsonTree(@RequestParam String companyId) {
+        JsonObject jsonTree = devicesModelService.getJsonTree(companyId);
         return ResponseEntity.ok().body(jsonTree.toString());
     }
 
     @GetMapping("/historyTree")
-    public ResponseEntity<String> historyTree(@RequestParam String id) {
-        JsonObject historyTree = devicesModelService.getHistoryTree(id);
+    public ResponseEntity<String> historyTree(@RequestParam String companyId) {
+        JsonObject historyTree = devicesModelService.getHistoryTree(companyId);
         return ResponseEntity.ok().body(historyTree.toString());
     }
+    @GetMapping("/newHistoryTree")
+    public ResponseEntity<String> newHistoryTree(@RequestParam String companyId,Long startTimeStamp,Long stopTimeStamp,String period){
+        JsonArray historyTree = devicesModelService.getStatsByPeriod(companyId,startTimeStamp,stopTimeStamp,period);
+        return ResponseEntity.ok().body(historyTree.toString());
+    }
+
 
     @GetMapping("/historySingleDevice")
     public ResponseEntity<String> singleDeviceHistory(@RequestParam String companyId, String device_id) {
