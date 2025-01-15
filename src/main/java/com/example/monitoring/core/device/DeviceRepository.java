@@ -16,4 +16,6 @@ public interface DeviceRepository extends JpaRepository<Device, String> {
     List<String> findDeviceIdsByCompanyIdWithParent(@Param("companyId") Long companyId);
 
     List<Device> findDevicesByParentDeviceId(String parentDevice);
+
+    List<Device> findDevicesByCompanyCompanyId(Long companyId);
 }

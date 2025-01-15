@@ -18,4 +18,6 @@ public interface DeviceService {
     List<String> getAllChildrenForGivenCompanyId(Long companyId);
 
     List<String> getAllChildrenForParentId(String parentId);
+
+    List<String> getAllChildrenForParentIdRecursive(String parentId);
 }

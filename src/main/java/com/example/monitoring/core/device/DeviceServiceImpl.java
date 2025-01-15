@@ -101,7 +101,9 @@ public class DeviceServiceImpl implements DeviceService {
         Device device = deviceRepository.findById(deviceId).orElse(null);
 
         if (device != null) {
-            return device.getParentDevice().getId();
+            if (device.getParentDevice() != null) {
+                return device.getParentDevice().getId();
+            }
         }
 
         return null;
@@ -109,11 +111,16 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public List<String> getAllChildrenForGivenCompanyId(Long companyId) {
-        return deviceRepository.findDeviceIdsByCompanyIdWithParent(companyId);
+        return deviceRepository.findDevicesByCompanyCompanyId(companyId).stream().map(Device::getId).toList();
     }
 
     @Override
     public List<String> getAllChildrenForParentId(String parentId) {
+        return deviceRepository.findDevicesByParentDeviceId(parentId).stream().map(Device::getId).toList();
+    }
+
+    @Override
+    public List<String> getAllChildrenForParentIdRecursive(String parentId) {
         List<Device> result = new ArrayList<>();
         findChildrenRecursively(parentId, result);
         return result.stream().map(Device::getId).toList();

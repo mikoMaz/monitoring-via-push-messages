@@ -25,7 +25,6 @@ public class DevicesModelService implements IDevicesModelService {
 
     private final DeviceHistoryService historyService;
     private final DeviceStatusService statusService;
-//    private final DataHolderService dataHolderService;
     private final DeviceService deviceService;
     private final JsonTreeConverter proc;
 
@@ -37,11 +36,12 @@ public class DevicesModelService implements IDevicesModelService {
         List<String> ToplevelDevices = new ArrayList<>();
         JsonObject root = new JsonObject();
         devicesList = deviceService.getAllChildrenForGivenCompanyId(companyId);
+
         if (devicesList == null) {
             return root;
         }
-        for (int i = 0; i < devicesList.size(); i++) {
 
+        for (int i = 0; i < devicesList.size(); i++) {
             if (deviceService.getParentIdFromDevice(devicesList.get(i)) == null) {
                 ToplevelDevices.add(devicesList.get(i));
                 logger.info(devicesList.get(i));
@@ -92,7 +92,7 @@ public class DevicesModelService implements IDevicesModelService {
 
                         List<String> BottomList = deviceService.getAllChildrenForParentId(MidlevelId);
 
-                        if (BottomList == null) {
+                        if (BottomList.isEmpty()) {
                             MidlevelDeviceType = 0;
                             childDevice = proc.convertToJsonTreeComponent(MidlevelId, MidlevelStatus, MidlevelTimestamp,
                                     MidlevelDeviceType);
@@ -162,14 +162,14 @@ public class DevicesModelService implements IDevicesModelService {
                 deviceTypeMap.get("upperLevel").add(new JsonPrimitive(topLevelStatus));
 
                 List<String> midList = deviceService.getAllChildrenForParentId(topLevelDeviceId);
-                if (midList != null) {
+                if (!midList.isEmpty()) {
                     for (String midLevelId : midList) {
                         Double midLevelStatus = historyService.uptimePercent(midLevelId);
                         if (midLevelStatus != null) {
                             deviceTypeMap.get("middleLevel").add(new JsonPrimitive(midLevelStatus));
 
                             List<String> bottomList = deviceService.getAllChildrenForParentId(midLevelId);
-                            if (bottomList != null) {
+                            if (!bottomList.isEmpty()) {
                                 for (String bottomLevelId : bottomList) {
                                     Double bottomLevelStatus = historyService.uptimePercent(bottomLevelId);
                                     if (bottomLevelStatus != null) {
@@ -210,5 +210,4 @@ public class DevicesModelService implements IDevicesModelService {
         root.addProperty("uptime", status);
         return root;
     }
-
 }
