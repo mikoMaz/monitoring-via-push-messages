@@ -10,6 +10,9 @@ public interface CsvService {
 
     List<List<String>> readCsv(MultipartFile file);
 
+    boolean csvDeviceTable(List<List<String>> csvInList);
+
+    @Deprecated
     boolean csvToDeviceObjectFromDevice(List<List<String>> csvInList);
 
     boolean csvToDeviceObjectFromHierarchy(List<List<String>> csvInList);

@@ -38,7 +38,7 @@ public class CsvServiceImpl implements CsvService {
         List<List<String>> csv = this.readCsv(file);
 
         if (type.equals("device")) {
-            if (!this.csvToDeviceObjectFromDevice(csv)) {
+            if (!this.csvDeviceTable(csv)) {
                 ResponseEntity.badRequest().body("CSV has a number of columns other than 2");
 //                throw new FileCorruptionException("CSV has a number of columns other than 2");
             }
@@ -68,6 +68,29 @@ public class CsvServiceImpl implements CsvService {
     }
 
     @Override
+    public boolean csvDeviceTable(List<List<String>> csvInList) {
+        if (csvInList == null || csvInList.isEmpty()) {
+            return false;
+        }
+        if (csvInList.getFirst().size() != 2) {
+            return false;
+        }
+        dataHolderService.reset1();
+        csvInList.removeFirst();
+        csvInList.forEach(
+                listRow -> {
+                    // tabelka1
+                    dataHolderService.addDeviceIfNotExist(listRow.getFirst());
+                    dataHolderService.addCompanyIdToDeviceData(listRow.getFirst(), listRow.getLast());
+                    // git tabelka4
+                    dataHolderService.addCompanyIfNotExist(listRow.getLast());
+                    dataHolderService.addDeviceIdToCompanyData(listRow.getLast(), listRow.getFirst());
+                });
+        return true;
+    }
+
+    @Override
+    @Deprecated
     public boolean csvToDeviceObjectFromDevice(List<List<String>> csvInList) {
         if (csvInList == null || csvInList.isEmpty()) {
             return false;
