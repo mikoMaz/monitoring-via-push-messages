@@ -3,6 +3,7 @@ package com.example.monitoring.core.status;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.monitoring.core.device.DeviceService;
 import org.springframework.stereotype.Service;
 import com.example.monitoring.core.external.DataHolderService;
 
@@ -12,7 +13,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DeviceStatusServiceImpl implements DeviceStatusService {
         private final DeviceStatusRepository repository;
-        private final DataHolderService dataHolderService;
+//        private final DataHolderService dataHolderService;
+        private final DeviceService deviceService;
         private final Integer maxTimeout = 60 * 5;
 
         public void saveFromArgs(String Id, Long Timestamp, Long firstLoggedAt) {
@@ -67,7 +69,8 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
         }
 
         public List<DeviceStatus> getOfflineDevices(String id) {
-                List<String> devicesToCheckIds = dataHolderService.getAllChildrenForGivenCompanyId(id);
+//                List<String> devicesToCheckIds = dataHolderService.getAllChildrenForGivenCompanyId(id);
+                List<String> devicesToCheckIds = deviceService.getAllChildrenForGivenCompanyId(Long.parseLong(id));
                 Long unixTime = System.currentTimeMillis() / 1000L;
 
                 // TODO: make treshold a global variable

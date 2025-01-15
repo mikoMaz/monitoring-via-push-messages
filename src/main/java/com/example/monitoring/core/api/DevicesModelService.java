@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.monitoring.core.device.DeviceService;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,8 @@ public class DevicesModelService implements IDevicesModelService {
 
     private final DeviceHistoryService historyService;
     private final DeviceStatusService statusService;
-    private final DataHolderService dataHolderService;
+//    private final DataHolderService dataHolderService;
+    private final DeviceService deviceService;
     private final JsonTreeConverter proc;
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
@@ -35,13 +37,14 @@ public class DevicesModelService implements IDevicesModelService {
         List<String> devicesList;
         List<String> ToplevelDevices = new ArrayList<>();
         JsonObject root = new JsonObject();
-        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+//        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+        devicesList = deviceService.getAllChildrenForGivenCompanyId(Long.parseLong(id));
         if (devicesList == null) {
             return root;
         }
         for (int i = 0; i < devicesList.size(); i++) {
 
-            if (dataHolderService.getParentForGivenDeviceId(devicesList.get(i)) == null) {
+            if (deviceService.getParentIdFromDevice(devicesList.get(i)) == null) {
                 ToplevelDevices.add(devicesList.get(i));
                 logger.info(devicesList.get(i));
             }
@@ -67,7 +70,9 @@ public class DevicesModelService implements IDevicesModelService {
                 currentObject = proc.convertToJsonTreeComponent(ToplevelID, ToplevelStatus, ToplevelTimestamp,
                         ToplevelType);
                 logger.info(currentObject.toString());
-                List<String> MidList = dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
+//                deviceService.get(Long.parseLong(ToplevelID));
+//                List<String> MidList = dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
+                List<String> MidList = deviceService.getAllChildrenForParentId(ToplevelID);
                 if (MidList == null) {
                     MidList = new ArrayList<>();
                 }
@@ -79,7 +84,8 @@ public class DevicesModelService implements IDevicesModelService {
                 list.get(0).add(currentObject);
                 for (int j = 0; j < MidList.size(); j++) {
                     String MidlevelId = MidList.get(j);
-                    List<String> BottomList = dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
+//                    List<String> BottomList = dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
+                    List<String> BottomList = deviceService.getAllChildrenForParentId(MidlevelId);
                     if (BottomList == null) {
                         continue;
                     }
@@ -131,7 +137,8 @@ public class DevicesModelService implements IDevicesModelService {
 
         JsonObject root = new JsonObject();
 
-        List<String> devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+//        List<String> devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+        List<String> devicesList = deviceService.getAllChildrenForGivenCompanyId(Long.parseLong(id));
         if (devicesList == null) {
             deviceTypeMap.forEach(root::add);
             return root;
@@ -139,7 +146,7 @@ public class DevicesModelService implements IDevicesModelService {
 
         List<String> toplevelDevices = new ArrayList<>();
         for (String deviceId : devicesList) {
-            if (dataHolderService.getParentForGivenDeviceId(deviceId) == null) {
+            if (deviceService.getParentIdFromDevice(deviceId) == null) {
                 toplevelDevices.add(deviceId);
                 logger.info(deviceId);
             }
@@ -150,14 +157,16 @@ public class DevicesModelService implements IDevicesModelService {
             if (topLevelStatus != null) {
                 deviceTypeMap.get("upperLevel").add(new JsonPrimitive(topLevelStatus));
 
-                List<String> midList = dataHolderService.getAllChildrenForGivenDeviceId(topLevelDeviceId);
+//                List<String> midList = dataHolderService.getAllChildrenForGivenDeviceId(topLevelDeviceId);
+                List<String> midList = deviceService.getAllChildrenForParentId(topLevelDeviceId);
                 if (midList != null) {
                     for (String midLevelId : midList) {
                         Double midLevelStatus = historyService.uptimePercent(midLevelId);
                         if (midLevelStatus != null) {
                             deviceTypeMap.get("middleLevel").add(new JsonPrimitive(midLevelStatus));
 
-                            List<String> bottomList = dataHolderService.getAllChildrenForGivenDeviceId(midLevelId);
+//                            List<String> bottomList = dataHolderService.getAllChildrenForGivenDeviceId(midLevelId);
+                            List<String> bottomList = deviceService.getAllChildrenForParentId(midLevelId);
                             if (bottomList != null) {
                                 for (String bottomLevelId : bottomList) {
                                     Double bottomLevelStatus = historyService.uptimePercent(bottomLevelId);
@@ -181,7 +190,8 @@ public class DevicesModelService implements IDevicesModelService {
         List<String> devicesList;
         List<String> ToplevelDevices = new ArrayList<>();
         JsonObject root = new JsonObject();
-        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(companyId);
+//        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(companyId);
+        devicesList = deviceService.getAllChildrenForGivenCompanyId(Long.parseLong(companyId));
         if (devicesList == null) {
             return null;
         }
