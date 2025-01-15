@@ -217,10 +217,14 @@ public class DevicesModelService implements IDevicesModelService {
         int active;
         int inactive;
         int undefined;
+        logger.info("companyUptimes.keyset()");
+        logger.info(companyUptimes.keySet().toString());
         for (int i=0;i<companyUptimes.keySet().size();i++)
         {   active=0;inactive=0;undefined=0;
-            periodSorted=new JsonObject();      
-            for (Double value :companyUptimes.get(i) ) {
+            periodSorted=new JsonObject();
+            logger.info("i");
+            logger.info(String.valueOf(i));
+            for (Double value :companyUptimes.get(String.valueOf(i)) ) {
                 //deviceUptimesJson.add(value);
                 if(value<1d)
                 {
@@ -236,10 +240,11 @@ public class DevicesModelService implements IDevicesModelService {
 
 
             }
+            periodSorted.addProperty("timestamp", i);
             periodSorted.addProperty("active", active);
             periodSorted.addProperty("inactive",inactive);
             periodSorted.addProperty("disabled",undefined);
-            periodSorted.addProperty("timestamp", String.valueOf(i));
+
             root.add(periodSorted);
         }
 

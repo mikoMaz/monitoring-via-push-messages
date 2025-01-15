@@ -173,7 +173,7 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
             for (List<Double> values : uptimes.values()) {
                     tempList.add(values.get(i));
                 }
-            result.put(String.valueOf(i+1), tempList);
+            result.put(String.valueOf(i), tempList);
         }
      return result;
      //   return uptimes.values().stream().flatMap(item -> item.stream()).collect(Collectors.toList());
