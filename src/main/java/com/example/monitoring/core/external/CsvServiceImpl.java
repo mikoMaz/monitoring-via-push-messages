@@ -8,19 +8,49 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.example.monitoring.core.external.exceptions.FileCorruptionException;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.example.monitoring.core.api.auth.AuthenticationController;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class CsvServiceImpl implements CsvService {
+
     private final DataHolderService dataHolderService;
-    org.slf4j.Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+
+    org.slf4j.Logger logger = LoggerFactory.getLogger(CsvServiceImpl.class);
+
+    @Override
+    public void csvHandler(String type, String tableName, MultipartFile file) {
+        if (file.isEmpty()) {
+            logger.error("CSV file is empty");
+            throw new FileCorruptionException("Empty file");
+        }
+        if (tableName.isEmpty()) {
+            logger.error("CSV tableName is empty");
+            throw new FileCorruptionException("Empty tableName");
+        }
+
+        List<List<String>> csv = this.readCsv(file);
+
+        if (type.equals("device")) {
+            if (!this.csvToDeviceObjectFromDevice(csv)) {
+                ResponseEntity.badRequest().body("CSV has a number of columns other than 2");
+//                throw new FileCorruptionException("CSV has a number of columns other than 2");
+            }
+        }
+
+        if (type.equals("hierarchy")) {
+            if (!this.csvToDeviceObjectFromHierarchy(csv)) {
+                ResponseEntity.badRequest().body("CSV has a number of columns other than 2");
+//                throw new FileCorruptionException("CSV has a number of columns other than 2");
+            }
+        }
+    }
 
     @Override
     public List<List<String>> readCsv(MultipartFile file) {
