@@ -2,6 +2,7 @@ package com.example.monitoring.core.device;
 
 import com.example.monitoring.core.company.Company;
 import com.example.monitoring.core.company.CompanyService;
+import com.example.monitoring.core.device.exceptions.DeviceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,8 +83,12 @@ public class DeviceServiceImpl implements DeviceService {
         Optional<Device> device = deviceRepository.findById(deviceId);
         Optional<Device> parentDevice = deviceRepository.findById(parentId);
 
-        if (device.isEmpty() || parentDevice.isEmpty()) {
-            // TODO!
+        if (device.isEmpty()) {
+            throw new DeviceNotFoundException("Device with id " + deviceId + " not found");
+        }
+
+        if (parentDevice.isEmpty()) {
+            throw new DeviceNotFoundException("Parent device with id " + parentDevice + " not found");
         }
 
         device.get().setParentDevice(parentDevice.get());
