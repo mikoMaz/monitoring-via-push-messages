@@ -51,7 +51,7 @@ public class SendAlert {
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
     public void checkDevicesInEveryCompany() {
 
-        Set<Long> companyIds = companyService.getCompanies().stream().map(
+        Set<Long> companyIds = companyService.getAllCompanies().stream().map(
                 CompanyDto::getCompanyId
         ).collect(Collectors.toSet());
 
