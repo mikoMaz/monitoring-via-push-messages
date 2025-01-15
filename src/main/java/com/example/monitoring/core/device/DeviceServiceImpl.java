@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,6 +63,30 @@ public class DeviceServiceImpl implements DeviceService {
 
         device.get().setCompany(companyToAdd);
 
+        deviceRepository.save(device.get());
+    }
+
+    @Override
+    public void detachParentForDevicesByCompanyId(Long companyId) {
+        List<Device> devices = deviceRepository.findAll();
+
+        devices.forEach(device -> {
+            device.setParentDevice(null);
+        });
+
+        deviceRepository.saveAll(devices);
+    }
+
+    @Override
+    public void addParentIdToDevice(String deviceId, String parentId) {
+        Optional<Device> device = deviceRepository.findById(deviceId);
+        Optional<Device> parentDevice = deviceRepository.findById(parentId);
+
+        if (device.isEmpty() || parentDevice.isEmpty()) {
+            // TODO!
+        }
+
+        device.get().setParentDevice(parentDevice.get());
         deviceRepository.save(device.get());
     }
 }

@@ -6,4 +6,8 @@ public interface DeviceService {
     void addNewDeviceWithDetails(String deviceId, String parentId, Long companyId);
 
     void addCompanyToDevice(String deviceId, Long companyId);
+
+    void detachParentForDevicesByCompanyId(Long companyId);
+
+    void addParentIdToDevice(String deviceId, String parentId);
 }

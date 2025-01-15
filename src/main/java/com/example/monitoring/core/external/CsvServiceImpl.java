@@ -8,11 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.example.monitoring.core.company.CompanyService;
 import com.example.monitoring.core.device.DeviceService;
 import com.example.monitoring.core.external.exceptions.FileCorruptionException;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -121,22 +119,15 @@ public class CsvServiceImpl implements CsvService {
         if (csvInList.getFirst().size() != 2) {
             return false;
         }
-        Map<String, List<String>> mapka = dataHolderService.getDeviceParentData();
-        mapka.forEach((key, value) -> logger.info(key + " " + value));
-        dataHolderService.reset2();
-        mapka = dataHolderService.getDeviceParentData();
-        mapka.forEach((key, value) -> logger.info(key + " " + value));
+
         csvInList.removeFirst();
+
         csvInList.forEach(
                 listRow -> {
-                    // tabelka2
-                    dataHolderService.addDeviceChildIfNotExists(listRow.getFirst());
-                    dataHolderService.addParentIdToDeviceParentData(listRow.getFirst(), listRow.getLast());
+                    String deviceId = listRow.getFirst();
+                    String parentId = listRow.getLast();
 
-                    // tabelka3
-                    dataHolderService.addDeviceParentIfNotExists(listRow.getLast());
-
-                    dataHolderService.addChildForGivenParentId(listRow.getLast(), listRow.getFirst());
+                    deviceService.addParentIdToDevice(deviceId, parentId);
                 });
         return true;
     }
