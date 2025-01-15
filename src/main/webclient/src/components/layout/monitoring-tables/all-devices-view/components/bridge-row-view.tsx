@@ -40,8 +40,8 @@ export const BridgeRowView = ({
     isSorted ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id)
   );
 
-  const filteredSensors = bridge.sensors.filter((gateway) =>
-    gateway.id.includes(deviceIdFilter)
+  const filteredSensors = bridge.sensors.filter((sensors) =>
+    sensors.id.includes(deviceIdFilter)
   );
 
   const sortedSensors = [...filteredSensors].sort((a, b) =>

@@ -8,10 +8,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Box } from "@chakra-ui/react";
+import { Box, VStack } from "@chakra-ui/react";
+import {Tooltip as ChakraTooltip} from "@chakra-ui/react";
 import { UIProps } from "../../../config/config";
 import { getDensityRecentChart } from "../util/density-devices-recent";
 import { IChartTemplateModelDrawing } from "../../../types/chartTemplate";
+import { InfoOutlined } from "@mui/icons-material";
 
 interface CustomTooltipPayload {
   min: number;
@@ -94,6 +96,7 @@ export const RecentChart = ({
     console.log(brushActive);
     return (
       <Box>
+        <VStack spacing={1} align="end">
         <BarChart
           width={1200}
           height={500}
@@ -117,6 +120,11 @@ export const RecentChart = ({
             cursor={{ fill: "rgba(0, 0, 0, 0.2)" }}
           />
         </BarChart>
+        <ChakraTooltip label="Chart showing device counts by percentage range of operation during their entire activity" bg="gray.100" color="gray.500" placement="left">
+          <InfoOutlined style={{ color: UIProps.colors.accent, fontSize: "32px" }} />
+        </ChakraTooltip>
+        </VStack>
+        
       </Box>
     );
   } else {

@@ -1,4 +1,13 @@
-import { Box, Center, Grid, GridItem, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Grid,
+  GridItem,
+  HStack,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { Tooltip as ChakraTooltip } from "@chakra-ui/react";
 import {
   AllDevicesUptimeJson,
   DeviceModel,
@@ -13,6 +22,7 @@ import { CustomChartsTab } from "./components/custom-charts-tab";
 import { getEmptyPreset, IChartTemplateModel } from "../../types/chartTemplate";
 import { HistoryChart } from "./components/history-chart";
 import { APIClient } from "../../api/api-client";
+import { InfoOutlined } from "@mui/icons-material";
 
 enum viewOption {
   current,
@@ -69,7 +79,7 @@ export const DashboardPage = ({
     switch (selectedViewOption) {
       case viewOption.current:
         return (
-          <>
+          <Stack marginBottom={4}>
             <Center>
               <CurrentChart
                 model={model}
@@ -78,11 +88,11 @@ export const DashboardPage = ({
               />
             </Center>
             <Text>Generated: {currentTime}</Text>
-          </>
+          </Stack>
         );
       case viewOption.recent:
         return (
-          <>
+          <Stack marginBottom={4}>
             <Center>
               <RecentChart
                 model={model}
@@ -91,23 +101,36 @@ export const DashboardPage = ({
               />
             </Center>
             <Text>Generated: {currentTime}</Text>
-          </>
+          </Stack>
         );
       case viewOption.recentHistory:
         return (
-          <>
+          <Stack marginBottom={4}>
             <Center>
-              <HistoryChart
-                apiClient={apiClient}
-                accessToken={accessToken}
-                companyId={companyId}
-                model={model}
-                devicesHistoryValues={allHistoryValues}
-                {...chartModel}
-              />
+            <HistoryChart
+                  apiClient={apiClient}
+                  accessToken={accessToken}
+                  companyId={companyId}
+                  model={model}
+                  devicesHistoryValues={allHistoryValues}
+                  {...chartModel}
+                />
             </Center>
-            <Text>Generated: {currentTime}</Text>
-          </>
+
+            <HStack justifyContent="space-between">
+              <Text>Generated: {currentTime}</Text>
+              <ChakraTooltip
+                label="Chart showing how many devices were active everyday in a given period of time"
+                bg="gray.100"
+                color="gray.500"
+                placement="left"
+              >
+                <InfoOutlined
+                  style={{ color: UIProps.colors.accent, fontSize: "32px" }}
+                />
+              </ChakraTooltip>
+            </HStack>
+          </Stack>
         );
       case viewOption.custom:
         return (

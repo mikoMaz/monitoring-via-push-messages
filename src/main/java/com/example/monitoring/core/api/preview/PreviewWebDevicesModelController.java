@@ -22,15 +22,15 @@ public class PreviewWebDevicesModelController {
 
     @GetMapping("/jsonTree")
     public ResponseEntity<String> jsonTree(@RequestParam String companyName) {
-        String id = companyService.findCompanyByName(companyName).getCompanyId().toString();
-        JsonObject jsonTree = devicesModelService.getJsonTree(id);
+        Long companyId = companyService.findCompanyByName(companyName).getCompanyId();
+        JsonObject jsonTree = devicesModelService.getJsonTree(companyId);
         return ResponseEntity.ok().body(jsonTree.toString());
     }
 
     @GetMapping("/historyTree")
     public ResponseEntity<String> historyTree(@RequestParam String companyName) {
-        String id = companyService.findCompanyByName(companyName).getCompanyId().toString();
-        JsonObject historyTree = devicesModelService.getHistoryTree(id);
+        Long companyId = companyService.findCompanyByName(companyName).getCompanyId();
+        JsonObject historyTree = devicesModelService.getHistoryTree(companyId);
         return ResponseEntity.ok().body(historyTree.toString());
     }
 }
