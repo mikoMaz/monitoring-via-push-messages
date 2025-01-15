@@ -45,7 +45,7 @@ public class CsvServiceImpl implements CsvService {
         }
 
         if (type.equals("hierarchy")) {
-            if (!this.csvToDeviceObjectFromHierarchy(csv)) {
+            if (!this.csvHierarchyTable(csv)) {
                 ResponseEntity.badRequest().body("CSV has a number of columns other than 2");
 //                throw new FileCorruptionException("CSV has a number of columns other than 2");
             }
@@ -90,6 +90,34 @@ public class CsvServiceImpl implements CsvService {
     }
 
     @Override
+    public boolean csvHierarchyTable(List<List<String>> csvInList) {
+        if (csvInList == null || csvInList.isEmpty()) {
+            return false;
+        }
+        if (csvInList.getFirst().size() != 2) {
+            return false;
+        }
+        Map<String, List<String>> mapka = dataHolderService.getDeviceParentData();
+        mapka.forEach((key, value) -> logger.info(key + " " + value));
+        dataHolderService.reset2();
+        mapka = dataHolderService.getDeviceParentData();
+        mapka.forEach((key, value) -> logger.info(key + " " + value));
+        csvInList.removeFirst();
+        csvInList.forEach(
+                listRow -> {
+                    // tabelka2
+                    dataHolderService.addDeviceChildIfNotExists(listRow.getFirst());
+                    dataHolderService.addParentIdToDeviceParentData(listRow.getFirst(), listRow.getLast());
+
+                    // tabelka3
+                    dataHolderService.addDeviceParentIfNotExists(listRow.getLast());
+
+                    dataHolderService.addChildForGivenParentId(listRow.getLast(), listRow.getFirst());
+                });
+        return true;
+    }
+
+    @Override
     @Deprecated
     public boolean csvToDeviceObjectFromDevice(List<List<String>> csvInList) {
         if (csvInList == null || csvInList.isEmpty()) {
@@ -113,6 +141,7 @@ public class CsvServiceImpl implements CsvService {
     }
 
     @Override
+    @Deprecated
     public boolean csvToDeviceObjectFromHierarchy(List<List<String>> csvInList) {
         if (csvInList == null || csvInList.isEmpty()) {
             return false;

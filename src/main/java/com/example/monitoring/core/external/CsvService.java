@@ -12,8 +12,11 @@ public interface CsvService {
 
     boolean csvDeviceTable(List<List<String>> csvInList);
 
+    boolean csvHierarchyTable(List<List<String>> csvInList);
+
     @Deprecated
     boolean csvToDeviceObjectFromDevice(List<List<String>> csvInList);
 
+    @Deprecated
     boolean csvToDeviceObjectFromHierarchy(List<List<String>> csvInList);
 }
