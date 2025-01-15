@@ -54,7 +54,7 @@ export const HistoryChart = ({
   }, [dateFrom, dateTo, companyId, apiClient, accessToken]);
 
   if (loading) {
-    return <Box>Ładowanie danych...</Box>;
+    return <Box>Authentication in progress...</Box>;
   }
 
   return (
@@ -82,7 +82,6 @@ export const HistoryChart = ({
             activeDot={{ r: 8 }}
           />
           <Line type="monotone" dataKey="inactive" stroke="red" />
-          <Line type="monotone" dataKey="disabled" stroke="orange" />
         </LineChart>
       </ResponsiveContainer>
     </Box>

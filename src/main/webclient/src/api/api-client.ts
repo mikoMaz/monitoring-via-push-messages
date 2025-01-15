@@ -167,7 +167,11 @@ export class APIClient implements IAPIClient {
   ) => {
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceId=${deviceId}`;
     if (usingTestData()) {
-      return this.testApiClient.getDeviceUptime(companyId, deviceId, accessToken);
+      return this.testApiClient.getDeviceUptime(
+        companyId,
+        deviceId,
+        accessToken
+      );
     }
     return axios
       .get(apiUrl, {
@@ -329,7 +333,57 @@ export class APIClient implements IAPIClient {
     dateFrom: string,
     dateTo: string
   ): Promise<IHistoryChartData[]> => {
-    return this.testApiClient.getDataHistoryChart(accessToken, companyId, dateFrom, dateTo);
+    const formatDate = (date: Date): string => {
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear().toString();
+      return `${day}-${month}-${year}`;
+    };
+
+    const dateFromUnix = new Date(dateFrom).getTime();
+
+    const dateToPlusOne = new Date(dateTo);
+    dateToPlusOne.setDate(dateToPlusOne.getDate() + 1);
+    const dateToUnix = dateToPlusOne.getTime();
+
+    const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/chartHistory?companyId=${companyId}&startTimeStamp=${dateFromUnix}&stopTimeStamp=${dateToUnix}&period=day`;
+    if (usingTestData()) {
+      return this.testApiClient.getDataHistoryChart(
+        accessToken,
+        companyId,
+        dateFrom,
+        dateTo
+      );
+    }
+    return axios
+      .get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        const data: IHistoryChartData[] = response.data;
+
+        const dateFromObj = new Date(dateFrom);
+        const convertedData = data.map((item, index) => {
+          const date = new Date(dateFromObj);
+          date.setDate(date.getDate() + index);
+          const formattedDate = `${String(date.getDate())}-${String(
+            date.getMonth() + 1
+          ).padStart(2, "0")}-${date.getFullYear()}`;
+
+          return {
+            ...item,
+            timestamp: formattedDate,
+          };
+        });
+
+        return convertedData;
+      })
+      .catch(function (error) {
+        console.error(error);
+        return [];
+      });
   };
 
   public postAddCompany = async (accessToken: string, companyName: string) => {
@@ -338,11 +392,15 @@ export class APIClient implements IAPIClient {
       return this.testApiClient.postAddCompany(accessToken, companyName);
     }
     return axios
-      .post(apiUrl, {}, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
+      .post(
+        apiUrl,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
       .then((response) => {
         return response.status;
       })
@@ -366,11 +424,15 @@ export class APIClient implements IAPIClient {
       );
     }
     return axios
-      .post(apiUrl, {}, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
+      .post(
+        apiUrl,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
       .then((response) => {
         return response.status;
       })
