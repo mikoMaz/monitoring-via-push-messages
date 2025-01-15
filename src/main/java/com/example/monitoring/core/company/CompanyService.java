@@ -12,6 +12,8 @@ public interface CompanyService {
 
     void setCompanyKey(Long companyId, String companyKey) throws Exception;
 
+    List<CompanyDto> getAllCompanies();
+
     List<CompanyDto> getCompanies();
 
     void updateUsersInCompany(Long companyId, List<UserDto> users);

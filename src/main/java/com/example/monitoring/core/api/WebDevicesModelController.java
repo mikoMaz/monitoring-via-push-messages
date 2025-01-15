@@ -19,14 +19,14 @@ public class WebDevicesModelController {
     private final IDevicesModelService devicesModelService;
 
     @GetMapping("/jsonTree")
-    public ResponseEntity<String> jsonTree(@RequestParam Long companyId) {
-        JsonObject jsonTree = devicesModelService.getJsonTree(companyId);
+    public ResponseEntity<String> jsonTree(@RequestParam Long id) {
+        JsonObject jsonTree = devicesModelService.getJsonTree(id);
         return ResponseEntity.ok().body(jsonTree.toString());
     }
 
     @GetMapping("/historyTree")
-    public ResponseEntity<String> historyTree(@RequestParam Long companyId) {
-        JsonObject historyTree = devicesModelService.getHistoryTree(companyId);
+    public ResponseEntity<String> historyTree(@RequestParam Long id) {
+        JsonObject historyTree = devicesModelService.getHistoryTree(id);
         return ResponseEntity.ok().body(historyTree.toString());
     }
 
