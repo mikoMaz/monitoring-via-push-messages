@@ -89,4 +89,15 @@ public class DeviceServiceImpl implements DeviceService {
         device.get().setParentDevice(parentDevice.get());
         deviceRepository.save(device.get());
     }
+
+    @Override
+    public String getParentIdFromDevice(String deviceId) {
+        Device device = deviceRepository.findById(deviceId).orElse(null);
+
+        if (device != null) {
+            return device.getParentDevice().getId();
+        }
+
+        return null;
+    }
 }
