@@ -1,5 +1,7 @@
 package com.example.monitoring.core.device;
 
+import java.util.List;
+
 public interface DeviceService {
     void deleteDevicesForGivenCompany(Long companyId);
 
@@ -12,4 +14,6 @@ public interface DeviceService {
     void addParentIdToDevice(String deviceId, String parentId);
 
     String getParentIdFromDevice(String deviceId);
+
+    List<String> getAllChildrenForGivenCompanyId(Long companyId);
 }

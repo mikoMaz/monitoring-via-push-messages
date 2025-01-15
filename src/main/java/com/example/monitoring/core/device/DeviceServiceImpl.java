@@ -105,4 +105,9 @@ public class DeviceServiceImpl implements DeviceService {
 
         return null;
     }
+
+    @Override
+    public List<String> getAllChildrenForGivenCompanyId(Long companyId) {
+        return deviceRepository.findDeviceIdsByCompanyIdWithParent(companyId);
+    }
 }
