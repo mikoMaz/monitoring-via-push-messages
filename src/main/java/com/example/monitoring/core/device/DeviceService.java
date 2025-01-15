@@ -10,4 +10,6 @@ public interface DeviceService {
     void detachParentForDevicesByCompanyId(Long companyId);
 
     void addParentIdToDevice(String deviceId, String parentId);
+
+    String getParentIdFromDevice(String deviceId);
 }
