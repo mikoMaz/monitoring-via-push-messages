@@ -16,4 +16,6 @@ public interface DeviceService {
     String getParentIdFromDevice(String deviceId);
 
     List<String> getAllChildrenForGivenCompanyId(Long companyId);
+
+    List<String> getAllChildrenForParentId(String parentId);
 }

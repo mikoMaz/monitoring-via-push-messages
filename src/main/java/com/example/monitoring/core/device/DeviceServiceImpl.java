@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -109,5 +110,20 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public List<String> getAllChildrenForGivenCompanyId(Long companyId) {
         return deviceRepository.findDeviceIdsByCompanyIdWithParent(companyId);
+    }
+
+    @Override
+    public List<String> getAllChildrenForParentId(String parentId) {
+        List<Device> result = new ArrayList<>();
+        findChildrenRecursively(parentId, result);
+        return result.stream().map(Device::getId).toList();
+    }
+
+    private void findChildrenRecursively(String parentId, List<Device> result) {
+        List<Device> children = deviceRepository.findDevicesByParentDeviceId(parentId);
+        result.addAll(children);
+        for (Device child : children) {
+            findChildrenRecursively(child.getId(), result);
+        }
     }
 }

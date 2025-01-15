@@ -14,4 +14,6 @@ public interface DeviceRepository extends JpaRepository<Device, String> {
 
     @Query("SELECT d.id FROM Device d WHERE d.company.companyId = :companyId AND d.parentDevice IS NOT NULL")
     List<String> findDeviceIdsByCompanyIdWithParent(@Param("companyId") Long companyId);
+
+    List<Device> findDevicesByParentDeviceId(String parentDevice);
 }
