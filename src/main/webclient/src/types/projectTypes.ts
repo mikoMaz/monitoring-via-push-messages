@@ -33,5 +33,12 @@ export const capitalizeFirstLetter = (string: string) => {
 };
 
 export const getMailNickname = (mail: string): string => {
-  return mail.split("@")[0];
-}
+  try {
+    return mail.split("@")[0];
+  } catch (error: any) {
+    console.error(
+      "Email splitting error. Email: " + mail + "Error: " + error.message
+    );
+    return mail;
+  }
+};
