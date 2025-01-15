@@ -153,6 +153,11 @@ export class Bridge implements IBridge {
         count++;
       }
     });
+    this.sensors.forEach(sensor => {
+      if (sensor.id.includes(pattern)) {
+        count++;
+      }
+    });
     return count;
   }
 
@@ -357,6 +362,7 @@ export class DeviceModel implements IDeviceModel {
       bridge.gateways.forEach((gateway) => {
         sensors.push(...gateway.sensors);
       });
+      sensors.push(...bridge.sensors);
     });
 
     this.gateways.forEach((gateway) => {
