@@ -310,7 +310,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
             topLevelDevice.id,
             topLevelDevice.status,
             new Date(topLevelDevice.lastPinged * 1000),
-            devices[2].devices
+            devices[1].devices
               .filter(
                 (device) =>
                   topLevelDevice.children?.includes(device.id) &&
