@@ -8,6 +8,9 @@ import {
   Grid,
   GridItem,
   Progress,
+  Stack,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
@@ -130,7 +133,7 @@ export const MonitoringDevicePage = ({
           marginTop="28px"
           marginBottom="28px"
         >
-          <Accordion defaultIndex={[0]} allowMultiple allowToggle>
+          <Accordion defaultIndex={[0, 1]} allowMultiple allowToggle>
             <AccordionItem>
               <CustomAccordionButton
                 title={true}
@@ -140,6 +143,9 @@ export const MonitoringDevicePage = ({
               />
 
               <AccordionPanel>
+                <Text size="sm" marginBottom={2}>
+                  Device % activity in the lifetime
+                </Text>
                 <Progress
                   value={activeTime}
                   colorScheme="deviceActiveTime"
@@ -151,12 +157,8 @@ export const MonitoringDevicePage = ({
             <AccordionItem>
               <CustomAccordionButton label="Device details" />
               <AccordionPanel>
-                <DeviceDetailsTable />
+                <DeviceDetailsTable device={selectedDevice} />
               </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem>
-              <CustomAccordionButton label="History" />
-              <AccordionPanel>History</AccordionPanel>
             </AccordionItem>
           </Accordion>
         </GridItem>
