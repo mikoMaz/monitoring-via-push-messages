@@ -19,7 +19,7 @@ export const UserSection = ({
       variant="filled"
       bg="whiteAlpha.600"
       align="center"
-      width={isLandingPage ? "100%" : "auto"} // Dynamiczna szerokość
+      width={isLandingPage ? "40%" : "auto"} // Dynamiczna szerokość
       margin={isLandingPage ? "0 auto" : "0"} // Wyśrodkowanie, jeśli szerokość = 100%
       padding={isLandingPage ? 6 : 4} // Zwiększenie paddingu na pełnym ekranie
     >
