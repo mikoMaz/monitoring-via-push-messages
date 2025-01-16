@@ -79,7 +79,7 @@ export class Gateway implements IGateway {
 
   public getChildDevicesCountMachingFilterPattern(pattern: string): number {
     let count = 0;
-    this.sensors.forEach(sensor => {
+    this.sensors.forEach((sensor) => {
       if (sensor.id.includes(pattern)) {
         count++;
       }
@@ -146,10 +146,15 @@ export class Bridge implements IBridge {
 
   public getChildDevicesCountMachingFilterPattern(pattern: string): number {
     let count = 0;
-    this.gateways.forEach(gateway => {
+    this.gateways.forEach((gateway) => {
       const devices = gateway.getChildDevicesCountMachingFilterPattern(pattern);
       count = count + devices;
       if (gateway.id.includes(pattern)) {
+        count++;
+      }
+    });
+    this.sensors.forEach((sensor) => {
+      if (sensor.id.includes(pattern)) {
         count++;
       }
     });
@@ -449,6 +454,10 @@ export function createDeviceModel(data: IDeviceModel): DeviceModel {
                   )
               )
             )
+        ),
+        bridge.sensors.map(
+          (sensor) =>
+            new Sensor(sensor.id, sensor.status, new Date(sensor.lastPinged))
         )
       )
   );
