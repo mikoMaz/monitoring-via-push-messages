@@ -2,9 +2,11 @@ package com.example.monitoring.core.user;
 
 import com.example.monitoring.core.company.Company;
 import com.example.monitoring.core.company.CompanyRepository;
+import com.example.monitoring.core.user.exceptions.AccessDeniedException;
 import com.example.monitoring.core.user.exceptions.UserAlreadyExistsException;
 import com.example.monitoring.core.user.exceptions.UserCredentialsValidationException;
 import com.example.monitoring.core.user.exceptions.UserNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -93,6 +95,38 @@ public class UserServiceImpl implements UserService {
         return user.getCompany().getCompanyId().equals(companyId) &&
                 user.getRole() == Role.ADMIN ||
                 user.getRole() == Role.SUPER_ADMIN;
+    }
+
+    @Override
+    public void deleteUserById(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        deleteUser(userOptional);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUserByEmail(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        deleteUser(userOptional);
+    }
+
+    private void deleteUser(Optional<User> userOptional) {
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        User userToDelete = userOptional.get();
+        Long userToDeleteCompanyId = userToDelete.getCompany().getCompanyId();
+
+        if (!hasRightToTheCompany(userToDeleteCompanyId)) {
+            throw new AccessDeniedException("User does not have enough permissions");
+        }
+
+        if (userToDelete.getRole() == Role.SUPER_ADMIN && !isSuperAdmin()) {
+            throw new AccessDeniedException("Super admin does not have enough permissions");
+        }
+
+        userRepository.delete(userToDelete);
     }
 
     private String getSubject() {
