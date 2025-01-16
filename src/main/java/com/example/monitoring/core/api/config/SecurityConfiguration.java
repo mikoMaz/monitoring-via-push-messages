@@ -127,8 +127,8 @@ public class SecurityConfiguration {
                 User user = userRepository.findByAuthTokenSubject(subject);
 
                 return user.getAuthorities().stream()
-                                .map(authority -> (GrantedAuthority) authority)
-                                .collect(Collectors.toList());
+                        .map(authority -> (GrantedAuthority) authority)
+                        .collect(Collectors.toList());
         });
         return converter;
     }
