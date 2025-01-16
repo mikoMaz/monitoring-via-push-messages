@@ -20,25 +20,25 @@ public class WebDevicesModelController {
     private final IDevicesModelService devicesModelService;
 
     @GetMapping("/jsonTree")
-    public ResponseEntity<String> jsonTree(@RequestParam String companyId) {
-        JsonObject jsonTree = devicesModelService.getJsonTree(companyId);
+    public ResponseEntity<String> jsonTree(@RequestParam Long id) {
+        JsonObject jsonTree = devicesModelService.getJsonTree(id);
         return ResponseEntity.ok().body(jsonTree.toString());
     }
 
     @GetMapping("/historyTree")
-    public ResponseEntity<String> historyTree(@RequestParam String companyId) {
-        JsonObject historyTree = devicesModelService.getHistoryTree(companyId);
-        return ResponseEntity.ok().body(historyTree.toString());
-    }
-    @GetMapping("/chartHistory")
-    public ResponseEntity<String> newHistoryTree(@RequestParam String companyId,Long startTimeStamp,Long stopTimeStamp,String period){
-        JsonArray historyTree = devicesModelService.getStatsByPeriod(companyId,startTimeStamp,stopTimeStamp,period);
+    public ResponseEntity<String> historyTree(@RequestParam Long id) {
+        JsonObject historyTree = devicesModelService.getHistoryTree(id);
         return ResponseEntity.ok().body(historyTree.toString());
     }
 
+    @GetMapping("/chartHistory")
+    public ResponseEntity<String> newHistoryTree(@RequestParam Long companyId, Long startTimeStamp, Long stopTimeStamp, String period) {
+        JsonArray historyTree = devicesModelService.getStatsByPeriod(companyId, startTimeStamp, stopTimeStamp, period);
+        return ResponseEntity.ok().body(historyTree.toString());
+    }
 
     @GetMapping("/historySingleDevice")
-    public ResponseEntity<String> singleDeviceHistory(@RequestParam String companyId, String deviceId) {
+    public ResponseEntity<String> singleDeviceHistory(@RequestParam Long companyId, String deviceId) {
         JsonObject singleDeviceHistory = devicesModelService.getSingleDeviceHistory(companyId, deviceId);
         if (singleDeviceHistory == null) {
             return ResponseEntity.badRequest().body("");

@@ -11,13 +11,13 @@ public interface AlertService {
 
     void deleteById(String id);
 
-    ArrayList<AlertData> getAlertsForCompany(String companyId);
+    ArrayList<AlertData> getAlertsForCompany(Long companyId);
 
     ArrayList<AlertData> getAlertsForDevice(String deviceId);
 
     void setAlertIgnoreState(String alertId, boolean stateValue);
 
-    void getDevicesThatGiveAlert(String companyId);
+    void getDevicesThatGiveAlert(Long companyId);
 
     void addNewAlert(String payload);
 }

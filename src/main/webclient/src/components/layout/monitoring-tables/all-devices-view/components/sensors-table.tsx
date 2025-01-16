@@ -96,8 +96,6 @@ export const SensorsTable = ({
           </Table>
         </TableContainer>
       );
-    } else if (!sensors.length && deviceIdFilter) {
-      return <></>;
     } else {
       return <NoData />;
     }

@@ -61,6 +61,13 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public List<CompanyDto> getAllCompanies() {  // NOTE: do not expose to users! Within user context use getCompanies()
+        return companyRepository.findAll().stream()
+                .map(company -> new CompanyDto(company.getCompanyId(), company.getName()))
+                .toList();
+    }
+
+    @Override
     public List<CompanyDto> getCompanies() {
         UserDto userDto = userService.getUserDto();
         Role userRole = userDto.getRole();
@@ -109,5 +116,10 @@ public class CompanyServiceImpl implements CompanyService {
                 logger.error("Not enough permissions to change this role");
             }
         });
+    }
+
+    @Override
+    public Optional<Company> findCompanyById(Long companyId) {
+        return companyRepository.findById(companyId);
     }
 }

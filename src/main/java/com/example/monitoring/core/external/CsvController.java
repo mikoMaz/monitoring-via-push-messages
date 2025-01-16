@@ -1,7 +1,5 @@
 package com.example.monitoring.core.external;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,27 +21,8 @@ public class CsvController {
             @RequestParam("type") String type,
             @RequestParam("tableName") String tableName,
             @RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("Empty file");
-        }
-        if (tableName.isEmpty()) {
-            return ResponseEntity.badRequest().body("Empty tableName");
-        }
 
-        List<List<String>> csv = csvService.readCsv(file);
-
-        if (type.equals("device")) {
-            if (!csvService.csvToDeviceObjectFromDevice(csv)) {
-                ResponseEntity.badRequest().body("CSV has a number of columns other than 2");
-            }
-        }
-        if (type.equals("hierarchy")) {
-            if (!csvService.csvToDeviceObjectFromHierarchy(csv)) {
-                ResponseEntity.badRequest().body("CSV has a number of columns other than 2");
-            }
-        }
-
-        // TODO save to db
+        csvService.csvHandler(type, tableName, file);
         return ResponseEntity.ok(file.getOriginalFilename());
     }
 }

@@ -5,11 +5,11 @@ import com.google.gson.JsonObject;
 
 public interface IDevicesModelService {
 
-    JsonObject getJsonTree(String id);
+    JsonObject getJsonTree(Long companyId);
 
-    JsonObject getHistoryTree(String id);
+    JsonObject getHistoryTree(Long companyId);
 
-    JsonObject getSingleDeviceHistory(String companyId, String deviceId);
+    JsonObject getSingleDeviceHistory(Long companyId, String deviceId);
 
-    JsonArray getStatsByPeriod(String companyId,Long startTimestamp,Long endTimestamp,String period);
+    JsonArray getStatsByPeriod(Long companyId, Long startTimestamp, Long endTimestamp, String period);
 }

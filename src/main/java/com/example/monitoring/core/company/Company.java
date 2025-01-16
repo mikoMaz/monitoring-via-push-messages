@@ -3,6 +3,7 @@ package com.example.monitoring.core.company;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.example.monitoring.core.device.Device;
 import com.example.monitoring.core.user.User;
 
 import jakarta.persistence.CascadeType;
@@ -31,4 +32,7 @@ public class Company {
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Device> devices = new HashSet<>();
 }

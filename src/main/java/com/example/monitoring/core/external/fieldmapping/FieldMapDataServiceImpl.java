@@ -36,7 +36,6 @@ public class FieldMapDataServiceImpl implements FieldMapDataService {
             fieldMapDataRepository.findByDeviceTypes(deviceTypes).forEach(fieldMapData -> {
                 fields.put(fieldMapData.getKeyName(), fieldMapData.getTableKeyName());
             });
-            System.out.println(fields);
             return fields;
         } else {
             throw new IllegalArgumentException("Device type not found: " + deviceType);

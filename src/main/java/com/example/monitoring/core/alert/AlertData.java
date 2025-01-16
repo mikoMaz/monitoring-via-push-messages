@@ -26,7 +26,7 @@ public class AlertData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private String emailAdress; // TODO: if null then its default to company mail adress
-    private String companyId;
+    private Long companyId;
     private Integer frequency; // as notification per X seconds
     private Integer duration; // how many times
 

@@ -64,7 +64,7 @@ public class AlertController {
 
     @GetMapping("/get-alerts")
     public ResponseEntity<String> getAlertsForCompany(
-            @RequestBody String companyId,
+            @RequestBody Long companyId,
             @RequestHeader("Authorization") String authHeader) {
         AlertDataSerializer ads = new AlertDataSerializer();
         JsonObject root = new JsonObject();
