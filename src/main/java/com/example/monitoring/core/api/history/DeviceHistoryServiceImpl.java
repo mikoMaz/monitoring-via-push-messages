@@ -74,22 +74,6 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
             Timestamps = repository.timeStampsFromPeriod(deviceIds,StartTimeStamp+(i)*period,StartTimeStamp+(i+1)*period);
             TimestampMap = Timestamps.stream().collect(Collectors.groupingBy(DeviceHistory::getDeviceId));
 
-            // if(Timestamps.size()==0)
-            // {
-            //     logger.info("empty timestamps");
-            //     List<Double> devicePeriodUptimes = uptimes.get(deviceId);
-            //     if (devicePeriodUptimes==null)
-            //     devicePeriodUptimes= new ArrayList<Double>();
-            //     logger.info(devicePeriodUptimes.toString());
-            //     devicePeriodUptimes.addLast(0d);
-            //     logger.info(devicePeriodUptimes.toString());
-            //     if(uptimes.putIfAbsent(deviceId, devicePeriodUptimes)==null)
-            //     {
-            //         logger.info("entry exists for this key");
-            //         uptimes.replace(deviceId, devicePeriodUptimes); 
-            //     }
-            // }
-
             // for every deviceID 
             for(String key:uptimes.keySet())
                 {
