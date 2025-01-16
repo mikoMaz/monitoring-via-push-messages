@@ -92,11 +92,7 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 
             // for every deviceID 
             for(String key:uptimes.keySet())
-                {   logger.info("key:");
-                    logger.info(key);
-                    logger.info(String.valueOf(StartTimeStamp+(i)*period));
-                    logger.info(String.valueOf(StartTimeStamp+(i+1)*period));
-
+                {
                     downtimeUnit=0L;
                     deviceTimestamps = TimestampMap.get(key);
                     //3 przypadki
