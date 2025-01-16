@@ -16,6 +16,7 @@ import {
   Select,
   Checkbox,
   Stack,
+  Box,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
@@ -188,7 +189,7 @@ export const ChartCreator = ({ template, editFunction }: IChartCreator) => {
       return arr;
     }
 
-    if (selectedType !== chartType.EmptyPreset) {
+    if (selectedType !== chartType.EmptyPreset && selectedType !== chartType.History) {
       return (
         <>
           <Checkbox
@@ -227,7 +228,7 @@ export const ChartCreator = ({ template, editFunction }: IChartCreator) => {
   const drawDatePicker = () => {
     if (selectedType === chartType.History) {
       return (
-        <HStack>
+        <HStack paddingY={10}>
           <Heading size="sm">From:</Heading>
           <ChakraDatePicker
             value={startDate}
