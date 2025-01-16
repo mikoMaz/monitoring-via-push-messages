@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.monitoring.core.api.abstraction.IDevicesModelService;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,12 @@ public class WebDevicesModelController {
     @GetMapping("/historyTree")
     public ResponseEntity<String> historyTree(@RequestParam Long id) {
         JsonObject historyTree = devicesModelService.getHistoryTree(id);
+        return ResponseEntity.ok().body(historyTree.toString());
+    }
+
+    @GetMapping("/chartHistory")
+    public ResponseEntity<String> newHistoryTree(@RequestParam Long companyId, Long startTimeStamp, Long stopTimeStamp, String period) {
+        JsonArray historyTree = devicesModelService.getStatsByPeriod(companyId, startTimeStamp, stopTimeStamp, period);
         return ResponseEntity.ok().body(historyTree.toString());
     }
 

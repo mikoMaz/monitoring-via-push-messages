@@ -91,14 +91,18 @@ export class TestAPIClient implements IAPIClient {
         ]),
       ]
     );
-    const model4 = new DeviceModel(
-      [
-        new Bridge("b23", deviceStatus.disabled, new Date(), [], [
+    const model4 = new DeviceModel([
+      new Bridge(
+        "b23",
+        deviceStatus.disabled,
+        new Date(),
+        [],
+        [
           new Sensor("s12", deviceStatus.disabled, new Date()),
           new Sensor("s5", deviceStatus.disabled, new Date()),
-        ]),
-      ],
-    );
+        ]
+      ),
+    ]);
 
     if (id === "1") {
       return Promise.resolve(model1);
@@ -174,8 +178,7 @@ export class TestAPIClient implements IAPIClient {
     dateTo: string
   ): Promise<IHistoryChartData[]> => {
     const parseDate = (dateString: string): Date => {
-      const [day, month, year] = dateString.split("-").map(Number);
-      return new Date(year, month - 1, day);
+      return new Date(dateString);
     };
 
     const formatDate = (date: Date): string => {
@@ -185,47 +188,63 @@ export class TestAPIClient implements IAPIClient {
       return `${year}-${month}-${day}`;
     };
 
-    const startDate = dateFrom.split("T")[0];
-    const endDate = dateTo.split("T")[0];
+    const addDays = (date: Date, days: number): Date => {
+      const result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    };
+
+    const startDate = parseDate(dateFrom);
+    const endDate = parseDate(dateTo);
+
+    console.log("Start date:", startDate);
+    console.log("End date:", endDate);
 
     return Promise.resolve([
-      { timestamp: "01-12-2024", active: 90, inactive: 4, disabled: 6 },
-      { timestamp: "02-12-2024", active: 92, inactive: 3, disabled: 5 },
-      { timestamp: "03-12-2024", active: 85, inactive: 5, disabled: 10 },
-      { timestamp: "04-12-2024", active: 88, inactive: 6, disabled: 6 },
-      { timestamp: "05-12-2024", active: 93, inactive: 4, disabled: 3 },
-      { timestamp: "06-12-2024", active: 80, inactive: 7, disabled: 13 },
-      { timestamp: "07-12-2024", active: 85, inactive: 5, disabled: 10 },
-      { timestamp: "08-12-2024", active: 89, inactive: 3, disabled: 8 },
-      { timestamp: "09-12-2024", active: 91, inactive: 2, disabled: 7 },
-      { timestamp: "10-12-2024", active: 87, inactive: 6, disabled: 7 },
-      { timestamp: "11-12-2024", active: 84, inactive: 5, disabled: 11 },
-      { timestamp: "12-12-2024", active: 90, inactive: 4, disabled: 6 },
-      { timestamp: "13-12-2024", active: 82, inactive: 5, disabled: 13 },
-      { timestamp: "14-12-2024", active: 88, inactive: 3, disabled: 9 },
-      { timestamp: "15-12-2024", active: 94, inactive: 2, disabled: 4 },
-      { timestamp: "16-12-2024", active: 86, inactive: 7, disabled: 7 },
-      { timestamp: "17-12-2024", active: 89, inactive: 4, disabled: 7 },
-      { timestamp: "18-12-2024", active: 92, inactive: 3, disabled: 5 },
-      { timestamp: "19-12-2024", active: 81, inactive: 5, disabled: 14 },
-      { timestamp: "20-12-2024", active: 87, inactive: 4, disabled: 9 },
-      { timestamp: "21-12-2024", active: 90, inactive: 3, disabled: 7 },
-      { timestamp: "22-12-2024", active: 85, inactive: 6, disabled: 9 },
-      { timestamp: "23-12-2024", active: 82, inactive: 7, disabled: 11 },
-      { timestamp: "24-12-2024", active: 88, inactive: 4, disabled: 8 },
-      { timestamp: "25-12-2024", active: 86, inactive: 5, disabled: 9 },
-      { timestamp: "26-12-2024", active: 94, inactive: 1, disabled: 5 },
-      { timestamp: "27-12-2024", active: 83, inactive: 5, disabled: 12 },
-      { timestamp: "28-12-2024", active: 90, inactive: 1, disabled: 9 },
-      { timestamp: "29-12-2024", active: 80, inactive: 5, disabled: 15 },
-      { timestamp: "30-12-2024", active: 70, inactive: 11, disabled: 19 },
-      { timestamp: "31-12-2024", active: 85, inactive: 5, disabled: 10 },
+      { timestamp: 0, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 1, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 2, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 3, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 4, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 5, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 6, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 7, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 8, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 9, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 10, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 11, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 12, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 13, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 14, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 15, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 16, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 17, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 18, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 19, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 20, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 21, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 22, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 23, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 24, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 25, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 26, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 27, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 28, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 29, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 30, active: 0, inactive: 11, disabled: 0 },
     ]).then((data) => {
-      const filteredData = data.filter((entry) => {
-        const entryDate = formatDate(parseDate(entry.timestamp));
-        return entryDate >= startDate && entryDate <= endDate;
-      });
-      return filteredData;
+      return data
+        .map((entry) => {
+          const entryDate = addDays(startDate, entry.timestamp);
+          return {
+            ...entry,
+            timestamp: formatDate(entryDate),
+          };
+        })
+        .filter((entry) => {
+          const entryDate = parseDate(entry.timestamp);
+          return entryDate >= startDate && entryDate <= endDate;
+        });
     });
   };
 

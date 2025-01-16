@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.example.monitoring.core.api.abstraction.IDevicesModelService;
-import com.example.monitoring.core.api.auth.AuthenticationController;
 import com.example.monitoring.core.api.history.DeviceHistoryService;
 import com.example.monitoring.core.device.DeviceService;
 import com.example.monitoring.core.status.DeviceStatusService;
@@ -28,7 +27,7 @@ public class DevicesModelService implements IDevicesModelService {
     private final DeviceService deviceService;
     private final JsonTreeConverter proc;
 
-    org.slf4j.Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    org.slf4j.Logger logger = LoggerFactory.getLogger(DevicesModelService.class);
 
     @Override
     public JsonObject getJsonTree(Long companyId) {
@@ -208,6 +207,53 @@ public class DevicesModelService implements IDevicesModelService {
             status = 0D;
         }
         root.addProperty("uptime", status);
+        return root;
+    }
+
+    @Override
+    public JsonArray getStatsByPeriod(Long companyId, Long StartTimeStamp, Long StopTimeStamp, String mode){ // hours,days,weeks,months(31 days)
+        JsonArray root = new JsonArray();
+        final Map<String, Long> modes = Map.of(
+        "hour", 3600L,
+        "day", 86400L,
+        "week",604800L,
+        "month",18748800L,
+        "year",6843312000L);
+        List<String>deviceIds = deviceService.getAllChildrenForGivenCompanyId(companyId);
+        Map<String,List<Double>> companyUptimes = historyService.uptimePercentByPeriod(deviceIds,StartTimeStamp,StopTimeStamp,modes.get(mode)); //list is length of ceil of periods in range
+        JsonObject periodSorted=new JsonObject();
+        //key is just and integer that means period number
+        int active;
+        int inactive;
+        int undefined;
+        logger.info("companyUptimes.keyset()");
+        logger.info(companyUptimes.keySet().toString());
+        for (int i=0;i<companyUptimes.keySet().size();i++)
+        {   active=0;inactive=0;undefined=0;
+            periodSorted=new JsonObject();
+            logger.info("i");
+            logger.info(String.valueOf(i));
+            for (Double value :companyUptimes.get(String.valueOf(i)) ) {
+                //deviceUptimesJson.add(value);
+                if(value<1d)
+                {
+                    inactive+=1;
+                }
+                else if(value<0d){
+                    undefined+=1;
+                }
+                else
+                {
+                    active+=1;
+                }
+            }
+            periodSorted.addProperty("timestamp", i);
+            periodSorted.addProperty("active", active);
+            periodSorted.addProperty("inactive",inactive);
+            periodSorted.addProperty("disabled",undefined);
+
+            root.add(periodSorted);
+        }
         return root;
     }
 }
