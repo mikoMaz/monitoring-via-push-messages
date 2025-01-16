@@ -156,7 +156,5 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
             result.put(String.valueOf(i), tempList);
         }
      return result;
-     //   return uptimes.values().stream().flatMap(item -> item.stream()).collect(Collectors.toList());
     }
-
 }
