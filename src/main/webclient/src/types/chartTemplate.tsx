@@ -232,6 +232,6 @@ export const getEmptyPreset = () => {
     dateFrom: new Date(
       new Date().setDate(new Date().getDate() - 30)
     ).toISOString(),
-    dateTo: new Date().toISOString(),
+    dateTo: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
   });
 };
