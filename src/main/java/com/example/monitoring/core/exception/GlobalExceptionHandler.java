@@ -1,5 +1,6 @@
 package com.example.monitoring.core.exception;
 
+import com.example.monitoring.core.user.exceptions.AccessDeniedException;
 import com.example.monitoring.core.user.exceptions.UserAlreadyExistsException;
 import com.example.monitoring.core.user.exceptions.UserCredentialsValidationException;
 import com.example.monitoring.core.user.exceptions.UserNotFoundException;
@@ -24,5 +25,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserCredentialsValidationException.class)
     public ResponseEntity<Void> handleUserCredentialsValidationException(UserCredentialsValidationException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Void> handleUserAccessDeniedException(AccessDeniedException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 }

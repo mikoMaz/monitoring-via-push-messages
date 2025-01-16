@@ -18,4 +18,8 @@ public interface UserService {
     UserDto getUserDto();
 
     boolean hasRightToTheCompany(Long companyId);
+
+    void deleteUserById(Long userId);
+
+    void deleteUserByEmail(String email);
 }

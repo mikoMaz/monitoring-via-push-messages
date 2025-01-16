@@ -96,6 +96,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/api/v1/user/upload-csv")
                                 .hasRole(Role.SUPER_ADMIN.name())
+                                .requestMatchers("/api/v1/user/delete-user")
+                                .hasAnyRole(Role.SUPER_ADMIN.name(), Role.ADMIN.name())
                                 .requestMatchers("/api/v1/user/company/create")
                                 .hasRole(Role.SUPER_ADMIN.name())
                                 .requestMatchers("/api/v1/user/company/get-users-from-company")
