@@ -120,9 +120,10 @@ function useDatePickerStyles() {
 export interface DatePickerProps {
   value: Date;
   onChange: (date: Date | null) => void;
+  maxDate?: Date; 
 }
 
-export const ChakraDatePicker: FC<DatePickerProps> = ({ value, onChange }) => {
+export const ChakraDatePicker: FC<DatePickerProps> = ({ value, onChange, maxDate }) => {
   const styles = useDatePickerStyles();
 
   return (
@@ -138,6 +139,7 @@ export const ChakraDatePicker: FC<DatePickerProps> = ({ value, onChange }) => {
         }
         customInput={<CustomInput />}
         renderCustomHeader={(props) => <CustomHeader {...props} />}
+        maxDate={maxDate}
       />
     </Box>
   );

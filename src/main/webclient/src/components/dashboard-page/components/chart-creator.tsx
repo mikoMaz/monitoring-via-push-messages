@@ -66,8 +66,12 @@ export const ChartCreator = ({ template, editFunction }: IChartCreator) => {
     template.chartModel.brushActive
   );
 
-  const [startDate, setStartDate] = useState<Date>(new Date(template.chartModel.dateFrom));
-  const [endDate, setEndDate] = useState<Date>(new Date(template.chartModel.dateTo));
+  const [startDate, setStartDate] = useState<Date>(
+    new Date(template.chartModel.dateFrom)
+  );
+  const [endDate, setEndDate] = useState<Date>(
+    new Date(template.chartModel.dateTo)
+  );
 
   const handleSave = () => {
     const updatedTemplate = new ChartTemplate(templateName, selectedType, {
@@ -234,6 +238,7 @@ export const ChartCreator = ({ template, editFunction }: IChartCreator) => {
                 setEndDate(newStartDate);
               }
             }}
+            maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
           />
           <Heading size="sm">To:</Heading>
           <ChakraDatePicker
@@ -246,6 +251,7 @@ export const ChartCreator = ({ template, editFunction }: IChartCreator) => {
                 setEndDate(newEndDate);
               }
             }}
+            maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
           />
         </HStack>
       );
