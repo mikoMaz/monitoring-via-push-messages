@@ -315,7 +315,7 @@ export const createDeviceModelFromJson = (json: DeviceTreeModelJson) => {
             topLevelDevice.id,
             topLevelDevice.status,
             new Date(topLevelDevice.lastPinged * 1000),
-            devices[2].devices
+            devices[1].devices
               .filter(
                 (device) =>
                   topLevelDevice.children?.includes(device.id) &&
@@ -362,6 +362,7 @@ export class DeviceModel implements IDeviceModel {
       bridge.gateways.forEach((gateway) => {
         sensors.push(...gateway.sensors);
       });
+      sensors.push(...bridge.sensors);
     });
 
     this.gateways.forEach((gateway) => {

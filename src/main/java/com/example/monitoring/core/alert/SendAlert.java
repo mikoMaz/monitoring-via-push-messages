@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.example.monitoring.core.company.CompanyDto;
+import com.example.monitoring.core.company.CompanyService;
+import com.example.monitoring.core.device.DeviceService;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -29,7 +32,9 @@ public class SendAlert {
     private final DeviceDataService deviceDataService;
     private final DeviceHistoryService historyService;
     private final DeviceStatusService statusService;
-    private final DataHolderService dataHolderService;
+//    private final DataHolderService dataHolderService;
+    private final DeviceService deviceService;
+    private final CompanyService companyService;
     private final AlertService alertService;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     private static Map<String, List<ActiveAlert>> activeAlertsList = new HashMap();
@@ -46,18 +51,20 @@ public class SendAlert {
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.SECONDS)
     public void checkDevicesInEveryCompany() {
 
-        Set<String> companyIds = dataHolderService.getAllCompanyIds();
+        Set<Long> companyIds = companyService.getAllCompanies().stream().map(
+                CompanyDto::getCompanyId
+        ).collect(Collectors.toSet());
+
         if (companyIds != null)
-            for (String id : companyIds) {
+            for (Long id : companyIds) {
                 // get devices that dont work
                 List<String> deviceIds = statusService.getOfflineDevices(id).stream()
                         .map(DeviceStatus::getId)
-                        .collect(Collectors.toList());
+                        .toList();
                 for (String deviceId : deviceIds) {
                     // get alerts connected to that devices
-                    List<String> parentIdList = dataHolderService.getParentForGivenDeviceId(deviceId);
-                    if (parentIdList != null) {
-                        String parentId = parentIdList.getFirst();
+                    String parentId = deviceService.getParentIdFromDevice(deviceId);
+                    if (parentId != null) {
                         if (statusService.getCalculatedStatus(parentId) == null
                                 || statusService.getCalculatedStatus(parentId) == 0) // if parent is inactive dont make
                                                                                      // alert for its children
@@ -110,9 +117,9 @@ public class SendAlert {
         }
     }
 
-    public List<List<String>> IdsOfDevicesNotWorking(String companyId) {
+    public List<List<String>> IdsOfDevicesNotWorking(Long companyId) {
         List<String> devicesList;
-        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(companyId);
+        devicesList = deviceService.getAllChildrenForGivenCompanyId(companyId);
         List<String> notWorkingDevicesList = new ArrayList<String>();
         if (devicesList != null)
             for (int i = 0; i < devicesList.size(); i++) {

@@ -333,11 +333,11 @@ export class APIClient implements IAPIClient {
     dateFrom: string,
     dateTo: string
   ): Promise<IHistoryChartData[]> => {
-    const dateFromUnix = new Date(dateFrom).getTime() / 1000;
+    const dateFromUnix = Math.floor(new Date(dateFrom).getTime() / 1000);
 
     const dateToPlusOne = new Date(dateTo);
     dateToPlusOne.setDate(dateToPlusOne.getDate() + 1);
-    const dateToUnix = dateToPlusOne.getTime() / 1000;
+    const dateToUnix = Math.floor(dateToPlusOne.getTime() / 1000);
 
     const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/chartHistory?companyId=${companyId}&startTimeStamp=${dateFromUnix}&stopTimeStamp=${dateToUnix}&period=day`;
     if (usingTestData()) {

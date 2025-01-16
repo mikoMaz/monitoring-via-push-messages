@@ -5,17 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aspectj.internal.lang.annotation.ajcDeclareAnnotation;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.example.monitoring.core.api.abstraction.IDevicesModelService;
-import com.example.monitoring.core.api.auth.AuthenticationController;
 import com.example.monitoring.core.api.history.DeviceHistoryService;
-import com.example.monitoring.core.external.DataHolderService;
+import com.example.monitoring.core.device.DeviceService;
 import com.example.monitoring.core.status.DeviceStatusService;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -27,23 +24,24 @@ public class DevicesModelService implements IDevicesModelService {
 
     private final DeviceHistoryService historyService;
     private final DeviceStatusService statusService;
-    private final DataHolderService dataHolderService;
+    private final DeviceService deviceService;
     private final JsonTreeConverter proc;
 
-    org.slf4j.Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    org.slf4j.Logger logger = LoggerFactory.getLogger(DevicesModelService.class);
 
     @Override
-    public JsonObject getJsonTree(String id) {
+    public JsonObject getJsonTree(Long companyId) {
         List<String> devicesList;
         List<String> ToplevelDevices = new ArrayList<>();
         JsonObject root = new JsonObject();
-        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+        devicesList = deviceService.getAllChildrenForGivenCompanyId(companyId);
+
         if (devicesList == null) {
             return root;
         }
-        for (int i = 0; i < devicesList.size(); i++) {
 
-            if (dataHolderService.getParentForGivenDeviceId(devicesList.get(i)) == null) {
+        for (int i = 0; i < devicesList.size(); i++) {
+            if (deviceService.getParentIdFromDevice(devicesList.get(i)) == null) {
                 ToplevelDevices.add(devicesList.get(i));
                 logger.info(devicesList.get(i));
             }
@@ -56,20 +54,19 @@ public class DevicesModelService implements IDevicesModelService {
             list.add(devices);
 
         }
-        JsonObject currentObject;
-        JsonObject subDevice;
         for (int i = 0; i < ToplevelDevices.size(); i++) {
+            JsonObject topLevelObject;
             String ToplevelID = ToplevelDevices.get(i);
             Integer ToplevelStatus = statusService.getCalculatedStatus(ToplevelID);
             if (ToplevelStatus != null) {
-
+                Integer ToplevelDeviceType;
                 Long ToplevelTimestamp = statusService.getDeviceStatus(ToplevelID).getLogged_at();
-                Integer ToplevelType = 2;
+                ToplevelDeviceType = 2;
 
-                currentObject = proc.convertToJsonTreeComponent(ToplevelID, ToplevelStatus, ToplevelTimestamp,
-                        ToplevelType);
-                logger.info(currentObject.toString());
-                List<String> MidList = dataHolderService.getAllChildrenForGivenDeviceId(ToplevelID);
+                topLevelObject = proc.convertToJsonTreeComponent(ToplevelID, ToplevelStatus, ToplevelTimestamp,
+                        ToplevelDeviceType);
+                logger.info(topLevelObject.toString());
+                List<String> MidList = deviceService.getAllChildrenForParentId(ToplevelID);
                 if (MidList == null) {
                     MidList = new ArrayList<>();
                 }
@@ -77,37 +74,47 @@ public class DevicesModelService implements IDevicesModelService {
                 for (String MidlevelId : MidList) {
                     gatewayIdArray.add(new JsonPrimitive(MidlevelId));
                 }
-                currentObject.add("children", gatewayIdArray);
-                list.get(0).add(currentObject);
+                topLevelObject.add("children", gatewayIdArray);
+                list.get(0).add(topLevelObject);
                 for (int j = 0; j < MidList.size(); j++) {
+                    Integer MidlevelDeviceType;
+                    JsonObject childDevice;
                     String MidlevelId = MidList.get(j);
-                    List<String> BottomList = dataHolderService.getAllChildrenForGivenDeviceId(MidlevelId);
-                    if (BottomList == null) {
-                        continue;
-                    }
-                    JsonArray sensorIdArray = new JsonArray();
-                    for (String BottomlevelID : BottomList) {
-                        sensorIdArray.add(new JsonPrimitive(BottomlevelID));
-                    }
+
                     Integer MidlevelStatus = statusService.getCalculatedStatus(MidlevelId);
-                    Integer MidlevelType = 1;
+                    MidlevelDeviceType = 1;
                     if (MidlevelStatus != null) {
                         Long MidlevelTimestamp = statusService.getDeviceStatus(MidlevelId).getLogged_at();
 
-                        subDevice = proc.convertToJsonTreeComponent(MidlevelId, MidlevelStatus, MidlevelTimestamp,
-                                MidlevelType);
-                        subDevice.add("children", sensorIdArray);
-                        list.get(1).add(subDevice);
+                        childDevice = proc.convertToJsonTreeComponent(MidlevelId, MidlevelStatus, MidlevelTimestamp,
+                                MidlevelDeviceType);
+
+                        List<String> BottomList = deviceService.getAllChildrenForParentId(MidlevelId);
+
+                        if (BottomList.isEmpty()) {
+                            MidlevelDeviceType = 0;
+                            childDevice = proc.convertToJsonTreeComponent(MidlevelId, MidlevelStatus, MidlevelTimestamp,
+                                    MidlevelDeviceType);
+                            list.get(1).add(childDevice);
+                            continue;
+                        }
+                        JsonArray sensorIdArray = new JsonArray();
+                        for (String BottomlevelID : BottomList) {
+                            sensorIdArray.add(new JsonPrimitive(BottomlevelID));
+                        }
+                        childDevice.add("children", sensorIdArray);
+                        list.get(1).add(childDevice);
 
                         for (int k = 0; k < BottomList.size(); k++) {
+                            JsonObject bottomDevice;
                             String BottomlevelID = BottomList.get(k);
                             Integer BottomlevelStatus = statusService.getCalculatedStatus(BottomlevelID);
                             if (BottomlevelStatus != null) {
                                 Long BottomlevelTimestamp = statusService.getDeviceStatus(BottomlevelID).getLogged_at();
-                                Integer BottomlevelType = 0;
-                                subDevice = proc.convertToJsonTreeComponent(BottomlevelID, BottomlevelStatus,
-                                        BottomlevelTimestamp, BottomlevelType);
-                                list.get(2).add(subDevice);
+                                Integer BottomlevelDeviceType = 0;
+                                bottomDevice = proc.convertToJsonTreeComponent(BottomlevelID, BottomlevelStatus,
+                                        BottomlevelTimestamp, BottomlevelDeviceType);
+                                list.get(2).add(bottomDevice);
                             }
 
                         }
@@ -125,7 +132,7 @@ public class DevicesModelService implements IDevicesModelService {
     }
 
     @Override
-    public JsonObject getHistoryTree(String id) {
+    public JsonObject getHistoryTree(Long companyId) {
         Map<String, JsonArray> deviceTypeMap = new HashMap<>();
         deviceTypeMap.put("upperLevel", new JsonArray());
         deviceTypeMap.put("middleLevel", new JsonArray());
@@ -133,7 +140,8 @@ public class DevicesModelService implements IDevicesModelService {
 
         JsonObject root = new JsonObject();
 
-        List<String> devicesList = dataHolderService.getAllChildrenForGivenCompanyId(id);
+        List<String> devicesList = deviceService.getAllChildrenForGivenCompanyId(companyId);
+
         if (devicesList == null) {
             deviceTypeMap.forEach(root::add);
             return root;
@@ -141,7 +149,7 @@ public class DevicesModelService implements IDevicesModelService {
 
         List<String> toplevelDevices = new ArrayList<>();
         for (String deviceId : devicesList) {
-            if (dataHolderService.getParentForGivenDeviceId(deviceId) == null) {
+            if (deviceService.getParentIdFromDevice(deviceId) == null) {
                 toplevelDevices.add(deviceId);
                 logger.info(deviceId);
             }
@@ -152,15 +160,15 @@ public class DevicesModelService implements IDevicesModelService {
             if (topLevelStatus != null) {
                 deviceTypeMap.get("upperLevel").add(new JsonPrimitive(topLevelStatus));
 
-                List<String> midList = dataHolderService.getAllChildrenForGivenDeviceId(topLevelDeviceId);
-                if (midList != null) {
+                List<String> midList = deviceService.getAllChildrenForParentId(topLevelDeviceId);
+                if (!midList.isEmpty()) {
                     for (String midLevelId : midList) {
                         Double midLevelStatus = historyService.uptimePercent(midLevelId);
                         if (midLevelStatus != null) {
                             deviceTypeMap.get("middleLevel").add(new JsonPrimitive(midLevelStatus));
 
-                            List<String> bottomList = dataHolderService.getAllChildrenForGivenDeviceId(midLevelId);
-                            if (bottomList != null) {
+                            List<String> bottomList = deviceService.getAllChildrenForParentId(midLevelId);
+                            if (!bottomList.isEmpty()) {
                                 for (String bottomLevelId : bottomList) {
                                     Double bottomLevelStatus = historyService.uptimePercent(bottomLevelId);
                                     if (bottomLevelStatus != null) {
@@ -179,11 +187,13 @@ public class DevicesModelService implements IDevicesModelService {
     }
 
     @Override
-    public JsonObject getSingleDeviceHistory(String companyId, String deviceId) {
+    public JsonObject getSingleDeviceHistory(Long companyId, String deviceId) {
         List<String> devicesList;
         List<String> ToplevelDevices = new ArrayList<>();
         JsonObject root = new JsonObject();
-        devicesList = dataHolderService.getAllChildrenForGivenCompanyId(companyId);
+
+        devicesList = deviceService.getAllChildrenForGivenCompanyId(companyId);
+
         if (devicesList == null) {
             return null;
         }
@@ -201,8 +211,7 @@ public class DevicesModelService implements IDevicesModelService {
     }
 
     @Override
-    public JsonArray getStatsByPeriod(String companyId,Long StartTimeStamp,Long StopTimeStamp,
-    String mode){ // hours,days,weeks,months(31 days)
+    public JsonArray getStatsByPeriod(Long companyId, Long StartTimeStamp, Long StopTimeStamp, String mode){ // hours,days,weeks,months(31 days)
         JsonArray root = new JsonArray();
         final Map<String, Long> modes = Map.of(
         "hour", 3600L,
@@ -210,8 +219,8 @@ public class DevicesModelService implements IDevicesModelService {
         "week",604800L,
         "month",18748800L,
         "year",6843312000L);
-        List<String>deviceIds=dataHolderService.getAllChildrenForGivenCompanyId(companyId);
-        Map<String,List<Double>> companyUptimes = historyService.uptimePercentByPeriod(deviceIds,StartTimeStamp,StopTimeStamp,modes.get(mode)); //list is length of ceil of periods in range 
+        List<String>deviceIds = deviceService.getAllChildrenForGivenCompanyId(companyId);
+        Map<String,List<Double>> companyUptimes = historyService.uptimePercentByPeriod(deviceIds,StartTimeStamp,StopTimeStamp,modes.get(mode)); //list is length of ceil of periods in range
         JsonObject periodSorted=new JsonObject();
         //key is just and integer that means period number
         int active;
@@ -237,8 +246,6 @@ public class DevicesModelService implements IDevicesModelService {
                 {
                     active+=1;
                 }
-
-
             }
             periodSorted.addProperty("timestamp", i);
             periodSorted.addProperty("active", active);
@@ -247,8 +254,6 @@ public class DevicesModelService implements IDevicesModelService {
 
             root.add(periodSorted);
         }
-
-        
         return root;
     }
 }

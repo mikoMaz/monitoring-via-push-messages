@@ -15,5 +15,5 @@ public interface DeviceStatusService {
 
     DeviceStatus getDeviceStatus(String Id);
 
-    List<DeviceStatus> getOfflineDevices(String companyId);
+    List<DeviceStatus> getOfflineDevices(Long companyId);
 }
