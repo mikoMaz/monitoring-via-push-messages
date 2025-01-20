@@ -57,3 +57,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# local configuration files
+.prettierrc
+
+# test
+playwright-report
+test-results
