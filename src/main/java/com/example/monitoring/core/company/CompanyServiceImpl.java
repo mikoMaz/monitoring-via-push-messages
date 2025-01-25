@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.example.monitoring.core.user.exceptions.AccessDeniedException;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -83,7 +84,7 @@ public class CompanyServiceImpl implements CompanyService {
                     .filter(company -> Objects.equals(userDto.getCompanyId(), company.getCompanyId()))
                     .toList();
         }
-        throw new IllegalArgumentException("User has not enough permissions");
+        throw new AccessDeniedException("User has not enough permissions");
     }
 
     @Override
