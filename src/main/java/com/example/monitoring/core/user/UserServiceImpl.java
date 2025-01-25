@@ -59,21 +59,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserFromUserDto(UserDto user) {
+    public void updateUserFromUserDto(UserDto user) {
         Optional<User> userToUpdate = userRepository.findById(user.getId());
         if (userToUpdate.isEmpty()) {
             throw new UserNotFoundException("User not found");
         }
 
-        // prevent changing company
-        if (userToUpdate.get().getCompany().getCompanyId() != user.getCompanyId()) {
-            throw new AccessDeniedException("Access denied");
-        }
-
         userToUpdate.get().setName(user.getName());
         userToUpdate.get().setSurname(user.getSurname());
         userToUpdate.get().setRole(user.getRole());
-        return userRepository.save(userToUpdate.get());
+        userRepository.save(userToUpdate.get());
     }
 
     @Override
