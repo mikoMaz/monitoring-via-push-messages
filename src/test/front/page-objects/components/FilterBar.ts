@@ -9,10 +9,10 @@ export class FilterBar {
 
   constructor(page: Page) {
     this.page = page;
-    this.locatorAllDevices = page.locator('#tabs-\\:r3\\:--tab-0');
-    this.locatorBridges = page.locator('#tabs-\\:r3\\:--tab-1');
-    this.locatorGateways = page.locator('#tabs-\\:r3\\:--tab-2');
-    this.locatorSensors = page.locator('#tabs-\\:r3\\:--tab-3');
+    this.locatorAllDevices = page.getByRole('tab', { name: 'All Devices' });
+    this.locatorBridges = page.getByRole('tab', { name: 'Bridges' });
+    this.locatorGateways = page.getByRole('tab', { name: 'Gateways' });
+    this.locatorSensors = page.getByRole('tab', { name: 'Sensors' });
     // add rest of the tabs(filters) (3)
   }
 

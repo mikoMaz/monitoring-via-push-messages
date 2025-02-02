@@ -10,7 +10,7 @@ export class LoginPage {
     this.page = page;
     this.locatorEmailField = page.locator('#username');
     this.locatorPasswordField = page.locator('#password');
-    this.locatorContinueButton = page.locator('.cb6a59b97');
+    this.locatorContinueButton = page.getByRole('button', { name: /^Continue$/ });
   }
 
   async fillEmail(email: string) {
