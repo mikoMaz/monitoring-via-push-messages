@@ -19,11 +19,11 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
 
   // Reporter to use
-  reporter: 'html',
+  reporter: [['line'], ['allure-playwright']],
 
   use: {
-    baseURL: 'https://localhost',
-    // baseURL: 'https://errwarn.projektstudencki.pl', // AVOID TESTING ON PROD!
+    // baseURL: 'https://localhost',
+    baseURL: 'https://errwarn.projektstudencki.pl', // AVOID TESTING ON PROD!
 
     trace: 'on-first-retry',
 
