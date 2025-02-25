@@ -230,7 +230,7 @@ export const getEmptyPreset = () => {
     brushActive: false,
     deviceTypes: [deviceType.sensor, deviceType.gateway, deviceType.bridge],
     dateFrom: new Date(
-      new Date().setDate(new Date().getDate() - 31)
+      new Date().setDate(new Date().getDate() - 91)
     ).toISOString(),
     dateTo: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(),
   });

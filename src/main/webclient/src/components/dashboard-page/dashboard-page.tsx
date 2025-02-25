@@ -106,15 +106,15 @@ export const DashboardPage = ({
       case viewOption.recentHistory:
         return (
           <Stack marginBottom={4}>
-            <Center>
-            <HistoryChart
-                  apiClient={apiClient}
-                  accessToken={accessToken}
-                  companyId={companyId}
-                  model={model}
-                  devicesHistoryValues={allHistoryValues}
-                  {...chartModel}
-                />
+            <Center h="50vh">
+              <HistoryChart
+                apiClient={apiClient}
+                accessToken={accessToken}
+                companyId={companyId}
+                model={model}
+                devicesHistoryValues={allHistoryValues}
+                {...chartModel}
+              />
             </Center>
 
             <HStack justifyContent="space-between">

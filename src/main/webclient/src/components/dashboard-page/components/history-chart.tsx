@@ -1,6 +1,8 @@
 import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
   Line,
   LineChart,
@@ -34,7 +36,7 @@ export const HistoryChart = ({
       setLoading(true);
       try {
         if (companyId === undefined) {
-          throw new Error("CompanyId is undefined.")
+          throw new Error("CompanyId is undefined.");
         }
         const data = await apiClient.getDataHistoryChart(
           accessToken,
@@ -58,8 +60,27 @@ export const HistoryChart = ({
   }
 
   return (
-    <Box width="100%" height="500px">
+    <Box width="100%" height="120px" display="flex" alignItems="center">
       <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          // width={500}
+          // height={100}
+          data={chartData}
+          margin={{
+            top: 20,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <XAxis dataKey="timestamp" />
+          <Bar dataKey="active" stackId="a" fill="green" />
+          <Bar dataKey="disabled" stackId="a" fill="orange" />
+          <Bar dataKey="inactive" stackId="a" fill="red" />
+          <Tooltip />
+        </BarChart>
+      </ResponsiveContainer>
+      {/* <ResponsiveContainer width="100%" height="100%">
         <LineChart
           width={500}
           height={400}
@@ -83,7 +104,7 @@ export const HistoryChart = ({
           />
           <Line type="monotone" dataKey="inactive" stroke="red" />
         </LineChart>
-      </ResponsiveContainer>
+      </ResponsiveContainer> */}
     </Box>
   );
 };

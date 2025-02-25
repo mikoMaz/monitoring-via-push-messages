@@ -188,6 +188,24 @@ export class TestAPIClient implements IAPIClient {
       return `${year}-${month}-${day}`;
     };
 
+    // const dateFormatter = (date: Date): string => {
+    //   const data: IHistoryChartData[] = response.data;
+    //   const dateFromObj = new Date(dateFrom);
+    //   const convertedData = data.map((item, index) => {
+    //     const currentDate = new Date(dateFromObj.getTime());
+    //     currentDate.setDate(currentDate.getDate() + index);
+    //     const formattedDate = `${String(currentDate.getDate())}-${String(
+    //       currentDate.getMonth() + 1
+    //     ).padStart(2, "0")}-${currentDate.getFullYear()}`;
+    //     return {
+    //       ...item,
+    //       timestamp: formattedDate,
+    //     };
+    //   });
+
+    //   return convertedData;
+    // };
+
     const addDays = (date: Date, days: number): Date => {
       const result = new Date(date);
       result.setDate(result.getDate() + days);
@@ -201,41 +219,102 @@ export class TestAPIClient implements IAPIClient {
     console.log("End date:", endDate);
 
     return Promise.resolve([
-      { timestamp: 0, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 1, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 2, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 3, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 4, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 5, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 6, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 7, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 8, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 9, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 10, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 11, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 12, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 13, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 14, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 15, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 16, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 17, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 18, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 19, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 20, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 21, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 22, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 23, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 24, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 25, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 26, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 27, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 28, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 29, active: 0, inactive: 11, disabled: 0 },
-      { timestamp: 30, active: 0, inactive: 11, disabled: 0 },
+      { timestamp: 0, active: 50, inactive: 39, disabled: 11 },
+      { timestamp: 1, active: 60, inactive: 29, disabled: 11 },
+      { timestamp: 2, active: 70, inactive: 19, disabled: 11 },
+      { timestamp: 3, active: 40, inactive: 49, disabled: 11 },
+      { timestamp: 4, active: 55, inactive: 34, disabled: 11 },
+      { timestamp: 5, active: 65, inactive: 24, disabled: 11 },
+      { timestamp: 6, active: 45, inactive: 44, disabled: 11 },
+      { timestamp: 7, active: 35, inactive: 54, disabled: 11 },
+      { timestamp: 8, active: 25, inactive: 64, disabled: 11 },
+      { timestamp: 9, active: 75, inactive: 14, disabled: 11 },
+      { timestamp: 10, active: 80, inactive: 9, disabled: 11 },
+      { timestamp: 11, active: 30, inactive: 59, disabled: 11 },
+      { timestamp: 12, active: 50, inactive: 39, disabled: 11 },
+      { timestamp: 13, active: 60, inactive: 29, disabled: 11 },
+      { timestamp: 14, active: 70, inactive: 19, disabled: 11 },
+      { timestamp: 15, active: 40, inactive: 49, disabled: 11 },
+      { timestamp: 16, active: 55, inactive: 34, disabled: 11 },
+      { timestamp: 17, active: 65, inactive: 24, disabled: 11 },
+      { timestamp: 18, active: 45, inactive: 44, disabled: 11 },
+      { timestamp: 19, active: 35, inactive: 54, disabled: 11 },
+      { timestamp: 20, active: 25, inactive: 64, disabled: 11 },
+      { timestamp: 21, active: 75, inactive: 14, disabled: 11 },
+      { timestamp: 22, active: 80, inactive: 9, disabled: 11 },
+      { timestamp: 23, active: 30, inactive: 59, disabled: 11 },
+      { timestamp: 24, active: 50, inactive: 39, disabled: 11 },
+      { timestamp: 25, active: 60, inactive: 29, disabled: 11 },
+      { timestamp: 26, active: 70, inactive: 19, disabled: 11 },
+      { timestamp: 27, active: 40, inactive: 49, disabled: 11 },
+      { timestamp: 28, active: 55, inactive: 34, disabled: 11 },
+      { timestamp: 29, active: 65, inactive: 24, disabled: 11 },
+      { timestamp: 30, active: 45, inactive: 44, disabled: 11 },
+      { timestamp: 61, active: 49, inactive: 40, disabled: 11 },
+      { timestamp: 31, active: 52, inactive: 37, disabled: 11 },
+      { timestamp: 32, active: 62, inactive: 27, disabled: 11 },
+      { timestamp: 33, active: 72, inactive: 17, disabled: 11 },
+      { timestamp: 34, active: 42, inactive: 47, disabled: 11 },
+      { timestamp: 35, active: 57, inactive: 32, disabled: 11 },
+      { timestamp: 36, active: 67, inactive: 22, disabled: 11 },
+      { timestamp: 37, active: 47, inactive: 42, disabled: 11 },
+      { timestamp: 38, active: 37, inactive: 52, disabled: 11 },
+      { timestamp: 39, active: 27, inactive: 62, disabled: 11 },
+      { timestamp: 40, active: 77, inactive: 12, disabled: 11 },
+      { timestamp: 41, active: 82, inactive: 7, disabled: 11 },
+      { timestamp: 42, active: 32, inactive: 57, disabled: 11 },
+      { timestamp: 43, active: 53, inactive: 36, disabled: 11 },
+      { timestamp: 44, active: 63, inactive: 26, disabled: 11 },
+      { timestamp: 45, active: 73, inactive: 16, disabled: 11 },
+      { timestamp: 46, active: 43, inactive: 46, disabled: 11 },
+      { timestamp: 47, active: 58, inactive: 31, disabled: 11 },
+      { timestamp: 48, active: 68, inactive: 21, disabled: 11 },
+      { timestamp: 49, active: 48, inactive: 41, disabled: 11 },
+      { timestamp: 50, active: 38, inactive: 51, disabled: 11 },
+      { timestamp: 51, active: 28, inactive: 61, disabled: 11 },
+      { timestamp: 52, active: 78, inactive: 11, disabled: 11 },
+      { timestamp: 53, active: 83, inactive: 6, disabled: 11 },
+      { timestamp: 54, active: 33, inactive: 56, disabled: 11 },
+      { timestamp: 55, active: 54, inactive: 35, disabled: 11 },
+      { timestamp: 56, active: 64, inactive: 25, disabled: 11 },
+      { timestamp: 57, active: 74, inactive: 15, disabled: 11 },
+      { timestamp: 58, active: 44, inactive: 45, disabled: 11 },
+      { timestamp: 59, active: 59, inactive: 30, disabled: 11 },
+      { timestamp: 60, active: 69, inactive: 20, disabled: 11 },
+      { timestamp: 62, active: 66, inactive: 23, disabled: 11 },
+      { timestamp: 63, active: 71, inactive: 18, disabled: 11 },
+      { timestamp: 64, active: 41, inactive: 48, disabled: 11 },
+      { timestamp: 65, active: 56, inactive: 33, disabled: 11 },
+      { timestamp: 66, active: 61, inactive: 28, disabled: 11 },
+      { timestamp: 67, active: 46, inactive: 43, disabled: 11 },
+      { timestamp: 68, active: 36, inactive: 53, disabled: 11 },
+      { timestamp: 69, active: 26, inactive: 63, disabled: 11 },
+      { timestamp: 70, active: 76, inactive: 13, disabled: 11 },
+      { timestamp: 71, active: 81, inactive: 8, disabled: 11 },
+      { timestamp: 72, active: 31, inactive: 58, disabled: 11 },
+      { timestamp: 73, active: 51, inactive: 38, disabled: 11 },
+      { timestamp: 74, active: 61, inactive: 28, disabled: 11 },
+      { timestamp: 75, active: 71, inactive: 18, disabled: 11 },
+      { timestamp: 76, active: 39, inactive: 50, disabled: 11 },
+      { timestamp: 77, active: 54, inactive: 35, disabled: 11 },
+      { timestamp: 78, active: 66, inactive: 23, disabled: 11 },
+      { timestamp: 79, active: 44, inactive: 45, disabled: 11 },
+      { timestamp: 80, active: 34, inactive: 55, disabled: 11 },
+      { timestamp: 81, active: 24, inactive: 65, disabled: 11 },
+      { timestamp: 82, active: 74, inactive: 15, disabled: 11 },
+      { timestamp: 83, active: 84, inactive: 5, disabled: 11 },
+      { timestamp: 84, active: 29, inactive: 60, disabled: 11 },
+      { timestamp: 85, active: 59, inactive: 30, disabled: 11 },
+      { timestamp: 86, active: 69, inactive: 20, disabled: 11 },
+      { timestamp: 87, active: 79, inactive: 10, disabled: 11 },
+      { timestamp: 88, active: 49, inactive: 40, disabled: 11 },
+      { timestamp: 89, active: 64, inactive: 25, disabled: 11 },
+      { timestamp: 90, active: 74, inactive: 15, disabled: 11 },
     ]).then((data) => {
       return data
         .map((entry) => {
           const entryDate = addDays(startDate, entry.timestamp);
+          console.log(formatDate(entryDate));
           return {
             ...entry,
             timestamp: formatDate(entryDate),
