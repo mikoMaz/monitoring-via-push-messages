@@ -320,7 +320,7 @@ export class TestAPIClient implements IAPIClient {
       return data
         .map((entry) => {
           const entryDate = addDays(startDate, entry.timestamp);
-          console.log(formatDate(entryDate));
+          // console.log(formatDate(entryDate));
           return {
             ...entry,
             timestamp: formatDate(entryDate),

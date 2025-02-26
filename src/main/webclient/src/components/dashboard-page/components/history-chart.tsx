@@ -29,7 +29,7 @@ export const HistoryBatteryChart = ({
   dateOnClickOperation?: () => void;
 }) => {
   return (
-    <Box width="100%" height="120px" display="flex" alignItems="center">
+    <Box width="100%" height="250px" display="flex" alignItems="center">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           // width={500}

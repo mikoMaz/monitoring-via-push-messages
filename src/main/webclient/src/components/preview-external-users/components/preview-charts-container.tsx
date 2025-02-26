@@ -12,6 +12,7 @@ import {
   CardHeader,
   Center,
   Heading,
+  Stack,
   VStack,
 } from "@chakra-ui/react";
 import { CurrentChart } from "../../dashboard-page/components/current-chart";
@@ -109,6 +110,7 @@ export const PreviewChartsContainer = ({
       .getPreviewDataHistoryChart(secret, context)
       .then((data) => {
         setHistoryChartData(data);
+        console.log(data);
       })
       .catch((error: any) => {
         console.error(error.message);
@@ -118,31 +120,36 @@ export const PreviewChartsContainer = ({
 
   if (secret) {
     return (
-      <Center>
-        <VStack align="stretch" spacing={4}>
-          <ContextCard context={context} deviceModel={deviceModel} />
-          {/* <ChartContainerWrapper
-            chart={
-              <CurrentChart
-                model={deviceModel}
-                devicesHistoryValues={uptimeValuesAllDevices}
-                {...baselineChartModel}
-              />
-            }
-          />
-          <ChartContainerWrapper
-            chart={
-              <RecentChart
-                model={deviceModel}
-                devicesHistoryValues={uptimeValuesAllDevices}
-                {...baselineChartModel}
-              />
-            }
-          /> */}
-          <ChartContainerWrapper
-            chart={<HistoryBatteryChart chartData={historyChartData} isPreview={true} />}
-          />
-        </VStack>
+      // <Center>
+      //   <VStack align="stretch" spacing={4}>
+      //     <ContextCard context={context} deviceModel={deviceModel} />
+      //     {/* <ChartContainerWrapper
+      //       chart={
+      //         <CurrentChart
+      //           model={deviceModel}
+      //           devicesHistoryValues={uptimeValuesAllDevices}
+      //           {...baselineChartModel}
+      //         />
+      //       }
+      //     />
+      //     <ChartContainerWrapper
+      //       chart={
+      //         <RecentChart
+      //           model={deviceModel}
+      //           devicesHistoryValues={uptimeValuesAllDevices}
+      //           {...baselineChartModel}
+      //         />
+      //       }
+      //     /> */}
+      //     {/* <ChartContainerWrapper
+      //       chart={<HistoryBatteryChart chartData={historyChartData} isPreview={true} />}
+      //     /> */}
+      //     <HistoryBatteryChart chartData={historyChartData} isPreview={true} />
+      //   </VStack>
+      // </Center>
+      <Center marginTop={100}>
+        
+        <HistoryBatteryChart chartData={historyChartData} isPreview={true} />
       </Center>
     );
   } else {
