@@ -39,6 +39,10 @@ export interface IAPIClient {
   ) => Promise<AllDevicesUptimeJson>;
   validatePreviewSecret: (secret: string, company: string) => Promise<boolean>;
   getPreviewDeviceModel: (secret: string, name: string) => Promise<DeviceModel>;
+  getPreviewDataHistoryChart: (
+    secret: string,
+    name: string
+  ) => Promise<IHistoryChartData[]>;
   getPreviewDevicesHistory: (
     secret: string,
     name: string
@@ -294,6 +298,13 @@ export class APIClient implements IAPIClient {
         return emptyAllDevicesUptimeJson;
       });
   };
+
+  public getPreviewDataHistoryChart = async (secret: string, name: string) => {
+    if (usingTestData()) {
+      return this.testApiClient.getPreviewDataHistoryChart(secret, name);
+    }
+    return this.testApiClient.getPreviewDataHistoryChart(secret, name);
+  }
 
   public postCSVData = async (
     accessToken: string,

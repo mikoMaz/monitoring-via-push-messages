@@ -21,6 +21,63 @@ interface IHistoryChart extends IChartTemplateModelDrawing {
   companyId: number | undefined;
 }
 
+export const HistoryBatteryChart = ({
+  chartData,
+}: {
+  chartData: IHistoryChartData[];
+  isPreview: boolean; //enables operations on-click for preview page
+  dateOnClickOperation?: () => void;
+}) => {
+  return (
+    <Box width="100%" height="120px" display="flex" alignItems="center">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          // width={500}
+          // height={100}
+          data={chartData}
+          margin={{
+            top: 20,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <XAxis dataKey="timestamp" />
+          <Bar dataKey="active" stackId="a" fill="green" />
+          <Bar dataKey="disabled" stackId="a" fill="orange" />
+          <Bar dataKey="inactive" stackId="a" fill="red" />
+          <Tooltip />
+        </BarChart>
+      </ResponsiveContainer>
+      {/* <ResponsiveContainer width="100%" height="100%">
+      <LineChart
+        width={500}
+        height={400}
+        data={chartData}
+        margin={{
+          top: 50,
+          right: 50,
+          left: 50,
+          bottom: 50,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="timestamp" />
+        <YAxis />
+        <Tooltip />
+        <Line
+          type="monotone"
+          dataKey="active"
+          stroke="green"
+          activeDot={{ r: 8 }}
+        />
+        <Line type="monotone" dataKey="inactive" stroke="red" />
+      </LineChart>
+    </ResponsiveContainer> */}
+    </Box>
+  );
+};
+
 export const HistoryChart = ({
   apiClient,
   accessToken,
@@ -59,52 +116,5 @@ export const HistoryChart = ({
     return <Box>Authentication in progress...</Box>;
   }
 
-  return (
-    <Box width="100%" height="120px" display="flex" alignItems="center">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          // width={500}
-          // height={100}
-          data={chartData}
-          margin={{
-            top: 20,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <XAxis dataKey="timestamp" />
-          <Bar dataKey="active" stackId="a" fill="green" />
-          <Bar dataKey="disabled" stackId="a" fill="orange" />
-          <Bar dataKey="inactive" stackId="a" fill="red" />
-          <Tooltip />
-        </BarChart>
-      </ResponsiveContainer>
-      {/* <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          width={500}
-          height={400}
-          data={chartData}
-          margin={{
-            top: 50,
-            right: 50,
-            left: 50,
-            bottom: 50,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="timestamp" />
-          <YAxis />
-          <Tooltip />
-          <Line
-            type="monotone"
-            dataKey="active"
-            stroke="green"
-            activeDot={{ r: 8 }}
-          />
-          <Line type="monotone" dataKey="inactive" stroke="red" />
-        </LineChart>
-      </ResponsiveContainer> */}
-    </Box>
-  );
+  return <HistoryBatteryChart chartData={chartData} isPreview={false}/>;
 };

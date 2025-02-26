@@ -17,6 +17,11 @@ import {
 import { CurrentChart } from "../../dashboard-page/components/current-chart";
 import { getEmptyPreset } from "../../../types/chartTemplate";
 import { RecentChart } from "../../dashboard-page/components/recent-chart";
+import {
+  HistoryBatteryChart,
+  HistoryChart,
+} from "../../dashboard-page/components/history-chart";
+import { IHistoryChartData } from "../../../types/IHistoryChartData";
 
 interface IPreviewChartsContainer {
   apiClient: APIClient;
@@ -76,6 +81,10 @@ export const PreviewChartsContainer = ({
   const uptimeValuesAllDevices =
     returnDevicesArrayFromAllDevicesUptimeJson(devicesUptimeJson);
 
+  const [historyChartData, setHistoryChartData] = useState<IHistoryChartData[]>(
+    []
+  );
+
   useEffect(() => {
     apiClient
       .getPreviewDeviceModel(secret, context)
@@ -95,6 +104,16 @@ export const PreviewChartsContainer = ({
         console.error(error.message);
         setDevicesUptimeJson(emptyAllDevicesUptimeJson);
       });
+
+    apiClient
+      .getPreviewDataHistoryChart(secret, context)
+      .then((data) => {
+        setHistoryChartData(data);
+      })
+      .catch((error: any) => {
+        console.error(error.message);
+        setHistoryChartData([]);
+      });
   }, [secret, context, apiClient]);
 
   if (secret) {
@@ -102,7 +121,7 @@ export const PreviewChartsContainer = ({
       <Center>
         <VStack align="stretch" spacing={4}>
           <ContextCard context={context} deviceModel={deviceModel} />
-          <ChartContainerWrapper
+          {/* <ChartContainerWrapper
             chart={
               <CurrentChart
                 model={deviceModel}
@@ -119,6 +138,9 @@ export const PreviewChartsContainer = ({
                 {...baselineChartModel}
               />
             }
+          /> */}
+          <ChartContainerWrapper
+            chart={<HistoryBatteryChart chartData={historyChartData} isPreview={true} />}
           />
         </VStack>
       </Center>

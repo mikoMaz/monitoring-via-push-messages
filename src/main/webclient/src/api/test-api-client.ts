@@ -9,6 +9,7 @@ import {
 import { IUserInfoResponse } from "../types/IUserInfoResponse";
 import { IAPIClient } from "./api-client";
 import { IHistoryChartData } from "../types/IHistoryChartData";
+import { getEmptyPreset } from "../types/chartTemplate";
 
 export class TestAPIClient implements IAPIClient {
   public getUserInfo = (accessToken: string, email?: string) => {
@@ -153,6 +154,11 @@ export class TestAPIClient implements IAPIClient {
   public getPreviewDevicesHistory = (secret: string, name: string) => {
     return this.getAllDevicesHistory(name, secret);
   };
+
+  public getPreviewDataHistoryChart = async (secret: string, name: string) => {
+    const model = getEmptyPreset().chartModel;
+      return this.getDataHistoryChart("accessToken", 1, model.dateFrom, model.dateTo);
+    }
 
   public postCSVData = async (
     accessToken: string,
