@@ -14,6 +14,7 @@ import {
 import { APIClient } from "../../../api/api-client";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
 import { IChartTemplateModelDrawing } from "../../../types/chartTemplate";
+import { CategoricalChartFunc } from "recharts/types/chart/generateCategoricalChart";
 
 interface IHistoryChart extends IChartTemplateModelDrawing {
   apiClient: APIClient;
@@ -23,10 +24,12 @@ interface IHistoryChart extends IChartTemplateModelDrawing {
 
 export const HistoryBatteryChart = ({
   chartData,
+  isPreview,
+  dateOnClickOperation
 }: {
   chartData: IHistoryChartData[];
   isPreview: boolean; //enables operations on-click for preview page
-  dateOnClickOperation?: () => void;
+  dateOnClickOperation?: CategoricalChartFunc;
 }) => {
   return (
     <Box width="100%" height="250px" display="flex" alignItems="center">
@@ -41,6 +44,7 @@ export const HistoryBatteryChart = ({
             left: 20,
             bottom: 5,
           }}
+          onClick={dateOnClickOperation}
         >
           <XAxis dataKey="timestamp" />
           <Bar dataKey="active" stackId="a" fill="green" />

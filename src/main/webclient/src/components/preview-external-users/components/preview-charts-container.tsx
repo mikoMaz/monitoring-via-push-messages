@@ -23,6 +23,8 @@ import {
   HistoryChart,
 } from "../../dashboard-page/components/history-chart";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
+import { CategoricalChartState } from "recharts/types/chart/types";
+import { useNavigate } from "react-router-dom";
 
 interface IPreviewChartsContainer {
   apiClient: APIClient;
@@ -70,6 +72,8 @@ export const PreviewChartsContainer = ({
   context,
   apiClient,
 }: IPreviewChartsContainer) => {
+  const navigate = useNavigate();
+
   const baselineChartModel = getEmptyPreset().chartModel;
 
   const [deviceModel, setDeviceModel] = useState<DeviceModel>(
@@ -118,6 +122,15 @@ export const PreviewChartsContainer = ({
       });
   }, [secret, context, apiClient]);
 
+  const batteryOnclick = (nextState: CategoricalChartState, event: any) => {
+    const date = nextState.activeLabel;
+    console.log(date);
+    navigate({
+      pathname: "details",
+      search: new URLSearchParams(`date=${date}`).toString(),
+    });
+  };
+
   if (secret) {
     return (
       // <Center>
@@ -149,7 +162,7 @@ export const PreviewChartsContainer = ({
       // </Center>
       <Center marginTop={100}>
         
-        <HistoryBatteryChart chartData={historyChartData} isPreview={true} />
+        <HistoryBatteryChart chartData={historyChartData} isPreview={true} dateOnClickOperation={batteryOnclick}/>
       </Center>
     );
   } else {

@@ -26,7 +26,7 @@ export default function App() {
       <Route path="/preview" key="preview" element={<PreviewPage />} />
       <Route
         key="preview-details"
-        path="/preview/:date"
+        path="/preview/details"
         element={<PreviewDetailsPage />}
       />
       ,
