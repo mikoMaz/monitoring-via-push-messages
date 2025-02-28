@@ -1,0 +1,5 @@
+build:
+  docker:
+    web: docker/backend/Dockerfile
+run:
+  web: java -Dserver.port=$PORT -jar app.jar
