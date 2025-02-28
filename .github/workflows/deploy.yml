@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
       - name: Deploy backend to Heroku
         uses: akhileshns/heroku-deploy@v3.13.15
         with:
@@ -23,6 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
       - name: Deploy frontend to Heroku
         uses: akhileshns/heroku-deploy@v3.13.15
         with:
