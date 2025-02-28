@@ -8,7 +8,7 @@
       "EXPOSE_ACCESS_TOKEN": false
     },
     "REMOTE": {
-      "APP_URL": "https://frontend-errwarn-8c7255016c7d.herokuapp.com//application",
+      "APP_URL": "https://frontend-errwarn-8c7255016c7d.herokuapp.com/application",
       "HOST": "frontend-errwarn-8c7255016c7d.herokuapp.com",
       "API_URL": "https://errwarn-c1e804e5fd5a.herokuapp.com",
       "USE_TEST_DATA": false,
