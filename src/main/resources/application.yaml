@@ -2,10 +2,7 @@ spring:
   application:
     name: monitoring
   datasource:
-    # url: jdbc:postgresql://timescaledb2:5432/postgres
     url: ${DATABASE_URL}
-    username: postgres
-    password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
@@ -17,8 +14,8 @@ spring:
       ddl-auto: update
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  profiles:
-    active: development
+  # profiles:
+  #   active: development
   security:
     oauth2:
       resourceserver:
@@ -43,7 +40,6 @@ logging:
     org.springframework.security: DEBUG
 
 server:
+  port: ${PORT:8080}
   ssl:
-    key-store: classpath:keystore.p12
-    key-store-password: a24Ep8#@!68jaFv
-    key-store-type: pkcs12
+    enabled: false
