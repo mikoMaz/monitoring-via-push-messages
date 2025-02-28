@@ -24,11 +24,11 @@ export default function App() {
   return (
     <Routes>
       <Route path="/preview" key="preview" element={<PreviewPage />} />
-      <Route
+      {/* <Route
         key="preview-details"
         path="/preview/details"
         element={<PreviewDetailsPage />}
-      />
+      /> */}
       ,
       <Route
         path="/application/*"

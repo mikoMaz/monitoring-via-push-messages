@@ -13,6 +13,7 @@ import {
   Center,
   Heading,
   Stack,
+  useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { CurrentChart } from "../../dashboard-page/components/current-chart";
@@ -25,6 +26,7 @@ import {
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
 import { CategoricalChartState } from "recharts/types/chart/types";
 import { useNavigate } from "react-router-dom";
+import { DetailsModal } from "./details-modal";
 
 interface IPreviewChartsContainer {
   apiClient: APIClient;
@@ -73,6 +75,10 @@ export const PreviewChartsContainer = ({
   apiClient,
 }: IPreviewChartsContainer) => {
   const navigate = useNavigate();
+
+  const { isOpen, onOpen: openModal, onClose } = useDisclosure();
+
+  const [selectedDate, setSelectedDate] = useState<string>("");
 
   const baselineChartModel = getEmptyPreset().chartModel;
 
@@ -125,10 +131,14 @@ export const PreviewChartsContainer = ({
   const batteryOnclick = (nextState: CategoricalChartState, event: any) => {
     const date = nextState.activeLabel;
     console.log(date);
-    navigate({
-      pathname: "details",
-      search: new URLSearchParams(`date=${date}`).toString(),
-    });
+    if (date) {
+      setSelectedDate(date);
+      // navigate({
+      //   pathname: "details",
+      //   search: new URLSearchParams(`date=${date}`).toString(),
+      // });
+      openModal();
+    }
   };
 
   if (secret) {
@@ -160,10 +170,16 @@ export const PreviewChartsContainer = ({
       //     <HistoryBatteryChart chartData={historyChartData} isPreview={true} />
       //   </VStack>
       // </Center>
-      <Center marginTop={100}>
-        
-        <HistoryBatteryChart chartData={historyChartData} isPreview={true} dateOnClickOperation={batteryOnclick}/>
-      </Center>
+      <>
+        <Center marginTop={100}>
+          <HistoryBatteryChart
+            chartData={historyChartData}
+            isPreview={true}
+            dateOnClickOperation={batteryOnclick}
+          />
+        </Center>
+        <DetailsModal date={selectedDate} isOpen={isOpen} onClose={onClose} />
+      </>
     );
   } else {
     return <>Secret validation failed</>;
