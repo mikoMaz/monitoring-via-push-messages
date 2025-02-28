@@ -9,6 +9,7 @@ RUN yarn build
 
 FROM nginx:1.25.0-alpine
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf.template /etc/nginx/conf.d/nginx.conf.template
+RUN apk add --no-cache gettext
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD envsubst '${PORT}' < /etc/nginx/conf.d/nginx.conf.template > /etc/nginx/conf.d/default.conf && nginx -g "daemon off;"
