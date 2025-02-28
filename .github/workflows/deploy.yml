@@ -8,6 +8,7 @@ on:
 jobs:
   deploy-backend:
     runs-on: ubuntu-latest
+    environment: heroku
     steps:
       - uses: actions/checkout@v3
       - name: Install Heroku CLI
@@ -24,6 +25,7 @@ jobs:
 
   deploy-frontend:
     runs-on: ubuntu-latest
+    environment: heroku
     steps:
       - uses: actions/checkout@v3
       - name: Install Heroku CLI
