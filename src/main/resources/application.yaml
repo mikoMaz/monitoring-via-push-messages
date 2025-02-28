@@ -14,8 +14,6 @@ spring:
       ddl-auto: update
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  # profiles:
-  #   active: development
   security:
     oauth2:
       resourceserver:
@@ -35,11 +33,9 @@ spring:
       ssl.trust: smtp-mail.outlook.com
       timeout: 5000
 
+server:
+  port: ${PORT:8080}
+
 logging:
   level:
     org.springframework.security: DEBUG
-
-server:
-  port: ${PORT:8080}
-  ssl:
-    enabled: false
