@@ -8,4 +8,4 @@ FROM amazoncorretto:21
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-Dserver.port=$PORT", "-jar", "/app.jar"]
+CMD ["/usr/bin/java", "-Dserver.port=$PORT", "-jar", "/app/app.jar"]
