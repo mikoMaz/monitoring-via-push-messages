@@ -22,6 +22,8 @@ jobs:
           heroku_email: ${{ secrets.EMAIL }}
           usedocker: true
           docker_heroku_process_type: "web"
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
   deploy-frontend:
     runs-on: ubuntu-latest
@@ -40,3 +42,5 @@ jobs:
           usedocker: true
           docker_heroku_process_type: "web"
           appdir: "src/main/webclient"
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
