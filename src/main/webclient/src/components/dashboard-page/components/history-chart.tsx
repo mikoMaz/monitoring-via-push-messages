@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
   Bar,
@@ -22,10 +22,25 @@ interface IHistoryChart extends IChartTemplateModelDrawing {
   companyId: number | undefined;
 }
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <Box bg="white" p={2} borderRadius="md" boxShadow="md">
+        <Text>{`${payload[0].payload.timestamp}`}</Text>
+        <Text>{`Active: ${payload[0].payload.active}`}</Text>
+        <Text>{`Disabled: ${payload[0].payload.disabled}`}</Text>
+        <Text>{`Inactive: ${payload[0].payload.inactive}`}</Text>
+      </Box>
+    );
+  }
+
+  return null;
+};
+
 export const HistoryBatteryChart = ({
   chartData,
   isPreview,
-  dateOnClickOperation
+  dateOnClickOperation,
 }: {
   chartData: IHistoryChartData[];
   isPreview: boolean; //enables operations on-click for preview page
@@ -41,16 +56,16 @@ export const HistoryBatteryChart = ({
           margin={{
             top: 20,
             right: 30,
-            left: 20,
-            bottom: 5,
+            left: 30,
+            bottom: 20,
           }}
           onClick={dateOnClickOperation}
         >
-          <XAxis dataKey="timestamp" />
+          {/* <XAxis dataKey="timestamp" /> */}
           <Bar dataKey="active" stackId="a" fill="green" />
           <Bar dataKey="disabled" stackId="a" fill="orange" />
           <Bar dataKey="inactive" stackId="a" fill="red" />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
         </BarChart>
       </ResponsiveContainer>
       {/* <ResponsiveContainer width="100%" height="100%">
@@ -120,5 +135,5 @@ export const HistoryChart = ({
     return <Box>Authentication in progress...</Box>;
   }
 
-  return <HistoryBatteryChart chartData={chartData} isPreview={false}/>;
+  return <HistoryBatteryChart chartData={chartData} isPreview={false} />;
 };

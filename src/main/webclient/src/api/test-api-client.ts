@@ -194,24 +194,6 @@ export class TestAPIClient implements IAPIClient {
       return `${year}-${month}-${day}`;
     };
 
-    // const dateFormatter = (date: Date): string => {
-    //   const data: IHistoryChartData[] = response.data;
-    //   const dateFromObj = new Date(dateFrom);
-    //   const convertedData = data.map((item, index) => {
-    //     const currentDate = new Date(dateFromObj.getTime());
-    //     currentDate.setDate(currentDate.getDate() + index);
-    //     const formattedDate = `${String(currentDate.getDate())}-${String(
-    //       currentDate.getMonth() + 1
-    //     ).padStart(2, "0")}-${currentDate.getFullYear()}`;
-    //     return {
-    //       ...item,
-    //       timestamp: formattedDate,
-    //     };
-    //   });
-
-    //   return convertedData;
-    // };
-
     const addDays = (date: Date, days: number): Date => {
       const result = new Date(date);
       result.setDate(result.getDate() + days);

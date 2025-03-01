@@ -11,6 +11,8 @@ import {
   CardBody,
   CardHeader,
   Center,
+  Grid,
+  GridItem,
   Heading,
   Stack,
   useDisclosure,
@@ -171,13 +173,17 @@ export const PreviewChartsContainer = ({
       //   </VStack>
       // </Center>
       <>
-        <Center marginTop={100}>
-          <HistoryBatteryChart
-            chartData={historyChartData}
-            isPreview={true}
-            dateOnClickOperation={batteryOnclick}
-          />
-        </Center>
+        <Grid>
+          <GridItem>
+            <Card margin={10} padding={10}>
+              <HistoryBatteryChart
+                chartData={historyChartData}
+                isPreview={true}
+                dateOnClickOperation={batteryOnclick}
+              />
+            </Card>
+          </GridItem>
+        </Grid>
         <DetailsModal date={selectedDate} isOpen={isOpen} onClose={onClose} />
       </>
     );
