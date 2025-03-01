@@ -80,7 +80,13 @@ export const PreviewChartsContainer = ({
 
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
 
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedHistoryChartData, setSelectedHistoryChartData] =
+    useState<IHistoryChartData>({
+      active: 0,
+      inactive: 0,
+      disabled: 0,
+      timestamp: "",
+    });
 
   const baselineChartModel = getEmptyPreset().chartModel;
 
@@ -131,10 +137,11 @@ export const PreviewChartsContainer = ({
   }, [secret, context, apiClient]);
 
   const batteryOnclick = (nextState: CategoricalChartState, event: any) => {
-    const date = nextState.activeLabel;
-    console.log(date);
-    if (date) {
-      setSelectedDate(date);
+    const index = nextState.activeLabel;
+    console.log(index);
+    console.log(nextState);
+    if (index !== undefined) {
+      setSelectedHistoryChartData(historyChartData[Number(index)]);
       // navigate({
       //   pathname: "details",
       //   search: new URLSearchParams(`date=${date}`).toString(),
@@ -184,7 +191,11 @@ export const PreviewChartsContainer = ({
             </Card>
           </GridItem>
         </Grid>
-        <DetailsModal date={selectedDate} isOpen={isOpen} onClose={onClose} />
+        <DetailsModal
+          data={selectedHistoryChartData}
+          isOpen={isOpen}
+          onClose={onClose}
+        />
       </>
     );
   } else {

@@ -11,26 +11,27 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
+import { IHistoryChartData } from "../../../types/IHistoryChartData";
 
 interface IDetailsModal {
   isOpen: boolean;
   onClose: () => void;
-  date: string;
+  data: IHistoryChartData;
 }
 
-export const DetailsModal = ({ isOpen, onClose, date }: IDetailsModal) => {
+export const DetailsModal = ({ isOpen, onClose, data }: IDetailsModal) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Devices active time on {date}</ModalHeader>
+        <ModalHeader>Devices active time on {data.timestamp}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <VStack>
             <Heading size="sm">Number of devices by status</Heading>
-            <Text>active</Text>
-            <Text>inactive</Text>
-            <Text>disabled</Text>
+            <Text>active: {data.active}</Text>
+            <Text>inactive: {data.inactive}</Text>
+            <Text>disabled: {data.disabled}</Text>
           </VStack>
         </ModalBody>
 
