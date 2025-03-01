@@ -4,7 +4,7 @@
       "APP_URL": "https://localhost:443/application",
       "HOST": "localhost",
       "API_URL": "https://localhost:8081",
-      "USE_TEST_DATA": false,
+      "USE_TEST_DATA": true,
       "EXPOSE_ACCESS_TOKEN": false
     },
     "REMOTE": {

@@ -27,9 +27,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <Box bg="white" p={2} borderRadius="md" boxShadow="md">
         <Text>{`${payload[0].payload.timestamp}`}</Text>
-        <Text>{`Active: ${payload[0].payload.active}`}</Text>
-        <Text>{`Disabled: ${payload[0].payload.disabled}`}</Text>
-        <Text>{`Inactive: ${payload[0].payload.inactive}`}</Text>
+        <Text>{`Active: ${payload[0].payload.activePercent}%`}</Text>
+        <Text>{`Disabled: ${payload[0].payload.disabledPercent}%`}</Text>
+        <Text>{`Inactive: ${payload[0].payload.inactivePercent}%`}</Text>
       </Box>
     );
   }
