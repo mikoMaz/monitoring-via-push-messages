@@ -28,6 +28,7 @@ import { CurrentChart } from "../../dashboard-page/components/current-chart";
 import { getEmptyPreset } from "../../../types/chartTemplate";
 import { RecentChart } from "../../dashboard-page/components/recent-chart";
 import {
+  CalendarHeatmap,
   HistoryBatteryChart,
   HistoryChart,
 } from "../../dashboard-page/components/history-chart";
@@ -206,6 +207,37 @@ const HistoryChartCard = ({
   );
 };
 
+const HistoryCalendarCard = ({
+  historyChartData,
+}: {
+  historyChartData: IHistoryChartData[];
+}) => {
+  return (
+    <Box boxShadow="md" rounded="md" bg="background" padding={10} width="full">
+      <Card variant="filled" bg="whiteAlpha.900">
+        <CardHeader paddingX={0} paddingTop={0} paddingBottom={2}>
+          <HStack justify="space-between" alignItems="stretch" w="full">
+            <Text fontSize="xl" as="b">
+              Devices Uptime History
+            </Text>
+            <Text fontSize="xl">Operational</Text>
+          </HStack>
+        </CardHeader>
+        <CardBody padding={0}>
+          <CalendarHeatmap chartData={historyChartData} isPreview={true} />
+        </CardBody>
+        <CardFooter paddingX={0} paddingTop={2} paddingBottom={0}>
+          <HStack justify="space-between" alignItems="stretch" w="full">
+            <Text>90 days ago</Text>
+            <Text>something uptime</Text>
+            <Text>yesterday</Text>
+          </HStack>
+        </CardFooter>
+      </Card>
+    </Box>
+  );
+};
+
 export const PreviewChartsContainer = ({
   secret,
   context,
@@ -233,6 +265,8 @@ export const PreviewChartsContainer = ({
   const [historyChartData, setHistoryChartData] = useState<IHistoryChartData[]>(
     []
   );
+
+  const [calendarChart, setCalendarChart] = useState<boolean>(false);
 
   useEffect(() => {
     apiClient
@@ -331,14 +365,22 @@ export const PreviewChartsContainer = ({
             <VStack>
               <Text alignSelf="flex-end">
                 Uptime over the past 90 days.{" "}
-                <Link color="green.500" href="#">
+                <Link
+                  color="green.500"
+                  href="#"
+                  onClick={() => setCalendarChart((prev) => !prev)}
+                >
                   View historical uptime.
                 </Link>
               </Text>
-              <HistoryChartCard
-                historyChartData={historyChartData}
-                batteryOnclick={batteryOnclick}
-              />
+              {calendarChart ? (
+                <HistoryCalendarCard historyChartData={historyChartData} />
+              ) : (
+                <HistoryChartCard
+                  historyChartData={historyChartData}
+                  batteryOnclick={batteryOnclick}
+                />
+              )}
             </VStack>
           </GridItem>
         </Grid>
