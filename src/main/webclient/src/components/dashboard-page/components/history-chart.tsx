@@ -50,8 +50,6 @@ export const HistoryBatteryChart = ({
     <Box width="100%" height="250px" display="flex" alignItems="center">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          // width={500}
-          // height={100}
           data={chartData}
           margin={
             !isPreview
@@ -65,39 +63,12 @@ export const HistoryBatteryChart = ({
           }
           onClick={dateOnClickOperation}
         >
-          {/* <XAxis dataKey="timestamp" /> */}
           <Bar dataKey="active" stackId="a" fill="green" />
           <Bar dataKey="disabled" stackId="a" fill="orange" />
           <Bar dataKey="inactive" stackId="a" fill="red" />
           <Tooltip content={<CustomTooltip />} />
-          {/* <Tooltip /> */}
         </BarChart>
       </ResponsiveContainer>
-      {/* <ResponsiveContainer width="100%" height="100%">
-      <LineChart
-        width={500}
-        height={400}
-        data={chartData}
-        margin={{
-          top: 50,
-          right: 50,
-          left: 50,
-          bottom: 50,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="timestamp" />
-        <YAxis />
-        <Tooltip />
-        <Line
-          type="monotone"
-          dataKey="active"
-          stroke="green"
-          activeDot={{ r: 8 }}
-        />
-        <Line type="monotone" dataKey="inactive" stroke="red" />
-      </LineChart>
-    </ResponsiveContainer> */}
     </Box>
   );
 };
@@ -119,22 +90,12 @@ const groupByMonth = (
   }, {});
 };
 
-// const getWeekStartDate = (date: Date): Date => {
-//   const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ...
-//   // console.log(dayOfWeek, date);
-//   const diff = (dayOfWeek + 6) % 7; // To make Monday the first day of the week
-//   // console.log(diff, date);
-//   date.setDate(date.getDate() - diff); // Adjust to the start of the week (Monday)
-//   // console.log(date);
-//   return date;
-// };
 const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 function isLastDayOfMonth(date: Date): boolean {
   const nextDay = new Date(date);
-  nextDay.setMonth(date.getMonth() + 1); //przyszły miesiac
-  nextDay.setDate(0); //ostatni dzień poprzedniego miesiąca
-  return date.getDate() === nextDay.getDate();
+  nextDay.setDate(date.getDate() + 1); 
+  return nextDay.getDate() === 1; 
 }
 
 const CalendarMonth = ({
@@ -181,15 +142,7 @@ const CalendarMonth = ({
           </Text>
         </Box>
       );
-      console.log("new date", new Date(2025, 0, 31));
-      console.log("new date of date ", new Date(date));
-      if (new Date(date) === new Date(2025, 0, 31)) {
-        console.log("checking if 31.01.2025 is last day of month: ", isLastDayOfMonth(date));
-      }
       if (!isLastDayOfMonth(date) && index === days.length - 1) {
-        console.log("date: ", date.toString());
-        console.log("is date last day of month? ", isLastDayOfMonth(date));
-        console.log("is index last day of this month? ", index === days.length - 1);
         let i = 1;
         while (true) {
           const newDate = new Date(date);
@@ -205,9 +158,6 @@ const CalendarMonth = ({
               alignItems="center"
               justifyContent="center"
               borderRadius="md"
-              onClick={() => {
-                console.log(newDate);
-              }}
             >
               <Text fontSize="xs" color="white">
                 {newDate.getDate()}
