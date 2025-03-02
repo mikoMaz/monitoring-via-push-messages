@@ -8,7 +8,7 @@ import {
 } from "../types/deviceModel";
 import { IUserInfoResponse } from "../types/IUserInfoResponse";
 import { IAPIClient } from "./api-client";
-import { IHistoryChartData } from "../types/IHistoryChartData";
+import { formatRawIHistoryChartData, IHistoryChartData } from "../types/IHistoryChartData";
 import { getEmptyPreset } from "../types/chartTemplate";
 
 export class TestAPIClient implements IAPIClient {
@@ -183,28 +183,32 @@ export class TestAPIClient implements IAPIClient {
     dateFrom: string,
     dateTo: string
   ): Promise<IHistoryChartData[]> => {
-    const parseDate = (dateString: string): Date => {
-      return new Date(dateString);
-    };
+    // const parseDate = (dateString: string): Date => {
+    //   return new Date(dateString);
+    // };
 
-    const formatDate = (date: Date): string => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    };
+    // const formatDate = (date: Date): string => {
+    //   const year = date.getFullYear();
+    //   const month = String(date.getMonth() + 1).padStart(2, "0");
+    //   const day = String(date.getDate()).padStart(2, "0");
+    //   return `${year}-${month}-${day}`;
+    // };
 
-    const addDays = (date: Date, days: number): Date => {
-      const result = new Date(date);
-      result.setDate(result.getDate() + days);
-      return result;
-    };
+    // const addDays = (date: Date, days: number): Date => {
+    //   const result = new Date(date);
+    //   result.setDate(result.getDate() + days);
+    //   return result;
+    // };
 
-    const startDate = parseDate(dateFrom);
-    const endDate = parseDate(dateTo);
+    // const getPercentValueOfAllDevices = (allDevices: number, devices: number) => {
+    //   return +((devices / allDevices).toFixed(2));
+    // }
 
-    console.log("Start date:", startDate);
-    console.log("End date:", endDate);
+    // const startDate = parseDate(dateFrom);
+    // const endDate = parseDate(dateTo);
+
+    // console.log("Start date:", startDate);
+    // console.log("End date:", endDate);
 
     return Promise.resolve([
       { timestamp: 0, active: 50, inactive: 39, disabled: 11 },
@@ -299,19 +303,27 @@ export class TestAPIClient implements IAPIClient {
       { timestamp: 89, active: 64, inactive: 25, disabled: 11 },
       { timestamp: 90, active: 74, inactive: 15, disabled: 11 },
     ]).then((data) => {
-      return data
-        .map((entry) => {
-          const entryDate = addDays(startDate, entry.timestamp);
-          // console.log(formatDate(entryDate));
-          return {
-            ...entry,
-            timestamp: formatDate(entryDate),
-          };
-        })
-        .filter((entry) => {
-          const entryDate = parseDate(entry.timestamp);
-          return entryDate >= startDate && entryDate <= endDate;
-        });
+      return formatRawIHistoryChartData(data, dateFrom, dateTo);
+      // return data
+      //   .map((entry) => {
+      //     const entryDate = addDays(startDate, entry.timestamp);
+      //     const allDevices = entry.active + entry.inactive + entry.disabled;
+      //     // console.log(formatDate(entryDate));
+      //     return {
+      //       active: entry.active,
+      //       inactive: entry.inactive,
+      //       disabled: entry.disabled,
+      //       timestamp: formatDate(entryDate),
+      //       allDevices: allDevices,
+      //       activePercent: getPercentValueOfAllDevices(allDevices, entry.active),
+      //       inactivePercent: getPercentValueOfAllDevices(allDevices, entry.inactive),
+      //       disabledPercent: getPercentValueOfAllDevices(allDevices, entry.disabled),
+      //     };
+      //   })
+      //   .filter((entry) => {
+      //     const entryDate = parseDate(entry.timestamp);
+      //     return entryDate >= startDate && entryDate <= endDate;
+      //   });
     });
   };
 

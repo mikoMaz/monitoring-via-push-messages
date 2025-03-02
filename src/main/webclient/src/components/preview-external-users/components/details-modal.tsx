@@ -28,6 +28,7 @@ export const DetailsModal = ({ isOpen, onClose, data }: IDetailsModal) => {
         <ModalCloseButton />
         <ModalBody>
           <VStack>
+            <Text>all devices in the company {data.allDevices}</Text>
             <Heading size="sm">Number of devices by status</Heading>
             <Text>active: {data.active}</Text>
             <Text>inactive: {data.inactive}</Text>

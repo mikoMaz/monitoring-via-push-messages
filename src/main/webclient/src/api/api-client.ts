@@ -15,7 +15,7 @@ import {
 import config from "../config/config.json";
 import { TestAPIClient } from "./test-api-client";
 import { ICompanyUser } from "../types/ICompanyUser";
-import { IHistoryChartData } from "../types/IHistoryChartData";
+import { formatRawIHistoryChartData, IHistoryChartData, IHistoryChartDataRaw } from "../types/IHistoryChartData";
 import { ICompanyDto } from "../types/ICompanyDto";
 import { usingTestData } from "../util/useTestData";
 
@@ -366,21 +366,22 @@ export class APIClient implements IAPIClient {
         },
       })
       .then((response) => {
-        const data: IHistoryChartData[] = response.data;
-        const dateFromObj = new Date(dateFrom);
-        const convertedData = data.map((item, index) => {
-          const currentDate = new Date(dateFromObj.getTime());
-          currentDate.setDate(currentDate.getDate() + index);
-          const formattedDate = `${String(currentDate.getDate())}-${String(
-            currentDate.getMonth() + 1
-          ).padStart(2, "0")}-${currentDate.getFullYear()}`;
-          return {
-            ...item,
-            timestamp: formattedDate,
-          };
-        });
+        const data: IHistoryChartDataRaw[] = response.data;
+        return formatRawIHistoryChartData(data, dateFrom, dateTo);
+        // const dateFromObj = new Date(dateFrom);
+        // const convertedData = data.map((item, index) => {
+        //   const currentDate = new Date(dateFromObj.getTime());
+        //   currentDate.setDate(currentDate.getDate() + index);
+        //   const formattedDate = `${String(currentDate.getDate())}-${String(
+        //     currentDate.getMonth() + 1
+        //   ).padStart(2, "0")}-${currentDate.getFullYear()}`;
+        //   return {
+        //     ...item,
+        //     timestamp: formattedDate,
+        //   };
+        // });
 
-        return convertedData;
+        // return convertedData;
       })
       .catch(function (error) {
         console.error(error);

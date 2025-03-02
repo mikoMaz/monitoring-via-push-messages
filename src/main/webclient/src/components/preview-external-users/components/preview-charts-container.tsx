@@ -31,7 +31,7 @@ import {
   HistoryBatteryChart,
   HistoryChart,
 } from "../../dashboard-page/components/history-chart";
-import { IHistoryChartData } from "../../../types/IHistoryChartData";
+import { emptyHistoryChartData, IHistoryChartData } from "../../../types/IHistoryChartData";
 import { CategoricalChartState } from "recharts/types/chart/types";
 import { useNavigate } from "react-router-dom";
 import { DetailsModal } from "./details-modal";
@@ -213,12 +213,7 @@ export const PreviewChartsContainer = ({
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
 
   const [selectedHistoryChartData, setSelectedHistoryChartData] =
-    useState<IHistoryChartData>({
-      active: 0,
-      inactive: 0,
-      disabled: 0,
-      timestamp: "",
-    });
+    useState<IHistoryChartData>(emptyHistoryChartData);
 
   const baselineChartModel = getEmptyPreset().chartModel;
 
