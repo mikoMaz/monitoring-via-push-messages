@@ -1,15 +1,10 @@
-import { Box, Grid, HStack, Text, VStack } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
-  XAxis,
-  YAxis,
 } from "recharts";
 import { APIClient } from "../../../api/api-client";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
@@ -73,131 +68,6 @@ export const HistoryBatteryChart = ({
   );
 };
 
-const getColor = (activePercent: number): string => {
-  return activePercent > 40.8 ? "green.400" : "red.400";
-};
-
-const groupByMonth = (
-  data: IHistoryChartData[]
-): Record<string, IHistoryChartData[]> => {
-  return data.reduce((acc: Record<string, IHistoryChartData[]>, day) => {
-    const month = new Date(day.timestamp).toLocaleString("en-PL", {
-      month: "long",
-    });
-    if (!acc[month]) acc[month] = [];
-    acc[month].push(day);
-    return acc;
-  }, {});
-};
-
-const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-function isLastDayOfMonth(date: Date): boolean {
-  const nextDay = new Date(date);
-  nextDay.setDate(date.getDate() + 1); 
-  return nextDay.getDate() === 1; 
-}
-
-const CalendarMonth = ({
-  monthName,
-  days,
-}: {
-  monthName: string;
-  days: IHistoryChartData[];
-}) => {
-  const getDaysComponents = (days: IHistoryChartData[]): JSX.Element[] => {
-    const dayComponents: JSX.Element[] = [];
-    days.forEach((day, index) => {
-      const date = new Date(day.timestamp);
-      if (date.getDate() === 1) {
-        weekDays.every((dayName) => {
-          if (dayName === date.toString().split(" ")[0]) {
-            return false;
-          } else {
-            dayComponents.push(
-              <Box
-                key={(Math.random() + 1).toString(36).substring(7).toString()}
-              />
-            );
-            return true;
-          }
-        });
-      }
-      dayComponents.push(
-        <Box
-          key={day.timestamp}
-          w="20px"
-          h="20px"
-          bg={getColor(day.activePercent)}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          borderRadius="md"
-          onClick={() => {
-            console.log(date);
-          }}
-        >
-          <Text fontSize="xs" color="white">
-            {date.getDate()}
-          </Text>
-        </Box>
-      );
-      if (!isLastDayOfMonth(date) && index === days.length - 1) {
-        let i = 1;
-        while (true) {
-          const newDate = new Date(date);
-          newDate.setDate(date.getDate() + i);
-          i += 1;
-          dayComponents.push(
-            <Box
-              key={(Math.random() + 1).toString(36).substring(7).toString()}
-              w="20px"
-              h="20px"
-              bg="gray"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              borderRadius="md"
-            >
-              <Text fontSize="xs" color="white">
-                {newDate.getDate()}
-              </Text>
-            </Box>
-          );
-          if (isLastDayOfMonth(newDate)) {
-            break;
-          }
-        }
-      }
-    });
-    return dayComponents;
-  };
-
-  return (
-    <VStack align="stretch">
-      <Text fontSize="lg" fontWeight="bold">
-        {monthName}
-      </Text>
-      <Grid templateColumns="repeat(7, 1fr)" gap={1}>
-        {getDaysComponents(days)}
-      </Grid>
-    </VStack>
-  );
-};
-
-const CalendarHeatmap = ({ chartData }: { chartData: IHistoryChartData[] }) => {
-  const [groupedData] = useState(groupByMonth(chartData));
-  // const groupedData = groupByMonth(chartData);
-
-  return (
-    <HStack spacing={4} align="stretch">
-      {Object.entries(groupedData).map(([month, days]) => (
-        <CalendarMonth key={month} monthName={month} days={days} />
-      ))}
-    </HStack>
-  );
-};
-
 export const HistoryChart = ({
   apiClient,
   accessToken,
@@ -236,6 +106,5 @@ export const HistoryChart = ({
     return <Box>Authentication in progress...</Box>;
   }
 
-  return <CalendarHeatmap chartData={chartData} />;
-  // return <HistoryBatteryChart chartData={chartData} isPreview={false} />;
+  return <HistoryBatteryChart chartData={chartData} isPreview={false} />;
 };

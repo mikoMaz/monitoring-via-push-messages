@@ -17,20 +17,15 @@ import {
   GridItem,
   Heading,
   HStack,
-  Stack,
   useDisclosure,
   VStack,
   Text,
   Highlight,
   Link,
 } from "@chakra-ui/react";
-import { CurrentChart } from "../../dashboard-page/components/current-chart";
 import { getEmptyPreset } from "../../../types/chartTemplate";
-import { RecentChart } from "../../dashboard-page/components/recent-chart";
 import {
-  CalendarHeatmap,
   HistoryBatteryChart,
-  HistoryChart,
 } from "../../dashboard-page/components/history-chart";
 import {
   emptyHistoryChartData,
@@ -39,6 +34,7 @@ import {
 import { CategoricalChartState } from "recharts/types/chart/types";
 import { useNavigate } from "react-router-dom";
 import { DetailsModal } from "./details-modal";
+import { CalendarHeatmap } from "../../dashboard-page/components/calendar-heatmap-chart";
 
 interface IPreviewChartsContainer {
   apiClient: APIClient;
@@ -224,7 +220,7 @@ const HistoryCalendarCard = ({
           </HStack>
         </CardHeader>
         <CardBody padding={0}>
-          <CalendarHeatmap chartData={historyChartData} isPreview={true} />
+          <CalendarHeatmap chartData={historyChartData} />
         </CardBody>
         <CardFooter paddingX={0} paddingTop={2} paddingBottom={0}>
           <HStack justify="space-between" alignItems="stretch" w="full">
