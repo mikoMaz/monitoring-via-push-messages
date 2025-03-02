@@ -22,14 +22,14 @@ interface IHistoryChart extends IChartTemplateModelDrawing {
   companyId: number | undefined;
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
-      <Box bg="white" p={2} borderRadius="md" boxShadow="md">
-        <Text>{`${payload[0].payload.timestamp}`}</Text>
-        <Text>{`Active: ${payload[0].payload.active}`}</Text>
-        <Text>{`Disabled: ${payload[0].payload.disabled}`}</Text>
-        <Text>{`Inactive: ${payload[0].payload.inactive}`}</Text>
+      <Box bg="white" p={2} borderRadius="md" boxShadow="lg" padding={4}>
+        <Text as='b' fontSize="lg">{`${payload[0].payload.timestamp}`}</Text>
+        <Text color="green">{`active : ${payload[0].payload.active}`}</Text>
+        <Text color="orange">{`disabled : ${payload[0].payload.disabled}`}</Text>
+        <Text color="red">{`inactive : ${payload[0].payload.inactive}`}</Text>
       </Box>
     );
   }
@@ -53,12 +53,13 @@ export const HistoryBatteryChart = ({
           // width={500}
           // height={100}
           data={chartData}
-          margin={{
+          
+          margin={!isPreview ? {
             top: 20,
             right: 30,
             left: 30,
             bottom: 20,
-          }}
+          } : {}}
           onClick={dateOnClickOperation}
         >
           {/* <XAxis dataKey="timestamp" /> */}
@@ -66,6 +67,7 @@ export const HistoryBatteryChart = ({
           <Bar dataKey="disabled" stackId="a" fill="orange" />
           <Bar dataKey="inactive" stackId="a" fill="red" />
           <Tooltip content={<CustomTooltip />} />
+          {/* <Tooltip /> */}
         </BarChart>
       </ResponsiveContainer>
       {/* <ResponsiveContainer width="100%" height="100%">

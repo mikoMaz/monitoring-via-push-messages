@@ -423,6 +423,19 @@ export class DeviceModel implements IDeviceModel {
     ].length;
   };
 
+  public getBridgesCount = () => {
+    console.log(this.getBridgesArray().length);
+    return this.getBridgesArray().length;
+  };
+
+  public getGatewaysCount = () => {
+    return this.getGatewaysArray().length;
+  };
+
+  public getSensorsCount = () => {
+    return this.getSensorsArray().length;
+  };
+
   public static getPlaceholderDevice = (): IMonitoringDevice => {
     return {
       id: "undefined",

@@ -140,7 +140,7 @@ export class TestAPIClient implements IAPIClient {
     secret: string,
     company: string
   ): Promise<boolean> => {
-    if (secret === "12345" && company === "test-company") {
+    if (secret === "12345" && (company === "test-company" || "1")) {
       return Promise.resolve(true);
     } else {
       return Promise.resolve(false);

@@ -7,16 +7,22 @@ import {
 } from "../../../types/deviceModel";
 import { APIClient } from "../../../api/api-client";
 import {
+  Box,
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
   Center,
   Grid,
   GridItem,
   Heading,
+  HStack,
   Stack,
   useDisclosure,
   VStack,
+  Text,
+  Highlight,
+  Link,
 } from "@chakra-ui/react";
 import { CurrentChart } from "../../dashboard-page/components/current-chart";
 import { getEmptyPreset } from "../../../types/chartTemplate";
@@ -54,20 +60,146 @@ const ContextCard = ({
   deviceModel: DeviceModel;
 }) => {
   return (
-    <Card variant="filled" bg="whiteAlpha.500" align="center" marginX={20}>
-      <CardHeader>
-        <Heading>{context}</Heading>
-      </CardHeader>
-      <CardBody>
-        <VStack>
-          <>
-            {deviceModel.getDevicesCount()
-              ? `Number of devices: ${deviceModel.getDevicesCount()}`
-              : ""}
-          </>
-        </VStack>
-      </CardBody>
-    </Card>
+    <Box
+      boxShadow="md"
+      rounded="md"
+      bg="background"
+      marginX={10}
+      marginTop={10}
+    >
+      <Card variant="filled" bg="whiteAlpha.900" align="center">
+        <CardHeader>
+          <Heading>{context}</Heading>
+        </CardHeader>
+        <CardBody>
+          <VStack>
+            <>
+              {deviceModel.getDevicesCount()
+                ? `Number of devices: ${deviceModel.getDevicesCount()}`
+                : ""}
+            </>
+          </VStack>
+        </CardBody>
+      </Card>
+    </Box>
+  );
+};
+
+const CompanyCard = ({ context }: { context: string }) => {
+  return (
+    <Box
+      boxShadow="md"
+      rounded="md"
+      bg="background"
+      h="100%"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Card variant="filled" bg="whiteAlpha.900" align="center">
+        <CardHeader>
+          <Heading>{context}</Heading>
+        </CardHeader>
+      </Card>
+    </Box>
+  );
+};
+
+const DeviceModelCard = ({ deviceModel }: { deviceModel: DeviceModel }) => {
+  return (
+    <Box
+      boxShadow="md"
+      rounded="md"
+      bg="background"
+      h="100%"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Card variant="filled" bg="whiteAlpha.900" align="center">
+        <CardHeader>
+          <VStack>
+            <Text fontWeight="bold" size="md">
+              <Highlight
+                query="Number of devices: "
+                styles={{ py: "1", fontWeight: "normal" }}
+              >
+                {deviceModel.getDevicesCount()
+                  ? `Number of devices: ${deviceModel.getDevicesCount()}`
+                  : ""}
+              </Highlight>
+            </Text>
+            <Text fontWeight="bold">
+              <Highlight
+                query="Bridges: "
+                styles={{ py: "1", fontWeight: "normal" }}
+              >
+                {deviceModel.getBridgesCount()
+                  ? `Bridges: ${deviceModel.getBridgesCount()}`
+                  : ""}
+              </Highlight>
+            </Text>
+            <Text fontWeight="bold">
+              <Highlight
+                query="Gateways: "
+                styles={{ py: "1", fontWeight: "normal" }}
+              >
+                {deviceModel.getGatewaysCount()
+                  ? `Gateways: ${deviceModel.getGatewaysCount()}`
+                  : ""}
+              </Highlight>
+            </Text>
+            <Text fontWeight="bold">
+              <Highlight
+                query="Sensors: "
+                styles={{ py: "1", fontWeight: "normal" }}
+              >
+                {deviceModel.getSensorsCount()
+                  ? `Sensors: ${deviceModel.getSensorsCount()}`
+                  : ""}
+              </Highlight>
+            </Text>
+          </VStack>
+        </CardHeader>
+      </Card>
+    </Box>
+  );
+};
+
+const HistoryChartCard = ({
+  historyChartData,
+  batteryOnclick,
+}: {
+  historyChartData: IHistoryChartData[];
+  batteryOnclick: (nextState: CategoricalChartState, event: any) => void;
+}) => {
+  return (
+    <Box boxShadow="md" rounded="md" bg="background" padding={10} width="full">
+      <Card variant="filled" bg="whiteAlpha.900">
+        <CardHeader paddingX={0} paddingTop={0} paddingBottom={2}>
+          <HStack justify="space-between" alignItems="stretch" w="full">
+            <Text fontSize="xl" as="b">
+              Devices Uptime History
+            </Text>
+            <Text fontSize="xl">Operational</Text>
+          </HStack>
+        </CardHeader>
+        <CardBody padding={0}>
+          <HistoryBatteryChart
+            chartData={historyChartData}
+            isPreview={true}
+            dateOnClickOperation={batteryOnclick}
+          />
+        </CardBody>
+        <CardFooter paddingX={0} paddingTop={2} paddingBottom={0}>
+          <HStack justify="space-between" alignItems="stretch" w="full">
+            <Text>90 days ago</Text>
+            <Text>something uptime</Text>
+            <Text>yesterday</Text>
+          </HStack>
+        </CardFooter>
+      </Card>
+    </Box>
   );
 };
 
@@ -109,6 +241,7 @@ export const PreviewChartsContainer = ({
       .getPreviewDeviceModel(secret, context)
       .then((model) => {
         setDeviceModel(model);
+        console.log(model);
       })
       .catch((error: any) => {
         console.error(error.message);
@@ -180,15 +313,35 @@ export const PreviewChartsContainer = ({
       //   </VStack>
       // </Center>
       <>
-        <Grid>
-          <GridItem>
-            <Card margin={10} padding={10}>
-              <HistoryBatteryChart
-                chartData={historyChartData}
-                isPreview={true}
-                dateOnClickOperation={batteryOnclick}
+        <Grid
+          templateRows="auto 1fr"
+          templateColumns="repeat(2, 1fr)"
+          gap={10}
+          margin={10}
+        >
+          <GridItem rowSpan={1} colSpan={1}>
+            <VStack align="stretch" height="100%">
+              <CompanyCard context={context}></CompanyCard>
+            </VStack>
+          </GridItem>
+          <GridItem rowSpan={1} colSpan={1}>
+            <VStack align="stretch" height="100%">
+              <DeviceModelCard deviceModel={deviceModel}></DeviceModelCard>
+            </VStack>
+          </GridItem>
+          <GridItem rowSpan={1} colSpan={2}>
+            <VStack>
+              <Text alignSelf="flex-end">
+                Uptime over the past 90 days.{" "}
+                <Link color="green.500" href="#">
+                  View historical uptime.
+                </Link>
+              </Text>
+              <HistoryChartCard
+                historyChartData={historyChartData}
+                batteryOnclick={batteryOnclick}
               />
-            </Card>
+            </VStack>
           </GridItem>
         </Grid>
         <DetailsModal
