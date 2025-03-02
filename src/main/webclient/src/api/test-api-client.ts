@@ -8,7 +8,10 @@ import {
 } from "../types/deviceModel";
 import { IUserInfoResponse } from "../types/IUserInfoResponse";
 import { IAPIClient } from "./api-client";
-import { formatRawIHistoryChartData, IHistoryChartData } from "../types/IHistoryChartData";
+import {
+  formatRawIHistoryChartData,
+  IHistoryChartData,
+} from "../types/IHistoryChartData";
 import { getEmptyPreset } from "../types/chartTemplate";
 
 export class TestAPIClient implements IAPIClient {
@@ -157,8 +160,13 @@ export class TestAPIClient implements IAPIClient {
 
   public getPreviewDataHistoryChart = async (secret: string, name: string) => {
     const model = getEmptyPreset().chartModel;
-      return this.getDataHistoryChart("accessToken", 1, model.dateFrom, model.dateTo);
-    }
+    return this.getDataHistoryChart(
+      "accessToken",
+      1,
+      model.dateFrom,
+      model.dateTo
+    );
+  };
 
   public postCSVData = async (
     accessToken: string,
@@ -242,7 +250,6 @@ export class TestAPIClient implements IAPIClient {
       { timestamp: 28, active: 55, inactive: 34, disabled: 11 },
       { timestamp: 29, active: 65, inactive: 24, disabled: 11 },
       { timestamp: 30, active: 45, inactive: 44, disabled: 11 },
-      { timestamp: 61, active: 49, inactive: 40, disabled: 11 },
       { timestamp: 31, active: 52, inactive: 37, disabled: 11 },
       { timestamp: 32, active: 62, inactive: 27, disabled: 11 },
       { timestamp: 33, active: 72, inactive: 17, disabled: 11 },
@@ -273,6 +280,7 @@ export class TestAPIClient implements IAPIClient {
       { timestamp: 58, active: 44, inactive: 45, disabled: 11 },
       { timestamp: 59, active: 59, inactive: 30, disabled: 11 },
       { timestamp: 60, active: 69, inactive: 20, disabled: 11 },
+      { timestamp: 61, active: 49, inactive: 40, disabled: 11 },
       { timestamp: 62, active: 66, inactive: 23, disabled: 11 },
       { timestamp: 63, active: 71, inactive: 18, disabled: 11 },
       { timestamp: 64, active: 41, inactive: 48, disabled: 11 },

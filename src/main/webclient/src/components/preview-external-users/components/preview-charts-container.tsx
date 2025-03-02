@@ -31,7 +31,10 @@ import {
   HistoryBatteryChart,
   HistoryChart,
 } from "../../dashboard-page/components/history-chart";
-import { emptyHistoryChartData, IHistoryChartData } from "../../../types/IHistoryChartData";
+import {
+  emptyHistoryChartData,
+  IHistoryChartData,
+} from "../../../types/IHistoryChartData";
 import { CategoricalChartState } from "recharts/types/chart/types";
 import { useNavigate } from "react-router-dom";
 import { DetailsModal } from "./details-modal";
