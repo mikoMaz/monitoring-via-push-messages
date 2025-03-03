@@ -210,25 +210,10 @@ const HistoryCalendarCard = ({
 }) => {
   return (
     <Box boxShadow="md" rounded="md" bg="background" padding={10} width="full">
-      <Card variant="filled" bg="whiteAlpha.900">
-        <CardHeader paddingX={0} paddingTop={0} paddingBottom={2}>
-          <HStack justify="space-between" alignItems="stretch" w="full">
-            <Text fontSize="xl" as="b">
-              Devices Uptime History
-            </Text>
-            <Text fontSize="xl">Operational</Text>
-          </HStack>
-        </CardHeader>
+      <Card variant="filled" bg="whiteAlpha.900" align="center">
         <CardBody padding={0}>
           <CalendarHeatmap chartData={historyChartData} />
         </CardBody>
-        <CardFooter paddingX={0} paddingTop={2} paddingBottom={0}>
-          <HStack justify="space-between" alignItems="stretch" w="full">
-            <Text>90 days ago</Text>
-            <Text>something uptime</Text>
-            <Text>yesterday</Text>
-          </HStack>
-        </CardFooter>
       </Card>
     </Box>
   );

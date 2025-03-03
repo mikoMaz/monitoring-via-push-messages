@@ -1,4 +1,12 @@
-import { Box, VStack, Grid, HStack, IconButton, Text } from "@chakra-ui/react";
+import {
+  Box,
+  VStack,
+  Grid,
+  HStack,
+  IconButton,
+  Text,
+  Heading,
+} from "@chakra-ui/react";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useMemo, useState } from "react";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
@@ -56,8 +64,8 @@ const CalendarMonth = ({
       dayComponents.push(
         <Box
           key={day.timestamp}
-          w="20px"
-          h="20px"
+          w="40px"
+          h="40px"
           bg={getColor(day.activePercent)}
           display="flex"
           alignItems="center"
@@ -67,7 +75,7 @@ const CalendarMonth = ({
             console.log(date);
           }}
         >
-          <Text fontSize="xs" color="white">
+          <Text fontSize="md" color="white">
             {date.getDate()}
           </Text>
         </Box>
@@ -81,15 +89,15 @@ const CalendarMonth = ({
           dayComponents.push(
             <Box
               key={(Math.random() + 1).toString(36).substring(7).toString()}
-              w="20px"
-              h="20px"
+              w="40px"
+              h="40px"
               bg="gray"
               display="flex"
               alignItems="center"
               justifyContent="center"
               borderRadius="md"
             >
-              <Text fontSize="xs" color="white">
+              <Text fontSize="md" color="white">
                 {newDate.getDate()}
               </Text>
             </Box>
@@ -133,7 +141,7 @@ export const CalendarHeatmap = ({
   };
 
   return (
-    <VStack spacing={4} align="stretch">
+    <VStack spacing={12} align="stretch">
       <HStack width="100%" justifyContent="space-between">
         <IconButton
           aria-label="Previous months"
@@ -141,17 +149,16 @@ export const CalendarHeatmap = ({
           onClick={showPreviousMonths}
           isDisabled={startIndex === 0}
         />
-        <Text fontSize="lg" fontWeight="bold">
-          Calendar Heatmap
-        </Text>
+        <Heading size="lg">Calendar Heatmap</Heading>
         <IconButton
           aria-label="Next months"
           icon={<ChevronRight />}
           onClick={showNextMonths}
           isDisabled={startIndex >= months.length - 3}
+		  color="primary"
         />
       </HStack>
-      <HStack spacing={4} align="stretch">
+      <HStack spacing={20} align="stretch">
         {months.slice(startIndex, startIndex + 3).map((month) => (
           <CalendarMonth
             key={month}

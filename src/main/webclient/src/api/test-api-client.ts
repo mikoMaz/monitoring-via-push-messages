@@ -108,7 +108,7 @@ export class TestAPIClient implements IAPIClient {
       ),
     ]);
 
-    if (id === "1") {
+    if (id === "1" || id === "test-company") {
       return Promise.resolve(model1);
     } else if (id === "2") {
       return Promise.resolve(model2);
