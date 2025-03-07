@@ -12,4 +12,5 @@ public interface IDevicesModelService {
     JsonObject getSingleDeviceHistory(Long companyId, String deviceId);
 
     JsonArray getStatsByPeriod(Long companyId, Long startTimestamp, Long endTimestamp, String period);
+
 }

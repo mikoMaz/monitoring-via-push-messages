@@ -1,5 +1,6 @@
 package com.example.monitoring.core.api.history;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +12,7 @@ import java.util.function.Function;
 import java.util.function.ToDoubleBiFunction;
 import java.util.stream.Collectors;
 
+import org.hibernate.sql.ast.tree.expression.Star;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 public class DeviceHistoryServiceImpl implements DeviceHistoryService {
     private final DeviceHistoryRepository repository;
     private final DeviceStatusRepository statusRepository;
-    private final DataHolderService dataHolderService;
     org.slf4j.Logger logger = LoggerFactory.getLogger(DeviceHistoryServiceImpl.class);
 
     public void save(DeviceHistory record) {
@@ -51,7 +52,8 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
     }
 
     @Override
-    public Map<String, List<Double>> uptimePercentByPeriod(List<String> deviceIds, Long StartTimeStamp, Long StopTimeStamp, Long period) {
+    public Map<String, List<Double>> uptimePercentByPeriod(List<String> deviceIds, Long StartTimeStamp,
+            Long StopTimeStamp, Long period) {
         logger.info("starting procedure for:");
         logger.info(deviceIds.toString());
         boolean trimStart = false;
@@ -70,14 +72,15 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
         for (int i = 0; i < pc; i++) {
             logger.info("period:");
             logger.info(String.valueOf(i));
-            Timestamps = repository.timeStampsFromPeriod(deviceIds, StartTimeStamp + (i) * period, StartTimeStamp + (i + 1) * period);
+            Timestamps = repository.timeStampsFromPeriod(deviceIds, StartTimeStamp + (i) * period,
+                    StartTimeStamp + (i + 1) * period);
             TimestampMap = Timestamps.stream().collect(Collectors.groupingBy(DeviceHistory::getDeviceId));
 
             // for every deviceID
             for (String key : uptimes.keySet()) {
                 downtimeUnit = 0L;
                 deviceTimestamps = TimestampMap.get(key);
-                //3 przypadki
+                // 3 przypadki
                 if (deviceTimestamps == null)
                     deviceTimestamps = new ArrayList<DeviceHistory>();
 
@@ -96,7 +99,8 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
                     }
                     uptimes.replace(key, devicePeriodUptimes);
                 } else {
-                    for (DeviceHistory timestamp : deviceTimestamps) {   //jeżeli device_start <=
+                    // 3 przypadki
+                    for (DeviceHistory timestamp : deviceTimestamps) { // jeżeli device_start <=
                         logger.info(timestamp.toString());
                         trimStart = false;
                         trimEnd = false;
@@ -147,5 +151,57 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
             result.put(String.valueOf(i), tempList);
         }
         return result;
+    }
+
+    public Map<String, List<Map.Entry<Long, Long>>> deviceIncidentList(List<String> deviceIds, Long StartTimeStamp,
+            Long StopTimeStamp) {
+        logger.info("starting procedure for:");
+        logger.info(deviceIds.toString());
+
+        List<DeviceHistory> Timestamps;
+        Map<String, List<DeviceHistory>> TimestampMap;
+
+        Map<String, List<Map.Entry<Long, Long>>> uptimes = new HashMap<String, List<Map.Entry<Long, Long>>>();
+        for (String device : deviceIds) {
+            uptimes.put(device, new ArrayList<Map.Entry<Long, Long>>());
+        }
+        List<DeviceHistory> deviceTimestamps;
+
+        Timestamps = repository.timeStampsFromPeriod(deviceIds, StartTimeStamp, StopTimeStamp);
+        TimestampMap = Timestamps.stream().collect(Collectors.groupingBy(DeviceHistory::getDeviceId));
+
+        // for every deviceID
+        for (String key : uptimes.keySet()) {
+            deviceTimestamps = TimestampMap.get(key);
+            // 3 przypadki
+            if (deviceTimestamps == null)
+                deviceTimestamps = new ArrayList<DeviceHistory>();
+            if (deviceTimestamps.size() != 0) {
+                ArrayList<Map.Entry<Long, Long>> periodsOfInactivityList = new ArrayList<>();
+
+                // if there are deviceTimestamps, make list of periods of inactivity
+                // 3 przypadki
+
+                for (DeviceHistory timestamp : deviceTimestamps) { // jeżeli device_start <=
+                    logger.info(timestamp.toString());
+                    Long Start = timestamp.getStart_timestamp();
+                    Long End = timestamp.getEnd_timestamp();
+                    if (timestamp.getStart_timestamp() <= StartTimeStamp) {
+                        Start = StartTimeStamp;
+                        logger.info("trimStart");
+                    }
+                    // jeżeli device_end >=
+
+                    if (timestamp.getEnd_timestamp() >= StopTimeStamp) {
+                        End = StopTimeStamp;
+                        logger.info("trimEnd");
+                    }
+                    periodsOfInactivityList.add(new AbstractMap.SimpleEntry<>(Start, End));
+                }
+                uptimes.replace(key, periodsOfInactivityList);
+            }
+        }
+        uptimes.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        return uptimes;
     }
 }

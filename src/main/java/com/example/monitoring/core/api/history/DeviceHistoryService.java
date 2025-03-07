@@ -7,5 +7,10 @@ public interface DeviceHistoryService {
     void save(DeviceHistory record);
 
     Double uptimePercent(String Id);
-    Map<String,List<Double>> uptimePercentByPeriod(List<String> Id,Long StartTimeStamp,Long StopTimeStamp,Long period);
+
+    Map<String, List<Double>> uptimePercentByPeriod(List<String> Id, Long StartTimeStamp, Long StopTimeStamp,
+            Long period);
+
+    Map<String, List<Map.Entry<Long, Long>>> deviceIncidentList(List<String> Id, Long StartTimeStamp,
+            Long StopTimeStamp);
 }
