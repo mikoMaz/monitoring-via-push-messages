@@ -10,15 +10,16 @@ import {
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useMemo, useState } from "react";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
+import { IHistoryValue } from "../../../types/IHistoryValues";
 
 const getColor = (activePercent: number): string => {
   return activePercent > 40.8 ? "green.400" : "red.400";
 };
 
 const groupByMonth = (
-  data: IHistoryChartData[]
-): Record<string, IHistoryChartData[]> => {
-  return data.reduce((acc: Record<string, IHistoryChartData[]>, day) => {
+  data: IHistoryValue[]
+): Record<string, IHistoryValue[]> => {
+  return data.reduce((acc: Record<string, IHistoryValue[]>, day) => {
     const month = new Date(day.timestamp).toLocaleString("en-PL", {
       month: "long",
     });
@@ -41,9 +42,9 @@ const CalendarMonth = ({
   days,
 }: {
   monthName: string;
-  days: IHistoryChartData[];
+  days: IHistoryValue[];
 }) => {
-  const getDaysComponents = (days: IHistoryChartData[]): JSX.Element[] => {
+  const getDaysComponents = (days: IHistoryValue[]): JSX.Element[] => {
     const dayComponents: JSX.Element[] = [];
     days.forEach((day, index) => {
       const date = new Date(day.timestamp);
@@ -66,7 +67,7 @@ const CalendarMonth = ({
           key={day.timestamp}
           w="40px"
           h="40px"
-          bg={getColor(day.activePercent)}
+          bg={getColor(day.active)}
           display="flex"
           alignItems="center"
           justifyContent="center"
@@ -111,7 +112,7 @@ const CalendarMonth = ({
     return dayComponents;
   };
 
-  const getAverageOfMonth = (days: IHistoryChartData[]): string => {
+  const getAverageOfMonth = (days: IHistoryValue[]): string => {
     if (days.length === 0) return '0';
     const totalActive = days.reduce((sum, day) => sum + day.active, 0);
     const averageActive = totalActive / days.length;
@@ -138,7 +139,7 @@ const CalendarMonth = ({
 export const CalendarHeatmap = ({
   chartData,
 }: {
-  chartData: IHistoryChartData[];
+  chartData: IHistoryValue[];
 }) => {
   const groupedData = useMemo(() => groupByMonth(chartData), [chartData]);
   const months = Object.keys(groupedData);

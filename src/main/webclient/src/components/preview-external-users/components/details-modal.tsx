@@ -12,11 +12,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
+import { IHistoryValue } from "../../../types/IHistoryValues";
 
 interface IDetailsModal {
   isOpen: boolean;
   onClose: () => void;
-  data: IHistoryChartData;
+  data: IHistoryValue;
 }
 
 export const DetailsModal = ({ isOpen, onClose, data }: IDetailsModal) => {
@@ -28,10 +29,10 @@ export const DetailsModal = ({ isOpen, onClose, data }: IDetailsModal) => {
         <ModalCloseButton />
         <ModalBody>
           <VStack>
-            <Text>all devices in the company {data.allDevices}</Text>
+            {/* <Text>all devices in the company {data.allDevices}</Text> */}
             <Heading size="sm">Number of devices by status</Heading>
             <Text>active: {data.active}</Text>
-            <Text>inactive: {data.inactive}</Text>
+            {/* <Text>inactive: {data.inactive}</Text> */}
             <Text>disabled: {data.disabled}</Text>
           </VStack>
         </ModalBody>

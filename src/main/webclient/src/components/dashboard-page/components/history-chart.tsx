@@ -10,6 +10,7 @@ import { APIClient } from "../../../api/api-client";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
 import { IChartTemplateModelDrawing } from "../../../types/chartTemplate";
 import { CategoricalChartFunc } from "recharts/types/chart/generateCategoricalChart";
+import { IHistoryValue } from "../../../types/IHistoryValues";
 
 interface IHistoryChart extends IChartTemplateModelDrawing {
   apiClient: APIClient;
@@ -22,9 +23,9 @@ const CustomTooltip = ({ active, payload }: any) => {
     return (
       <Box bg="white" p={2} borderRadius="md" boxShadow="lg" padding={4}>
         <Text as="b" fontSize="lg">{`${payload[0].payload.timestamp}`}</Text>
-        <Text color="green">{`active : ${payload[0].payload.activePercent}%`}</Text>
-        <Text color="orange">{`disabled : ${payload[0].payload.disabledPercent}%`}</Text>
-        <Text color="red">{`inactive : ${payload[0].payload.inactivePercent}%`}</Text>
+        <Text color="green">{`active : ${payload[0].payload.active}%`}</Text>
+        {/* <Text color="orange">{`disabled : ${payload[0].payload.disabledPercent}%`}</Text> */}
+        <Text color="red">{`inactive : ${payload[0].payload.disabled}%`}</Text>
       </Box>
     );
   }
@@ -37,7 +38,7 @@ export const HistoryBatteryChart = ({
   isPreview,
   dateOnClickOperation,
 }: {
-  chartData: IHistoryChartData[];
+  chartData: IHistoryValue[];
   isPreview: boolean; //enables operations on-click for preview page
   dateOnClickOperation?: CategoricalChartFunc;
 }) => {
@@ -59,8 +60,8 @@ export const HistoryBatteryChart = ({
           onClick={dateOnClickOperation}
         >
           <Bar dataKey="active" stackId="a" fill="green" />
-          <Bar dataKey="disabled" stackId="a" fill="orange" />
-          <Bar dataKey="inactive" stackId="a" fill="red" />
+          {/* <Bar dataKey="inactive" stackId="a" fill="orange" /> */}
+          <Bar dataKey="disabled" stackId="a" fill="red" />
           <Tooltip content={<CustomTooltip />} />
         </BarChart>
       </ResponsiveContainer>
@@ -75,7 +76,7 @@ export const HistoryChart = ({
   dateFrom,
   dateTo,
 }: IHistoryChart) => {
-  const [chartData, setChartData] = useState<IHistoryChartData[]>([]);
+  const [chartData, setChartData] = useState<IHistoryValue[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -85,7 +86,7 @@ export const HistoryChart = ({
         if (companyId === undefined) {
           throw new Error("CompanyId is undefined.");
         }
-        const data = await apiClient.getDataHistoryChart(
+        const data = await apiClient.getHistoryValues(
           accessToken,
           companyId,
           dateFrom,

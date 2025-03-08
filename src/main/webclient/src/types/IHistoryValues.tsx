@@ -1,20 +1,65 @@
-export interface IHistoryValues extends IHistoryValuesResponse {
+export interface IHistoryValue {
   disabled: number;
+  timestamp: string;
+  active: number;
+  incidents: number;
 }
 
-export interface IHistoryValuesResponse {
+export interface IHistoryValueResponse {
   timestamp: number;
   active: number;
   incidents: number;
 }
 
 export const formatIHistoryValuesResponse = (
-  data: IHistoryValuesResponse
-): IHistoryValues => {
-  return {
-    active: data.active,
-    disabled: 100 - data.active,
-    incidents: data.incidents,
-    timestamp: data.timestamp,
+  data: IHistoryValueResponse[],
+  dateFrom: string,
+  dateTo: string
+): IHistoryValue[] => {
+  const parseDate = (dateString: string): Date => {
+    return new Date(dateString);
   };
+
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const addDays = (date: Date, days: number): Date => {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  };
+
+  const getPercentValueOfAllDevices = (allDevices: number, devices: number) => {
+    return +((devices / allDevices) * 100).toFixed(2);
+  };
+
+  const startDate = parseDate(dateFrom);
+  const endDate = parseDate(dateTo);
+
+  return data
+    .map((entry) => {
+      const disabled = 100 - entry.active;
+      const entryDate = addDays(startDate, entry.timestamp);
+      return {
+        active: entry.active,
+        disabled: disabled,
+        timestamp: formatDate(entryDate),
+        incidents: entry.incidents,
+      };
+    })
+    .filter((entry) => {
+      const entryDate = parseDate(entry.timestamp);
+      return entryDate >= startDate && entryDate <= endDate;
+    });
+};
+
+export const emptyHistoryValue: IHistoryValue = {
+  active: 0,
+  disabled: 100,
+  incidents: 0,
+  timestamp: "2025-01-01",
 };

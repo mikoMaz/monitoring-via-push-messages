@@ -35,6 +35,7 @@ import { CategoricalChartState } from "recharts/types/chart/types";
 import { useNavigate } from "react-router-dom";
 import { DetailsModal } from "./details-modal";
 import { CalendarHeatmap } from "../../dashboard-page/components/calendar-heatmap-chart";
+import { IHistoryValue, emptyHistoryValue } from "../../../types/IHistoryValues";
 
 interface IPreviewChartsContainer {
   apiClient: APIClient;
@@ -170,7 +171,7 @@ const HistoryChartCard = ({
   historyChartData,
   batteryOnclick,
 }: {
-  historyChartData: IHistoryChartData[];
+  historyChartData: IHistoryValue[];
   batteryOnclick: (nextState: CategoricalChartState, event: any) => void;
 }) => {
   return (
@@ -206,7 +207,7 @@ const HistoryChartCard = ({
 const HistoryCalendarCard = ({
   historyChartData,
 }: {
-  historyChartData: IHistoryChartData[];
+  historyChartData: IHistoryValue[];
 }) => {
   return (
     <Box boxShadow="md" rounded="md" bg="background" padding={10} width="full">
@@ -229,7 +230,7 @@ export const PreviewChartsContainer = ({
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
 
   const [selectedHistoryChartData, setSelectedHistoryChartData] =
-    useState<IHistoryChartData>(emptyHistoryChartData);
+    useState<IHistoryValue>(emptyHistoryValue);
 
   const baselineChartModel = getEmptyPreset().chartModel;
 
@@ -243,7 +244,7 @@ export const PreviewChartsContainer = ({
   const uptimeValuesAllDevices =
     returnDevicesArrayFromAllDevicesUptimeJson(devicesUptimeJson);
 
-  const [historyChartData, setHistoryChartData] = useState<IHistoryChartData[]>(
+  const [historyChartData, setHistoryChartData] = useState<IHistoryValue[]>(
     []
   );
 
@@ -271,7 +272,7 @@ export const PreviewChartsContainer = ({
       });
 
     apiClient
-      .getPreviewDataHistoryChart(secret, context)
+      .getPreviewHistoryValues(secret, context, "dateFrom", "dateTo")
       .then((data) => {
         setHistoryChartData(data);
         console.log(data);

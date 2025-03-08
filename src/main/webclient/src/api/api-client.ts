@@ -22,7 +22,7 @@ import {
 } from "../types/IHistoryChartData";
 import { ICompanyDto } from "../types/ICompanyDto";
 import { usingTestData } from "../util/useTestData";
-import { IHistoryValues } from "../types/IHistoryValues";
+import { IHistoryValue } from "../types/IHistoryValues";
 
 export interface IAPIClient {
   getUserInfo: (
@@ -53,7 +53,7 @@ export interface IAPIClient {
     name: string,
     dateFrom: string,
     dateTo: string
-  ) => Promise<IHistoryValues[]>;
+  ) => Promise<IHistoryValue[]>;
   getPreviewDevicesHistory: (
     secret: string,
     name: string
@@ -75,7 +75,7 @@ export interface IAPIClient {
     companyId: number,
     dateFrom: string,
     dateTo: string
-  ) => Promise<IHistoryValues[]>;
+  ) => Promise<IHistoryValue[]>;
   postAddCompany: (accessToken: string, companyName: string) => Promise<number>;
   postChangeCompanySecret: (
     accessToken: string,
