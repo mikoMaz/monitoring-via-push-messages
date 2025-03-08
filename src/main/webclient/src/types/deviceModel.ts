@@ -424,7 +424,6 @@ export class DeviceModel implements IDeviceModel {
   };
 
   public getBridgesCount = () => {
-    console.log(this.getBridgesArray().length);
     return this.getBridgesArray().length;
   };
 

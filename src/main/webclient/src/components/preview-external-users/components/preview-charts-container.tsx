@@ -250,6 +250,18 @@ export const PreviewChartsContainer = ({
 
   const [calendarChart, setCalendarChart] = useState<boolean>(false);
 
+  const datesRange = {
+    yesterday: new Date(
+      new Date().setDate(new Date().getDate() - 1)
+    ).toISOString(),
+    ninetyAgo:new Date(
+      new Date().setDate(new Date().getDate() - 91)
+    ).toISOString(),
+    yearAgo: new Date(
+      new Date().setDate(new Date().getDate() - 366)
+    ).toISOString(),
+  };
+
   useEffect(() => {
     apiClient
       .getPreviewDeviceModel(secret, context)
@@ -272,10 +284,10 @@ export const PreviewChartsContainer = ({
       });
 
     apiClient
-      .getPreviewHistoryValues(secret, context, "dateFrom", "dateTo")
+      .getPreviewHistoryValues(secret, context, datesRange.ninetyAgo, datesRange.yesterday)
       .then((data) => {
         setHistoryChartData(data);
-        console.log(data);
+        console.log("data history ", data);
       })
       .catch((error: any) => {
         console.error(error.message);

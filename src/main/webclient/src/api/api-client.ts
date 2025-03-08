@@ -124,6 +124,7 @@ export class APIClient implements IAPIClient {
       return Promise.resolve([]);
     }
   };
+  
   public getHistoryValues = (
     accessToken: string,
     companyId: number,

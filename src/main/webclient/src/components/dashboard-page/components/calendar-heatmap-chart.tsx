@@ -13,7 +13,32 @@ import { IHistoryChartData } from "../../../types/IHistoryChartData";
 import { IHistoryValue } from "../../../types/IHistoryValues";
 
 const getColor = (activePercent: number): string => {
-  return activePercent > 40.8 ? "green.400" : "red.400";
+  switch (true) {
+    case activePercent < 10:
+      return "red.600";
+    case activePercent < 20:
+      return "red.500";
+    case activePercent < 30:
+      return "red.400";
+    case activePercent < 40:
+      return "red.300";
+    case activePercent < 50:
+      return "red.200";
+    case activePercent < 60:
+      return "green.200";
+    case activePercent < 70:
+      return "green.300";
+    case activePercent < 80:
+      return "green.400";
+    case activePercent < 90:
+      return "green.500";
+    case activePercent < 100:
+      return "green.600";
+    case activePercent === 100:
+      return "green.700";
+    default:
+      return "gray.400";
+  }
 };
 
 const groupByMonth = (
@@ -73,7 +98,7 @@ const CalendarMonth = ({
           justifyContent="center"
           borderRadius="md"
           onClick={() => {
-            console.log(date);
+            console.log(day.active);
           }}
         >
           <Text fontSize="md" color="white">
@@ -113,7 +138,7 @@ const CalendarMonth = ({
   };
 
   const getAverageOfMonth = (days: IHistoryValue[]): string => {
-    if (days.length === 0) return '0';
+    if (days.length === 0) return "0";
     const totalActive = days.reduce((sum, day) => sum + day.active, 0);
     const averageActive = totalActive / days.length;
     return averageActive.toFixed(2);

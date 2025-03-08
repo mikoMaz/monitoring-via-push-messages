@@ -22,8 +22,9 @@ export class TestAPIClient implements IAPIClient {
     dateFrom: string,
     dateTo: string
   ) => {
-    return this.getHistoryValues("accessToken", 1, "date1", "date2");
+    return this.getHistoryValues("accessToken", 1, dateFrom, dateTo);
   };
+
   public getHistoryValues = (
     accessToken: string,
     companyId: number,
