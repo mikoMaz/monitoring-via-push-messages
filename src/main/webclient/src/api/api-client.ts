@@ -15,9 +15,14 @@ import {
 import config from "../config/config.json";
 import { TestAPIClient } from "./test-api-client";
 import { ICompanyUser } from "../types/ICompanyUser";
-import { formatRawIHistoryChartData, IHistoryChartData, IHistoryChartDataRaw } from "../types/IHistoryChartData";
+import {
+  formatRawIHistoryChartData,
+  IHistoryChartData,
+  IHistoryChartDataRaw,
+} from "../types/IHistoryChartData";
 import { ICompanyDto } from "../types/ICompanyDto";
 import { usingTestData } from "../util/useTestData";
+import { IHistoryValues } from "../types/IHistoryValues";
 
 export interface IAPIClient {
   getUserInfo: (
@@ -43,6 +48,12 @@ export interface IAPIClient {
     secret: string,
     name: string
   ) => Promise<IHistoryChartData[]>;
+  getPreviewHistoryValues: (
+    secret: string,
+    name: string,
+    dateFrom: string,
+    dateTo: string
+  ) => Promise<IHistoryValues[]>;
   getPreviewDevicesHistory: (
     secret: string,
     name: string
@@ -59,6 +70,12 @@ export interface IAPIClient {
     dateFrom: string,
     dateTo: string
   ) => Promise<IHistoryChartData[]>;
+  getHistoryValues: (
+    accessToken: string,
+    companyId: number,
+    dateFrom: string,
+    dateTo: string
+  ) => Promise<IHistoryValues[]>;
   postAddCompany: (accessToken: string, companyName: string) => Promise<number>;
   postChangeCompanySecret: (
     accessToken: string,
@@ -90,6 +107,40 @@ export class APIClient implements IAPIClient {
   public constructor() {
     this.testApiClient = new TestAPIClient();
   }
+  public getPreviewHistoryValues = (
+    secret: string,
+    name: string,
+    dateFrom: string,
+    dateTo: string
+  ) => {
+    if (usingTestData()) {
+      return this.testApiClient.getPreviewHistoryValues(
+        secret,
+        name,
+        dateFrom,
+        dateTo
+      );
+    } else {
+      return Promise.resolve([]);
+    }
+  };
+  public getHistoryValues = (
+    accessToken: string,
+    companyId: number,
+    dateFrom: string,
+    dateTo: string
+  ) => {
+    if (usingTestData()) {
+      return this.testApiClient.getHistoryValues(
+        accessToken,
+        companyId,
+        dateFrom,
+        dateTo
+      );
+    } else {
+      return Promise.resolve([]);
+    }
+  };
 
   private getAppVerionApiUrl = () => {
     const host = window.location.hostname;
@@ -304,7 +355,7 @@ export class APIClient implements IAPIClient {
       return this.testApiClient.getPreviewDataHistoryChart(secret, name);
     }
     return this.testApiClient.getPreviewDataHistoryChart(secret, name);
-  }
+  };
 
   public postCSVData = async (
     accessToken: string,
