@@ -111,11 +111,23 @@ const CalendarMonth = ({
     return dayComponents;
   };
 
+  const getAverageOfMonth = (days: IHistoryChartData[]): string => {
+    if (days.length === 0) return '0';
+    const totalActive = days.reduce((sum, day) => sum + day.active, 0);
+    const averageActive = totalActive / days.length;
+    return averageActive.toFixed(2);
+  };
+
   return (
     <VStack align="stretch">
-      <Text fontSize="lg" fontWeight="bold">
-        {monthName}
-      </Text>
+      <HStack align="center" justifyContent="space-between">
+        <Text fontSize="lg" fontWeight="bold">
+          {monthName}
+        </Text>
+        <Text color="gray" fontSize="sm">
+          {getAverageOfMonth(days)}%
+        </Text>
+      </HStack>
       <Grid templateColumns="repeat(7, 1fr)" gap={1}>
         {getDaysComponents(days)}
       </Grid>
@@ -155,7 +167,7 @@ export const CalendarHeatmap = ({
           icon={<ChevronRight />}
           onClick={showNextMonths}
           isDisabled={startIndex >= months.length - 3}
-		  color="primary"
+          color="primary"
         />
       </HStack>
       <HStack spacing={20} align="stretch">

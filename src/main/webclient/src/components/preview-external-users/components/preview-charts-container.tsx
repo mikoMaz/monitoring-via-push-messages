@@ -298,33 +298,6 @@ export const PreviewChartsContainer = ({
 
   if (secret) {
     return (
-      // <Center>
-      //   <VStack align="stretch" spacing={4}>
-      //     <ContextCard context={context} deviceModel={deviceModel} />
-      //     {/* <ChartContainerWrapper
-      //       chart={
-      //         <CurrentChart
-      //           model={deviceModel}
-      //           devicesHistoryValues={uptimeValuesAllDevices}
-      //           {...baselineChartModel}
-      //         />
-      //       }
-      //     />
-      //     <ChartContainerWrapper
-      //       chart={
-      //         <RecentChart
-      //           model={deviceModel}
-      //           devicesHistoryValues={uptimeValuesAllDevices}
-      //           {...baselineChartModel}
-      //         />
-      //       }
-      //     /> */}
-      //     {/* <ChartContainerWrapper
-      //       chart={<HistoryBatteryChart chartData={historyChartData} isPreview={true} />}
-      //     /> */}
-      //     <HistoryBatteryChart chartData={historyChartData} isPreview={true} />
-      //   </VStack>
-      // </Center>
       <>
         <Grid
           templateRows="auto 1fr"
@@ -345,7 +318,7 @@ export const PreviewChartsContainer = ({
           <GridItem rowSpan={1} colSpan={2}>
             <VStack>
               <Text alignSelf="flex-end">
-                Uptime over the past 90 days.{" "}
+                Uptime over the past {calendarChart ? "365": "90"} days.{" "}
                 <Link
                   color="green.500"
                   href="#"
