@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.apache.naming.java.javaURLContextFactory;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import ch.qos.logback.core.read.ListAppender;
+import io.jsonwebtoken.lang.Arrays;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -257,6 +262,56 @@ public class DevicesModelService implements IDevicesModelService {
 
     }
 
+    public JsonArray getUptimePercentByPeriodandIncidents(
+            Long companyId,
+            Long StartTimeStamp,
+            Long StopTimeStamp, String mode, Optional<String> deviceId) {
+        final Map<String, Long> modes = Map.of(
+                "hour", 3600L,
+                "day", 86400L,
+                "week", 604800L,
+                "month", 18748800L,
+                "year", 6843312000L);
+        Long chosenMode = modes.get(mode);
+        List<String> deviceIds = new ArrayList();
+        if (deviceId.isPresent()) {
+            deviceIds.add(deviceId.get());
+        } else {
+            deviceIds = deviceService.getAllChildrenForGivenCompanyId(companyId);
+        }
+
+        Map<Integer, Entry<Double, Map<String, List<Entry<Long, Long>>>>> companyUptimesAndIncidents = historyService
+                .uptimePercentByPeriodandIncidents(deviceIds, StartTimeStamp,
+                        StopTimeStamp, chosenMode);
+        JsonArray root = new JsonArray();
+        for (int i = 0; i < companyUptimesAndIncidents.keySet().size(); i++) {
+            JsonObject periodObject = new JsonObject();
+            periodObject.addProperty("timestamp", i);
+            periodObject.addProperty("active", companyUptimesAndIncidents.get(i).getKey());
+            JsonArray incidents = new JsonArray();
+
+            for (Entry<String, List<Entry<Long, Long>>> entry : companyUptimesAndIncidents.get(i).getValue()
+                    .entrySet()) {
+
+                JsonObject singleEntry = new JsonObject();
+                JsonArray singleEntryIncidentTimestampsArray = new JsonArray();
+                singleEntry.addProperty("Id", entry.getKey());
+                for (Entry<Long, Long> incidentEntry : entry.getValue()) {
+                    JsonObject incidentEntryJson = new JsonObject();
+
+                    incidentEntryJson.addProperty("Start", incidentEntry.getKey());
+                    incidentEntryJson.addProperty("End", incidentEntry.getValue());
+                    singleEntryIncidentTimestampsArray.add(incidentEntryJson);
+                }
+                singleEntry.add("incidents", singleEntryIncidentTimestampsArray);
+                incidents.add(singleEntry);
+            }
+            periodObject.add("incidents", incidents);
+        }
+        return root;
+
+    }
+
     public JsonArray getStatsByPeriodMean(Long companyId, Long StartTimeStamp, Long StopTimeStamp,
             String mode) {
         JsonArray root = new JsonArray();
@@ -269,11 +324,11 @@ public class DevicesModelService implements IDevicesModelService {
             uptime.add(companyUptimes.get(String.valueOf(i)).stream()
                     .mapToDouble(Double::doubleValue)
                     .average()
-                    .orElse(0.0));
+                    .orElse(1.0));
             JsonElement uptimeJson = gson.toJsonTree(uptime);
             JsonObject record = new JsonObject();
             record.addProperty("timestamp", i);
-            record.add("readings", uptimeJson);
+            record.add("active", uptimeJson);
             root.add(record);
         }
         return root;
@@ -300,6 +355,47 @@ public class DevicesModelService implements IDevicesModelService {
         }
 
         return root;
+    }
+
+    public JsonArray getStatsAndIncidents(Long companyId, Long StartTimeStamp, Long StopTimeStamp, String mode) {
+        JsonArray root = new JsonArray();
+        Map<String, List<Double>> companyUptimes = getStatsByPeriodHelper(companyId, StartTimeStamp, StopTimeStamp,
+                mode);
+        Map<String, Boolean> hasIncidentsMap = new HashMap<>();
+        hasIncidentsMap.keySet().addAll(companyUptimes.keySet());
+        Gson gson = new Gson();
+        // key is period position in series.
+        for (int i = 0; i < companyUptimes.keySet().size(); i++) {
+            List<Double> uptime = new ArrayList<Double>();
+            uptime.add(companyUptimes.get(String.valueOf(i)).stream()
+                    .mapToDouble(Double::doubleValue)
+                    .average()
+                    .orElse(0.0));
+            JsonElement uptimeJson = gson.toJsonTree(uptime);
+            JsonObject record = new JsonObject();
+            record.addProperty("timestamp", i);
+            record.add("active", uptimeJson);
+            root.add(record);
+        }
+        // Map<String, List<Map.Entry<Long, Long>>> deviceIncidents =
+        // historyService.deviceIncidentList(
+        // deviceService.getAllChildrenForGivenCompanyId(companyId), StartTimeStamp,
+        // StopTimeStamp);
+        // for (String key : deviceIncidents.keySet()) {
+        // JsonObject record = new JsonObject();
+        // JsonArray incidents = new JsonArray();
+        // for (Map.Entry<Long, Long> entry : deviceIncidents.get(key)) {
+        // JsonObject singleEntry = new JsonObject();
+        // singleEntry.addProperty("Start", entry.getKey());
+        // singleEntry.addProperty("End", entry.getValue());
+        // incidents.add(singleEntry);
+        // }
+
+        // record.addProperty("id", key);
+        // record.add("incidents", incidents);
+        // root.add(record);
+        return root;
+
     }
 
     public JsonArray getStatsByPeriodDiscreteCategories(Long companyId, Long StartTimeStamp, Long StopTimeStamp,

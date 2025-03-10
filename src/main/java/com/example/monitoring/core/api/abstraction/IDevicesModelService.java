@@ -1,5 +1,7 @@
 package com.example.monitoring.core.api.abstraction;
 
+import java.util.Optional;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -12,5 +14,10 @@ public interface IDevicesModelService {
     JsonObject getSingleDeviceHistory(Long companyId, String deviceId);
 
     JsonArray getStatsByPeriod(Long companyId, Long startTimestamp, Long endTimestamp, String period);
+
+    JsonArray getStatsByPeriodMean(Long companyId, Long startTimestamp, Long endTimestamp, String period);
+
+    JsonArray getUptimePercentByPeriodandIncidents(Long companyId, Long startTimestamp, Long endTimestamp,
+            String period, Optional<String> deviceId);
 
 }

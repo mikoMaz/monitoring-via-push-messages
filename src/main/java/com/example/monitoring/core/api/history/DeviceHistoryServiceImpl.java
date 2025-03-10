@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -150,6 +151,87 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
             }
             result.put(String.valueOf(i), tempList);
         }
+        return result;
+    }
+
+    @Override
+    public Map<Integer, Entry<Double, Map<String, List<Entry<Long, Long>>>>> uptimePercentByPeriodandIncidents(
+            List<String> deviceIds,
+            Long StartTimeStamp,
+            Long StopTimeStamp, Long period) {
+        Map<Integer, Entry<Double, Map<String, List<Entry<Long, Long>>>>> result = new HashMap<>();
+        logger.info("starting procedure for:");
+        logger.info(deviceIds.toString());
+        List<DeviceHistory> Timestamps;
+        Map<String, List<DeviceHistory>> TimestampMap;
+
+        Double periods_count = Math.ceil((StopTimeStamp - StartTimeStamp) / period.doubleValue());
+        int pc = periods_count.intValue();
+        List<DeviceHistory> deviceTimestamps;
+        Long downtimeUnit = 0L;
+
+        // for every period
+        for (int i = 0; i < pc; i++) {
+            logger.info("period:");
+            logger.info(String.valueOf(i));
+            Timestamps = repository.timeStampsFromPeriod(deviceIds, StartTimeStamp + (i) * period,
+                    StartTimeStamp + (i + 1) * period);
+            TimestampMap = Timestamps.stream().collect(Collectors.groupingBy(DeviceHistory::getDeviceId));
+            HashMap<String, List<Entry<Long, Long>>> incidentMap = new HashMap<>();
+            HashMap<String, Double> uptimes = new HashMap<>();
+            uptimes.keySet().addAll(deviceIds);
+            // for every deviceID
+            for (String key : uptimes.keySet()) {
+                downtimeUnit = 0L;
+                deviceTimestamps = TimestampMap.get(key);
+                if (deviceTimestamps == null)
+                    deviceTimestamps = new ArrayList<DeviceHistory>();
+
+                if (deviceTimestamps.size() == 0)
+                // means no device incidents in period;
+                {
+                    uptimes.put(key, 1D);
+                }
+
+                else {
+                    // 3 przypadki
+                    for (DeviceHistory timestamp : deviceTimestamps) {
+                        logger.info(timestamp.toString());
+
+                        Long Start = timestamp.getStart_timestamp();
+                        Long End = timestamp.getEnd_timestamp();
+                        // if timestamp is out of range it gets trimmed
+                        if (timestamp.getStart_timestamp() <= StartTimeStamp + (i) * period) {
+                            Start = StartTimeStamp;
+                            logger.info("trimStart");
+                        }
+                        if (timestamp.getEnd_timestamp() >= StartTimeStamp + (i + 1) * period) {
+                            End = StopTimeStamp;
+                            logger.info("trimEnd");
+                        }
+                        List<Entry<Long, Long>> incidentList = incidentMap.get(key);
+                        if (incidentList == null)
+                            incidentList = new ArrayList<>();
+                        incidentList.add(new AbstractMap.SimpleEntry<>(Start, End));
+                        incidentMap.put(key, incidentList);
+                        downtimeUnit += End - Start;
+                        logger.info("downtime Unit:");
+                        logger.info(downtimeUnit.toString());
+                    }
+                    logger.info("downtime Unit:");
+                    logger.info(downtimeUnit.toString());
+                    uptimes.put(key, Double.valueOf(1 - (downtimeUnit / (double) period)));
+                }
+
+            }
+            Double uptime = uptimes.values().stream()
+                    .mapToDouble(Double::doubleValue)
+                    .average()
+                    .orElse(1.0D);
+            result.put(i,
+                    new AbstractMap.SimpleEntry<Double, Map<String, List<Entry<Long, Long>>>>(uptime, incidentMap));
+        }
+
         return result;
     }
 
