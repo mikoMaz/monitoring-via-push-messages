@@ -13,7 +13,7 @@ import {
   IHistoryChartData,
 } from "../types/IHistoryChartData";
 import { getEmptyPreset } from "../types/chartTemplate";
-import { formatIHistoryValuesResponse, IHistoryValue } from "../types/IHistoryValues";
+import { formatIHistoryValuesResponse } from "../types/IHistoryValues";
 
 export class TestAPIClient implements IAPIClient {
   public getPreviewHistoryValues = (
@@ -32,101 +32,40 @@ export class TestAPIClient implements IAPIClient {
     dateTo: string
   ) => {
     const data = [
-      { timestamp: 0, active: 100, incidents: 0 },
-      { timestamp: 1, active: 98, incidents: 1 },
-      { timestamp: 2, active: 100, incidents: 0 },
-      { timestamp: 3, active: 95, incidents: 2 },
-      { timestamp: 4, active: 97, incidents: 1 },
-      { timestamp: 5, active: 99, incidents: 0 },
-      { timestamp: 6, active: 94, incidents: 3 },
-      { timestamp: 7, active: 100, incidents: 0 },
-      { timestamp: 8, active: 98, incidents: 1 },
-      { timestamp: 9, active: 96, incidents: 2 },
-      { timestamp: 10, active: 92, incidents: 3 },
-      { timestamp: 11, active: 100, incidents: 0 },
-      { timestamp: 12, active: 94, incidents: 2 },
-      { timestamp: 13, active: 99, incidents: 0 },
-      { timestamp: 14, active: 97, incidents: 1 },
-      { timestamp: 15, active: 95, incidents: 2 },
-      { timestamp: 16, active: 93, incidents: 3 },
-      { timestamp: 17, active: 100, incidents: 0 },
-      { timestamp: 18, active: 96, incidents: 2 },
-      { timestamp: 19, active: 92, incidents: 3 },
-      { timestamp: 20, active: 99, incidents: 0 },
-      { timestamp: 21, active: 98, incidents: 1 },
-      { timestamp: 22, active: 94, incidents: 2 },
-      { timestamp: 23, active: 90, incidents: 3 },
-      { timestamp: 24, active: 100, incidents: 0 },
-      { timestamp: 25, active: 92, incidents: 3 },
-      { timestamp: 26, active: 95, incidents: 2 },
-      { timestamp: 27, active: 100, incidents: 0 },
-      { timestamp: 28, active: 94, incidents: 2 },
-      { timestamp: 29, active: 97, incidents: 1 },
-      { timestamp: 30, active: 99, incidents: 0 },
-      { timestamp: 31, active: 96, incidents: 2 },
-      { timestamp: 32, active: 93, incidents: 3 },
-      { timestamp: 33, active: 100, incidents: 0 },
-      { timestamp: 34, active: 95, incidents: 2 },
-      { timestamp: 35, active: 92, incidents: 3 },
-      { timestamp: 36, active: 100, incidents: 0 },
-      { timestamp: 37, active: 98, incidents: 1 },
-      { timestamp: 38, active: 94, incidents: 2 },
-      { timestamp: 39, active: 96, incidents: 2 },
-      { timestamp: 40, active: 100, incidents: 0 },
-      { timestamp: 41, active: 90, incidents: 3 },
-      { timestamp: 42, active: 92, incidents: 3 },
-      { timestamp: 43, active: 98, incidents: 1 },
-      { timestamp: 44, active: 100, incidents: 0 },
-      { timestamp: 45, active: 97, incidents: 1 },
-      { timestamp: 46, active: 99, incidents: 0 },
-      { timestamp: 47, active: 94, incidents: 2 },
-      { timestamp: 48, active: 95, incidents: 2 },
-      { timestamp: 49, active: 90, incidents: 3 },
-      { timestamp: 50, active: 100, incidents: 0 },
-      { timestamp: 51, active: 92, incidents: 3 },
-      { timestamp: 52, active: 94, incidents: 2 },
-      { timestamp: 53, active: 97, incidents: 1 },
-      { timestamp: 54, active: 96, incidents: 2 },
-      { timestamp: 55, active: 93, incidents: 3 },
-      { timestamp: 56, active: 100, incidents: 0 },
-      { timestamp: 57, active: 90, incidents: 3 },
-      { timestamp: 58, active: 98, incidents: 1 },
-      { timestamp: 59, active: 92, incidents: 3 },
-      { timestamp: 60, active: 95, incidents: 2 },
-      { timestamp: 61, active: 94, incidents: 2 },
-      { timestamp: 62, active: 96, incidents: 2 },
-      { timestamp: 63, active: 99, incidents: 0 },
-      { timestamp: 64, active: 100, incidents: 0 },
-      { timestamp: 65, active: 92, incidents: 3 },
-      { timestamp: 66, active: 94, incidents: 2 },
-      { timestamp: 67, active: 95, incidents: 2 },
-      { timestamp: 68, active: 100, incidents: 0 },
-      { timestamp: 69, active: 92, incidents: 3 },
-      { timestamp: 70, active: 96, incidents: 2 },
-      { timestamp: 71, active: 97, incidents: 1 },
-      { timestamp: 72, active: 100, incidents: 0 },
-      { timestamp: 73, active: 94, incidents: 2 },
-      { timestamp: 74, active: 95, incidents: 2 },
-      { timestamp: 75, active: 92, incidents: 3 },
-      { timestamp: 76, active: 100, incidents: 0 },
-      { timestamp: 77, active: 93, incidents: 3 },
-      { timestamp: 78, active: 97, incidents: 1 },
-      { timestamp: 79, active: 94, incidents: 2 },
-      { timestamp: 80, active: 100, incidents: 0 },
-      { timestamp: 81, active: 92, incidents: 3 },
-      { timestamp: 82, active: 94, incidents: 2 },
-      { timestamp: 83, active: 96, incidents: 2 },
-      { timestamp: 84, active: 97, incidents: 1 },
-      { timestamp: 85, active: 100, incidents: 0 },
-      { timestamp: 86, active: 93, incidents: 3 },
-      { timestamp: 87, active: 98, incidents: 1 },
-      { timestamp: 88, active: 95, incidents: 2 },
-      { timestamp: 89, active: 92, incidents: 3 },
-      { timestamp: 90, active: 100, incidents: 0 }
+      ...Array.from({ length: 90 }, (_, i) => ({
+        timestamp: i,
+        active: [
+          100, 98, 100, 95, 97, 99, 94, 100, 98, 96, 92, 100, 94, 99, 97, 95,
+          93, 100, 96, 92, 99, 98, 94, 90, 100, 92, 95, 100, 94, 97, 99, 96, 93,
+          100, 95, 92, 100, 98, 94, 96, 100, 90, 92, 98, 100, 97, 99, 94, 95,
+          90, 100, 92, 94, 97, 96, 93, 100, 90, 98, 92, 95, 94, 96, 99, 100, 92,
+          94, 95, 100, 92, 96, 97, 100, 94, 95, 92, 100, 93, 97, 94, 100, 92,
+          94, 96, 97, 100, 93, 98, 95, 92, 100,
+        ][i % 45],
+        incidents: Array.from(
+          {
+            length: [
+              0, 1, 0, 2, 1, 0, 3, 0, 1, 2, 3, 0, 2, 0, 1, 2, 3, 0, 2, 3, 0, 1,
+              2, 3, 0, 3, 2, 0, 2, 1, 0, 2, 3, 0, 2, 3, 0, 1, 2, 2, 0, 3, 3, 1,
+              0, 1, 0, 2, 2, 3, 0, 3, 2, 1, 2, 3, 0, 3, 1, 3, 2, 2, 2, 0, 0, 3,
+              2, 2, 0, 3, 2, 1, 0, 2, 2, 3, 0, 3, 1, 2, 0, 3, 2, 2, 1, 0, 3, 1,
+              2, 3, 0,
+            ][i % 45],
+          },
+          (_, j) => ({
+            Id: `G${i}S${j}`,
+            incidents: Array.from({ length: Math.min(3, j + 1) }, (_, k) => ({
+              Start: 10000 + i * 100 + k * 200,
+              End: 10100 + i * 100 + k * 200,
+            })),
+          })
+        ),
+      })),
     ];
 
-    return Promise.resolve(formatIHistoryValuesResponse(data, dateFrom, dateTo));
-    
+    return Promise.resolve(
+      formatIHistoryValuesResponse(data, dateFrom, dateTo)
+    );
 
     // return Promise.resolve([
     //   { timestamp: 0, active: 100, incidents: 0, disabled: 0 },

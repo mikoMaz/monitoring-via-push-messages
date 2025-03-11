@@ -2,14 +2,25 @@ export interface IHistoryValue {
   disabled: number;
   timestamp: string;
   active: number;
-  incidents: number;
+  incidents: IDeviceIncident[];
 }
 
 export interface IHistoryValueResponse {
   timestamp: number;
   active: number;
-  incidents: number;
+  incidents: IDeviceIncident[];
 }
+
+export interface IDeviceIncident {
+  Id: string;
+  incidents: IDateRangeIncident[];
+}
+
+export interface IDateRangeIncident {
+  Start: number;
+  End: number;
+}
+
 export const formatDate = (date: Date): string => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -25,7 +36,6 @@ export const formatIHistoryValuesResponse = (
   const parseDate = (dateString: string): Date => {
     return new Date(dateString);
   };
-
 
   const addDays = (date: Date, days: number): Date => {
     const result = new Date(date);
@@ -60,6 +70,6 @@ export const formatIHistoryValuesResponse = (
 export const emptyHistoryValue: IHistoryValue = {
   active: 0,
   disabled: 100,
-  incidents: 0,
+  incidents: [],
   timestamp: "2025-01-01",
 };
