@@ -24,9 +24,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { getEmptyPreset } from "../../../types/chartTemplate";
-import {
-  HistoryBatteryChart,
-} from "../../dashboard-page/components/history-chart";
+import { HistoryBatteryChart } from "../../dashboard-page/components/history-chart";
 import {
   emptyHistoryChartData,
   IHistoryChartData,
@@ -35,7 +33,10 @@ import { CategoricalChartState } from "recharts/types/chart/types";
 import { useNavigate } from "react-router-dom";
 import { DetailsModal } from "./details-modal";
 import { CalendarHeatmap } from "../../dashboard-page/components/calendar-heatmap-chart";
-import { IHistoryValue, emptyHistoryValue } from "../../../types/IHistoryValues";
+import {
+  IHistoryValue,
+  emptyHistoryValue,
+} from "../../../types/IHistoryValues";
 
 interface IPreviewChartsContainer {
   apiClient: APIClient;
@@ -225,7 +226,6 @@ export const PreviewChartsContainer = ({
   context,
   apiClient,
 }: IPreviewChartsContainer) => {
-  const navigate = useNavigate();
 
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
 
@@ -244,25 +244,23 @@ export const PreviewChartsContainer = ({
   const uptimeValuesAllDevices =
     returnDevicesArrayFromAllDevicesUptimeJson(devicesUptimeJson);
 
-  const [historyChartData, setHistoryChartData] = useState<IHistoryValue[]>(
-    []
-  );
+  const [historyChartData, setHistoryChartData] = useState<IHistoryValue[]>([]);
 
   const [calendarChart, setCalendarChart] = useState<boolean>(false);
 
-  const datesRange = {
-    yesterday: new Date(
-      new Date().setDate(new Date().getDate() - 1)
-    ).toISOString(),
-    ninetyAgo:new Date(
-      new Date().setDate(new Date().getDate() - 91)
-    ).toISOString(),
-    yearAgo: new Date(
-      new Date().setDate(new Date().getDate() - 366)
-    ).toISOString(),
-  };
-
   useEffect(() => {
+    const datesRange = {
+      yesterday: new Date(
+        new Date().setDate(new Date().getDate() - 1)
+      ).toISOString(),
+      ninetyAgo: new Date(
+        new Date().setDate(new Date().getDate() - 91)
+      ).toISOString(),
+      yearAgo: new Date(
+        new Date().setDate(new Date().getDate() - 366)
+      ).toISOString(),
+    };
+
     apiClient
       .getPreviewDeviceModel(secret, context)
       .then((model) => {
@@ -284,7 +282,12 @@ export const PreviewChartsContainer = ({
       });
 
     apiClient
-      .getPreviewHistoryValues(secret, context, datesRange.ninetyAgo, datesRange.yesterday)
+      .getPreviewHistoryValues(
+        secret,
+        context,
+        datesRange.ninetyAgo,
+        datesRange.yesterday
+      )
       .then((data) => {
         setHistoryChartData(data);
         console.log("data history ", data);
@@ -331,7 +334,7 @@ export const PreviewChartsContainer = ({
           <GridItem rowSpan={1} colSpan={2}>
             <VStack>
               <Text alignSelf="flex-end">
-                Uptime over the past {calendarChart ? "365": "90"} days.{" "}
+                Uptime over the past {calendarChart ? "365" : "90"} days.{" "}
                 <Link
                   color="green.500"
                   href="#"
