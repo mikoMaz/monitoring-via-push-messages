@@ -22,7 +22,11 @@ import {
 } from "../types/IHistoryChartData";
 import { ICompanyDto } from "../types/ICompanyDto";
 import { usingTestData } from "../util/useTestData";
-import { IHistoryValue } from "../types/IHistoryValues";
+import {
+  formatIHistoryValuesResponse,
+  IHistoryValue,
+  IHistoryValueResponse,
+} from "../types/IHistoryValues";
 
 export interface IAPIClient {
   getUserInfo: (
@@ -107,7 +111,7 @@ export class APIClient implements IAPIClient {
   public constructor() {
     this.testApiClient = new TestAPIClient();
   }
-  public getPreviewHistoryValues = (
+  public getPreviewHistoryValues = async (
     secret: string,
     name: string,
     dateFrom: string,
@@ -121,10 +125,23 @@ export class APIClient implements IAPIClient {
         dateTo
       );
     } else {
-      return Promise.resolve([]);
+      const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?companyName=${name}`;
+      try {
+        const response = await axios.get(apiUrl, {
+          headers: {
+            CompanySecret: `${secret}`,
+            Company: `${name}`,
+          },
+        });
+        const data: IHistoryValueResponse[] = response.data;
+        return formatIHistoryValuesResponse(data, dateFrom, dateTo);
+      } catch (error) {
+        console.error(error);
+        return Promise.resolve([]);
+      }
     }
   };
-  
+
   public getHistoryValues = (
     accessToken: string,
     companyId: number,
@@ -139,7 +156,26 @@ export class APIClient implements IAPIClient {
         dateTo
       );
     } else {
-      return Promise.resolve([]);
+      const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceId=`;
+
+      return axios
+        .get(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((response) => {
+          if (response.data) {
+            const data: IHistoryValueResponse[] = response.data;
+            return formatIHistoryValuesResponse(data, dateFrom, dateTo);
+          } else {
+            throw new AxiosError("Data is null");
+          }
+        })
+        .catch(function (error) {
+          console.error(error);
+          return Promise.resolve([]);
+        });
     }
   };
 
