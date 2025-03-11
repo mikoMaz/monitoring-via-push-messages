@@ -33,73 +33,6 @@ export class APIClient implements IAPIClient {
   public constructor() {
     this.testApiClient = new TestAPIClient();
   }
-  public getPreviewHistoryValues = async (
-    secret: string,
-    name: string,
-    dateFrom: string,
-    dateTo: string
-  ) => {
-    if (usingTestData()) {
-      return this.testApiClient.getPreviewHistoryValues(
-        secret,
-        name,
-        dateFrom,
-        dateTo
-      );
-    } else {
-      const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?companyName=${name}`;
-      try {
-        const response = await axios.get(apiUrl, {
-          headers: {
-            CompanySecret: `${secret}`,
-            Company: `${name}`,
-          },
-        });
-        const data: IHistoryValueResponse[] = response.data;
-        return formatIHistoryValuesResponse(data, dateFrom, dateTo);
-      } catch (error) {
-        console.error(error);
-        return Promise.resolve([]);
-      }
-    }
-  };
-
-  public getHistoryValues = (
-    accessToken: string,
-    companyId: number,
-    dateFrom: string,
-    dateTo: string
-  ) => {
-    if (usingTestData()) {
-      return this.testApiClient.getHistoryValues(
-        accessToken,
-        companyId,
-        dateFrom,
-        dateTo
-      );
-    } else {
-      const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceId=`;
-
-      return axios
-        .get(apiUrl, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
-        .then((response) => {
-          if (response.data) {
-            const data: IHistoryValueResponse[] = response.data;
-            return formatIHistoryValuesResponse(data, dateFrom, dateTo);
-          } else {
-            throw new AxiosError("Data is null");
-          }
-        })
-        .catch(function (error) {
-          console.error(error);
-          return Promise.resolve([]);
-        });
-    }
-  };
 
   private getAppVerionApiUrl = () => {
     const host = window.location.hostname;
@@ -346,6 +279,74 @@ export class APIClient implements IAPIClient {
         console.error("Error uploading file:", error);
         throw new Error("Failed to upload file");
       });
+  };
+
+  public getPreviewHistoryValues = async (
+    secret: string,
+    name: string,
+    dateFrom: string,
+    dateTo: string
+  ) => {
+    if (usingTestData()) {
+      return this.testApiClient.getPreviewHistoryValues(
+        secret,
+        name,
+        dateFrom,
+        dateTo
+      );
+    } else {
+      const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?companyName=${name}`;
+      try {
+        const response = await axios.get(apiUrl, {
+          headers: {
+            CompanySecret: `${secret}`,
+            Company: `${name}`,
+          },
+        });
+        const data: IHistoryValueResponse[] = response.data;
+        return formatIHistoryValuesResponse(data, dateFrom, dateTo);
+      } catch (error) {
+        console.error(error);
+        return Promise.resolve([]);
+      }
+    }
+  };
+
+  public getHistoryValues = (
+    accessToken: string,
+    companyId: number,
+    dateFrom: string,
+    dateTo: string
+  ) => {
+    if (usingTestData()) {
+      return this.testApiClient.getHistoryValues(
+        accessToken,
+        companyId,
+        dateFrom,
+        dateTo
+      );
+    } else {
+      const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceId=`;
+
+      return axios
+        .get(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((response) => {
+          if (response.data) {
+            const data: IHistoryValueResponse[] = response.data;
+            return formatIHistoryValuesResponse(data, dateFrom, dateTo);
+          } else {
+            throw new AxiosError("Data is null");
+          }
+        })
+        .catch(function (error) {
+          console.error(error);
+          return Promise.resolve([]);
+        });
+    }
   };
 
   public getDataHistoryChart = async (

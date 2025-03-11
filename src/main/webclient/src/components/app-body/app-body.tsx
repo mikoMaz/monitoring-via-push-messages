@@ -4,7 +4,6 @@ import { IAppProps } from "../../types/projectTypes";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { UIProps } from "../../config/config";
-import { APIClient } from "../../api/api-client";
 import {
   AllDevicesUptimeJson,
   DeviceModel,
@@ -30,13 +29,15 @@ import { LoadingPage } from "../loading-page/loading-page";
 import { usingTestData } from "../../util/useTestData";
 import { diplayAccessToken } from "../../util/displayAccessToken";
 import { ICompanyDto } from "../../types/ICompanyDto";
+import { useApiClient } from "../../api/useAPIClient";
 
 const refreshTime = 3; //minutes
 
 export const AppBody = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const apiClient = new APIClient();
+  const apiClient = useApiClient();
+
   const location = useLocation();
 
   const [email, setEmail] = useState<string>(getDeniedUserInfoResponse().email);
