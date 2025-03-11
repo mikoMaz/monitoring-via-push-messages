@@ -33,6 +33,10 @@ const convertTimestamp = (time: number): string => {
   return date.toLocaleString();
 };
 
+const displayPercent = (val: number): string => {
+  return val.toString()+"%"
+}
+
 export const DetailsModal = ({ isOpen, onClose, data }: IDetailsModal) => {
   const incidentDevices = data.incidents || [];
   const [selectedDevice, setSelectedDevice] = useState<string | null>(
@@ -53,8 +57,8 @@ export const DetailsModal = ({ isOpen, onClose, data }: IDetailsModal) => {
           <VStack spacing={4} align="stretch">
             <Box p={4} bg="gray.100" borderRadius="md">
               <Heading size="sm">Number of devices by status</Heading>
-              <Text>Active: {data.active}</Text>
-              <Text>Disabled: {data.disabled}</Text>
+              <Text>Active: {displayPercent(data.active)}</Text>
+              <Text>Disabled: {displayPercent(data.disabled)}</Text>
             </Box>
 
             <Box p={4} bg="gray.50" borderRadius="md">
@@ -84,7 +88,7 @@ export const DetailsModal = ({ isOpen, onClose, data }: IDetailsModal) => {
             {selectedIncidents.length > 0 && (
               <Box>
                 <Heading size="sm" mb={2}>
-                  Incident Timestamps
+                  Incidents
                 </Heading>
                 <Table variant="simple" size="sm">
                   <Thead>
