@@ -49,8 +49,8 @@ public class WebDevicesModelController {
         return ResponseEntity.ok().body(singleDeviceHistory.toString());
     }
 
-    @GetMapping("/NewUnnamedHistoryDetailsEndpoint")
-    public ResponseEntity<String> newUnnamedHistoryDetailsEndpoint(@RequestParam Long companyId, Long startTimestamp,
+    @GetMapping("/historyValues")
+    public ResponseEntity<String> historyValues(@RequestParam Long companyId, Long startTimestamp,
             Long endTimestamp, String period, Optional<String> deviceId) {
         JsonArray historyDetails = devicesModelService.getUptimePercentByPeriodandIncidents(companyId, startTimestamp,
                 endTimestamp,
