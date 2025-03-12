@@ -38,8 +38,9 @@ public class PreviewWebDevicesModelController {
     }
 
     @GetMapping("/historyValues")
-    public ResponseEntity<String> historyValues(@RequestParam Long companyId, Long startTimestamp,
+    public ResponseEntity<String> historyValues(@RequestParam String companyName, Long startTimestamp,
             Long endTimestamp, String period, Optional<String> deviceId) {
+        Long companyId = companyService.findCompanyByName(companyName).getCompanyId();
         JsonArray historyDetails = devicesModelService.getUptimePercentByPeriodandIncidents(companyId, startTimestamp,
                 endTimestamp,
                 period, deviceId);
