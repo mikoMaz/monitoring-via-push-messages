@@ -3,7 +3,7 @@ name: Deploy to Heroku
 on:
   push:
     branches:
-      - MON-138-deploying-the-application
+      - develop
 
 jobs:
   deploy-backend:
