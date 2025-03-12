@@ -13,7 +13,7 @@ import {
   IHistoryChartData,
 } from "../types/IHistoryChartData";
 import { getEmptyPreset } from "../types/chartTemplate";
-import { formatIHistoryValuesResponse } from "../types/IHistoryValues";
+import { formatIHistoryValuesResponse, IHistoryValueResponse } from "../types/IHistoryValues";
 
 export class TestAPIClient implements IAPIClient {
   public getPreviewHistoryValues = (
@@ -63,6 +63,7 @@ export class TestAPIClient implements IAPIClient {
       })),
     ];
 
+    // const data: IHistoryValueResponse[] = [];
     return Promise.resolve(
       formatIHistoryValuesResponse(data, dateFrom, dateTo)
     );

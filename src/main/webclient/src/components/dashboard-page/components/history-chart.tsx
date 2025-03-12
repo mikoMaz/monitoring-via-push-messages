@@ -1,13 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { Bar, BarChart, ResponsiveContainer, Tooltip } from "recharts";
 import { APIClient } from "../../../api/api-client";
-import { IHistoryChartData } from "../../../types/IHistoryChartData";
 import { IChartTemplateModelDrawing } from "../../../types/chartTemplate";
 import { CategoricalChartFunc } from "recharts/types/chart/generateCategoricalChart";
 import { IHistoryValue } from "../../../types/IHistoryValues";
