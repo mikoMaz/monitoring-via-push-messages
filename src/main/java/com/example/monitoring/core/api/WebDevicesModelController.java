@@ -50,10 +50,10 @@ public class WebDevicesModelController {
     }
 
     @GetMapping("/historyValues")
-    public ResponseEntity<String> historyValues(@RequestParam Long companyId, Long startTimestamp,
-            Long stopTimestamp, String period, Optional<String> deviceId) {
-        JsonArray historyDetails = devicesModelService.getUptimePercentByPeriodandIncidents(companyId, startTimestamp,
-                stopTimestamp,
+    public ResponseEntity<String> historyValues(@RequestParam Long companyId, Long startTimeStamp,
+            Long stopTimeStamp, String period, Optional<String> deviceId) {
+        JsonArray historyDetails = devicesModelService.getUptimePercentByPeriodandIncidents(companyId, startTimeStamp,
+                stopTimeStamp,
                 period, deviceId);
         return ResponseEntity.ok().body(historyDetails.toString());
 
