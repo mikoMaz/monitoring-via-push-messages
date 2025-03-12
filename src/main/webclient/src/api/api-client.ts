@@ -295,7 +295,13 @@ export class APIClient implements IAPIClient {
         dateTo
       );
     } else {
-      const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?companyName=${name}`;
+      const dateFromUnix = Math.floor(new Date(dateFrom).getTime() / 1000);
+      const dateToPlusOne = new Date(dateTo);
+      dateToPlusOne.setDate(dateToPlusOne.getDate() + 1);
+      const dateToUnix = Math.floor(dateToPlusOne.getTime() / 1000);
+
+      // const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyTree?companyName=${name}`;
+      const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/preview/historyValues?companyName=${name}&startTimeStamp=${dateFromUnix}&stopTimeStamp=${dateToUnix}&period=day`;
       try {
         const response = await axios.get(apiUrl, {
           headers: {
@@ -326,7 +332,12 @@ export class APIClient implements IAPIClient {
         dateTo
       );
     } else {
-      const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historySingleDevice?companyId=${companyId}&deviceId=`;
+      const dateFromUnix = Math.floor(new Date(dateFrom).getTime() / 1000);
+      const dateToPlusOne = new Date(dateTo);
+      dateToPlusOne.setDate(dateToPlusOne.getDate() + 1);
+      const dateToUnix = Math.floor(dateToPlusOne.getTime() / 1000);
+
+      const apiUrl = `${this.getAppVerionApiUrl()}/api/v1/user/historyValues?companyId=${companyId}&startTimeStamp=${dateFromUnix}&stopTimeStamp=${dateToUnix}&period=day`;
 
       return axios
         .get(apiUrl, {
