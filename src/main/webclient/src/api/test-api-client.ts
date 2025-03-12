@@ -7,7 +7,7 @@ import {
   Sensor,
 } from "../types/deviceModel";
 import { IUserInfoResponse } from "../types/IUserInfoResponse";
-import { IAPIClient } from "./api-client";
+import { IAPIClient } from "./IAPIClient";
 import {
   formatRawIHistoryChartData,
   IHistoryChartData,
