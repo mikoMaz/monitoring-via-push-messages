@@ -3,7 +3,7 @@ name: Deploy to Heroku
 on:
   push:
     branches:
-      - develop
+      - battery
 
 jobs:
   deploy-backend:
