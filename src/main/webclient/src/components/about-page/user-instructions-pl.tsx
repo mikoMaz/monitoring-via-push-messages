@@ -27,7 +27,7 @@ export const UserInstructions = () => {
         parameters, e.g.:
       </Text>
       <Code display="block" mb={4}>
-          https://errwarn-c1e804e5fd5a.herokuapp.com/preview?context=test-company
+        https://errwarn-c1e804e5fd5a.herokuapp.com/preview?context=test-company
       </Code>
       <Text mb={4}>
         The user is prompted to provide the secret for the specified company.
@@ -59,7 +59,7 @@ export const UserInstructions = () => {
         <Code>/monitoring</Code> includes interactive tables listing devices:
       </Text>
       <Code display="block" mb={4}>
-          https://errwarn-c1e804e5fd5a.herokuapp.com/application/monitoring?view=allDevices
+        https://errwarn-c1e804e5fd5a.herokuapp.com/application/monitoring?view=allDevices
       </Code>
       <List spacing={2} mb={4}>
         <ListItem>
