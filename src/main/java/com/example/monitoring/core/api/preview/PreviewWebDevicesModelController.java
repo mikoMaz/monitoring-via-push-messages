@@ -1,5 +1,7 @@
 package com.example.monitoring.core.api.preview;
 
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.monitoring.core.api.abstraction.IDevicesModelService;
 import com.example.monitoring.core.company.CompanyService;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
@@ -32,5 +35,15 @@ public class PreviewWebDevicesModelController {
         Long companyId = companyService.findCompanyByName(companyName).getCompanyId();
         JsonObject historyTree = devicesModelService.getHistoryTree(companyId);
         return ResponseEntity.ok().body(historyTree.toString());
+    }
+
+    @GetMapping("/historyValues")
+    public ResponseEntity<String> historyValues(@RequestParam Long companyId, Long startTimestamp,
+            Long endTimestamp, String period, Optional<String> deviceId) {
+        JsonArray historyDetails = devicesModelService.getUptimePercentByPeriodandIncidents(companyId, startTimestamp,
+                endTimestamp,
+                period, deviceId);
+        return ResponseEntity.ok().body(historyDetails.toString());
+
     }
 }

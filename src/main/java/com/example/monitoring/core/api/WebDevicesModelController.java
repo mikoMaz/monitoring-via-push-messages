@@ -1,5 +1,7 @@
 package com.example.monitoring.core.api;
 
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +34,8 @@ public class WebDevicesModelController {
     }
 
     @GetMapping("/chartHistory")
-    public ResponseEntity<String> newHistoryTree(@RequestParam Long companyId, Long startTimeStamp, Long stopTimeStamp, String period) {
+    public ResponseEntity<String> newHistoryTree(@RequestParam Long companyId, Long startTimeStamp, Long stopTimeStamp,
+            String period) {
         JsonArray historyTree = devicesModelService.getStatsByPeriod(companyId, startTimeStamp, stopTimeStamp, period);
         return ResponseEntity.ok().body(historyTree.toString());
     }
@@ -44,5 +47,15 @@ public class WebDevicesModelController {
             return ResponseEntity.badRequest().body("");
         }
         return ResponseEntity.ok().body(singleDeviceHistory.toString());
+    }
+
+    @GetMapping("/historyValues")
+    public ResponseEntity<String> historyValues(@RequestParam Long companyId, Long startTimestamp,
+            Long endTimestamp, String period, Optional<String> deviceId) {
+        JsonArray historyDetails = devicesModelService.getUptimePercentByPeriodandIncidents(companyId, startTimestamp,
+                endTimestamp,
+                period, deviceId);
+        return ResponseEntity.ok().body(historyDetails.toString());
+
     }
 }
