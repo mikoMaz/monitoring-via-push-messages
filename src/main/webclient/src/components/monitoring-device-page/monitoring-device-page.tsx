@@ -21,7 +21,7 @@ import {
 import { CustomAccordionButton } from "./components/custom-accordion-buttons";
 import { capitalizeFirstLetter } from "../../types/projectTypes";
 import { DeviceDetailsTable } from "./components/device-details-table";
-import { IAPIClient } from "../../api/api-client";
+import { IAPIClient } from "../../api/IAPIClient";
 import { ICompanyDto } from "../../types/ICompanyDto";
 
 export type monitoringDeviceType = "sensor" | "gateway" | "bridge" | "other";
