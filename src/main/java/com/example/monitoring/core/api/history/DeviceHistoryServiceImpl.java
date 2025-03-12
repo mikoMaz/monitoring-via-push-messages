@@ -179,7 +179,9 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
             TimestampMap = Timestamps.stream().collect(Collectors.groupingBy(DeviceHistory::getDeviceId));
             HashMap<String, List<Entry<Long, Long>>> incidentMap = new HashMap<>();
             HashMap<String, Double> uptimes = new HashMap<>();
-            uptimes.keySet().addAll(deviceIds);
+            for (String deviceId : deviceIds) {
+                uptimes.put(deviceId, 0d);
+            }
             // for every deviceID
             for (String key : uptimes.keySet()) {
                 downtimeUnit = 0L;
