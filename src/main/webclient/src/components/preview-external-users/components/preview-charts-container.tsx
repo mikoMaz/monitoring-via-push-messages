@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DeviceModel,
   AllDevicesUptimeJson,
@@ -177,6 +177,20 @@ const HistoryChartCard = ({
   historyChartData: IHistoryValue[];
   batteryOnclick: (nextState: CategoricalChartState, event: any) => void;
 }) => {
+  const avarageUptime = useMemo(() => {
+    if (historyChartData.length) {
+      return (
+        historyChartData
+          .map((hcd) => {
+            return hcd.active;
+          })
+          .reduce((a, b) => a + b, 0) / historyChartData.length
+      ).toFixed(2);
+    } else {
+      return "0";
+    }
+  }, [historyChartData]);
+
   return (
     <Box boxShadow="md" rounded="md" bg="background" padding={10} width="full">
       <Card variant="filled" bg="whiteAlpha.900">
@@ -200,7 +214,7 @@ const HistoryChartCard = ({
             <CardFooter paddingX={0} paddingTop={2} paddingBottom={0}>
               <HStack justify="space-between" alignItems="stretch" w="full">
                 <Text>90 days ago</Text>
-                <Text>something uptime</Text>
+                <Text>{avarageUptime}% uptime</Text>
                 <Text>yesterday</Text>
               </HStack>
             </CardFooter>
