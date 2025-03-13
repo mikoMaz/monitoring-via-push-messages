@@ -17,9 +17,9 @@ const CustomTooltip = ({ active, payload }: any) => {
     return (
       <Box bg="white" p={2} borderRadius="md" boxShadow="lg" padding={4}>
         <Text as="b" fontSize="lg">{`${payload[0].payload.timestamp}`}</Text>
-        <Text color="green">{`active : ${payload[0].payload.active.toFixed(2)}%`}</Text>
+        <Text color="green">{`active : ${payload[0].payload.active.toFixed(5)}%`}</Text>
         {/* <Text color="orange">{`disabled : ${payload[0].payload.disabledPercent}%`}</Text> */}
-        <Text color="red">{`inactive : ${payload[0].payload.disabled.toFixed(2)}%`}</Text>
+        <Text color="red">{`inactive : ${payload[0].payload.disabled.toFixed(5)}%`}</Text>
       </Box>
     );
   }
