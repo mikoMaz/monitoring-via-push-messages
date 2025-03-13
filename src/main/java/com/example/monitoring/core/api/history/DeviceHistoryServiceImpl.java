@@ -201,10 +201,10 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
                         Long End = timestamp.getEnd_timestamp();
                         // if timestamp is out of range it gets trimmed
                         if (timestamp.getStart_timestamp() <= StartTimeStamp + (i) * period) {
-                            Start = StartTimeStamp;
+                            Start = StartTimeStamp + (i) * period;
                         }
                         if (timestamp.getEnd_timestamp() >= StartTimeStamp + (i + 1) * period) {
-                            End = StopTimeStamp;
+                            End = StartTimeStamp + (i + 1) * period;
                         }
                         List<Entry<Long, Long>> incidentList = incidentMap.get(key);
                         if (incidentList == null)
@@ -213,7 +213,11 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
                         incidentMap.put(key, incidentList);
                         downtimeUnit += End - Start;
                     }
-                    uptimes.put(key, Double.valueOf(1 - (downtimeUnit / (double) period)));
+                    if (downtimeUnit > period) {
+                        logger.info("BUG!");
+                        uptimes.put(key, 1D);
+                    } else
+                        uptimes.put(key, Double.valueOf(1 - (downtimeUnit / (double) period)));
                 }
 
             }
