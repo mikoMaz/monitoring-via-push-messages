@@ -279,10 +279,13 @@ public class DevicesModelService implements IDevicesModelService {
         } else {
             deviceIds = deviceService.getAllChildrenForGivenCompanyId(companyId);
         }
-
+        logger.info("#282 deviceIds");
+        logger.info(deviceIds.toString());
         Map<Integer, Entry<Double, Map<String, List<Entry<Long, Long>>>>> companyUptimesAndIncidents = historyService
                 .uptimePercentByPeriodandIncidents(deviceIds, StartTimeStamp,
                         StopTimeStamp, chosenMode);
+        logger.info("companyUptimesAndIncidents.keySet().size())");
+        logger.info(String.valueOf(companyUptimesAndIncidents.keySet().size()));
         JsonArray root = new JsonArray();
         for (int i = 0; i < companyUptimesAndIncidents.keySet().size(); i++) {
             JsonObject periodObject = new JsonObject();

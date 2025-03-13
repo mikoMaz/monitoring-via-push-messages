@@ -160,8 +160,7 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
             Long StartTimeStamp,
             Long StopTimeStamp, Long period) {
         Map<Integer, Entry<Double, Map<String, List<Entry<Long, Long>>>>> result = new HashMap<>();
-        logger.info("starting procedure for:");
-        logger.info(deviceIds.toString());
+        logger.info("starting uptimePercentByPeriodandIncidents");
         List<DeviceHistory> Timestamps;
         Map<String, List<DeviceHistory>> TimestampMap;
 
@@ -172,8 +171,6 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 
         // for every period
         for (int i = 0; i < pc; i++) {
-            logger.info("period:");
-            logger.info(String.valueOf(i));
             Timestamps = repository.timeStampsFromPeriod(deviceIds, StartTimeStamp + (i) * period,
                     StartTimeStamp + (i + 1) * period);
             TimestampMap = Timestamps.stream().collect(Collectors.groupingBy(DeviceHistory::getDeviceId));
@@ -205,11 +202,9 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
                         // if timestamp is out of range it gets trimmed
                         if (timestamp.getStart_timestamp() <= StartTimeStamp + (i) * period) {
                             Start = StartTimeStamp;
-                            logger.info("trimStart");
                         }
                         if (timestamp.getEnd_timestamp() >= StartTimeStamp + (i + 1) * period) {
                             End = StopTimeStamp;
-                            logger.info("trimEnd");
                         }
                         List<Entry<Long, Long>> incidentList = incidentMap.get(key);
                         if (incidentList == null)
@@ -217,11 +212,7 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
                         incidentList.add(new AbstractMap.SimpleEntry<>(Start, End));
                         incidentMap.put(key, incidentList);
                         downtimeUnit += End - Start;
-                        logger.info("downtime Unit:");
-                        logger.info(downtimeUnit.toString());
                     }
-                    logger.info("downtime Unit:");
-                    logger.info(downtimeUnit.toString());
                     uptimes.put(key, Double.valueOf(1 - (downtimeUnit / (double) period)));
                 }
 
@@ -239,9 +230,6 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
 
     public Map<String, List<Map.Entry<Long, Long>>> deviceIncidentList(List<String> deviceIds, Long StartTimeStamp,
             Long StopTimeStamp) {
-        logger.info("starting procedure for:");
-        logger.info(deviceIds.toString());
-
         List<DeviceHistory> Timestamps;
         Map<String, List<DeviceHistory>> TimestampMap;
 
@@ -272,13 +260,11 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService {
                     Long End = timestamp.getEnd_timestamp();
                     if (timestamp.getStart_timestamp() <= StartTimeStamp) {
                         Start = StartTimeStamp;
-                        logger.info("trimStart");
                     }
                     // jeżeli device_end >=
 
                     if (timestamp.getEnd_timestamp() >= StopTimeStamp) {
                         End = StopTimeStamp;
-                        logger.info("trimEnd");
                     }
                     periodsOfInactivityList.add(new AbstractMap.SimpleEntry<>(Start, End));
                 }
