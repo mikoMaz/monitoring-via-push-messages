@@ -57,7 +57,7 @@ export const formatIHistoryValuesResponse = (
       const disabled = 100 - active;
       const entryDate = addDays(startDate, entry.timestamp);
       return {
-        active: entry.active,
+        active: active,
         disabled: disabled,
         timestamp: formatDate(entryDate),
         incidents: entry.incidents,
