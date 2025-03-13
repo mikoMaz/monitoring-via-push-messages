@@ -310,6 +310,7 @@ public class DevicesModelService implements IDevicesModelService {
                 incidents.add(singleEntry);
             }
             periodObject.add("incidents", incidents);
+            root.add(periodObject);
         }
         return root;
 
