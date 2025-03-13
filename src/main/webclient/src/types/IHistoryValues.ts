@@ -52,7 +52,9 @@ export const formatIHistoryValuesResponse = (
 
   return data
     .map((entry) => {
-      const disabled = 1 - entry.active;
+      let active = entry.active < 0 ? 0 : entry.active;
+      active = active > 1 ? active : active * 100;
+      const disabled = 100 - active;
       const entryDate = addDays(startDate, entry.timestamp);
       return {
         active: entry.active,
