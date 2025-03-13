@@ -2,6 +2,7 @@ package com.example.monitoring.core.api.preview;
 
 import java.util.Optional;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ public class PreviewWebDevicesModelController {
 
     private final IDevicesModelService devicesModelService;
     private final CompanyService companyService;
+    org.slf4j.Logger logger = LoggerFactory.getLogger(PreviewWebDevicesModelController.class);
 
     @GetMapping("/jsonTree")
     public ResponseEntity<String> jsonTree(@RequestParam String companyName) {
@@ -41,6 +43,8 @@ public class PreviewWebDevicesModelController {
     public ResponseEntity<String> historyValues(@RequestParam String companyName, Long startTimeStamp,
             Long stopTimeStamp, String period, Optional<String> deviceId) {
         Long companyId = companyService.findCompanyByName(companyName).getCompanyId();
+        logger.info("companyId");
+        logger.info(String.valueOf(companyId));
         JsonArray historyDetails = devicesModelService.getUptimePercentByPeriodandIncidents(companyId, startTimeStamp,
                 stopTimeStamp,
                 period, deviceId);

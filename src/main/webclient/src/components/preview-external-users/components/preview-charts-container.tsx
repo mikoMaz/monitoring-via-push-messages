@@ -22,6 +22,7 @@ import {
   Text,
   Highlight,
   Link,
+  Icon,
 } from "@chakra-ui/react";
 import { getEmptyPreset } from "../../../types/chartTemplate";
 import { HistoryBatteryChart } from "../../dashboard-page/components/history-chart";
@@ -37,6 +38,7 @@ import {
   IHistoryValue,
   emptyHistoryValue,
 } from "../../../types/IHistoryValues";
+import { Block } from "@mui/icons-material";
 
 interface IPreviewChartsContainer {
   apiClient: APIClient;
@@ -192,28 +194,37 @@ const HistoryChartCard = ({
   return (
     <Box boxShadow="md" rounded="md" bg="background" padding={10} width="full">
       <Card variant="filled" bg="whiteAlpha.900">
-        <CardHeader paddingX={0} paddingTop={0} paddingBottom={2}>
-          <HStack justify="space-between" alignItems="stretch" w="full">
-            <Text fontSize="xl" as="b">
-              Devices Uptime History
-            </Text>
-            <Text fontSize="xl">Operational</Text>
+        {historyChartData.length ? (
+          <>
+            <CardHeader paddingX={0} paddingTop={0} paddingBottom={2}>
+              <HStack justify="space-between" alignItems="stretch" w="full">
+                <Text fontSize="xl" as="b">
+                  Devices Uptime History
+                </Text>
+                <Text fontSize="xl">Operational</Text>
+              </HStack>
+            </CardHeader>
+            <CardBody padding={0}>
+              <HistoryBatteryChart
+                chartData={historyChartData}
+                isPreview={true}
+                dateOnClickOperation={batteryOnclick}
+              />
+            </CardBody>
+            <CardFooter paddingX={0} paddingTop={2} paddingBottom={0}>
+              <HStack justify="space-between" alignItems="stretch" w="full">
+                <Text>90 days ago</Text>
+                <Text>{avarageUptime}% uptime</Text>
+                <Text>yesterday</Text>
+              </HStack>
+            </CardFooter>
+          </>
+        ) : (
+          <HStack spacing={4} align="center" justify="center" width="full">
+            <Icon as={Block} color="red.800" boxSize={8} />
+            <Text fontSize="xl">No data</Text>
           </HStack>
-        </CardHeader>
-        <CardBody padding={0}>
-          <HistoryBatteryChart
-            chartData={historyChartData}
-            isPreview={true}
-            dateOnClickOperation={batteryOnclick}
-          />
-        </CardBody>
-        <CardFooter paddingX={0} paddingTop={2} paddingBottom={0}>
-          <HStack justify="space-between" alignItems="stretch" w="full">
-            <Text>90 days ago</Text>
-            <Text>{avarageUptime}% uptime</Text>
-            <Text>yesterday</Text>
-          </HStack>
-        </CardFooter>
+        )}
       </Card>
     </Box>
   );

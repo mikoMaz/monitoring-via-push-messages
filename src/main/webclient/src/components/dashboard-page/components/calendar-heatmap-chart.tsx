@@ -6,8 +6,11 @@ import {
   IconButton,
   Text,
   Heading,
+  Card,
+  CardBody,
+  Icon,
 } from "@chakra-ui/react";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { Block, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useMemo, useState } from "react";
 import { IHistoryChartData } from "../../../types/IHistoryChartData";
 import { IHistoryValue } from "../../../types/IHistoryValues";
@@ -169,42 +172,50 @@ export const CalendarHeatmap = ({
   const groupedData = useMemo(() => groupByMonth(chartData), [chartData]);
   const months = Object.keys(groupedData);
   const [startIndex, setStartIndex] = useState(Math.max(0, months.length - 3));
+  if (chartData.length) {
+    const showNextMonths = () => {
+      setStartIndex((prev) => Math.min(prev + 1, months.length - 3));
+    };
 
-  const showNextMonths = () => {
-    setStartIndex((prev) => Math.min(prev + 1, months.length - 3));
-  };
+    const showPreviousMonths = () => {
+      setStartIndex((prev) => Math.max(prev - 1, 0));
+    };
 
-  const showPreviousMonths = () => {
-    setStartIndex((prev) => Math.max(prev - 1, 0));
-  };
-
-  return (
-    <VStack spacing={12} align="stretch">
-      <HStack width="100%" justifyContent="space-between">
-        <IconButton
-          aria-label="Previous months"
-          icon={<ChevronLeft />}
-          onClick={showPreviousMonths}
-          isDisabled={startIndex === 0}
-        />
-        <Heading size="lg">Calendar Heatmap</Heading>
-        <IconButton
-          aria-label="Next months"
-          icon={<ChevronRight />}
-          onClick={showNextMonths}
-          isDisabled={startIndex >= months.length - 3}
-          color="primary"
-        />
-      </HStack>
-      <HStack spacing={20} align="stretch">
-        {months.slice(startIndex, startIndex + 3).map((month) => (
-          <CalendarMonth
-            key={month}
-            monthName={month}
-            days={groupedData[month]}
+    return (
+      <VStack spacing={12} align="stretch">
+        <HStack width="100%" justifyContent="space-between">
+          <IconButton
+            aria-label="Previous months"
+            icon={<ChevronLeft />}
+            onClick={showPreviousMonths}
+            isDisabled={startIndex === 0}
           />
-        ))}
+          <Heading size="lg">Calendar Heatmap</Heading>
+          <IconButton
+            aria-label="Next months"
+            icon={<ChevronRight />}
+            onClick={showNextMonths}
+            isDisabled={startIndex >= months.length - 3}
+            color="primary"
+          />
+        </HStack>
+        <HStack spacing={20} align="stretch">
+          {months.slice(startIndex, startIndex + 3).map((month) => (
+            <CalendarMonth
+              key={month}
+              monthName={month}
+              days={groupedData[month]}
+            />
+          ))}
+        </HStack>
+      </VStack>
+    );
+  } else {
+    return (
+      <HStack spacing={4} align="center">
+        <Icon as={Block} color="red.800" boxSize={8}/>
+        <Text fontSize='xl'>No data</Text>
       </HStack>
-    </VStack>
-  );
+    );
+  }
 };
